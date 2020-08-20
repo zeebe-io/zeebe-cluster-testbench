@@ -5,8 +5,8 @@ cd target
 export PROJECT_NAME="Maven Template"
 export GITHUB_TOKEN=${GITHUB_TOKEN_PSW}
 export GITHUB_ORG=zeebe-io
-export GITHUB_REPO=maven-template
-export ARTIFACT=maven-template-${RELEASE_VERSION}.jar
+export GITHUB_REPO=zeebe-cluster-testbench
+export ARTIFACT=zeebe-cluster-testbench-${RELEASE_VERSION}.jar
 export CHECKSUM=${ARTIFACT}.sha1sum
 
 # create checksum files

@@ -7,19 +7,19 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<groupId>io.zeebe</groupId>
-	<artifactId>give-me-a-name</artifactId>
+	<artifactId>zeebe-cluster-testbench</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<packaging>jar</packaging>
 
-	<name>give-me-a-name</name>
+	<name>Zeebe Cluster Testbench</name>
 
 	<!-- When changing the artifact or name, also make sure to change the SCM 
 		location below and in .ci/scripts/github-release.sh -->
 
 	<scm>
-		<url>https://github.com/zeebe-io/maven-template</url>
-		<connection>scm:git:git@github.com:zeebe-io/maven-template.git</connection>
-		<developerConnection>scm:git:git@github.com:zeebe-io/maven-tenmplate.git</developerConnection>
+		<url>https://github.com/zeebe-io/zeebe-cluster-testbench</url>
+		<connection>scm:git:git@github.com:zeebe-io/zeebe-cluster-testbench.git</connection>
+		<developerConnection>scm:git:git@github.com:zeebe-io/zeebe-cluster-testbench.git</developerConnection>
 		<tag>HEAD</tag>
 	</scm>
 
