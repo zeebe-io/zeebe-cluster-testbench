@@ -9,7 +9,7 @@
 	<groupId>io.zeebe</groupId>
 	<artifactId>zeebe-cluster-testbench</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<packaging>jar</packaging>
+	<packaging>pom</packaging>
 
 	<name>Zeebe Cluster Testbench</name>
 
@@ -37,14 +37,15 @@
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<version.java>8</version.java>
+		<version.java>11</version.java>
 		<maven.version>3.0</maven.version>
+		<zeebe.version>0.24.2</zeebe.version>
 
 		<nexus.snapshot.repository>https://app.camunda.com/nexus/content/repositories/zeebe-io-snapshots/</nexus.snapshot.repository>
 		<nexus.release.repository>https://app.camunda.com/nexus/content/repositories/zeebe-io/</nexus.release.repository>
 
 		<version.junit>5.6.2</version.junit>
-
+		
 		<plugin.version.surefire>3.0.0-M5</plugin.version.surefire>
 		<plugin.version.jacoco>0.8.5</plugin.version.jacoco>
 	</properties>
@@ -74,6 +75,10 @@
 			<scope>test</scope>
 		</dependency>
 	</dependencies>
+	
+	 <modules>
+        <module>bootstrap</module>
+    </modules>
 
 	<build>
 		<plugins>
@@ -99,7 +104,7 @@
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-javadoc-plugin</artifactId>
 				<configuration>
-					<source>8</source>
+					<source>11</source>
 				</configuration>
 			</plugin>
 
