@@ -12,20 +12,12 @@
       <bpmn:incoming>Flow_0u0o693</bpmn:incoming>
       <bpmn:outgoing>Flow_15k26ho</bpmn:outgoing>
     </bpmn:serviceTask>
-    <bpmn:sequenceFlow id="Flow_15k26ho" sourceRef="create-zeebe-cluster" targetRef="create-simple-test-runner" />
-    <bpmn:serviceTask id="create-simple-test-runner" name="Create Simple Test Runner">
-      <bpmn:extensionElements>
-        <zeebe:taskDefinition type="create-simple-test-runner-job" />
-      </bpmn:extensionElements>
-      <bpmn:incoming>Flow_15k26ho</bpmn:incoming>
-      <bpmn:outgoing>Flow_18cfht0</bpmn:outgoing>
-    </bpmn:serviceTask>
-    <bpmn:sequenceFlow id="Flow_18cfht0" sourceRef="create-simple-test-runner" targetRef="run-simple-test" />
+    <bpmn:sequenceFlow id="Flow_15k26ho" sourceRef="create-zeebe-cluster" targetRef="run-simple-test" />
     <bpmn:serviceTask id="run-simple-test" name="Run Simple Test">
       <bpmn:extensionElements>
         <zeebe:taskDefinition type="run-simle-test-job" />
       </bpmn:extensionElements>
-      <bpmn:incoming>Flow_18cfht0</bpmn:incoming>
+      <bpmn:incoming>Flow_15k26ho</bpmn:incoming>
       <bpmn:outgoing>Flow_1wb0hvc</bpmn:outgoing>
     </bpmn:serviceTask>
     <bpmn:sequenceFlow id="Flow_1wb0hvc" sourceRef="run-simple-test" targetRef="record-test-result" />
@@ -43,7 +35,7 @@
     </bpmn:exclusiveGateway>
     <bpmn:sequenceFlow id="Flow_16htm8s" sourceRef="record-test-result" targetRef="check_test_passed" />
     <bpmn:sequenceFlow id="test_not_passed" name="no" sourceRef="check_test_passed" targetRef="notify-engineers">
-      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">=result = "failed"</bpmn:conditionExpression>
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">=testResult = "failed"</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
     <bpmn:serviceTask id="notify-engineers" name="Notify Engineers">
       <bpmn:extensionElements>
@@ -65,20 +57,12 @@
     </bpmn:exclusiveGateway>
     <bpmn:sequenceFlow id="Flow_1emur0a" sourceRef="analysis-completed" targetRef="Gateway_0n2c5zt" />
     <bpmn:sequenceFlow id="Flow_1j2fhvr" sourceRef="check_test_passed" targetRef="Gateway_0n2c5zt" />
-    <bpmn:sequenceFlow id="Flow_1e7iazb" sourceRef="Gateway_0n2c5zt" targetRef="destroy-simple-test-runner" />
-    <bpmn:serviceTask id="destroy-simple-test-runner" name="Destroy Simple Test Runner">
-      <bpmn:extensionElements>
-        <zeebe:taskDefinition type="destroy-simple-test-runner-job" />
-      </bpmn:extensionElements>
-      <bpmn:incoming>Flow_1e7iazb</bpmn:incoming>
-      <bpmn:outgoing>Flow_09n411e</bpmn:outgoing>
-    </bpmn:serviceTask>
-    <bpmn:sequenceFlow id="Flow_09n411e" sourceRef="destroy-simple-test-runner" targetRef="destroy-zeebe-cluster" />
+    <bpmn:sequenceFlow id="Flow_1e7iazb" sourceRef="Gateway_0n2c5zt" targetRef="destroy-zeebe-cluster" />
     <bpmn:serviceTask id="destroy-zeebe-cluster" name="Destroy Zeebe Cluster">
       <bpmn:extensionElements>
         <zeebe:taskDefinition type="destroy-zeebe-cluster-job" />
       </bpmn:extensionElements>
-      <bpmn:incoming>Flow_09n411e</bpmn:incoming>
+      <bpmn:incoming>Flow_1e7iazb</bpmn:incoming>
       <bpmn:outgoing>Flow_1cth1vv</bpmn:outgoing>
     </bpmn:serviceTask>
     <bpmn:endEvent id="Event_1i1rnvk">
@@ -94,47 +78,39 @@
   <bpmndi:BPMNDiagram id="BPMNDiagram_1">
     <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="run-simple-test-in-clusterplan">
       <bpmndi:BPMNEdge id="Flow_1cth1vv_di" bpmnElement="Flow_1cth1vv">
-        <di:waypoint x="1550" y="100" />
-        <di:waypoint x="1592" y="100" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_09n411e_di" bpmnElement="Flow_09n411e">
-        <di:waypoint x="1410" y="100" />
-        <di:waypoint x="1450" y="100" />
+        <di:waypoint x="1260" y="100" />
+        <di:waypoint x="1302" y="100" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_1e7iazb_di" bpmnElement="Flow_1e7iazb">
-        <di:waypoint x="1275" y="100" />
-        <di:waypoint x="1310" y="100" />
+        <di:waypoint x="1115" y="100" />
+        <di:waypoint x="1160" y="100" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_1j2fhvr_di" bpmnElement="Flow_1j2fhvr">
-        <di:waypoint x="935" y="100" />
-        <di:waypoint x="1225" y="100" />
+        <di:waypoint x="775" y="100" />
+        <di:waypoint x="1065" y="100" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_1emur0a_di" bpmnElement="Flow_1emur0a">
-        <di:waypoint x="1198" y="200" />
-        <di:waypoint x="1250" y="200" />
-        <di:waypoint x="1250" y="125" />
+        <di:waypoint x="1038" y="200" />
+        <di:waypoint x="1090" y="200" />
+        <di:waypoint x="1090" y="125" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_1l84l1r_di" bpmnElement="Flow_1l84l1r">
-        <di:waypoint x="1080" y="200" />
-        <di:waypoint x="1162" y="200" />
+        <di:waypoint x="920" y="200" />
+        <di:waypoint x="1002" y="200" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_1g2ygbd_di" bpmnElement="test_not_passed">
-        <di:waypoint x="910" y="125" />
-        <di:waypoint x="910" y="200" />
-        <di:waypoint x="980" y="200" />
+        <di:waypoint x="750" y="125" />
+        <di:waypoint x="750" y="200" />
+        <di:waypoint x="820" y="200" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="919" y="160" width="13" height="14" />
+          <dc:Bounds x="759" y="160" width="13" height="14" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_16htm8s_di" bpmnElement="Flow_16htm8s">
-        <di:waypoint x="820" y="100" />
-        <di:waypoint x="885" y="100" />
+        <di:waypoint x="660" y="100" />
+        <di:waypoint x="725" y="100" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_1wb0hvc_di" bpmnElement="Flow_1wb0hvc">
-        <di:waypoint x="660" y="100" />
-        <di:waypoint x="720" y="100" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_18cfht0_di" bpmnElement="Flow_18cfht0">
         <di:waypoint x="500" y="100" />
         <di:waypoint x="560" y="100" />
       </bpmndi:BPMNEdge>
@@ -155,41 +131,35 @@
       <bpmndi:BPMNShape id="Activity_1253d10_di" bpmnElement="create-zeebe-cluster">
         <dc:Bounds x="240" y="60" width="100" height="80" />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_0jtduwf_di" bpmnElement="create-simple-test-runner">
+      <bpmndi:BPMNShape id="Activity_16a5vtv_di" bpmnElement="run-simple-test">
         <dc:Bounds x="400" y="60" width="100" height="80" />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_16a5vtv_di" bpmnElement="run-simple-test">
+      <bpmndi:BPMNShape id="Activity_1cuyfq1_di" bpmnElement="record-test-result">
         <dc:Bounds x="560" y="60" width="100" height="80" />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_1cuyfq1_di" bpmnElement="record-test-result">
-        <dc:Bounds x="720" y="60" width="100" height="80" />
-      </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Gateway_0eoa092_di" bpmnElement="check_test_passed" isMarkerVisible="true">
-        <dc:Bounds x="885" y="75" width="50" height="50" />
+        <dc:Bounds x="725" y="75" width="50" height="50" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="881" y="45" width="62" height="14" />
+          <dc:Bounds x="721" y="45" width="62" height="14" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Activity_1w6lwgr_di" bpmnElement="notify-engineers">
-        <dc:Bounds x="980" y="160" width="100" height="80" />
+        <dc:Bounds x="820" y="160" width="100" height="80" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Event_01a6edu_di" bpmnElement="analysis-completed">
-        <dc:Bounds x="1162" y="182" width="36" height="36" />
+        <dc:Bounds x="1002" y="182" width="36" height="36" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="1153" y="225" width="54" height="27" />
+          <dc:Bounds x="993" y="225" width="54" height="27" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Gateway_0n2c5zt_di" bpmnElement="Gateway_0n2c5zt" isMarkerVisible="true">
-        <dc:Bounds x="1225" y="75" width="50" height="50" />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_1r7gif9_di" bpmnElement="destroy-simple-test-runner">
-        <dc:Bounds x="1310" y="60" width="100" height="80" />
+        <dc:Bounds x="1065" y="75" width="50" height="50" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Activity_09c5z6r_di" bpmnElement="destroy-zeebe-cluster">
-        <dc:Bounds x="1450" y="60" width="100" height="80" />
+        <dc:Bounds x="1160" y="60" width="100" height="80" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Event_1i1rnvk_di" bpmnElement="Event_1i1rnvk">
-        <dc:Bounds x="1592" y="82" width="36" height="36" />
+        <dc:Bounds x="1302" y="82" width="36" height="36" />
       </bpmndi:BPMNShape>
     </bpmndi:BPMNPlane>
   </bpmndi:BPMNDiagram>
