@@ -15,7 +15,7 @@
     <bpmn:sequenceFlow id="Flow_15k26ho" sourceRef="create-zeebe-cluster" targetRef="run-simple-test" />
     <bpmn:serviceTask id="run-simple-test" name="Run Simple Test">
       <bpmn:extensionElements>
-        <zeebe:taskDefinition type="run-simle-test-job" />
+        <zeebe:taskDefinition type="run-simple-test-job" />
       </bpmn:extensionElements>
       <bpmn:incoming>Flow_15k26ho</bpmn:incoming>
       <bpmn:outgoing>Flow_1wb0hvc</bpmn:outgoing>

@@ -13,7 +13,7 @@
       <bpmn:outgoing>Flow_1ty9adt</bpmn:outgoing>
       <bpmn:multiInstanceLoopCharacteristics>
         <bpmn:extensionElements>
-          <zeebe:loopCharacteristics inputCollection="=clusterPlans" inputElement="=clusterPlan" outputCollection="=testResults" outputElement="=testResult" />
+          <zeebe:loopCharacteristics inputCollection="=clusterPlans" inputElement="clusterPlan" outputCollection="testResults" outputElement="=testResult" />
         </bpmn:extensionElements>
       </bpmn:multiInstanceLoopCharacteristics>
     </bpmn:callActivity>

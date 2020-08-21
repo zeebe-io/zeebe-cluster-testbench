@@ -1,11 +1,11 @@
 package io.zeebe.clustertestbench.bootstrap;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.util.ArrayList;
-import java.util.List;
+import static java.lang.Runtime.getRuntime;
+
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Scanner;
 import java.util.concurrent.Callable;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -68,8 +68,31 @@ public class Bootstrap implements Callable<Integer> {
 
 			boolean success = new WorkflowDeployer(client).deployWorkflowsInClasspathFolder("workflows");
 
-			return success ? 0 : -1;
+			if (!success) {
+				return -1;
+			}
+
+			MockBootstrapper mockBootstrapper = new MockBootstrapper(client);
+			mockBootstrapper.registerMockWorkers();
+
+			getRuntime().addShutdownHook(new Thread("Gateway close thread") {
+				@Override
+				public void run() {
+					mockBootstrapper.stop();
+				}
+			});
+			
+			Map<String, Object> variables = new HashMap<>();
+			variables.put("clusterPlans", Arrays.asList("Production - M v1", "Production - S v1"));
+			variables.put("dockerImage", "Lore ipsum");
+			
+			logger.log(Level.INFO, "Starting workflow instance of 'run-all-tests'");
+			client.newCreateInstanceCommand().bpmnProcessId("run-all-tests").latestVersion().variables(variables).send().join();
+			
+			waitUntilSystemInput("exit");
 		}
+
+		return 0;
 	}
 
 	private OAuthCredentialsProvider buildCredentialsProvider() {
@@ -85,6 +108,17 @@ public class Bootstrap implements Callable<Integer> {
 	private void deriveMissingOptions() {
 		if (audience == null) {
 			audience = contactPoint.substring(0, contactPoint.lastIndexOf(":"));
+		}
+	}
+
+	private static void waitUntilSystemInput(final String exitCode) {
+		try (final Scanner scanner = new Scanner(System.in)) {
+			while (scanner.hasNextLine()) {
+				final String nextLine = scanner.nextLine();
+				if (nextLine.contains(exitCode)) {
+					return;
+				}
+			}
 		}
 	}
 
