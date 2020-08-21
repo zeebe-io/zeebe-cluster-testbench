@@ -1,7 +1,9 @@
-package io.zeebe.clustertestbench.bootstrap;
+package io.zeebe.clustertestbench.bootstrap.mock;
 
 import static java.util.Objects.requireNonNull;
 
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.time.Duration;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -25,7 +27,7 @@ public class MockBootstrapper {
 
 	private static final Logger logger = Logger.getLogger("io.zeebe.clustertestbench.bootstrap");
 
-	private static final List<String> jobsToMock = Arrays.asList("create-zeebe-cluster-job", "run-simple-test-job",
+	private static final List<String> jobsToMock = Arrays.asList("run-simple-test-job",
 			"record-test-result-job", "notify-engineers-job", "destroy-zeebe-cluster-job");
 
 	private final ZeebeClient client;
@@ -36,17 +38,22 @@ public class MockBootstrapper {
 		this.client = requireNonNull(client);
 	}
 
-	public void registerMockWorkers() {
-		for (String jobType : jobsToMock) {
-			logger.log(Level.INFO, "Registering mock job worker for:" + jobType);
+	public void registerMockWorkers() throws FileNotFoundException, IOException {
+		jobsToMock.forEach(jobType -> registerMockWorker(jobType, new MoveAlongJobHandler()));
+		
+		registerMockWorker("create-zeebe-cluster-job", new PreexistingClusterConnector());
+	}
 
-			final JobWorker workerRegistration = client.newWorker().jobType(jobType).handler(new MoveAlongJobHandler())
-					.timeout(Duration.ofSeconds(10)).open();
+	private void registerMockWorker(String jobType, JobHandler jobHandler) {
+		logger.log(Level.INFO,
+				"Registering mock job worker " + jobHandler.getClass().getSimpleName() + " for: " + jobType);
 
-			registeredJobWorker.put(jobType, workerRegistration);
+		final JobWorker workerRegistration = client.newWorker().jobType(jobType).handler(jobHandler)
+				.timeout(Duration.ofSeconds(10)).open();
 
-			logger.log(Level.INFO, "Job worker opened and receiving jobs.");
-		}
+		registeredJobWorker.put(jobType, workerRegistration);
+
+		logger.log(Level.INFO, "Job worker opened and receiving jobs.");
 	}
 
 	public void stop() {

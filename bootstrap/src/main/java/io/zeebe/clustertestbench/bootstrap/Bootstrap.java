@@ -13,6 +13,7 @@ import java.util.logging.Logger;
 import io.zeebe.client.ZeebeClient;
 import io.zeebe.client.impl.oauth.OAuthCredentialsProvider;
 import io.zeebe.client.impl.oauth.OAuthCredentialsProviderBuilder;
+import io.zeebe.clustertestbench.bootstrap.mock.MockBootstrapper;
 import picocli.CommandLine;
 import picocli.CommandLine.Command;
 import picocli.CommandLine.Option;
@@ -83,8 +84,8 @@ public class Bootstrap implements Callable<Integer> {
 			});
 			
 			Map<String, Object> variables = new HashMap<>();
-			variables.put("clusterPlans", Arrays.asList("Production - M v1", "Production - S v1"));
-			variables.put("dockerImage", "Lore ipsum");
+			variables.put("clusterPlans", Arrays.asList("prod-m", "prod-s"));
+			variables.put("dockerImage", "Lorem ipsum");
 			
 			logger.log(Level.INFO, "Starting workflow instance of 'run-all-tests'");
 			client.newCreateInstanceCommand().bpmnProcessId("run-all-tests").latestVersion().variables(variables).send().join();
