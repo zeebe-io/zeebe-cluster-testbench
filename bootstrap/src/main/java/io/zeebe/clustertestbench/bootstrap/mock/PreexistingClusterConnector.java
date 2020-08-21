@@ -5,6 +5,8 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.Properties;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import io.zeebe.client.api.response.ActivatedJob;
 import io.zeebe.client.api.worker.JobClient;
@@ -16,7 +18,8 @@ import io.zeebe.client.api.worker.JobHandler;
  * of an existing cluster
  */
 public class PreexistingClusterConnector implements JobHandler {
-	
+	private static final Logger logger = Logger.getLogger("io.zeebe.clustertestbench.bootstrap.mock");
+
 	private final Properties properties = new Properties();
 
 	public PreexistingClusterConnector() throws FileNotFoundException, IOException {
@@ -25,28 +28,31 @@ public class PreexistingClusterConnector implements JobHandler {
 
 	@Override
 	public void handle(JobClient client, ActivatedJob job) throws Exception {
-		
-		String clusterPlan = (String)job.getVariablesAsMap().get("clusterPlan");
-		
+		String clusterPlan = (String) job.getVariablesAsMap().get("clusterPlan");
+
+		logger.log(Level.INFO, "PreexistingClusterConnector: looking up authentication details for " + clusterPlan);
+
 		AuthenticationDetails authenticationDetails = new AuthenticationDetails(clusterPlan, properties);
 
+		logger.log(Level.INFO, "PreexistingClusterConnector: found authentication details " + authenticationDetails);
+		
 		client.newCompleteCommand(job.getKey()).variables(authenticationDetails).send();
 	}
-	
+
 	private static class AuthenticationDetails {
-		
+
 		private final String audience;
-		private final String authenticationURL;
+		private final String authorizationURL;
 		private final String clientId;
 		private final String clientSecret;
 		private final String contactPoint;
-		
+
 		private AuthenticationDetails(String prefix, Properties properties) {
-			audience=lookup(properties, prefix, "audience");
-			authenticationURL=lookup(properties, prefix, "authenticationURL");
-			clientId=lookup(properties, prefix, "clientId");
-			clientSecret=lookup(properties, prefix, "clientSecret");
-			contactPoint=lookup(properties, prefix, "contactPoint");
+			audience = lookup(properties, prefix, "audience");
+			authorizationURL = lookup(properties, prefix, "authorizationURL");
+			clientId = lookup(properties, prefix, "clientId");
+			clientSecret = lookup(properties, prefix, "clientSecret");
+			contactPoint = lookup(properties, prefix, "contactPoint");
 		}
 
 		private static String lookup(Properties properties, String prefix, String key) {
@@ -57,8 +63,8 @@ public class PreexistingClusterConnector implements JobHandler {
 			return audience;
 		}
 
-		public String getAuthenticationURL() {
-			return authenticationURL;
+		public String getAuthorizationURL() {
+			return authorizationURL;
 		}
 
 		public String getClientId() {
@@ -71,8 +77,14 @@ public class PreexistingClusterConnector implements JobHandler {
 
 		public String getContactPoint() {
 			return contactPoint;
-		}				
+		}
+
+		@Override
+		public String toString() {
+			return "AuthenticationDetails [audience=" + audience + ", authorizationURL=" + authorizationURL
+					+ ", clientId=" + clientId + ", clientSecret=" + clientSecret + ", contactPoint=" + contactPoint
+					+ "]";
+		}
 	}
-	
-	
+
 }

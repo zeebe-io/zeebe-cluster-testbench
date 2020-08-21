@@ -2,7 +2,7 @@
 
 cd target
 
-export PROJECT_NAME="Maven Template"
+export PROJECT_NAME="Zeebe Cluster Testbench"
 export GITHUB_TOKEN=${GITHUB_TOKEN_PSW}
 export GITHUB_ORG=zeebe-io
 export GITHUB_REPO=zeebe-cluster-testbench

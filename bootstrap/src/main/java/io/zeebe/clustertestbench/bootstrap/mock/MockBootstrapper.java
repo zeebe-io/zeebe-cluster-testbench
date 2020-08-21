@@ -5,7 +5,6 @@ import static java.util.Objects.requireNonNull;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.time.Duration;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -25,17 +24,17 @@ import io.zeebe.client.api.worker.JobWorker;
  */
 public class MockBootstrapper {
 
-	private static final Logger logger = Logger.getLogger("io.zeebe.clustertestbench.bootstrap");
+	private static final Logger logger = Logger.getLogger("io.zeebe.clustertestbench.bootstrap.mock");
 
-	private static final List<String> jobsToMock = Arrays.asList("run-simple-test-job",
-			"record-test-result-job", "notify-engineers-job", "destroy-zeebe-cluster-job");
+	private final List<String> jobsToMock;
 
 	private final ZeebeClient client;
 
-	private final Map<String, JobWorker> registeredJobWorker = new HashMap<>();
+	private final Map<String, JobWorker> registeredJobWorkers = new HashMap<>();
 
-	public MockBootstrapper(ZeebeClient client) {
+	public MockBootstrapper(ZeebeClient client, List<String> jobsToMock) {
 		this.client = requireNonNull(client);
+		this.jobsToMock = requireNonNull(jobsToMock);
 	}
 
 	public void registerMockWorkers() throws FileNotFoundException, IOException {
@@ -51,13 +50,13 @@ public class MockBootstrapper {
 		final JobWorker workerRegistration = client.newWorker().jobType(jobType).handler(jobHandler)
 				.timeout(Duration.ofSeconds(10)).open();
 
-		registeredJobWorker.put(jobType, workerRegistration);
+		registeredJobWorkers.put(jobType, workerRegistration);
 
 		logger.log(Level.INFO, "Job worker opened and receiving jobs.");
 	}
 
 	public void stop() {
-		registeredJobWorker.values().forEach(JobWorker::close);
+		registeredJobWorkers.values().forEach(JobWorker::close);
 	}
 
 	private static class MoveAlongJobHandler implements JobHandler {

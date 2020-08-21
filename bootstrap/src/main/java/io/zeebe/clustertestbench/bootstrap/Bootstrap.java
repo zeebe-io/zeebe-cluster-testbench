@@ -2,8 +2,10 @@ package io.zeebe.clustertestbench.bootstrap;
 
 import static java.lang.Runtime.getRuntime;
 
+import java.time.Duration;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
 import java.util.concurrent.Callable;
@@ -11,9 +13,12 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import io.zeebe.client.ZeebeClient;
+import io.zeebe.client.api.worker.JobHandler;
+import io.zeebe.client.api.worker.JobWorker;
 import io.zeebe.client.impl.oauth.OAuthCredentialsProvider;
 import io.zeebe.client.impl.oauth.OAuthCredentialsProviderBuilder;
 import io.zeebe.clustertestbench.bootstrap.mock.MockBootstrapper;
+import io.zeebe.clustertestbench.worker.RunSimpleTestWorker;
 import picocli.CommandLine;
 import picocli.CommandLine.Command;
 import picocli.CommandLine.Option;
@@ -23,6 +28,8 @@ import picocli.CommandLine.Option;
 public class Bootstrap implements Callable<Integer> {
 
 	private static final Logger logger = Logger.getLogger("io.zeebe.clustertestbench.bootstrap");
+	
+	 private static final List<String> jobsToMock = Arrays.asList("record-test-result-job", "notify-engineers-job", "destroy-zeebe-cluster-job");
 
 	@Option(names = { "-c", "--contact-point" }, description = "Contact point for the Zeebe cluster", required = true)
 	private String contactPoint;
@@ -39,6 +46,8 @@ public class Bootstrap implements Callable<Integer> {
 
 	@Option(names = { "-u", "--authorization-server-url" }, description = "URL for the authorization server")
 	private String authorizationServerUrl;
+	
+	private final Map<String, JobWorker> registeredJobWorkers = new HashMap<>();
 
 	public static void main(String[] args) {
 		int exitCode = new CommandLine(new Bootstrap()).execute(args);
@@ -73,13 +82,16 @@ public class Bootstrap implements Callable<Integer> {
 				return -1;
 			}
 
-			MockBootstrapper mockBootstrapper = new MockBootstrapper(client);
+			registerWorker(client, "run-simple-test-job", new RunSimpleTestWorker(), Duration.ofHours(2));
+			
+			MockBootstrapper mockBootstrapper = new MockBootstrapper(client, jobsToMock);
 			mockBootstrapper.registerMockWorkers();
 
 			getRuntime().addShutdownHook(new Thread("Gateway close thread") {
 				@Override
 				public void run() {
-					mockBootstrapper.stop();
+					mockBootstrapper.stop();					
+					registeredJobWorkers.values().forEach(JobWorker::close);
 				}
 			});
 			
@@ -94,6 +106,18 @@ public class Bootstrap implements Callable<Integer> {
 		}
 
 		return 0;
+	}
+	
+	private void registerWorker(ZeebeClient client, String jobType, JobHandler jobHandler, Duration timeout) {
+		logger.log(Level.INFO,
+				"Registering job worker " + jobHandler.getClass().getSimpleName() + " for: " + jobType);
+
+		final JobWorker workerRegistration = client.newWorker().jobType(jobType).handler(jobHandler)
+				.timeout(timeout).open();
+
+		registeredJobWorkers.put(jobType, workerRegistration);
+
+		logger.log(Level.INFO, "Job worker opened and receiving jobs.");
 	}
 
 	private OAuthCredentialsProvider buildCredentialsProvider() {

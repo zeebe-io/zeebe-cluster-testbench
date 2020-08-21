@@ -11,23 +11,24 @@
 		<artifactId>zeebe-cluster-testbench</artifactId>
 		<version>0.0.1-SNAPSHOT</version>
 		<!-- do not remove empty tag - http://jira.codehaus.org/browse/MNG-4687 -->
-		<relativePath>..</relativePath>
+		<relativePath>../..</relativePath>
 	</parent>
 
-	<artifactId>zeebe-cluster-testbench-bootstrap</artifactId>
+	<artifactId>zeebe-cluster-testbench-testdriver-simple</artifactId>
 	<packaging>jar</packaging>
 
-	<name>Zeebe Cluster Testbench - Bootstrap</name>
+	<name>Zeebe Cluster Testbench - Simple Testdriver</name>
 
 	<dependencies>
 		<dependency>
 			<groupId>io.zeebe</groupId>
-			<artifactId>zeebe-cluster-testbench-testdriver-simple</artifactId>
+			<artifactId>zeebe-client-java</artifactId>
+			<version>${zeebe.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>io.zeebe</groupId>
-			<artifactId>zeebe-client-java</artifactId>
-			<version>${zeebe.version}</version>
+			<artifactId>zeebe-workflow-generator</artifactId>
+			<version>0.0.2-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>info.picocli</groupId>
