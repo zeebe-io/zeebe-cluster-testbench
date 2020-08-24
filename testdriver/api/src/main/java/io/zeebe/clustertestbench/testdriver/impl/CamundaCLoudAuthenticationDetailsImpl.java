@@ -1,17 +1,17 @@
-package io.zeebe.clustertestbench.testdriver.api;
+package io.zeebe.clustertestbench.testdriver.impl;
 
 import io.zeebe.client.impl.ZeebeObjectMapper;
+import io.zeebe.clustertestbench.testdriver.api.CamundaCloudAuthenticationDetails;
 
-public class CamundaCLoudAuthenticationDetails {
+public class CamundaCLoudAuthenticationDetailsImpl implements CamundaCloudAuthenticationDetails {
 	
-	public static final String VARIABLE_KEY = "authenticationDetails";
-
 	private String audience;
 	private String authorizationURL;
 	private String clientId;
 	private String clientSecret;
 	private String contactPoint;
 
+	@Override
 	public String getAudience() {
 		return audience;
 	}
@@ -20,6 +20,7 @@ public class CamundaCLoudAuthenticationDetails {
 		this.audience = audience;
 	}
 
+	@Override
 	public String getAuthorizationURL() {
 		return authorizationURL;
 	}
@@ -28,6 +29,7 @@ public class CamundaCLoudAuthenticationDetails {
 		this.authorizationURL = authorizationURL;
 	}
 
+	@Override
 	public String getClientId() {
 		return clientId;
 	}
@@ -36,6 +38,7 @@ public class CamundaCLoudAuthenticationDetails {
 		this.clientId = clientId;
 	}
 
+	@Override
 	public String getClientSecret() {
 		return clientSecret;
 	}
@@ -44,6 +47,7 @@ public class CamundaCLoudAuthenticationDetails {
 		this.clientSecret = clientSecret;
 	}
 
+	@Override
 	public String getContactPoint() {
 		return contactPoint;
 	}

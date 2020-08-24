@@ -12,7 +12,8 @@ import java.util.logging.Logger;
 import io.zeebe.client.api.response.ActivatedJob;
 import io.zeebe.client.api.worker.JobClient;
 import io.zeebe.client.api.worker.JobHandler;
-import io.zeebe.clustertestbench.testdriver.api.CamundaCLoudAuthenticationDetails;
+import io.zeebe.clustertestbench.testdriver.api.CamundaCloudAuthenticationDetails;
+import io.zeebe.clustertestbench.testdriver.impl.CamundaCLoudAuthenticationDetailsImpl;
 
 /**
  * Worker implementation for the {@code create-zeebe-cluster-job} service task.
@@ -34,12 +35,12 @@ public class PreexistingClusterConnector implements JobHandler {
 
 		logger.log(Level.INFO, "PreexistingClusterConnector: looking up authentication details for " + clusterPlan);
 
-		CamundaCLoudAuthenticationDetails authenticationDetails = new AuthenticationDetailsBuilder(clusterPlan,
+		CamundaCloudAuthenticationDetails authenticationDetails = new AuthenticationDetailsBuilder(clusterPlan,
 				properties).build();
 
 		logger.log(Level.INFO, "PreexistingClusterConnector: found authentication details " + authenticationDetails);
 		
-		client.newCompleteCommand(job.getKey()).variables(Map.of(CamundaCLoudAuthenticationDetails.VARIABLE_KEY, authenticationDetails)).send();
+		client.newCompleteCommand(job.getKey()).variables(Map.of(CamundaCloudAuthenticationDetails.VARIABLE_KEY, authenticationDetails)).send();
 	}
 
 	private static class AuthenticationDetailsBuilder {
@@ -52,8 +53,8 @@ public class PreexistingClusterConnector implements JobHandler {
 			this.properties = properties;
 		}
 
-		private CamundaCLoudAuthenticationDetails build() {
-			final CamundaCLoudAuthenticationDetails result = new CamundaCLoudAuthenticationDetails();
+		private CamundaCloudAuthenticationDetails build() {
+			final CamundaCLoudAuthenticationDetailsImpl result = new CamundaCLoudAuthenticationDetailsImpl();
 
 			result.setAudience(lookup(properties, prefix, "audience"));
 			result.setAuthorizationURL(lookup(properties, prefix, "authorizationURL"));

@@ -64,17 +64,17 @@ pipeline {
       }
 
       post {
-//        always {
-//            junit testResults: "target/surefire-reports/TEST-*.xml", keepLongStdio: true
-//
-//            jacoco(
-//                  execPattern: '**/*.exec',
-//                  classPattern: '**/target/classes',
-//                  sourcePattern: '**/src/main/java',
-//                  runAlways: true
-//            )
-//            zip zipFile: 'test-coverage-reports.zip', archive: true, glob: "**/target/site/jacoco/**"
-//        }
+        always {
+            junit testResults: "target/surefire-reports/TEST-*.xml", keepLongStdio: true
+
+            jacoco(
+                  execPattern: '**/*.exec',
+                  classPattern: '**/target/classes',
+                  sourcePattern: '**/src/main/java',
+                  runAlways: true
+            )
+            zip zipFile: 'test-coverage-reports.zip', archive: true, glob: "**/target/site/jacoco/**"
+        }
         failure {
             zip zipFile: 'test-reports.zip', archive: true, glob: "**/*/surefire-reports/**"
             archive "**/hs_err_*.log"

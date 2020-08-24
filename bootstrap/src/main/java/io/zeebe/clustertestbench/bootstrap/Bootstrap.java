@@ -19,7 +19,8 @@ import io.zeebe.client.api.worker.JobWorker;
 import io.zeebe.client.impl.oauth.OAuthCredentialsProvider;
 import io.zeebe.client.impl.oauth.OAuthCredentialsProviderBuilder;
 import io.zeebe.clustertestbench.bootstrap.mock.MockBootstrapper;
-import io.zeebe.clustertestbench.worker.RunSequentialTestWorker;
+import io.zeebe.clustertestbench.testdriver.sequential.SequentialTestParameters;
+import io.zeebe.clustertestbench.worker.SequentialTestLauncher;
 import io.zeebe.model.bpmn.BpmnModelInstance;
 import io.zeebe.workflow.generator.builder.SequenceWorkflowBuilder;
 import picocli.CommandLine;
@@ -86,7 +87,7 @@ public class Bootstrap implements Callable<Integer> {
 				return -1;
 			}
 
-			registerWorker(client, "run-sequential-test-job", new RunSequentialTestWorker(), Duration.ofHours(2));
+			registerWorker(client, "run-sequential-test-job", new SequentialTestLauncher(), Duration.ofHours(2));
 
 			MockBootstrapper mockBootstrapper = new MockBootstrapper(client, jobsToMock);
 			mockBootstrapper.registerMockWorkers();
@@ -102,6 +103,7 @@ public class Bootstrap implements Callable<Integer> {
 			Map<String, Object> variables = new HashMap<>();
 			variables.put("clusterPlans", Arrays.asList("prod-m", "prod-s"));
 			variables.put("dockerImage", "Lorem ipsum");
+			variables.put("sequentialTestParams", SequentialTestParameters.defaultParams());
 
 			logger.log(Level.INFO, "Starting workflow instance of 'run-all-tests'");
 			client.newCreateInstanceCommand().bpmnProcessId("run-all-tests").latestVersion().variables(variables).send()

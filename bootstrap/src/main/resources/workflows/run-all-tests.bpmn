@@ -9,6 +9,7 @@
       <bpmn:extensionElements>
         <zeebe:calledElement processId="run-sequential-test-in-clusterplan" />
         <zeebe:ioMapping>
+          <zeebe:input source="=sequentialTestParams" target="testParams" />
           <zeebe:output source="=testResult" target="testResult" />
         </zeebe:ioMapping>
       </bpmn:extensionElements>

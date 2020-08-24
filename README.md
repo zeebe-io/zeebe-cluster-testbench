@@ -5,6 +5,24 @@ Test bench to run tests against a Zeebe cluster .
 ## Current State
 This code base is in very early stages. Currently we are doing an exploration of ideas towards a PoC.
 
+## Tests
+
+### Sequential Test
+In the sequential test a sequential workflow is executed several times in succession. There is at most one active workflow instance at any given time. In other words, there is no parallelism - neither inside the workflow being tested nor in the test driver that starts workflow instances.
+
+A sequential test has the following parameters:
+* _steps_ - number of steps within the workflow
+* _iterations_ - number of times the workflow shall be executed
+* _maxTimeForIteration_ - the maximum duration for one iteration 
+* _maxTimeForCompleteTest_ - the maximum time for the entire test
+
+This test will fail, if any of the following conditions occur:
+* there is an exception during test execution
+* a single iteration takes longer than _maxTimeForIteration_
+* all iterations take longer than _maxTimeForCompleteTest_
+
+In case of backpressure the iteration will be repeated. The time spent making requests that return backpressure responses and repeating those requests is included in the overall execution time, which must be smaller than _maxTimeForCompleteTest_ for the test to pass.
+
 ## Workflows
 The testbench deploys several workflows to orchestrate the test execution. The work flows reference each other - a higher level workflow will call a lower level workflow. 
 However, lower level workflows can also be called directly if only a certain test execution is wanted.
@@ -24,11 +42,12 @@ Currently it only has steps for the Simple test, but this could be extended in t
 | ------ | ----------- | ---- | 
 | `dockerImage` | the Docker image of Zeebe that shall be tested | `String` |
 | `clusterPlans` | array of cluster plans in which Zeebe shall be testes | `List<String>` |
+| `sequentialTestParams` | Settings to parameterize the sequential test | `SequentialTestParameters` |
 | _contact information to reach troubleshooter_ - some information to contact someone if the test failed and needs to be analysed |
 
 | Outputs | Description | Type |
 | ------- | ----------- | ---- |
-| `testResults` - array of test results |
+| `testResults` | array of test results | `List<TestResult>` |
 
 #### Run Sequential Test in Clusterplan
 This workflow runs the sequential test in a given clusterplan:
@@ -44,6 +63,7 @@ This workflow runs the sequential test in a given clusterplan:
 | ------ | ----------- | ---- |
 | `dockerImage` | the Docker image of Zeebe that shall be tested | `String` |
 | `clusterPlan` | cluster plan in which Zeebe shall be tested | `String` |
+| `testParams` | Settings to parameterize the sequential test | `SequentialTestParameters` |
 | _contact information to reach troubleshooter_ | some information to contact someone if the test failed and needs to be analysed |
 
 | Runtime Variables | Description | Type |
@@ -54,15 +74,16 @@ This workflow runs the sequential test in a given clusterplan:
 
 | Outputs | Description | Type |
 | ------- | ----------- | ---- |
-| `testResult` | test result |
+| `testReport` | test report | `TestReport` |
+| `testResult` | test result | `TestResult` |
 
 ## Service Tasks
 
 | Service Task | ID / Job Type | Input | Output | 
 | ------------ | ------------- | ----- | ------ | 
 | Create Zeebe Cluster in Camunda cloud | `creae-zeebe-cluster-in-camunda-cloud` / `create-zeebe-cluster-in-camunda-cloud-job` | `dockerImage`, `clusterPlan` | `clusterId`, _clusterCredentials_ |   
-| Run Sequential Test | `run-sequential-test` / `run-sequential-test-job` | _clusterCredentials_ | `testResult` 
-| Record Test Result | `record-test-result` / `record-test-result-job` | `testResult`, _clusterCredentials_ |
+| Run Sequential Test | `run-sequential-test` / `run-sequential-test-job` | `authenticationDetails`, `testParams` | `testResult`, `testReport` 
+| Record Test Result | `record-test-result` / `record-test-result-job` | `testReport`, `authenticationDetails` |
 | Notify Engineers | `notify-engineers` / `notify-engineers-job` | `dockerImage`, `clusterPlan`, `clusterId`, `testResult`, _contact information to reach troubleshooter_ |
 | Destroy Zeebe Cluster in Camunda CLoud | `destroy-zeebe-cluster-in-camunda-cloud` / `destroy-zeebe-cluster-in-camunda-cloud-job` | `clusterId` |
  

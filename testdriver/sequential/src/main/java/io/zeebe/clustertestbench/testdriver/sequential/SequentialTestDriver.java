@@ -1,7 +1,9 @@
 package io.zeebe.clustertestbench.testdriver.sequential;
 
+import static java.util.Objects.requireNonNull;
+
 import java.time.Duration;
-import java.util.Objects;
+import java.util.Map;
 import java.util.Optional;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -15,27 +17,41 @@ import io.zeebe.client.api.worker.JobHandler;
 import io.zeebe.client.api.worker.JobWorker;
 import io.zeebe.client.impl.oauth.OAuthCredentialsProvider;
 import io.zeebe.client.impl.oauth.OAuthCredentialsProviderBuilder;
-import io.zeebe.clustertestbench.testdriver.api.CamundaCLoudAuthenticationDetails;
+import io.zeebe.clustertestbench.testdriver.api.CamundaCloudAuthenticationDetails;
+import io.zeebe.clustertestbench.testdriver.api.TestDriver;
+import io.zeebe.clustertestbench.testdriver.api.TestReport;
+import io.zeebe.clustertestbench.testdriver.impl.CamundaCLoudAuthenticationDetailsImpl;
+import io.zeebe.clustertestbench.testdriver.impl.TestReportImpl;
+import io.zeebe.clustertestbench.testdriver.impl.TestTimingContext;
 import io.zeebe.model.bpmn.BpmnModelInstance;
 import io.zeebe.workflow.generator.builder.SequenceWorkflowBuilder;
 
-public class SequentialTestDriver {
+public class SequentialTestDriver implements TestDriver {
 
 	private static final Logger logger = Logger.getLogger("io.zeebe.clustertestbench.testdriver.simple");
 
 	private static final String JOB_TYPE = "test-job";
-	private static final String WORKFLOW_ID = "simple-test-sequence-with-one-step";
+	private static final String WORKFLOW_ID = "sequential-test-workflow";
 
-	private ZeebeClient client;
+	private final ZeebeClient client;
+	private final SequentialTestParameters testParameters;
 
-	public SequentialTestDriver(CamundaCLoudAuthenticationDetails authenticationDetails) {
-		logger.log(Level.INFO, "Creating Simple Test Driver");
-		final OAuthCredentialsProvider cred = buildCredentialsProvider(Objects.requireNonNull(authenticationDetails));
+	public SequentialTestDriver(CamundaCLoudAuthenticationDetailsImpl authenticationDetails,
+			SequentialTestParameters testParameters) {
+		logger.log(Level.INFO, "Creating Sequential Test Driver");
+		final OAuthCredentialsProvider cred = buildCredentialsProvider(requireNonNull(authenticationDetails));
 
 		client = ZeebeClient.newClientBuilder().brokerContactPoint(authenticationDetails.getContactPoint())
 				.credentialsProvider(cred).build();
 
-		SequenceWorkflowBuilder builder = new SequenceWorkflowBuilder(Optional.of(1), Optional.of(JOB_TYPE));
+		this.testParameters = requireNonNull(testParameters);
+
+		createAndDeploySequentialWorkflow();
+	}
+
+	private void createAndDeploySequentialWorkflow() {
+		SequenceWorkflowBuilder builder = new SequenceWorkflowBuilder(Optional.of(testParameters.getSteps()),
+				Optional.of(JOB_TYPE));
 
 		BpmnModelInstance workflow = builder.buildWorkflow(WORKFLOW_ID);
 
@@ -43,44 +59,51 @@ public class SequentialTestDriver {
 		client.newDeployCommand().addWorkflowModel(workflow, WORKFLOW_ID + ".bpmn").send().join();
 	}
 
-	public boolean runTest(int iterations) {
-		boolean pass = true;
-		logger.log(Level.INFO, "Starting Simple Test Driver");
-		try {
+	public TestReport runTest() {
+		logger.log(Level.INFO, "Starting Sequential Test ");
+
+		try (TestReportImpl testReport = new TestReportImpl(buildTestReportMetaData());
+				TestTimingContext overallTimingContext = new TestTimingContext(
+						testParameters.getMaxTimeForCompleteTest(),
+						"Test exceeded maximum time of " + testParameters.getMaxTimeForCompleteTest(),
+						testReport::addFailure);) {
+			Duration timeForIteration = testParameters.getMaxTimeForIteration();
+
 			JobWorker workerRegistration = client.newWorker().jobType(JOB_TYPE).handler(new MoveAlongJobHandler())
 					.timeout(Duration.ofSeconds(10)).open();
-			
-			for (int i = 0; i < iterations ; i++) {
-				try {
-					client
-					.newCreateInstanceCommand()
-					.bpmnProcessId(WORKFLOW_ID)
-					.latestVersion()
-					.withResult()
-					.requestTimeout(Duration.ofSeconds(10))
-					.send().get();
+
+			for (int i = 0; i < testParameters.getIterations(); i++) {
+				try (TestTimingContext iterationTimingContxt = new TestTimingContext(timeForIteration,
+						"Iteration " + i + " exceeded maximum time of " + timeForIteration, testReport::addFailure)) {
+
+					client.newCreateInstanceCommand().bpmnProcessId(WORKFLOW_ID).latestVersion().withResult()
+							.requestTimeout(timeForIteration.multipliedBy(2)).send().get();
+
 				} catch (Throwable t) {
-			        final Throwable cause = t.getCause();
-			        if (cause instanceof StatusRuntimeException) {
-			          final StatusRuntimeException statusRuntimeException = (StatusRuntimeException) cause;
-			          if (statusRuntimeException.getStatus().getCode() != Code.RESOURCE_EXHAUSTED) {
-			        	  pass = false;
-			          }
-			        } else {
-			        	pass = false;
-			        }
-				}				
+
+					final Throwable cause = t.getCause();
+					if (cause instanceof StatusRuntimeException) {
+						final StatusRuntimeException statusRuntimeException = (StatusRuntimeException) cause;
+						if (statusRuntimeException.getStatus().getCode() != Code.RESOURCE_EXHAUSTED) {
+							testReport.addFailure(t.getMessage() + " caused by " + cause.getMessage());
+						} else {
+							i--;
+						}
+					} else {
+						testReport.addFailure(t.getMessage() + " caused by " + cause.getMessage());
+					}
+				}
 			}
 
 			workerRegistration.close();
+
+			return testReport;
 		} finally {
 			client.close();
 		}
-		
-		return pass;
 	}
 
-	private OAuthCredentialsProvider buildCredentialsProvider(CamundaCLoudAuthenticationDetails authenticationDetails) {
+	private OAuthCredentialsProvider buildCredentialsProvider(CamundaCloudAuthenticationDetails authenticationDetails) {
 		if (authenticationDetails.getAuthorizationURL() == null) {
 			return new OAuthCredentialsProviderBuilder().audience(authenticationDetails.getAudience())
 					.clientId(authenticationDetails.getClientId()).clientSecret(authenticationDetails.getClientSecret())
@@ -91,6 +114,10 @@ public class SequentialTestDriver {
 					.audience(authenticationDetails.getAudience()).clientId(authenticationDetails.getClientId())
 					.clientSecret(authenticationDetails.getClientSecret()).build();
 		}
+	}
+
+	private Map<String, Object> buildTestReportMetaData() {
+		return Map.of("testParams", testParameters);
 	}
 
 	private static class MoveAlongJobHandler implements JobHandler {
