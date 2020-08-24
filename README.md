@@ -20,14 +20,14 @@ Currently it only has steps for the Simple test, but this could be extended in t
 
 **Workflow ID:** `run-all-tests`
  
-| Inputs | 
-| ------ | 
-| `dockerImage` - the Docker image of Zeebe that shall be tested | 
-| `clusterPlans` - array of cluster plans in which Zeebe shall be testes | 
+| Inputs | Description | Type |
+| ------ | ----------- | ---- | 
+| `dockerImage` | the Docker image of Zeebe that shall be tested | `String` |
+| `clusterPlans` | array of cluster plans in which Zeebe shall be testes | `List<String>` |
 | _contact information to reach troubleshooter_ - some information to contact someone if the test failed and needs to be analysed |
 
-| Outputs |
-| ------- |
+| Outputs | Description | Type |
+| ------- | ----------- | ---- |
 | `testResults` - array of test results |
 
 #### Run Sequential Test in Clusterplan
@@ -40,21 +40,21 @@ This workflow runs the sequential test in a given clusterplan:
 
 **Workflow ID:** `run-sequential-test-in-clusterplan`
  
-| Inputs |
-| ------ |
-| `dockerImage` - the Docker image of Zeebe that shall be tested |
-| `clusterPlan` - cluster plan in which Zeebe shall be tested | 
-| _contact information to reach troubleshooter_ - some information to contact someone if the test failed and needs to be analysed |
+| Inputs | Description | Type |
+| ------ | ----------- | ---- |
+| `dockerImage` | the Docker image of Zeebe that shall be tested | `String` |
+| `clusterPlan` | cluster plan in which Zeebe shall be tested | `String` |
+| _contact information to reach troubleshooter_ | some information to contact someone if the test failed and needs to be analysed |
 
-| Runtime Variables |
-| ----------------- |
-| `clusterId` - ID of the cluster in which Zeebe is tested |
-| _clusterCredentials_ (tbd) Credentials to authenticate against the cluster |
+| Runtime Variables | Description | Type |
+| ----------------- | ----------- | ---- |
+| `clusterId` | ID of the cluster in which Zeebe is tested | `String` |
+| `authenticationDetails` | (tbd) Credentials to authenticate against the cluster | `CamundaCloudAutenticationDetails` |
 
 
-| Outputs |
-| ------- |
-| `testResult` - test result |
+| Outputs | Description | Type |
+| ------- | ----------- | ---- |
+| `testResult` | test result |
 
 ## Service Tasks
 

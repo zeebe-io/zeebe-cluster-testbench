@@ -1,26 +1,16 @@
 package io.zeebe.clustertestbench.testdriver.api;
 
-import static java.util.Objects.requireNonNull;
+import io.zeebe.client.impl.ZeebeObjectMapper;
 
 public class CamundaCLoudAuthenticationDetails {
+	
+	public static final String VARIABLE_KEY = "authenticationDetails";
 
 	private String audience;
 	private String authorizationURL;
 	private String clientId;
 	private String clientSecret;
 	private String contactPoint;
-
-	public CamundaCLoudAuthenticationDetails() {
-	}
-
-	public CamundaCLoudAuthenticationDetails(String audience, String authorizationURL, String clientId, String clientSecret,
-			String contactPoint) {
-		this.audience = requireNonNull(audience);
-		this.authorizationURL = requireNonNull(authorizationURL);
-		this.clientId = requireNonNull(clientId);
-		this.clientSecret = requireNonNull(clientSecret);
-		this.contactPoint = requireNonNull(contactPoint);
-	}
 
 	public String getAudience() {
 		return audience;
@@ -60,6 +50,11 @@ public class CamundaCLoudAuthenticationDetails {
 
 	public void setContactPoint(String contactPoint) {
 		this.contactPoint = contactPoint;
+	}
+	
+	@Override
+	public String toString() {
+		return new ZeebeObjectMapper().toJson(this);
 	}
 
 }

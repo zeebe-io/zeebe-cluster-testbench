@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.Map;
 import java.util.Properties;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -11,6 +12,7 @@ import java.util.logging.Logger;
 import io.zeebe.client.api.response.ActivatedJob;
 import io.zeebe.client.api.worker.JobClient;
 import io.zeebe.client.api.worker.JobHandler;
+import io.zeebe.clustertestbench.testdriver.api.CamundaCLoudAuthenticationDetails;
 
 /**
  * Worker implementation for the {@code create-zeebe-cluster-job} service task.
@@ -32,58 +34,38 @@ public class PreexistingClusterConnector implements JobHandler {
 
 		logger.log(Level.INFO, "PreexistingClusterConnector: looking up authentication details for " + clusterPlan);
 
-		AuthenticationDetails authenticationDetails = new AuthenticationDetails(clusterPlan, properties);
+		CamundaCLoudAuthenticationDetails authenticationDetails = new AuthenticationDetailsBuilder(clusterPlan,
+				properties).build();
 
 		logger.log(Level.INFO, "PreexistingClusterConnector: found authentication details " + authenticationDetails);
 		
-		client.newCompleteCommand(job.getKey()).variables(authenticationDetails).send();
+		client.newCompleteCommand(job.getKey()).variables(Map.of(CamundaCLoudAuthenticationDetails.VARIABLE_KEY, authenticationDetails)).send();
 	}
 
-	private static class AuthenticationDetails {
+	private static class AuthenticationDetailsBuilder {
 
-		private final String audience;
-		private final String authorizationURL;
-		private final String clientId;
-		private final String clientSecret;
-		private final String contactPoint;
+		private final String prefix;
+		private final Properties properties;
 
-		private AuthenticationDetails(String prefix, Properties properties) {
-			audience = lookup(properties, prefix, "audience");
-			authorizationURL = lookup(properties, prefix, "authorizationURL");
-			clientId = lookup(properties, prefix, "clientId");
-			clientSecret = lookup(properties, prefix, "clientSecret");
-			contactPoint = lookup(properties, prefix, "contactPoint");
+		private AuthenticationDetailsBuilder(String prefix, Properties properties) {
+			this.prefix = prefix;
+			this.properties = properties;
+		}
+
+		private CamundaCLoudAuthenticationDetails build() {
+			final CamundaCLoudAuthenticationDetails result = new CamundaCLoudAuthenticationDetails();
+
+			result.setAudience(lookup(properties, prefix, "audience"));
+			result.setAuthorizationURL(lookup(properties, prefix, "authorizationURL"));
+			result.setClientId(lookup(properties, prefix, "clientId"));
+			result.setClientSecret(lookup(properties, prefix, "clientSecret"));
+			result.setContactPoint(lookup(properties, prefix, "contactPoint"));
+
+			return result;
 		}
 
 		private static String lookup(Properties properties, String prefix, String key) {
 			return properties.getProperty(prefix + "." + key);
-		}
-
-		public String getAudience() {
-			return audience;
-		}
-
-		public String getAuthorizationURL() {
-			return authorizationURL;
-		}
-
-		public String getClientId() {
-			return clientId;
-		}
-
-		public String getClientSecret() {
-			return clientSecret;
-		}
-
-		public String getContactPoint() {
-			return contactPoint;
-		}
-
-		@Override
-		public String toString() {
-			return "AuthenticationDetails [audience=" + audience + ", authorizationURL=" + authorizationURL
-					+ ", clientId=" + clientId + ", clientSecret=" + clientSecret + ", contactPoint=" + contactPoint
-					+ "]";
 		}
 	}
 

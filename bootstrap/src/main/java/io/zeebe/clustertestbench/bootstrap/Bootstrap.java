@@ -121,7 +121,7 @@ public class Bootstrap implements Callable<Integer> {
 
 		registeredJobWorkers.put(jobType, workerRegistration);
 
-		String workflowId = "run-job-worker-" + jobType + "-in-isolation";
+		String workflowId = "execute-job-worker-" + jobType + "-in-isolation";
 		BpmnModelInstance workflow = new SequenceWorkflowBuilder(Optional.of(1), Optional.of(jobType))
 				.buildWorkflow(workflowId);
 

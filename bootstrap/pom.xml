@@ -22,8 +22,12 @@
 	<dependencies>
 		<dependency>
 			<groupId>io.zeebe</groupId>
-			<artifactId>zeebe-cluster-testbench-testdriver-simple</artifactId>
+			<artifactId>zeebe-cluster-testbench-testdriver-api</artifactId>
 		</dependency>
+		<dependency>
+			<groupId>io.zeebe</groupId>
+			<artifactId>zeebe-cluster-testbench-testdriver-sequential</artifactId>
+		</dependency>		
 		<dependency>
 			<groupId>io.zeebe</groupId>
 			<artifactId>zeebe-workflow-generator</artifactId>
