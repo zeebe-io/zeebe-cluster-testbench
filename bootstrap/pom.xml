@@ -23,7 +23,13 @@
 		<dependency>
 			<groupId>io.zeebe</groupId>
 			<artifactId>zeebe-cluster-testbench-testdriver-simple</artifactId>
+		</dependency>				
+		<dependency>
+			<groupId>io.zeebe</groupId>
+			<artifactId>zeebe-workflow-generator</artifactId>
+			<version>0.0.2-SNAPSHOT</version>
 		</dependency>
+				
 		<dependency>
 			<groupId>io.zeebe</groupId>
 			<artifactId>zeebe-client-java</artifactId>

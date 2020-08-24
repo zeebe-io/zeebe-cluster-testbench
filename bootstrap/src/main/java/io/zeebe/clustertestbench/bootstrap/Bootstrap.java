@@ -7,6 +7,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Scanner;
 import java.util.concurrent.Callable;
 import java.util.logging.Level;
@@ -19,6 +20,8 @@ import io.zeebe.client.impl.oauth.OAuthCredentialsProvider;
 import io.zeebe.client.impl.oauth.OAuthCredentialsProviderBuilder;
 import io.zeebe.clustertestbench.bootstrap.mock.MockBootstrapper;
 import io.zeebe.clustertestbench.worker.RunSimpleTestWorker;
+import io.zeebe.model.bpmn.BpmnModelInstance;
+import io.zeebe.workflow.generator.builder.SequenceWorkflowBuilder;
 import picocli.CommandLine;
 import picocli.CommandLine.Command;
 import picocli.CommandLine.Option;
@@ -28,8 +31,9 @@ import picocli.CommandLine.Option;
 public class Bootstrap implements Callable<Integer> {
 
 	private static final Logger logger = Logger.getLogger("io.zeebe.clustertestbench.bootstrap");
-	
-	 private static final List<String> jobsToMock = Arrays.asList("record-test-result-job", "notify-engineers-job", "destroy-zeebe-cluster-job");
+
+	private static final List<String> jobsToMock = Arrays.asList("record-test-result-job", "notify-engineers-job",
+			"destroy-zeebe-cluster-job");
 
 	@Option(names = { "-c", "--contact-point" }, description = "Contact point for the Zeebe cluster", required = true)
 	private String contactPoint;
@@ -46,7 +50,7 @@ public class Bootstrap implements Callable<Integer> {
 
 	@Option(names = { "-u", "--authorization-server-url" }, description = "URL for the authorization server")
 	private String authorizationServerUrl;
-	
+
 	private final Map<String, JobWorker> registeredJobWorkers = new HashMap<>();
 
 	public static void main(String[] args) {
@@ -83,39 +87,45 @@ public class Bootstrap implements Callable<Integer> {
 			}
 
 			registerWorker(client, "run-simple-test-job", new RunSimpleTestWorker(), Duration.ofHours(2));
-			
+
 			MockBootstrapper mockBootstrapper = new MockBootstrapper(client, jobsToMock);
 			mockBootstrapper.registerMockWorkers();
 
 			getRuntime().addShutdownHook(new Thread("Gateway close thread") {
 				@Override
 				public void run() {
-					mockBootstrapper.stop();					
+					mockBootstrapper.stop();
 					registeredJobWorkers.values().forEach(JobWorker::close);
 				}
 			});
-			
+
 			Map<String, Object> variables = new HashMap<>();
 			variables.put("clusterPlans", Arrays.asList("prod-m", "prod-s"));
 			variables.put("dockerImage", "Lorem ipsum");
-			
+
 			logger.log(Level.INFO, "Starting workflow instance of 'run-all-tests'");
-			client.newCreateInstanceCommand().bpmnProcessId("run-all-tests").latestVersion().variables(variables).send().join();
-			
+			client.newCreateInstanceCommand().bpmnProcessId("run-all-tests").latestVersion().variables(variables).send()
+					.join();
+
 			waitUntilSystemInput("exit");
 		}
 
 		return 0;
 	}
-	
-	private void registerWorker(ZeebeClient client, String jobType, JobHandler jobHandler, Duration timeout) {
-		logger.log(Level.INFO,
-				"Registering job worker " + jobHandler.getClass().getSimpleName() + " for: " + jobType);
 
-		final JobWorker workerRegistration = client.newWorker().jobType(jobType).handler(jobHandler)
-				.timeout(timeout).open();
+	private void registerWorker(ZeebeClient client, String jobType, JobHandler jobHandler, Duration timeout) {
+		logger.log(Level.INFO, "Registering job worker " + jobHandler.getClass().getSimpleName() + " for: " + jobType);
+
+		final JobWorker workerRegistration = client.newWorker().jobType(jobType).handler(jobHandler).timeout(timeout)
+				.open();
 
 		registeredJobWorkers.put(jobType, workerRegistration);
+
+		String workflowId = "run-job-worker-" + jobType + "-in-isolation";
+		BpmnModelInstance workflow = new SequenceWorkflowBuilder(Optional.of(1), Optional.of(jobType))
+				.buildWorkflow(workflowId);
+
+		client.newDeployCommand().addWorkflowModel(workflow, workflowId + ".bpmn").send().join();
 
 		logger.log(Level.INFO, "Job worker opened and receiving jobs.");
 	}

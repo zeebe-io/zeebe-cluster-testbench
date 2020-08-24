@@ -8,6 +8,9 @@
     <bpmn:callActivity id="run-simple-tests-in-all-cluster-plans" name="Run Simple Tests in all cluster plans">
       <bpmn:extensionElements>
         <zeebe:calledElement processId="run-simple-test-in-clusterplan" />
+        <zeebe:ioMapping>
+          <zeebe:output source="=testResult" target="testResult" />
+        </zeebe:ioMapping>
       </bpmn:extensionElements>
       <bpmn:incoming>Flow_0hcriyv</bpmn:incoming>
       <bpmn:outgoing>Flow_1ty9adt</bpmn:outgoing>
