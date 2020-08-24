@@ -37,7 +37,7 @@
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<version.java>11</version.java>
+		<version.java>8</version.java>
 		<maven.version>3.0</maven.version>
 		<zeebe.version>0.24.2</zeebe.version>
 
@@ -86,7 +86,12 @@
 		<module>testdriver/simple</module>
 	</modules>
 
+
 	<build>
+		<pluginManagement>
+			<plugins>
+			</plugins>
+		</pluginManagement>
 		<plugins>
 			<!-- temporarily disabled <plugin> <groupId>org.apache.maven.plugins</groupId> 
 				<artifactId>maven-enforcer-plugin</artifactId> <version>1.4.1</version> <configuration> 
@@ -98,7 +103,7 @@
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-javadoc-plugin</artifactId>
 				<configuration>
-					<source>11</source>
+					<source>8</source>
 				</configuration>
 			</plugin>
 
