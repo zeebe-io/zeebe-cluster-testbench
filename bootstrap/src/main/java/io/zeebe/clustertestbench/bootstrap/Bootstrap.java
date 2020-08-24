@@ -19,7 +19,7 @@ import io.zeebe.client.api.worker.JobWorker;
 import io.zeebe.client.impl.oauth.OAuthCredentialsProvider;
 import io.zeebe.client.impl.oauth.OAuthCredentialsProviderBuilder;
 import io.zeebe.clustertestbench.bootstrap.mock.MockBootstrapper;
-import io.zeebe.clustertestbench.worker.RunSimpleTestWorker;
+import io.zeebe.clustertestbench.worker.RunSequentialTestWorker;
 import io.zeebe.model.bpmn.BpmnModelInstance;
 import io.zeebe.workflow.generator.builder.SequenceWorkflowBuilder;
 import picocli.CommandLine;
@@ -33,7 +33,7 @@ public class Bootstrap implements Callable<Integer> {
 	private static final Logger logger = Logger.getLogger("io.zeebe.clustertestbench.bootstrap");
 
 	private static final List<String> jobsToMock = Arrays.asList("record-test-result-job", "notify-engineers-job",
-			"destroy-zeebe-cluster-job");
+			"destroy-zeebe-cluster-in-camunda-cloud-job");
 
 	@Option(names = { "-c", "--contact-point" }, description = "Contact point for the Zeebe cluster", required = true)
 	private String contactPoint;
@@ -86,7 +86,7 @@ public class Bootstrap implements Callable<Integer> {
 				return -1;
 			}
 
-			registerWorker(client, "run-simple-test-job", new RunSimpleTestWorker(), Duration.ofHours(2));
+			registerWorker(client, "run-sequential-test-job", new RunSequentialTestWorker(), Duration.ofHours(2));
 
 			MockBootstrapper mockBootstrapper = new MockBootstrapper(client, jobsToMock);
 			mockBootstrapper.registerMockWorkers();

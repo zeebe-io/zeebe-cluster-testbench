@@ -1,26 +1,26 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:zeebe="http://camunda.org/schema/zeebe/1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" id="Definitions_1r7i4vf" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Zeebe Modeler" exporterVersion="0.9.1">
-  <bpmn:process id="run-simple-test-in-clusterplan" name="Run Simple Test in Cluster Plan" isExecutable="true">
+  <bpmn:process id="run-sequential-test-in-clusterplan" name="Run Sequential Test in Cluster Plan" isExecutable="true">
     <bpmn:startEvent id="start" name="Start">
       <bpmn:outgoing>Flow_0u0o693</bpmn:outgoing>
     </bpmn:startEvent>
-    <bpmn:sequenceFlow id="Flow_0u0o693" sourceRef="start" targetRef="create-zeebe-cluster" />
-    <bpmn:serviceTask id="create-zeebe-cluster" name="Create Zeebe Cluster">
+    <bpmn:sequenceFlow id="Flow_0u0o693" sourceRef="start" targetRef="create-zeebe-cluster-in-camunda-cloud" />
+    <bpmn:serviceTask id="create-zeebe-cluster-in-camunda-cloud" name="Create Zeebe Cluster in Camunda Cloud">
       <bpmn:extensionElements>
-        <zeebe:taskDefinition type="create-zeebe-cluster-job" />
+        <zeebe:taskDefinition type="create-zeebe-cluster-in-camunda-cloud-job" />
       </bpmn:extensionElements>
       <bpmn:incoming>Flow_0u0o693</bpmn:incoming>
       <bpmn:outgoing>Flow_15k26ho</bpmn:outgoing>
     </bpmn:serviceTask>
-    <bpmn:sequenceFlow id="Flow_15k26ho" sourceRef="create-zeebe-cluster" targetRef="run-simple-test" />
-    <bpmn:serviceTask id="run-simple-test" name="Run Simple Test">
+    <bpmn:sequenceFlow id="Flow_15k26ho" sourceRef="create-zeebe-cluster-in-camunda-cloud" targetRef="run-sequential-test" />
+    <bpmn:serviceTask id="run-sequential-test" name="Run Sequential Test">
       <bpmn:extensionElements>
-        <zeebe:taskDefinition type="run-simple-test-job" />
+        <zeebe:taskDefinition type="run-sequential-test-job" />
       </bpmn:extensionElements>
       <bpmn:incoming>Flow_15k26ho</bpmn:incoming>
       <bpmn:outgoing>Flow_1wb0hvc</bpmn:outgoing>
     </bpmn:serviceTask>
-    <bpmn:sequenceFlow id="Flow_1wb0hvc" sourceRef="run-simple-test" targetRef="record-test-result" />
+    <bpmn:sequenceFlow id="Flow_1wb0hvc" sourceRef="run-sequential-test" targetRef="record-test-result" />
     <bpmn:serviceTask id="record-test-result" name="Record Test Result">
       <bpmn:extensionElements>
         <zeebe:taskDefinition type="record-test-result-job" />
@@ -57,10 +57,10 @@
     </bpmn:exclusiveGateway>
     <bpmn:sequenceFlow id="Flow_1emur0a" sourceRef="analysis-completed" targetRef="Gateway_0n2c5zt" />
     <bpmn:sequenceFlow id="Flow_1j2fhvr" sourceRef="check_test_passed" targetRef="Gateway_0n2c5zt" />
-    <bpmn:sequenceFlow id="Flow_1e7iazb" sourceRef="Gateway_0n2c5zt" targetRef="destroy-zeebe-cluster" />
-    <bpmn:serviceTask id="destroy-zeebe-cluster" name="Destroy Zeebe Cluster">
+    <bpmn:sequenceFlow id="Flow_1e7iazb" sourceRef="Gateway_0n2c5zt" targetRef="destroy-zeebe-cluster-in-camunda-cloud" />
+    <bpmn:serviceTask id="destroy-zeebe-cluster-in-camunda-cloud" name="Destroy Zeebe Cluster in Camunda Cloud">
       <bpmn:extensionElements>
-        <zeebe:taskDefinition type="destroy-zeebe-cluster-job" />
+        <zeebe:taskDefinition type="destroy-zeebe-cluster-in-camunda-cloud-job" />
       </bpmn:extensionElements>
       <bpmn:incoming>Flow_1e7iazb</bpmn:incoming>
       <bpmn:outgoing>Flow_1cth1vv</bpmn:outgoing>
@@ -68,7 +68,7 @@
     <bpmn:endEvent id="Event_1i1rnvk">
       <bpmn:incoming>Flow_1cth1vv</bpmn:incoming>
     </bpmn:endEvent>
-    <bpmn:sequenceFlow id="Flow_1cth1vv" sourceRef="destroy-zeebe-cluster" targetRef="Event_1i1rnvk" />
+    <bpmn:sequenceFlow id="Flow_1cth1vv" sourceRef="destroy-zeebe-cluster-in-camunda-cloud" targetRef="Event_1i1rnvk" />
   </bpmn:process>
   <bpmn:message id="msg-analysis-completed" name="Analysis Completed">
     <bpmn:extensionElements>
@@ -76,7 +76,7 @@
     </bpmn:extensionElements>
   </bpmn:message>
   <bpmndi:BPMNDiagram id="BPMNDiagram_1">
-    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="run-simple-test-in-clusterplan">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="run-sequential-test-in-clusterplan">
       <bpmndi:BPMNEdge id="Flow_1cth1vv_di" bpmnElement="Flow_1cth1vv">
         <di:waypoint x="1260" y="100" />
         <di:waypoint x="1302" y="100" />
@@ -128,10 +128,10 @@
           <dc:Bounds x="159" y="125" width="25" height="14" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_1253d10_di" bpmnElement="create-zeebe-cluster">
+      <bpmndi:BPMNShape id="Activity_1253d10_di" bpmnElement="create-zeebe-cluster-in-camunda-cloud">
         <dc:Bounds x="240" y="60" width="100" height="80" />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_16a5vtv_di" bpmnElement="run-simple-test">
+      <bpmndi:BPMNShape id="Activity_16a5vtv_di" bpmnElement="run-sequential-test">
         <dc:Bounds x="400" y="60" width="100" height="80" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Activity_1cuyfq1_di" bpmnElement="record-test-result">
@@ -155,7 +155,7 @@
       <bpmndi:BPMNShape id="Gateway_0n2c5zt_di" bpmnElement="Gateway_0n2c5zt" isMarkerVisible="true">
         <dc:Bounds x="1065" y="75" width="50" height="50" />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_09c5z6r_di" bpmnElement="destroy-zeebe-cluster">
+      <bpmndi:BPMNShape id="Activity_09c5z6r_di" bpmnElement="destroy-zeebe-cluster-in-camunda-cloud">
         <dc:Bounds x="1160" y="60" width="100" height="80" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Event_1i1rnvk_di" bpmnElement="Event_1i1rnvk">

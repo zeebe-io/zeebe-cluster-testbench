@@ -40,7 +40,7 @@ public class MockBootstrapper {
 	public void registerMockWorkers() throws FileNotFoundException, IOException {
 		jobsToMock.forEach(jobType -> registerMockWorker(jobType, new MoveAlongJobHandler()));
 		
-		registerMockWorker("create-zeebe-cluster-job", new PreexistingClusterConnector());
+		registerMockWorker("create-zeebe-cluster-in-camunda-cloud-job", new PreexistingClusterConnector());
 	}
 
 	private void registerMockWorker(String jobType, JobHandler jobHandler) {

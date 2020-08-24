@@ -9,9 +9,9 @@ import io.zeebe.client.api.worker.JobHandler;
 import io.zeebe.clustertestbench.testdriver.simple.AuthenticationDetails;
 import io.zeebe.clustertestbench.testdriver.simple.SimpleTestDriver;
 
-public class RunSimpleTestWorker implements JobHandler {
+public class RunSequentialTestWorker implements JobHandler {
 	
-	private static final int ITERATIONS = 1000;
+	private static final int ITERATIONS = 1;
 	private static final int MAX_TIME_PER_ITERATION = 5000;
 
 	@Override

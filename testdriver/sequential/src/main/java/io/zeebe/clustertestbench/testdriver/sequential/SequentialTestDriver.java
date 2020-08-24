@@ -1,14 +1,13 @@
-package io.zeebe.clustertestbench.testdriver.simple;
+package io.zeebe.clustertestbench.testdriver.sequential;
 
 import java.time.Duration;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.concurrent.ExecutionException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import io.grpc.StatusRuntimeException;
 import io.grpc.Status.Code;
+import io.grpc.StatusRuntimeException;
 import io.zeebe.client.ZeebeClient;
 import io.zeebe.client.api.response.ActivatedJob;
 import io.zeebe.client.api.worker.JobClient;
@@ -16,10 +15,11 @@ import io.zeebe.client.api.worker.JobHandler;
 import io.zeebe.client.api.worker.JobWorker;
 import io.zeebe.client.impl.oauth.OAuthCredentialsProvider;
 import io.zeebe.client.impl.oauth.OAuthCredentialsProviderBuilder;
+import io.zeebe.clustertestbench.testdriver.api.CamundaCLoudAuthenticationDetails;
 import io.zeebe.model.bpmn.BpmnModelInstance;
 import io.zeebe.workflow.generator.builder.SequenceWorkflowBuilder;
 
-public class SimpleTestDriver {
+public class SequentialTestDriver {
 
 	private static final Logger logger = Logger.getLogger("io.zeebe.clustertestbench.testdriver.simple");
 
@@ -28,7 +28,7 @@ public class SimpleTestDriver {
 
 	private ZeebeClient client;
 
-	public SimpleTestDriver(AuthenticationDetails authenticationDetails) {
+	public SequentialTestDriver(CamundaCLoudAuthenticationDetails authenticationDetails) {
 		logger.log(Level.INFO, "Creating Simple Test Driver");
 		final OAuthCredentialsProvider cred = buildCredentialsProvider(Objects.requireNonNull(authenticationDetails));
 
@@ -80,7 +80,7 @@ public class SimpleTestDriver {
 		return pass;
 	}
 
-	private OAuthCredentialsProvider buildCredentialsProvider(AuthenticationDetails authenticationDetails) {
+	private OAuthCredentialsProvider buildCredentialsProvider(CamundaCLoudAuthenticationDetails authenticationDetails) {
 		if (authenticationDetails.getAuthorizationURL() == null) {
 			return new OAuthCredentialsProviderBuilder().audience(authenticationDetails.getAudience())
 					.clientId(authenticationDetails.getClientId()).clientSecret(authenticationDetails.getClientSecret())

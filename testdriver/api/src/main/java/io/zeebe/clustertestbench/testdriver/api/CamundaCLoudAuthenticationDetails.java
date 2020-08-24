@@ -1,8 +1,8 @@
-package io.zeebe.clustertestbench.testdriver.simple;
+package io.zeebe.clustertestbench.testdriver.api;
 
 import static java.util.Objects.requireNonNull;
 
-public class AuthenticationDetails {
+public class CamundaCLoudAuthenticationDetails {
 
 	private String audience;
 	private String authorizationURL;
@@ -10,10 +10,10 @@ public class AuthenticationDetails {
 	private String clientSecret;
 	private String contactPoint;
 
-	public AuthenticationDetails() {
+	public CamundaCLoudAuthenticationDetails() {
 	}
 
-	public AuthenticationDetails(String audience, String authorizationURL, String clientId, String clientSecret,
+	public CamundaCLoudAuthenticationDetails(String audience, String authorizationURL, String clientId, String clientSecret,
 			String contactPoint) {
 		this.audience = requireNonNull(audience);
 		this.authorizationURL = requireNonNull(authorizationURL);

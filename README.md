@@ -30,15 +30,15 @@ Currently it only has steps for the Simple test, but this could be extended in t
 | ------- |
 | `testResults` - array of test results |
 
-#### Run Simple Test in Clusterplan
-This workflow runs the simple test in a given clusterplan:
+#### Run Sequential Test in Clusterplan
+This workflow runs the sequential test in a given clusterplan:
 
-![run-simple-test-in-clusterplan workflow](assets/run-simple-test-in-clusterplan.png "Run Simple Test in Clusterplan workflow")
+![run-sequential-test-in-clusterplan workflow](assets/run-sequential-test-in-clusterplan.png "Run Sequential Test in Clusterplan workflow")
 
 **Notes**
 * The _Notify Engineers_ step is a workaround until we have user tasks
 
-**Workflow ID:** `run-all-tests`
+**Workflow ID:** `run-sequential-test-in-clusterplan`
  
 | Inputs |
 | ------ |
@@ -60,11 +60,11 @@ This workflow runs the simple test in a given clusterplan:
 
 | Service Task | ID / Job Type | Input | Output | 
 | ------------ | ------------- | ----- | ------ | 
-| Create Zeebe Cluster | `creae-zeebe-cluster` / `create-zeebe-cluster-job` | `dockerImage`, `clusterPlan` | `clusterId`, _clusterCredentials_ |   
-| Run Simple Test | `run-simple-test` / `run-simple-test-job` | _clusterCredentials_ | `testResult` 
+| Create Zeebe Cluster in Camunda cloud | `creae-zeebe-cluster-in-camunda-cloud` / `create-zeebe-cluster-in-camunda-cloud-job` | `dockerImage`, `clusterPlan` | `clusterId`, _clusterCredentials_ |   
+| Run Sequential Test | `run-sequential-test` / `run-sequential-test-job` | _clusterCredentials_ | `testResult` 
 | Record Test Result | `record-test-result` / `record-test-result-job` | `testResult`, _clusterCredentials_ |
 | Notify Engineers | `notify-engineers` / `notify-engineers-job` | `dockerImage`, `clusterPlan`, `clusterId`, `testResult`, _contact information to reach troubleshooter_ |
-| Destroy Zeebe Cluster | `destroy-zeebe-cluster` / `destroy-zeebe-cluster-job` | `clusterId` |
+| Destroy Zeebe Cluster in Camunda CLoud | `destroy-zeebe-cluster-in-camunda-cloud` / `destroy-zeebe-cluster-in-camunda-cloud-job` | `clusterId` |
  
 ## Messages
 | Message | ID  | Correlation Key  | 

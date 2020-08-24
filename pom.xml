@@ -34,10 +34,16 @@
 		<!-- do not remove empty tag - http://jira.codehaus.org/browse/MNG-4687 -->
 		<relativePath />
 	</parent>
+    
+    <modules>
+		<module>bootstrap</module>
+        <module>testdriver/api</module>        
+		<module>testdriver/sequential</module>
+	</modules>
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<version.java>8</version.java>
+		<version.java>11</version.java>
 		<maven.version>3.0</maven.version>
 		<zeebe.version>0.24.2</zeebe.version>
 
@@ -55,6 +61,11 @@
 			<dependency>
 				<groupId>io.zeebe</groupId>
 				<artifactId>zeebe-cluster-testbench-testdriver-simple</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>io.zeebe</groupId>
+				<artifactId>zeebe-cluster-testbench-testdriver-api</artifactId>
 				<version>${project.version}</version>
 			</dependency>
 			<dependency>
@@ -81,12 +92,6 @@
 		</dependency>
 	</dependencies>
 
-	<modules>
-		<module>bootstrap</module>
-		<module>testdriver/simple</module>
-	</modules>
-
-
 	<build>
 		<pluginManagement>
 			<plugins>
@@ -103,7 +108,7 @@
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-javadoc-plugin</artifactId>
 				<configuration>
-					<source>8</source>
+					<source>11</source>
 				</configuration>
 			</plugin>
 
