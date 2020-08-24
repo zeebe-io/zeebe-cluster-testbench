@@ -65,7 +65,7 @@ pipeline {
 
       post {
         always {
-            junit testResults: "target/surefire-reports/TEST-*.xml", keepLongStdio: true
+            junit testResults: "**/*/surefire-reports/TEST-*.xml", keepLongStdio: true
 
             jacoco(
                   execPattern: '**/*.exec',
