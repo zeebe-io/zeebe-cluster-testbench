@@ -35,11 +35,15 @@
     </bpmn:exclusiveGateway>
     <bpmn:sequenceFlow id="Flow_16htm8s" sourceRef="record-test-result" targetRef="check_test_passed" />
     <bpmn:sequenceFlow id="test_not_passed" name="no" sourceRef="check_test_passed" targetRef="notify-engineers">
-      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">=testResult = "failed"</bpmn:conditionExpression>
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">=testResult = "FAILED"</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
     <bpmn:serviceTask id="notify-engineers" name="Notify Engineers">
       <bpmn:extensionElements>
         <zeebe:taskDefinition type="notify-engineers-job" />
+        <zeebe:taskHeaders>
+          <zeebe:header key="channel" value="#slack-bot-dev" />
+          <zeebe:header key="testType" value="sequential test" />
+        </zeebe:taskHeaders>
       </bpmn:extensionElements>
       <bpmn:incoming>test_not_passed</bpmn:incoming>
       <bpmn:outgoing>Flow_1l84l1r</bpmn:outgoing>

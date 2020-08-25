@@ -43,7 +43,6 @@ Currently it only has steps for the Simple test, but this could be extended in t
 | `dockerImage` | the Docker image of Zeebe that shall be tested | `String` |
 | `clusterPlans` | array of cluster plans in which Zeebe shall be testes | `List<String>` |
 | `sequentialTestParams` | Settings to parameterize the sequential test | `SequentialTestParameters` |
-| _contact information to reach troubleshooter_ - some information to contact someone if the test failed and needs to be analysed |
 
 | Outputs | Description | Type |
 | ------- | ----------- | ---- |
@@ -64,12 +63,11 @@ This workflow runs the sequential test in a given clusterplan:
 | `dockerImage` | the Docker image of Zeebe that shall be tested | `String` |
 | `clusterPlan` | cluster plan in which Zeebe shall be tested | `String` |
 | `testParams` | Settings to parameterize the sequential test | `SequentialTestParameters` |
-| _contact information to reach troubleshooter_ | some information to contact someone if the test failed and needs to be analysed |
 
 | Runtime Variables | Description | Type |
 | ----------------- | ----------- | ---- |
 | `clusterId` | ID of the cluster in which Zeebe is tested | `String` |
-| `authenticationDetails` | (tbd) Credentials to authenticate against the cluster | `CamundaCloudAutenticationDetails` |
+| `authenticationDetails` | Credentials to authenticate against the cluster | `CamundaCloudAutenticationDetails` |
 
 
 | Outputs | Description | Type |
@@ -79,12 +77,12 @@ This workflow runs the sequential test in a given clusterplan:
 
 ## Service Tasks
 
-| Service Task | ID / Job Type | Input | Output | 
-| ------------ | ------------- | ----- | ------ | 
-| Create Zeebe Cluster in Camunda cloud | `creae-zeebe-cluster-in-camunda-cloud` / `create-zeebe-cluster-in-camunda-cloud-job` | `dockerImage`, `clusterPlan` | `clusterId`, _clusterCredentials_ |   
+| Service Task | ID / Job Type | Input | Output | Headers |
+| ------------ | ------------- | ----- | ------ | ------- |
+| Create Zeebe Cluster in Camunda cloud | `creae-zeebe-cluster-in-camunda-cloud` / `create-zeebe-cluster-in-camunda-cloud-job` | `dockerImage`, `clusterPlan` | `clusterId`, `authenticationDetails` |   
 | Run Sequential Test | `run-sequential-test` / `run-sequential-test-job` | `authenticationDetails`, `testParams` | `testResult`, `testReport` 
 | Record Test Result | `record-test-result` / `record-test-result-job` | `dockerImage`, `clusterPlan`, `clusterId`, `testReport` |
-| Notify Engineers | `notify-engineers` / `notify-engineers-job` | `dockerImage`, `clusterPlan`, `clusterId`, `testResult`, _contact information to reach troubleshooter_ |
+| Notify Engineers | `notify-engineers` / `notify-engineers-job` | `dockerImage`, `clusterPlan`, `clusterId`, `testReport` | | `channel` - Slack channel to post to, `testType` - test type (will be part of the error message
 | Destroy Zeebe Cluster in Camunda CLoud | `destroy-zeebe-cluster-in-camunda-cloud` / `destroy-zeebe-cluster-in-camunda-cloud-job` | `clusterId` |
  
 ## Messages
