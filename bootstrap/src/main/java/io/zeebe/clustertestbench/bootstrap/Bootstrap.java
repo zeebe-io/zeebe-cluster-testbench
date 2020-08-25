@@ -20,6 +20,7 @@ import io.zeebe.client.impl.oauth.OAuthCredentialsProvider;
 import io.zeebe.client.impl.oauth.OAuthCredentialsProviderBuilder;
 import io.zeebe.clustertestbench.bootstrap.mock.MockBootstrapper;
 import io.zeebe.clustertestbench.testdriver.sequential.SequentialTestParameters;
+import io.zeebe.clustertestbench.worker.RecordTestResultWorker;
 import io.zeebe.clustertestbench.worker.SequentialTestLauncher;
 import io.zeebe.model.bpmn.BpmnModelInstance;
 import io.zeebe.workflow.generator.builder.SequenceWorkflowBuilder;
@@ -33,7 +34,7 @@ public class Bootstrap implements Callable<Integer> {
 
 	private static final Logger logger = Logger.getLogger("io.zeebe.clustertestbench.bootstrap");
 
-	private static final List<String> jobsToMock = Arrays.asList("record-test-result-job", "notify-engineers-job",
+	private static final List<String> jobsToMock = Arrays.asList("notify-engineers-job",
 			"destroy-zeebe-cluster-in-camunda-cloud-job");
 
 	@Option(names = { "-c", "--contact-point" }, description = "Contact point for the Zeebe cluster", required = true)
@@ -51,6 +52,9 @@ public class Bootstrap implements Callable<Integer> {
 
 	@Option(names = { "-u", "--authorization-server-url" }, description = "URL for the authorization server")
 	private String authorizationServerUrl;
+	
+	@Option(names = { "-r" , "--report-sheet-id"}, description = "ID of the Google Sheet into which the test reports will be written", required = true )
+	private String reportSheetID;
 
 	private final Map<String, JobWorker> registeredJobWorkers = new HashMap<>();
 
@@ -88,6 +92,7 @@ public class Bootstrap implements Callable<Integer> {
 			}
 
 			registerWorker(client, "run-sequential-test-job", new SequentialTestLauncher(), Duration.ofHours(2));
+			registerWorker(client, "record-test-result-job", new RecordTestResultWorker(reportSheetID), Duration.ofSeconds(10));
 
 			MockBootstrapper mockBootstrapper = new MockBootstrapper(client, jobsToMock);
 			mockBootstrapper.registerMockWorkers();

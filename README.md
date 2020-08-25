@@ -83,7 +83,7 @@ This workflow runs the sequential test in a given clusterplan:
 | ------------ | ------------- | ----- | ------ | 
 | Create Zeebe Cluster in Camunda cloud | `creae-zeebe-cluster-in-camunda-cloud` / `create-zeebe-cluster-in-camunda-cloud-job` | `dockerImage`, `clusterPlan` | `clusterId`, _clusterCredentials_ |   
 | Run Sequential Test | `run-sequential-test` / `run-sequential-test-job` | `authenticationDetails`, `testParams` | `testResult`, `testReport` 
-| Record Test Result | `record-test-result` / `record-test-result-job` | `testReport`, `authenticationDetails` |
+| Record Test Result | `record-test-result` / `record-test-result-job` | `dockerImage`, `clusterPlan`, `clusterId`, `testReport` |
 | Notify Engineers | `notify-engineers` / `notify-engineers-job` | `dockerImage`, `clusterPlan`, `clusterId`, `testResult`, _contact information to reach troubleshooter_ |
 | Destroy Zeebe Cluster in Camunda CLoud | `destroy-zeebe-cluster-in-camunda-cloud` / `destroy-zeebe-cluster-in-camunda-cloud-job` | `clusterId` |
  

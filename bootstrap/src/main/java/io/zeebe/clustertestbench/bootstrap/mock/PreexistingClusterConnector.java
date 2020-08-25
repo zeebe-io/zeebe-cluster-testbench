@@ -40,7 +40,7 @@ public class PreexistingClusterConnector implements JobHandler {
 
 		logger.log(Level.INFO, "PreexistingClusterConnector: found authentication details " + authenticationDetails);
 		
-		client.newCompleteCommand(job.getKey()).variables(Map.of(CamundaCloudAuthenticationDetails.VARIABLE_KEY, authenticationDetails)).send();
+		client.newCompleteCommand(job.getKey()).variables(Map.of(CamundaCloudAuthenticationDetails.VARIABLE_KEY, authenticationDetails, "clusterId", authenticationDetails.getContactPoint())).send();
 	}
 
 	private static class AuthenticationDetailsBuilder {
