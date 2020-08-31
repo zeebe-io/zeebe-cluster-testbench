@@ -19,7 +19,11 @@ import io.zeebe.client.api.worker.JobWorker;
 import io.zeebe.client.impl.oauth.OAuthCredentialsProvider;
 import io.zeebe.client.impl.oauth.OAuthCredentialsProviderBuilder;
 import io.zeebe.clustertestbench.bootstrap.mock.MockBootstrapper;
+import io.zeebe.clustertestbench.cloud.request.CreateClusterRequest;
+import io.zeebe.clustertestbench.cloud.response.CreateClusterResponse;
 import io.zeebe.clustertestbench.testdriver.sequential.SequentialTestParameters;
+import io.zeebe.clustertestbench.worker.CreateClusterInCamundaCloudWorker;
+import io.zeebe.clustertestbench.worker.DeleteClusterInCamundaCloudWorker;
 import io.zeebe.clustertestbench.worker.NotifyEngineersWorker;
 import io.zeebe.clustertestbench.worker.RecordTestResultWorker;
 import io.zeebe.clustertestbench.worker.SequentialTestLauncher;
@@ -35,8 +39,16 @@ public class Bootstrap implements Callable<Integer> {
 
 	private static final Logger logger = Logger.getLogger("io.zeebe.clustertestbench.bootstrap");
 
-	private static final List<String> jobsToMock = Arrays.asList("destroy-zeebe-cluster-in-camunda-cloud-job");
+	private static final List<String> jobsToMock = Arrays.asList();
 
+	@Option(names = { "-r",
+			"--report-sheet-id" }, description = "ID of the Google Sheet into which the test reports will be written", required = true)
+	private String reportSheetID;
+
+	@Option(names = { "-t", "--slack-token" }, description = "Token to access slack API", required = true)
+	private String slackToken;
+
+	// details to talk to the Zeebe cluster that orchestrates the test processes
 	@Option(names = { "-c", "--contact-point" }, description = "Contact point for the Zeebe cluster", required = true)
 	private String contactPoint;
 
@@ -50,15 +62,27 @@ public class Bootstrap implements Callable<Integer> {
 	@Option(names = { "-i", "--clinet-id" }, description = "Client id for authentication", required = true)
 	private String clientId;
 
-	@Option(names = { "-u", "--authorization-server-url" }, description = "URL for the authorization server")
-	private String authorizationServerUrl;
+	@Option(names = { "-u", "--authentication-server-url" }, description = "URL for the authentication server")
+	private String authenticationServerUrl;
 
-	@Option(names = { "-r",
-			"--report-sheet-id" }, description = "ID of the Google Sheet into which the test reports will be written", required = true)
-	private String reportSheetID;
+	// details to talk to Camunda Cloud
+	@Option(names = { "--cloud-api-url" }, description = "Contact point for the Camunda cloud API", required = true)
+	private String cloudApiUrl;
 
-	@Option(names = { "-t", "--slack-token" }, description = "Token to access slack API", required = true)
-	private String slackToken;
+	@Option(names = { "-ca", "--cloud-audience" }, description = "Camunda cloud token audience", required = true)
+	private String cloudApiAudience;
+
+	@Option(names = { "-cs",
+			"--cloud-client-secret" }, description = "Client secret for Caunda cloud authentication", required = true)
+	private String cloudApiClientSecret;
+
+	@Option(names = { "-ci",
+			"--cloud-client-id" }, description = "Client id for Camunda cloud authentication", required = true)
+	private String cloudApiClientId;
+
+	@Option(names = { "-cu",
+			"--cloud-authentication-server-url" }, description = "URL for the Camunda cloud authentication server")
+	private String cloudApiAuthenticationServerUrl;
 
 	private final Map<String, JobWorker> registeredJobWorkers = new HashMap<>();
 
@@ -73,13 +97,18 @@ public class Bootstrap implements Callable<Integer> {
 
 		deriveMissingOptions();
 
-		logger.log(Level.INFO, "contactPoint: " + contactPoint);
-		logger.log(Level.INFO, "audience: " + audience);
-		logger.log(Level.INFO, "clientId: " + clientId);
+		logger.log(Level.INFO, "Testbench cluster - contactPoint: " + contactPoint);
+		logger.log(Level.INFO, "Testbench cluster - audience: " + audience);
+		logger.log(Level.INFO, "Testbench cluster - clientId: " + clientId);
 
-		if (authorizationServerUrl != null) {
-			logger.log(Level.INFO, "authorizationServerUrl:" + authorizationServerUrl);
+		if (authenticationServerUrl != null) {
+			logger.log(Level.INFO, "Testbench cluster - authorizationServerUrl:" + authenticationServerUrl);
 		}
+
+		logger.log(Level.INFO, "Camunda cloud - API URL: " + cloudApiUrl);
+		logger.log(Level.INFO, "Camunda cloud - audience: " + cloudApiAudience);
+		logger.log(Level.INFO, "Camunda cloud - clientId: " + cloudApiClientId);
+		logger.log(Level.INFO, "Camunda cloud - authorizationServerUrl:" + cloudApiAuthenticationServerUrl);
 
 		final OAuthCredentialsProvider cred = buildCredentialsProvider();
 
@@ -95,10 +124,18 @@ public class Bootstrap implements Callable<Integer> {
 				return -1;
 			}
 
+			registerWorker(client, "create-zeebe-cluster-in-camunda-cloud-job",
+					new CreateClusterInCamundaCloudWorker(cloudApiUrl, cloudApiAuthenticationServerUrl,
+							cloudApiAudience, cloudApiClientId, cloudApiClientSecret),
+					Duration.ofMinutes(18));
 			registerWorker(client, "run-sequential-test-job", new SequentialTestLauncher(), Duration.ofHours(2));
 			registerWorker(client, "record-test-result-job", new RecordTestResultWorker(reportSheetID),
 					Duration.ofSeconds(10));
 			registerWorker(client, "notify-engineers-job", new NotifyEngineersWorker(slackToken),
+					Duration.ofSeconds(10));
+			registerWorker(client, "destroy-zeebe-cluster-in-camunda-cloud-job",
+					new DeleteClusterInCamundaCloudWorker(cloudApiUrl, cloudApiAuthenticationServerUrl,
+							cloudApiAudience, cloudApiClientId, cloudApiClientSecret),
 					Duration.ofSeconds(10));
 
 			MockBootstrapper mockBootstrapper = new MockBootstrapper(client, jobsToMock);
@@ -113,9 +150,12 @@ public class Bootstrap implements Callable<Integer> {
 			});
 
 			Map<String, Object> variables = new HashMap<>();
-			variables.put("clusterPlans", Arrays.asList("prod-m", "prod-s"));
-			variables.put("dockerImage", "Lorem ipsum");
+			variables.put("clusterPlans", Arrays.asList("736d9100-0155-4af5-be14-b09c42de8417"));
+			variables.put("dockerImage", "fcb8c48e-e320-4ae7-8299-3fb95e340feb");
+			variables.put("channelId", "cf355219-cc2d-4266-83e1-2430998ddf30");
+			variables.put("regionId", "deadbeef-eaea-4bd3-972a-70203f150d88");
 			variables.put("sequentialTestParams", SequentialTestParameters.defaultParams());
+			
 
 			logger.log(Level.INFO, "Starting workflow instance of 'run-all-tests'");
 			client.newCreateInstanceCommand().bpmnProcessId("run-all-tests").latestVersion().variables(variables).send()
@@ -145,11 +185,11 @@ public class Bootstrap implements Callable<Integer> {
 	}
 
 	private OAuthCredentialsProvider buildCredentialsProvider() {
-		if (authorizationServerUrl == null) {
+		if (authenticationServerUrl == null) {
 			return new OAuthCredentialsProviderBuilder().audience(audience).clientId(clientId)
 					.clientSecret(clientSecret).build();
 		} else {
-			return new OAuthCredentialsProviderBuilder().authorizationServerUrl(authorizationServerUrl)
+			return new OAuthCredentialsProviderBuilder().authorizationServerUrl(authenticationServerUrl)
 					.audience(audience).clientId(clientId).clientSecret(clientSecret).build();
 		}
 	}

@@ -34,10 +34,11 @@
 		<!-- do not remove empty tag - http://jira.codehaus.org/browse/MNG-4687 -->
 		<relativePath />
 	</parent>
-    
-    <modules>
+
+	<modules>
 		<module>bootstrap</module>
-        <module>testdriver/api</module>        
+		<module>cloud-client</module>
+		<module>testdriver/api</module>
 		<module>testdriver/sequential</module>
 	</modules>
 
@@ -58,6 +59,11 @@
 
 	<dependencyManagement>
 		<dependencies>
+			<dependency>
+				<groupId>io.zeebe</groupId>
+				<artifactId>zeebe-cluster-testbench-cloud-client</artifactId>
+				<version>${project.version}</version>
+			</dependency>
 			<dependency>
 				<groupId>io.zeebe</groupId>
 				<artifactId>zeebe-cluster-testbench-testdriver-sequential</artifactId>

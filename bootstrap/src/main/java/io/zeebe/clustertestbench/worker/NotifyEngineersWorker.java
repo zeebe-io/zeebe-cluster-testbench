@@ -40,7 +40,7 @@ public class NotifyEngineersWorker implements JobHandler {
 		final Input input = job.getVariablesAsType(Input.class);
 
 		ChatPostMessageRequest request = ChatPostMessageRequest.builder().channel(channel)
-				.text(":bpmn-error-throw-event: \n_" + testType + "`_ on _" + input.getClusterPlan()
+				.text(":bpmn-error-throw-event: \n_" + testType + "_ on _" + input.getClusterPlan()
 						+ "_ failed for image `" + input.getDockerImage() + "`.\nThere were "
 						+ input.getTestReport().getFailureCount() + " failures.")
 				.build();
@@ -93,6 +93,5 @@ public class NotifyEngineersWorker implements JobHandler {
 		public void setTestReport(TestReportDTO testReport) {
 			this.testReport = testReport;
 		}
-
 	}
 }

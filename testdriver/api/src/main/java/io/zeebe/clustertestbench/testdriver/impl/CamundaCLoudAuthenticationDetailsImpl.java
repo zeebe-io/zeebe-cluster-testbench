@@ -4,12 +4,24 @@ import io.zeebe.client.impl.ZeebeObjectMapper;
 import io.zeebe.clustertestbench.testdriver.api.CamundaCloudAuthenticationDetails;
 
 public class CamundaCLoudAuthenticationDetailsImpl implements CamundaCloudAuthenticationDetails {
-	
+
 	private String audience;
 	private String authorizationURL;
 	private String clientId;
 	private String clientSecret;
 	private String contactPoint;
+
+	public CamundaCLoudAuthenticationDetailsImpl() {
+	}
+
+	public CamundaCLoudAuthenticationDetailsImpl(String authorizationURL, String audience, String contactPoint,
+			String clientId, String clientSecret) {
+		this.audience = audience;
+		this.authorizationURL = authorizationURL;
+		this.clientId = clientId;
+		this.clientSecret = clientSecret;
+		this.contactPoint = contactPoint;
+	}
 
 	@Override
 	public String getAudience() {
@@ -55,7 +67,7 @@ public class CamundaCLoudAuthenticationDetailsImpl implements CamundaCloudAuthen
 	public void setContactPoint(String contactPoint) {
 		this.contactPoint = contactPoint;
 	}
-	
+
 	@Override
 	public String toString() {
 		return new ZeebeObjectMapper().toJson(this);
