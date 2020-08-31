@@ -4,6 +4,7 @@ import static org.awaitility.Awaitility.with;
 
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
+import java.util.logging.Logger;
 
 import org.awaitility.core.ConditionTimeoutException;
 
@@ -26,6 +27,8 @@ import io.zeebe.clustertestbench.testdriver.impl.CamundaCLoudAuthenticationDetai
 
 public class CreateClusterInCamundaCloudWorker implements JobHandler {
 
+	private static final Logger logger = Logger.getLogger("io.zeebe.clustertestbench.worker");
+
 	private static final RandomNameGenerator NAME_GENRATOR = new RandomNameGenerator();
 
 	private final CloudAPIClient cloudClient;
@@ -42,6 +45,7 @@ public class CreateClusterInCamundaCloudWorker implements JobHandler {
 
 		String name = NAME_GENRATOR.next();
 
+		logger.info("Creating cluster" + name);
 		CreateClusterResponse createClusterRepoonse = cloudClient.createCluster(new CreateClusterRequest(name,
 				input.getClusterPlan(), input.getChannelId(), input.getDockerImage(), input.getRegionId()));
 
@@ -54,10 +58,9 @@ public class CreateClusterInCamundaCloudWorker implements JobHandler {
 				createZeebeClientResponse.getClientId());
 
 		try {
-			with().pollDelay(15, TimeUnit.SECONDS)// wait a couple of seconds for the DNS record to show up; otherwise
-													// the missing DNS record may be cached prematurely
+			with().pollDelay(3, TimeUnit.SECONDS)
 					.and().pollInterval(10, TimeUnit.SECONDS).await().atMost(15, TimeUnit.MINUTES)
-					.until(() -> clusterIsReady(clusterId));
+					.until(() -> clusterIsReady(clusterId, name));
 
 			client.newCompleteCommand(job.getKey()).variables(new Output(connectionInfo, clusterId)).send();
 		} catch (ConditionTimeoutException e) {
@@ -68,9 +71,11 @@ public class CreateClusterInCamundaCloudWorker implements JobHandler {
 		}
 	}
 
-	private boolean clusterIsReady(String clusterId) {
+	private boolean clusterIsReady(String clusterId, String clusterName) {
 		String readyStatus = Optional.of(cloudClient.getClusterInfo(clusterId)).map(ClusterInfo::getStatus)
 				.map(ClusterStatus::getReady).orElse("Unknown");
+		
+		logger.info("Checking status of '" + clusterName + "`: " + readyStatus);
 
 		return readyStatus.equalsIgnoreCase("healthy");
 	}

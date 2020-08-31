@@ -128,7 +128,7 @@ public class Bootstrap implements Callable<Integer> {
 					new CreateClusterInCamundaCloudWorker(cloudApiUrl, cloudApiAuthenticationServerUrl,
 							cloudApiAudience, cloudApiClientId, cloudApiClientSecret),
 					Duration.ofMinutes(18));
-			registerWorker(client, "run-sequential-test-job", new SequentialTestLauncher(), Duration.ofHours(2));
+			registerWorker(client, "run-sequential-test-job", new SequentialTestLauncher(), Duration.ofMinutes(30));
 			registerWorker(client, "record-test-result-job", new RecordTestResultWorker(reportSheetID),
 					Duration.ofSeconds(10));
 			registerWorker(client, "notify-engineers-job", new NotifyEngineersWorker(slackToken),
@@ -157,8 +157,8 @@ public class Bootstrap implements Callable<Integer> {
 			variables.put("sequentialTestParams", SequentialTestParameters.defaultParams());
 			
 
-			logger.log(Level.INFO, "Starting workflow instance of 'run-all-tests'");
-			client.newCreateInstanceCommand().bpmnProcessId("run-all-tests").latestVersion().variables(variables).send()
+			logger.log(Level.INFO, "Starting workflow instance of 'run-all-tests-in-camunda-cloud-per-cluster-plan-process'");
+			client.newCreateInstanceCommand().bpmnProcessId("run-all-tests-in-camunda-cloud-per-cluster-plan-process").latestVersion().variables(variables).send()
 					.join();
 
 			waitUntilSystemInput("exit");
