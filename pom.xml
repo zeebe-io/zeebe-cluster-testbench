@@ -36,7 +36,7 @@
 	</parent>
 
 	<modules>
-		<module>bootstrap</module>
+        <module>core</module>
 		<module>cloud-client</module>
 		<module>testdriver/api</module>
 		<module>testdriver/sequential</module>
