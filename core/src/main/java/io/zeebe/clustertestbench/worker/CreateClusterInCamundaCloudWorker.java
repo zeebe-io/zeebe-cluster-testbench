@@ -54,21 +54,24 @@ public class CreateClusterInCamundaCloudWorker implements JobHandler {
 				createZeebeClientResponse.getClientId());
 
 		try {
-			with().pollDelay(1, TimeUnit.SECONDS).and().pollInterval(10, TimeUnit.SECONDS).await()
-					.atMost(15, TimeUnit.MINUTES)
+			with().pollDelay(15, TimeUnit.SECONDS)// wait a couple of seconds for the DNS record to show up; otherwise
+													// the missing DNS record may be cached prematurely
+					.and().pollInterval(10, TimeUnit.SECONDS).await().atMost(15, TimeUnit.MINUTES)
 					.until(() -> clusterIsReady(clusterId));
-	
+
 			client.newCompleteCommand(job.getKey()).variables(new Output(connectionInfo, clusterId)).send();
 		} catch (ConditionTimeoutException e) {
 			cloudClient.deleteCluster(clusterId);
-			
-			client.newFailCommand(job.getKey()).retries(job.getRetries() -1).errorMessage("Cluster took too long to start");
+
+			client.newFailCommand(job.getKey()).retries(job.getRetries() - 1)
+					.errorMessage("Cluster took too long to start");
 		}
 	}
-	
+
 	private boolean clusterIsReady(String clusterId) {
-		String readyStatus = Optional.of(cloudClient.getClusterInfo(clusterId)).map(ClusterInfo::getStatus).map(ClusterStatus::getReady).orElse("Unknown"); 
-		
+		String readyStatus = Optional.of(cloudClient.getClusterInfo(clusterId)).map(ClusterInfo::getStatus)
+				.map(ClusterStatus::getReady).orElse("Unknown");
+
 		return readyStatus.equalsIgnoreCase("healthy");
 	}
 
