@@ -47,7 +47,7 @@ public class CreateClusterInCamundaCloudWorker implements JobHandler {
 
 		logger.info("Creating cluster" + name);
 		CreateClusterResponse createClusterRepoonse = cloudClient.createCluster(new CreateClusterRequest(name,
-				input.getClusterPlan(), input.getChannelId(), input.getDockerImage(), input.getRegionId()));
+				input.getClusterPlanUUID(), input.getChannelUUID(), input.getGenerationUUID(), input.getRegionUUID()));
 
 		String clusterId = createClusterRepoonse.getClusterId();
 
@@ -58,11 +58,12 @@ public class CreateClusterInCamundaCloudWorker implements JobHandler {
 				createZeebeClientResponse.getClientId());
 
 		try {
-			with().pollDelay(3, TimeUnit.SECONDS)
-					.and().pollInterval(10, TimeUnit.SECONDS).await().atMost(15, TimeUnit.MINUTES)
-					.until(() -> clusterIsReady(clusterId, name));
+			with().pollDelay(3, TimeUnit.SECONDS).and().pollInterval(10, TimeUnit.SECONDS).await()
+					.atMost(15, TimeUnit.MINUTES).until(() -> clusterIsReady(clusterId, name));
+			
+			String operateURL = cloudClient.getClusterInfo(clusterId).getStatus().getOperateUrl();
 
-			client.newCompleteCommand(job.getKey()).variables(new Output(connectionInfo, clusterId)).send();
+			client.newCompleteCommand(job.getKey()).variables(new Output(connectionInfo, name, clusterId, operateURL)).send();
 		} catch (ConditionTimeoutException e) {
 			cloudClient.deleteCluster(clusterId);
 
@@ -74,62 +75,68 @@ public class CreateClusterInCamundaCloudWorker implements JobHandler {
 	private boolean clusterIsReady(String clusterId, String clusterName) {
 		String readyStatus = Optional.of(cloudClient.getClusterInfo(clusterId)).map(ClusterInfo::getStatus)
 				.map(ClusterStatus::getReady).orElse("Unknown");
-		
+
 		logger.info("Checking status of '" + clusterName + "`: " + readyStatus);
 
 		return readyStatus.equalsIgnoreCase("healthy");
 	}
 
 	private static final class Input {
-		private String dockerImage;
-		private String clusterPlan;
-		private String regionId;
-		private String channelId;
+		private String generationUUID;
+		private String regionUUID;
+		private String clusterPlanUUID;
+		private String channelUUID;
 
-		public String getDockerImage() {
-			return dockerImage;
+		public String getGenerationUUID() {
+			return generationUUID;
 		}
 
-		public void setDockerImage(String dockerImage) {
-			this.dockerImage = dockerImage;
+		public void setGenerationUUID(String generationUUID) {
+			this.generationUUID = generationUUID;
 		}
 
-		public String getClusterPlan() {
-			return clusterPlan;
+		public String getRegionUUID() {
+			return regionUUID;
 		}
 
-		public void setClusterPlan(String clusterPlan) {
-			this.clusterPlan = clusterPlan;
+		public void setRegionUUID(String regionUUID) {
+			this.regionUUID = regionUUID;
 		}
 
-		public String getRegionId() {
-			return regionId;
+		public String getClusterPlanUUID() {
+			return clusterPlanUUID;
 		}
 
-		public void setRegionId(String regionId) {
-			this.regionId = regionId;
+		public void setClusterPlanUUID(String clusterPlanUUID) {
+			this.clusterPlanUUID = clusterPlanUUID;
 		}
 
-		public String getChannelId() {
-			return channelId;
+		public String getChannelUUID() {
+			return channelUUID;
 		}
 
-		public void setChannelId(String channelId) {
-			this.channelId = channelId;
+		public void setChannelUUID(String channelUUID) {
+			this.channelUUID = channelUUID;
 		}
+
 	}
 
 	private static final class Output {
 
 		private CamundaCLoudAuthenticationDetailsImpl authenticationDetails;
 		private String clusterId;
+		private String clusterName;
+		private String operateURL;
+		
 
-		public Output(ZeebeClientConnectiontInfo connectionInfo, String clusterId) {
+		public Output(ZeebeClientConnectiontInfo connectionInfo, String clusterName, String clusterId, String operateURL) {
 			this.authenticationDetails = new CamundaCLoudAuthenticationDetailsImpl(
 					connectionInfo.getZeebeAuthorizationServerUrl(), connectionInfo.getZeebeAudience(),
 					connectionInfo.getZeebeAddress(), connectionInfo.getZeebeClientId(),
 					connectionInfo.getZeebeClientSecret());
+			this.clusterName = clusterName;			
 			this.clusterId = clusterId;
+			this.operateURL = operateURL;
 		}
 
 		@JsonProperty(CamundaCloudAuthenticationDetails.VARIABLE_KEY)
@@ -149,5 +156,22 @@ public class CreateClusterInCamundaCloudWorker implements JobHandler {
 		public void setClusterId(String clusterId) {
 			this.clusterId = clusterId;
 		}
+
+		public String getClusterName() {
+			return clusterName;
+		}
+
+		public void setClusterName(String clusterName) {
+			this.clusterName = clusterName;
+		}
+
+		public String getOperateURL() {
+			return operateURL;
+		}
+
+		public void setOperateURL(String operateURL) {
+			this.operateURL = operateURL;
+		}
+
 	}
 }

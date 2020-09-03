@@ -39,11 +39,9 @@ import io.zeebe.clustertestbench.testdriver.api.TestReport.TestResult;
 import io.zeebe.clustertestbench.testdriver.impl.TestReportDTO;
 
 public class RecordTestResultWorker implements JobHandler {
-	
-	private static final DateTimeFormatter INSTANT_FORMATTER =
-		    DateTimeFormatter.ofLocalizedDateTime( FormatStyle.SHORT )
-		                     .withLocale( Locale.US )
-		                     .withZone( ZoneId.systemDefault() );
+
+	private static final DateTimeFormatter INSTANT_FORMATTER = DateTimeFormatter.ofLocalizedDateTime(FormatStyle.SHORT)
+			.withLocale(Locale.US).withZone(ZoneId.systemDefault());
 
 	private static final String APPLICATION_NAME = "Zeebe Cluster Testbench - Publish Test Results Worker";
 	private static final JsonFactory JSON_FACTORY = JacksonFactory.getDefaultInstance();
@@ -51,7 +49,7 @@ public class RecordTestResultWorker implements JobHandler {
 	private static final List<String> SCOPES = Collections.singletonList(SheetsScopes.SPREADSHEETS);
 	private static final String CREDENTIALS_FILE_PATH = "secrets/credentials.json";
 
-	private static final String RANGE = "Sheet1!A1:J";
+	private static final String RANGE = "Sheet1!A1:N";
 
 	private final String spreadSheetId;
 
@@ -107,14 +105,20 @@ public class RecordTestResultWorker implements JobHandler {
 	private static List<Object> buildRowDataForSheet(Input input) {
 		List<Object> result = new ArrayList<>();
 
-		result.add(input.getDockerImage());
+		result.add(input.getRegion());
+		result.add(input.getChannel());
 		result.add(input.getClusterPlan());
-		result.add(input.getClusterId());
+		result.add(input.getGeneration());
 
+		result.add(input.getClusterName());
+		result.add(input.getClusterId());
+		result.add(input.getOperateURL());
+		
 		TestReport testReport = input.getTestReport();
 		result.add(testReport.getTestResult().name());
 		result.add(testReport.getFailureCount());
-		result.add(returnValueIfApplicable(testReport, new ZeebeObjectMapper().toJson(testReport.getFailureMessages())));
+		result.add(
+				returnValueIfApplicable(testReport, new ZeebeObjectMapper().toJson(testReport.getFailureMessages())));
 		result.add(convertMillisToString(testReport.getStartTime()));
 		result.add(returnValueIfApplicable(testReport, convertMillisToString(testReport.getTimeOfFirstFailure())));
 		result.add(convertMillisToString(testReport.getEndTime()));
@@ -122,9 +126,9 @@ public class RecordTestResultWorker implements JobHandler {
 
 		return result;
 	}
-	
-	private static String returnValueIfApplicable(TestReport testReport, Object value) {		
-		return testReport.getTestResult() == TestResult.PASSED ? "n/a" : value.toString();		
+
+	private static String returnValueIfApplicable(TestReport testReport, Object value) {
+		return testReport.getTestResult() == TestResult.PASSED ? "n/a" : value.toString();
 	}
 
 	private static String convertMillisToString(long millis) {
@@ -134,18 +138,31 @@ public class RecordTestResultWorker implements JobHandler {
 	}
 
 	private static final class Input {
-		private String dockerImage;
+		private String generation;
+		private String region;
 		private String clusterPlan;
+		private String channel;
+
 		private String clusterId;
+		private String clusterName;
+		private String operateURL;
 
 		private TestReportDTO testReport;
 
-		public String getDockerImage() {
-			return dockerImage;
+		public String getGeneration() {
+			return generation;
 		}
 
-		public void setDockerImage(String dockerImage) {
-			this.dockerImage = dockerImage;
+		public void setGeneration(String generation) {
+			this.generation = generation;
+		}
+
+		public String getRegion() {
+			return region;
+		}
+
+		public void setRegion(String region) {
+			this.region = region;
 		}
 
 		public String getClusterPlan() {
@@ -156,12 +173,36 @@ public class RecordTestResultWorker implements JobHandler {
 			this.clusterPlan = clusterPlan;
 		}
 
+		public String getChannel() {
+			return channel;
+		}
+
+		public void setChannel(String channel) {
+			this.channel = channel;
+		}
+
 		public String getClusterId() {
 			return clusterId;
 		}
 
 		public void setClusterId(String clusterId) {
 			this.clusterId = clusterId;
+		}
+
+		public String getClusterName() {
+			return clusterName;
+		}
+
+		public void setClusterName(String clusterName) {
+			this.clusterName = clusterName;
+		}
+
+		public String getOperateURL() {
+			return operateURL;
+		}
+
+		public void setOperateURL(String operateURL) {
+			this.operateURL = operateURL;
 		}
 
 		@JsonProperty(TestDriver.VARIABLE_KEY_TEST_REPORT)

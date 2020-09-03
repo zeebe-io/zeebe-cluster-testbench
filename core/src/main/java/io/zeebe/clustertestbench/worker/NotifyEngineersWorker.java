@@ -41,8 +41,8 @@ public class NotifyEngineersWorker implements JobHandler {
 
 		ChatPostMessageRequest request = ChatPostMessageRequest.builder().channel(channel)
 				.text(":bpmn-error-throw-event: \n_" + testType + "_ on _" + input.getClusterPlan()
-						+ "_ failed for image `" + input.getDockerImage() + "`.\nThere were "
-						+ input.getTestReport().getFailureCount() + " failures.")
+						+ "_ failed for generation `" + input.getGeneration() + " on cluster _" + input.getClusterName()
+						+ "_.\nThere were " + input.getTestReport().getFailureCount() + " failures.")
 				.build();
 
 		ChatPostMessageResponse response = slackClient.chatPostMessage(request);
@@ -54,18 +54,18 @@ public class NotifyEngineersWorker implements JobHandler {
 	}
 
 	private static final class Input {
-		private String dockerImage;
+		private String generation;
 		private String clusterPlan;
-		private String clusterId;
+		private String clusterName;
 
 		private TestReportDTO testReport;
 
-		public String getDockerImage() {
-			return dockerImage;
+		public String getGeneration() {
+			return generation;
 		}
 
-		public void setDockerImage(String dockerImage) {
-			this.dockerImage = dockerImage;
+		public void setGeneration(String generation) {
+			this.generation = generation;
 		}
 
 		public String getClusterPlan() {
@@ -76,12 +76,12 @@ public class NotifyEngineersWorker implements JobHandler {
 			this.clusterPlan = clusterPlan;
 		}
 
-		public String getClusterId() {
-			return clusterId;
+		public String getClusterName() {
+			return clusterName;
 		}
 
-		public void setClusterId(String clusterId) {
-			this.clusterId = clusterId;
+		public void setClusterName(String clusterName) {
+			this.clusterName = clusterName;
 		}
 
 		@JsonProperty(TestDriver.VARIABLE_KEY_TEST_REPORT)

@@ -24,6 +24,7 @@ import io.zeebe.clustertestbench.cloud.response.CreateClusterResponse;
 import io.zeebe.clustertestbench.testdriver.sequential.SequentialTestParameters;
 import io.zeebe.clustertestbench.worker.CreateClusterInCamundaCloudWorker;
 import io.zeebe.clustertestbench.worker.DeleteClusterInCamundaCloudWorker;
+import io.zeebe.clustertestbench.worker.MapNamesToUUIDsWorker;
 import io.zeebe.clustertestbench.worker.NotifyEngineersWorker;
 import io.zeebe.clustertestbench.worker.RecordTestResultWorker;
 import io.zeebe.clustertestbench.worker.SequentialTestLauncher;
@@ -112,7 +113,7 @@ public class Bootstrap implements Callable<Integer> {
 
 		final OAuthCredentialsProvider cred = buildCredentialsProvider();
 
-		try (final ZeebeClient client = ZeebeClient.newClientBuilder().brokerContactPoint(contactPoint)
+		try (final ZeebeClient client = ZeebeClient.newClientBuilder().numJobWorkerExecutionThreads(50).brokerContactPoint(contactPoint)
 				.credentialsProvider(cred).build();) {
 			client.newTopologyRequest().send().join();
 
@@ -124,19 +125,7 @@ public class Bootstrap implements Callable<Integer> {
 				return -1;
 			}
 
-			registerWorker(client, "create-zeebe-cluster-in-camunda-cloud-job",
-					new CreateClusterInCamundaCloudWorker(cloudApiUrl, cloudApiAuthenticationServerUrl,
-							cloudApiAudience, cloudApiClientId, cloudApiClientSecret),
-					Duration.ofMinutes(18));
-			registerWorker(client, "run-sequential-test-job", new SequentialTestLauncher(), Duration.ofMinutes(30));
-			registerWorker(client, "record-test-result-job", new RecordTestResultWorker(reportSheetID),
-					Duration.ofSeconds(10));
-			registerWorker(client, "notify-engineers-job", new NotifyEngineersWorker(slackToken),
-					Duration.ofSeconds(10));
-			registerWorker(client, "destroy-zeebe-cluster-in-camunda-cloud-job",
-					new DeleteClusterInCamundaCloudWorker(cloudApiUrl, cloudApiAuthenticationServerUrl,
-							cloudApiAudience, cloudApiClientId, cloudApiClientSecret),
-					Duration.ofSeconds(10));
+			registerWorkers(client);
 
 			MockBootstrapper mockBootstrapper = new MockBootstrapper(client, jobsToMock);
 			mockBootstrapper.registerMockWorkers();
@@ -150,21 +139,40 @@ public class Bootstrap implements Callable<Integer> {
 			});
 
 			Map<String, Object> variables = new HashMap<>();
-			variables.put("clusterPlans", Arrays.asList("736d9100-0155-4af5-be14-b09c42de8417"));
-			variables.put("dockerImage", "fcb8c48e-e320-4ae7-8299-3fb95e340feb");
-			variables.put("channelId", "cf355219-cc2d-4266-83e1-2430998ddf30");
-			variables.put("regionId", "deadbeef-eaea-4bd3-972a-70203f150d88");
+			variables.put("clusterPlans", Arrays.asList("Development", "Production - S", "Production - M" , "Production - L"));
+			variables.put("generation", "Zeebe 0.24.2");
+			variables.put("channel", "Internal Dev");
+			variables.put("region", "Europe West 1D");
 			variables.put("sequentialTestParams", SequentialTestParameters.defaultParams());
-			
 
-			logger.log(Level.INFO, "Starting workflow instance of 'run-all-tests-in-camunda-cloud-per-cluster-plan-process'");
-			client.newCreateInstanceCommand().bpmnProcessId("run-all-tests-in-camunda-cloud-per-cluster-plan-process").latestVersion().variables(variables).send()
-					.join();
+			logger.log(Level.INFO,
+					"Starting workflow instance of 'run-all-tests-in-camunda-cloud-per-cluster-plan-process'");
+			client.newCreateInstanceCommand().bpmnProcessId("run-all-tests-in-camunda-cloud-per-cluster-plan-process")
+					.latestVersion().variables(variables).send().join();
 
 			waitUntilSystemInput("exit");
 		}
 
 		return 0;
+	}
+
+	private void registerWorkers(final ZeebeClient client) {
+		registerWorker(
+				client, "map-names-to-uuids-job", new MapNamesToUUIDsWorker(cloudApiUrl,
+						cloudApiAuthenticationServerUrl, cloudApiAudience, cloudApiClientId, cloudApiClientSecret),
+				Duration.ofSeconds(10));
+		registerWorker(
+				client, "create-zeebe-cluster-in-camunda-cloud-job", new CreateClusterInCamundaCloudWorker(cloudApiUrl,
+						cloudApiAuthenticationServerUrl, cloudApiAudience, cloudApiClientId, cloudApiClientSecret),
+				Duration.ofMinutes(18));
+		registerWorker(client, "run-sequential-test-job", new SequentialTestLauncher(), Duration.ofMinutes(30));
+		registerWorker(client, "record-test-result-job", new RecordTestResultWorker(reportSheetID),
+				Duration.ofSeconds(10));
+		registerWorker(client, "notify-engineers-job", new NotifyEngineersWorker(slackToken), Duration.ofSeconds(10));
+		registerWorker(
+				client, "destroy-zeebe-cluster-in-camunda-cloud-job", new DeleteClusterInCamundaCloudWorker(cloudApiUrl,
+						cloudApiAuthenticationServerUrl, cloudApiAudience, cloudApiClientId, cloudApiClientSecret),
+				Duration.ofSeconds(10));
 	}
 
 	private void registerWorker(ZeebeClient client, String jobType, JobHandler jobHandler, Duration timeout) {

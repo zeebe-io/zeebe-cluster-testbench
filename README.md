@@ -37,10 +37,10 @@ This workflow runs all tests in a fresh cluster in Camunda Cloud in different cl
  
 | Inputs | Description | Type |
 | ------ | ----------- | ---- | 
-| `dockerImage` | UUID of the generation for the cluster | `String` |
-| `clusterPlans` | array of UUIDs of the cluster plans for the clusters | `List<String>` |
-| `channelId` | UUID of the channel for the cluster | `String` |
-| `regionId` | UUID of the region for the cluster | `String` |
+| `generation` | name of the generation for the cluster | `String` |
+| `clusterPlans` | names of the cluster plans for the clusters | `List<String>` |
+| `channel` | name of the channel for the cluster | `String` |
+| `region` | name of the region for the cluster | `String` |
 | `sequentialTestParams` | Settings to parameterize the sequential test | `SequentialTestParameters` |
 
 ### Run All Tests in Camunda Cloud per Region
@@ -53,10 +53,10 @@ This workflow runs all tests in a fresh cluster in Camunda Cloud in different re
  
 | Inputs | Description | Type |
 | ------ | ----------- | ---- | 
-| `dockerImage` | UUID of the generation for the cluster | `String` |
-| `clusterPlan` | array of UUIDs of the cluster plans for the clusters | `String` |
-| `channelId` | UUID of the channel for the cluster | `String` |
-| `regions` | List of UUID of the regions for the clusters | `List<String>` |
+| `generation` | name of the generation for the cluster | `String` |
+| `clusterPlan` | name of the cluster plan for the cluster | `String` |
+| `channel` | name of the channel for the cluster | `String` |
+| `regions` | names of the regions for the clusters | `List<String>` |
 | `sequentialTestParams` | Settings to parameterize the sequential test | `SequentialTestParameters` |
 
 ### Run All Tests in Camunda Cloud 
@@ -71,11 +71,13 @@ Currently, it only has steps for the _sequential test_, but this could be extend
  
 | Inputs | Description | Type |
 | ------ | ----------- | ---- | 
-| `dockerImage` | UUID of the generation for the cluster | `String` |
-| `clusterPlan` | UUID of the cluster plan for the cluster | `String` |
-| `channelId` | UUID of the channel for the cluster | `String` |
-| `regionId` | UUID of the region for the cluster | `String` |
+| `generation`/`generationUUID` (optional) | name/UUID of the generation for the cluster | `String` |
+| `clusterPlan`/`clusterPlanUUID` | name/UUID of the cluster plan for the cluster | `String` |
+| `channel`/`channelUUID` | name/UUID of the channel for the cluster | `String` |
+| `region`/`regionUUID` | name/UUID of the region for the cluster | `String` |
 | `sequentialTestParams` | Settings to parameterize the sequential test | `SequentialTestParameters` |
+
+The cluster parameters can either be specified using human-friendly names or machine-friendly UUIDs. Both are possible and the counterpart will be found as part of the process. The generation can be ommitted. In that case the channel's default generation will be used.
 
 | Outputs | Description | Type |
 | ------- | ----------- | ---- |
@@ -93,16 +95,20 @@ This workflow runs the sequential test in a fresh cluster in Camunda Cloud:
  
 | Inputs | Description | Type |
 | ------ | ----------- | ---- |
-| `dockerImage` | UUID of the generation for the cluster | `String` |
-| `clusterPlan` | UUID of the cluster plan for the cluster | `String` |
-| `channelId` | UUID of the channel for the cluster | `String` |
-| `regionId` | UUID of the region for the cluster | `String` |
+| `generation` + `generationUUID` | name + UUID of the generation for the cluster | `String` |
+| `clusterPlan` +`clusterPlanUUID` | name + UUID of the cluster plan for the cluster | `String` |
+| `channel` + `channelUUID` | name + UUID of the channel for the cluster | `String` |
+| `region` + `regionUUID` | name + UUID of the region for the cluster | `String` |
 | `testParams` | Settings to parameterize the sequential test | `SequentialTestParameters` |
+
+The cluster parameters shall be given as name and UUID. The UUIDs are used to create the cluster. The names are used for the recording of test results
 
 | Runtime Variables | Description | Type |
 | ----------------- | ----------- | ---- |
 | `clusterId` | ID of the cluster in which Zeebe is tested | `String` |
+| `clusterName` | Name of the cluster in which Zeebe is tested | `String` |
 | `authenticationDetails` | Credentials to authenticate against the cluster | `CamundaCloudAutenticationDetails` |
+| `operateURL` | URL to Operate web interface | `String` |
 
 
 | Outputs | Description | Type |
@@ -114,10 +120,11 @@ This workflow runs the sequential test in a fresh cluster in Camunda Cloud:
 
 | Service Task | ID / Job Type | Input | Output | Headers |
 | ------------ | ------------- | ----- | ------ | ------- |
-| Create Zeebe Cluster in Camunda cloud | `creae-zeebe-cluster-in-camunda-cloud` / `create-zeebe-cluster-in-camunda-cloud-job` | `dockerImage`, `clusterPlan`, `regionId`, `channelId` | `clusterId`, `authenticationDetails` |   
+| Map names to UUIDs | `map-names-to-uuids` / `map-names-to-uuids-job` | `channel`, `clusterPlan`, `region`, `generation`, `channelUUID`, `clusterPlanUUID`, `regionUUID`, `generationUUID` | `channel`, `clusterPlan`, `region`, `generation`, `channelUUID`, `clusterPlanUUID`, `regionUUID`, `generationUUID` |  
+| Create Zeebe Cluster in Camunda cloud | `creae-zeebe-cluster-in-camunda-cloud` / `create-zeebe-cluster-in-camunda-cloud-job` | `channelUUID`, `clusterPlanUUID`, `regionUUID`, `generationUUID` | `clusterId`, `clusterName`, `operateURL`, `authenticationDetails` |   
 | Run Sequential Test | `run-sequential-test` / `run-sequential-test-job` | `authenticationDetails`, `testParams` | `testResult`, `testReport` 
-| Record Test Result | `record-test-result` / `record-test-result-job` | `dockerImage`, `clusterPlan`, `clusterId`, `testReport` |
-| Notify Engineers | `notify-engineers` / `notify-engineers-job` | `dockerImage`, `clusterPlan`, `clusterId`, `testReport` | | `channel` - Slack channel to post to, `testType` - test type (will be part of the error message
+| Record Test Result | `record-test-result` / `record-test-result-job` |`channel`, `clusterPlan`, `region`, `generation` `clusterId`, `clusterName`, `operateURL`, `testReport` |
+| Notify Engineers | `notify-engineers` / `notify-engineers-job` | `generation`, `clusterPlan`, `clusterName`, `testReport` | | `channel` - Slack channel to post to, `testType` - test type (will be part of the error message
 | Destroy Zeebe Cluster in Camunda CLoud | `destroy-zeebe-cluster-in-camunda-cloud` / `destroy-zeebe-cluster-in-camunda-cloud-job` | `clusterId` |
  
 ## Messages
