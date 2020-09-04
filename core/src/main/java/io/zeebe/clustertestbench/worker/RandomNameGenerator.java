@@ -4,7 +4,7 @@ import java.util.Random;
 
 public class RandomNameGenerator {
 
-	private static final String[] event = new String[] { "none", "message", "timer", "conditional", "linK", "signal",
+	private static final String[] event = new String[] { "none", "message", "timer", "conditional", "link", "signal",
 			"error", "escalation", "termination", "compensation", "cancel", "multiple", "multiple_parallel" };
 
 	private static final String[] gateway = new String[] { "exclusive", "inclusive", "parallel", "event" };
