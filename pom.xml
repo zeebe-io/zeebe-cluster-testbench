@@ -36,7 +36,7 @@
 	</parent>
 
 	<modules>
-        <module>core</module>
+		<module>core</module>
 		<module>cloud-client</module>
 		<module>testdriver/api</module>
 		<module>testdriver/sequential</module>
@@ -117,7 +117,6 @@
 					<source>8</source>
 				</configuration>
 			</plugin>
-
 
 			<!-- JaCoCo Plugin -->
 			<plugin>
