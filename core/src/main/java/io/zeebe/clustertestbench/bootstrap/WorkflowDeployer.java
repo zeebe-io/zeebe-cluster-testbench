@@ -13,7 +13,7 @@ import java.util.logging.Logger;
 import io.zeebe.client.ZeebeClient;
 
 public class WorkflowDeployer {
-	private static final Logger logger = Logger.getLogger("io.zeebe.clustertestbench.bootstrap");
+	private static final Logger logger = Logger.getLogger(WorkflowDeployer.class.getPackageName());
 
 	private final ZeebeClient zeebeClient;
 

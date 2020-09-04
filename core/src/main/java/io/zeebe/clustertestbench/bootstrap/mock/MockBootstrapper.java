@@ -24,7 +24,7 @@ import io.zeebe.client.api.worker.JobWorker;
  */
 public class MockBootstrapper {
 
-	private static final Logger logger = Logger.getLogger("io.zeebe.clustertestbench.bootstrap.mock");
+	private static final Logger logger = Logger.getLogger(MockBootstrapper.class.getPackageName());
 
 	private final List<String> jobsToMock;
 

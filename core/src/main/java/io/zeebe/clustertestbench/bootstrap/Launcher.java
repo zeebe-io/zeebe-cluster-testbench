@@ -2,6 +2,7 @@ package io.zeebe.clustertestbench.bootstrap;
 
 import static java.lang.Runtime.getRuntime;
 
+import java.io.IOException;
 import java.time.Duration;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -9,7 +10,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Scanner;
-import java.util.concurrent.Callable;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -19,8 +19,6 @@ import io.zeebe.client.api.worker.JobWorker;
 import io.zeebe.client.impl.oauth.OAuthCredentialsProvider;
 import io.zeebe.client.impl.oauth.OAuthCredentialsProviderBuilder;
 import io.zeebe.clustertestbench.bootstrap.mock.MockBootstrapper;
-import io.zeebe.clustertestbench.cloud.request.CreateClusterRequest;
-import io.zeebe.clustertestbench.cloud.response.CreateClusterResponse;
 import io.zeebe.clustertestbench.testdriver.sequential.SequentialTestParameters;
 import io.zeebe.clustertestbench.worker.CreateClusterInCamundaCloudWorker;
 import io.zeebe.clustertestbench.worker.DeleteClusterInCamundaCloudWorker;
@@ -30,91 +28,41 @@ import io.zeebe.clustertestbench.worker.RecordTestResultWorker;
 import io.zeebe.clustertestbench.worker.SequentialTestLauncher;
 import io.zeebe.model.bpmn.BpmnModelInstance;
 import io.zeebe.workflow.generator.builder.SequenceWorkflowBuilder;
-import picocli.CommandLine;
-import picocli.CommandLine.Command;
-import picocli.CommandLine.Option;
 
-@Command(name = "bootstrap", mixinStandardHelpOptions = true, description = "Deploys workflows to the test orchestration Zeebe cluster", exitCodeListHeading = "Exit Codes:%n", exitCodeList = {
-		" 0: Successful program execution", "-1: Unsuccessful program execution" })
-public class Bootstrap implements Callable<Integer> {
+public class Launcher {
 
-	private static final Logger logger = Logger.getLogger("io.zeebe.clustertestbench.bootstrap");
+	private static final Logger logger = Logger.getLogger(Launcher.class.getPackageName());
 
+	// jobs to replace with mocks (during development)
 	private static final List<String> jobsToMock = Arrays.asList();
-
-	@Option(names = { "-r",
-			"--report-sheet-id" }, description = "ID of the Google Sheet into which the test reports will be written", required = true)
-	private String reportSheetID;
-
-	@Option(names = { "-t", "--slack-token" }, description = "Token to access slack API", required = true)
-	private String slackToken;
-
-	// details to talk to the Zeebe cluster that orchestrates the test processes
-	@Option(names = { "-c", "--contact-point" }, description = "Contact point for the Zeebe cluster", required = true)
-	private String contactPoint;
-
-	@Option(names = { "-a",
-			"--audience" }, description = "(Optional) Zeebe token audience. If omitted it will be derived from the contact point")
-	private String audience;
-
-	@Option(names = { "-s", "--clinet-secret" }, description = "Client secret for authentication", required = true)
-	private String clientSecret;
-
-	@Option(names = { "-i", "--clinet-id" }, description = "Client id for authentication", required = true)
-	private String clientId;
-
-	@Option(names = { "-u", "--authentication-server-url" }, description = "URL for the authentication server")
-	private String authenticationServerUrl;
-
-	// details to talk to Camunda Cloud
-	@Option(names = { "--cloud-api-url" }, description = "Contact point for the Camunda cloud API", required = true)
-	private String cloudApiUrl;
-
-	@Option(names = { "-ca", "--cloud-audience" }, description = "Camunda cloud token audience", required = true)
-	private String cloudApiAudience;
-
-	@Option(names = { "-cs",
-			"--cloud-client-secret" }, description = "Client secret for Caunda cloud authentication", required = true)
-	private String cloudApiClientSecret;
-
-	@Option(names = { "-ci",
-			"--cloud-client-id" }, description = "Client id for Camunda cloud authentication", required = true)
-	private String cloudApiClientId;
-
-	@Option(names = { "-cu",
-			"--cloud-authentication-server-url" }, description = "URL for the Camunda cloud authentication server")
-	private String cloudApiAuthenticationServerUrl;
 
 	private final Map<String, JobWorker> registeredJobWorkers = new HashMap<>();
 
-	public static void main(String[] args) {
-		int exitCode = new CommandLine(new Bootstrap()).execute(args);
-		System.exit(exitCode);
+	private final String testOrchestrationContactPoint;
+	private final OAuthAuthenticationDetails testOrchestrationAuthenticatonDetails;
+
+	private final String cloudApiUrl;
+	private final OAuthAuthenticationDetails cloudApiAuthenticationDetails;
+
+	private final String reportSheetID;
+	private final String slackToken;
+
+	public Launcher(String testOrchestrationContactPoint,
+			OAuthAuthenticationDetails testOrchestrationAuthenticatonDetails, String cloudApiUrl,
+			OAuthAuthenticationDetails cloudApiAuthenticationDetails, String reportSheetID, String slackToken) {
+		this.testOrchestrationContactPoint = testOrchestrationContactPoint;
+		this.testOrchestrationAuthenticatonDetails = testOrchestrationAuthenticatonDetails;
+		this.cloudApiUrl = cloudApiUrl;
+		this.cloudApiAuthenticationDetails = cloudApiAuthenticationDetails;
+		this.reportSheetID = reportSheetID;
+		this.slackToken = slackToken;
 	}
 
-	@Override
-	public Integer call() throws Exception {
-		logger.log(Level.INFO, "Bootstrapper starting");
-
-		deriveMissingOptions();
-
-		logger.log(Level.INFO, "Testbench cluster - contactPoint: " + contactPoint);
-		logger.log(Level.INFO, "Testbench cluster - audience: " + audience);
-		logger.log(Level.INFO, "Testbench cluster - clientId: " + clientId);
-
-		if (authenticationServerUrl != null) {
-			logger.log(Level.INFO, "Testbench cluster - authorizationServerUrl:" + authenticationServerUrl);
-		}
-
-		logger.log(Level.INFO, "Camunda cloud - API URL: " + cloudApiUrl);
-		logger.log(Level.INFO, "Camunda cloud - audience: " + cloudApiAudience);
-		logger.log(Level.INFO, "Camunda cloud - clientId: " + cloudApiClientId);
-		logger.log(Level.INFO, "Camunda cloud - authorizationServerUrl:" + cloudApiAuthenticationServerUrl);
-
+	public void launch() throws IOException {
 		final OAuthCredentialsProvider cred = buildCredentialsProvider();
 
-		try (final ZeebeClient client = ZeebeClient.newClientBuilder().numJobWorkerExecutionThreads(50).brokerContactPoint(contactPoint)
-				.credentialsProvider(cred).build();) {
+		try (final ZeebeClient client = ZeebeClient.newClientBuilder().numJobWorkerExecutionThreads(50)
+				.brokerContactPoint(testOrchestrationContactPoint).credentialsProvider(cred).build();) {
 			client.newTopologyRequest().send().join();
 
 			logger.log(Level.INFO, "Connection to cluster established");
@@ -122,7 +70,7 @@ public class Bootstrap implements Callable<Integer> {
 			boolean success = new WorkflowDeployer(client).deployWorkflowsInClasspathFolder("workflows");
 
 			if (!success) {
-				return -1;
+				throw new IllegalStateException("Deployment failed");
 			}
 
 			registerWorkers(client);
@@ -139,7 +87,8 @@ public class Bootstrap implements Callable<Integer> {
 			});
 
 			Map<String, Object> variables = new HashMap<>();
-			variables.put("clusterPlans", Arrays.asList("Development", "Production - S", "Production - M" , "Production - L"));
+			variables.put("clusterPlans",
+					Arrays.asList("Development", "Production - S", "Production - M", "Production - L"));
 			variables.put("generation", "Zeebe 0.24.2");
 			variables.put("channel", "Internal Dev");
 			variables.put("region", "Europe West 1D");
@@ -152,11 +101,16 @@ public class Bootstrap implements Callable<Integer> {
 
 			waitUntilSystemInput("exit");
 		}
-
-		return 0;
 	}
 
 	private void registerWorkers(final ZeebeClient client) {
+		final OAuthAuthenticationDetails authenticationDetails = cloudApiAuthenticationDetails;
+
+		final String cloudApiAuthenticationServerUrl = authenticationDetails.getServerURL();
+		final String cloudApiAudience = authenticationDetails.getAudience();
+		final String cloudApiClientId = authenticationDetails.getClientId();
+		final String cloudApiClientSecret = authenticationDetails.getClientSecret();
+
 		registerWorker(
 				client, "map-names-to-uuids-job", new MapNamesToUUIDsWorker(cloudApiUrl,
 						cloudApiAuthenticationServerUrl, cloudApiAudience, cloudApiClientId, cloudApiClientSecret),
@@ -193,18 +147,17 @@ public class Bootstrap implements Callable<Integer> {
 	}
 
 	private OAuthCredentialsProvider buildCredentialsProvider() {
-		if (authenticationServerUrl == null) {
-			return new OAuthCredentialsProviderBuilder().audience(audience).clientId(clientId)
-					.clientSecret(clientSecret).build();
-		} else {
-			return new OAuthCredentialsProviderBuilder().authorizationServerUrl(authenticationServerUrl)
-					.audience(audience).clientId(clientId).clientSecret(clientSecret).build();
-		}
-	}
+		final OAuthAuthenticationDetails authenticationDetails = testOrchestrationAuthenticatonDetails;
 
-	private void deriveMissingOptions() {
-		if (audience == null) {
-			audience = contactPoint.substring(0, contactPoint.lastIndexOf(":"));
+		if (authenticationDetails.getServerURL() == null) {
+			// use default server
+			return new OAuthCredentialsProviderBuilder().audience(authenticationDetails.getAudience())
+					.clientId(authenticationDetails.getClientId()).clientSecret(authenticationDetails.getClientSecret())
+					.build();
+		} else {
+			return new OAuthCredentialsProviderBuilder().authorizationServerUrl(authenticationDetails.getServerURL())
+					.audience(authenticationDetails.getAudience()).clientId(authenticationDetails.getClientId())
+					.clientSecret(authenticationDetails.getClientSecret()).build();
 		}
 	}
 

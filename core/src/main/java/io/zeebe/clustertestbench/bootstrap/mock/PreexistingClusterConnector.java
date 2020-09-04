@@ -21,7 +21,7 @@ import io.zeebe.clustertestbench.testdriver.impl.CamundaCLoudAuthenticationDetai
  * of an existing cluster
  */
 public class PreexistingClusterConnector implements JobHandler {
-	private static final Logger logger = Logger.getLogger("io.zeebe.clustertestbench.bootstrap.mock");
+	private static final Logger logger = Logger.getLogger(PreexistingClusterConnector.class.getPackageName());
 
 	private final Properties properties = new Properties();
 
