@@ -1,20 +1,28 @@
 package io.zeebe.clustertestbench.bootstrap;
 
+import java.net.URL;
 import java.util.Map;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Bootstrapper that reads its values from environment variables
  */
 public class BootstrapFromEnvVars {
 
-	private static final Logger logger = Logger.getLogger(BootstrapFromEnvVars.class.getPackageName());
+	private static final Logger logger = LoggerFactory.getLogger(BootstrapFromEnvVars.class);
 
 	private static final String PREFIX = "ZCTB_"; // "Zeebe Cluster Test Bench"
 
 	public static void main(String[] args) {
-		logger.log(Level.INFO, "Bootstrapper starting");
+		logger.info( "Bootstrapper starting");
+		
+		try {
+		 URL url = Thread.currentThread().getContextClassLoader().getResource("log4j.xml");
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 
 		try {
 
@@ -53,7 +61,7 @@ public class BootstrapFromEnvVars {
 			new Launcher(contactPoint, testOrchestrationAuthenticatonDetails, cloudApiUrl,
 					cloudApiAuthenticationDetails, reportSheetID, slackToken).launch();
 		} catch (Throwable t) {
-			logger.log(Level.SEVERE, t.getMessage(), t);
+			logger.error(t.getMessage(), t);
 			System.exit(-1);
 		}
 	}

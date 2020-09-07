@@ -4,9 +4,10 @@ import static org.awaitility.Awaitility.with;
 
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
-import java.util.logging.Logger;
 
 import org.awaitility.core.ConditionTimeoutException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
@@ -27,7 +28,7 @@ import io.zeebe.clustertestbench.testdriver.impl.CamundaCLoudAuthenticationDetai
 
 public class CreateClusterInCamundaCloudWorker implements JobHandler {
 
-	private static final Logger logger = Logger.getLogger("io.zeebe.clustertestbench.worker");
+	private static final Logger logger = LoggerFactory.getLogger(CreateClusterInCamundaCloudWorker.class);
 
 	private static final RandomNameGenerator NAME_GENRATOR = new RandomNameGenerator();
 

@@ -5,8 +5,9 @@ import static java.util.Objects.requireNonNull;
 import java.time.Duration;
 import java.util.Map;
 import java.util.Optional;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import io.grpc.Status.Code;
 import io.grpc.StatusRuntimeException;
@@ -28,7 +29,7 @@ import io.zeebe.workflow.generator.builder.SequenceWorkflowBuilder;
 
 public class SequentialTestDriver implements TestDriver {
 
-	private static final Logger logger = Logger.getLogger("io.zeebe.clustertestbench.testdriver.simple");
+	private static final Logger logger = LoggerFactory.getLogger(SequentialTestDriver.class);
 
 	private static final String JOB_TYPE = "test-job";
 	private static final String WORKFLOW_ID = "sequential-test-workflow";
@@ -38,7 +39,7 @@ public class SequentialTestDriver implements TestDriver {
 
 	public SequentialTestDriver(CamundaCLoudAuthenticationDetailsImpl authenticationDetails,
 			SequentialTestParameters testParameters) {
-		logger.log(Level.INFO, "Creating Sequential Test Driver");
+		logger.info( "Creating Sequential Test Driver");
 		final OAuthCredentialsProvider cred = buildCredentialsProvider(requireNonNull(authenticationDetails));
 
 		client = ZeebeClient.newClientBuilder().brokerContactPoint(authenticationDetails.getContactPoint())
@@ -55,12 +56,12 @@ public class SequentialTestDriver implements TestDriver {
 
 		BpmnModelInstance workflow = builder.buildWorkflow(WORKFLOW_ID);
 
-		logger.log(Level.INFO, "Deploying test workflow:" + WORKFLOW_ID);
+		logger.info( "Deploying test workflow:" + WORKFLOW_ID);
 		client.newDeployCommand().addWorkflowModel(workflow, WORKFLOW_ID + ".bpmn").send().join();
 	}
 
 	public TestReport runTest() {
-		logger.log(Level.INFO, "Starting Sequential Test ");
+		logger.info( "Starting Sequential Test ");
 
 		try (TestReportImpl testReport = new TestReportImpl(buildTestReportMetaData());
 				TestTimingContext overallTimingContext = new TestTimingContext(
@@ -123,7 +124,7 @@ public class SequentialTestDriver implements TestDriver {
 	private static class MoveAlongJobHandler implements JobHandler {
 		@Override
 		public void handle(final JobClient client, final ActivatedJob job) {
-			logger.log(Level.INFO, job.toString());
+			logger.info( job.toString());
 			client.newCompleteCommand(job.getKey()).send().join();
 		}
 	}

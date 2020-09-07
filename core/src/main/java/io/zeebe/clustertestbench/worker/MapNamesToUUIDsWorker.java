@@ -2,7 +2,9 @@ package io.zeebe.clustertestbench.worker;
 
 import java.util.Optional;
 import java.util.function.Predicate;
-import java.util.logging.Logger;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import io.zeebe.client.api.response.ActivatedJob;
 import io.zeebe.client.api.worker.JobClient;
@@ -17,7 +19,7 @@ import io.zeebe.clustertestbench.cloud.response.RegionInfo;
 
 public class MapNamesToUUIDsWorker implements JobHandler {
 
-	private static final Logger logger = Logger.getLogger("io.zeebe.clustertestbench.worker");
+	private static final Logger logger = LoggerFactory.getLogger(MapNamesToUUIDsWorker.class);
 
 	private final CloudAPIClient cloudClient;
 

@@ -6,8 +6,9 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.Map;
 import java.util.Properties;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import io.zeebe.client.api.response.ActivatedJob;
 import io.zeebe.client.api.worker.JobClient;
@@ -21,7 +22,7 @@ import io.zeebe.clustertestbench.testdriver.impl.CamundaCLoudAuthenticationDetai
  * of an existing cluster
  */
 public class PreexistingClusterConnector implements JobHandler {
-	private static final Logger logger = Logger.getLogger(PreexistingClusterConnector.class.getPackageName());
+	private static final Logger logger = LoggerFactory.getLogger(PreexistingClusterConnector.class);
 
 	private final Properties properties = new Properties();
 
@@ -33,14 +34,15 @@ public class PreexistingClusterConnector implements JobHandler {
 	public void handle(JobClient client, ActivatedJob job) throws Exception {
 		String clusterPlan = (String) job.getVariablesAsMap().get("clusterPlan");
 
-		logger.log(Level.INFO, "PreexistingClusterConnector: looking up authentication details for " + clusterPlan);
+		logger.info( "PreexistingClusterConnector: looking up authentication details for " + clusterPlan);
 
 		CamundaCloudAuthenticationDetails authenticationDetails = new AuthenticationDetailsBuilder(clusterPlan,
 				properties).build();
 
-		logger.log(Level.INFO, "PreexistingClusterConnector: found authentication details " + authenticationDetails);
-		
-		client.newCompleteCommand(job.getKey()).variables(Map.of(CamundaCloudAuthenticationDetails.VARIABLE_KEY, authenticationDetails, "clusterId", authenticationDetails.getContactPoint())).send();
+		logger.info( "PreexistingClusterConnector: found authentication details " + authenticationDetails);
+
+		client.newCompleteCommand(job.getKey()).variables(Map.of(CamundaCloudAuthenticationDetails.VARIABLE_KEY,
+				authenticationDetails, "clusterId", authenticationDetails.getContactPoint())).send();
 	}
 
 	private static class AuthenticationDetailsBuilder {

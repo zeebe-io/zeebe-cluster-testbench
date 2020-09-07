@@ -9,7 +9,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
-import java.util.logging.Logger;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import io.zeebe.client.ZeebeClient;
 import io.zeebe.client.api.response.ActivatedJob;
@@ -24,7 +26,7 @@ import io.zeebe.client.api.worker.JobWorker;
  */
 public class MockBootstrapper {
 
-	private static final Logger logger = Logger.getLogger(MockBootstrapper.class.getPackageName());
+	private static final Logger logger = LoggerFactory.getLogger(MockBootstrapper.class);
 
 	private final List<String> jobsToMock;
 
@@ -44,7 +46,7 @@ public class MockBootstrapper {
 	}
 
 	private void registerMockWorker(String jobType, JobHandler jobHandler) {
-		logger.log(Level.INFO,
+		logger.info(
 				"Registering mock job worker " + jobHandler.getClass().getSimpleName() + " for: " + jobType);
 
 		final JobWorker workerRegistration = client.newWorker().jobType(jobType).handler(jobHandler)
@@ -52,7 +54,7 @@ public class MockBootstrapper {
 
 		registeredJobWorkers.put(jobType, workerRegistration);
 
-		logger.log(Level.INFO, "Job worker opened and receiving jobs.");
+		logger.info( "Job worker opened and receiving jobs.");
 	}
 
 	public void stop() {
@@ -62,7 +64,7 @@ public class MockBootstrapper {
 	private static class MoveAlongJobHandler implements JobHandler {
 		@Override
 		public void handle(final JobClient client, final ActivatedJob job) {
-			logger.log(Level.INFO, job.toString());
+			logger.info( job.toString());
 			client.newCompleteCommand(job.getKey()).send().join();
 		}
 	}

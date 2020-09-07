@@ -7,13 +7,14 @@ import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import io.zeebe.client.ZeebeClient;
 
 public class WorkflowDeployer {
-	private static final Logger logger = Logger.getLogger(WorkflowDeployer.class.getPackageName());
+	private static final Logger logger = LoggerFactory.getLogger(WorkflowDeployer.class);
 
 	private final ZeebeClient zeebeClient;
 
@@ -25,14 +26,14 @@ public class WorkflowDeployer {
 		boolean success = true;
 		List<String> workflowsToDeploy = getResourceFiles(folderName);
 
-		logger.log(Level.INFO, "Found workflows to deploy:" + workflowsToDeploy);
+		logger.info("Found workflows to deploy:" + workflowsToDeploy);
 
 		for (String workflow : workflowsToDeploy) {
 			try {
-				logger.log(Level.INFO, "Deploying " + workflow);
+				logger.info("Deploying " + workflow);
 				zeebeClient.newDeployCommand().addResourceFromClasspath(folderName + "/" + workflow).send().join();
 			} catch (Throwable t) {
-				logger.log(Level.SEVERE, t.getMessage(), t);
+				logger.error(t.getMessage(), t);
 				success = false;
 			}
 		}

@@ -10,8 +10,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Scanner;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import io.zeebe.client.ZeebeClient;
 import io.zeebe.client.api.worker.JobHandler;
@@ -19,7 +20,6 @@ import io.zeebe.client.api.worker.JobWorker;
 import io.zeebe.client.impl.oauth.OAuthCredentialsProvider;
 import io.zeebe.client.impl.oauth.OAuthCredentialsProviderBuilder;
 import io.zeebe.clustertestbench.bootstrap.mock.MockBootstrapper;
-import io.zeebe.clustertestbench.testdriver.sequential.SequentialTestParameters;
 import io.zeebe.clustertestbench.worker.CreateClusterInCamundaCloudWorker;
 import io.zeebe.clustertestbench.worker.DeleteClusterInCamundaCloudWorker;
 import io.zeebe.clustertestbench.worker.MapNamesToUUIDsWorker;
@@ -31,7 +31,7 @@ import io.zeebe.workflow.generator.builder.SequenceWorkflowBuilder;
 
 public class Launcher {
 
-	private static final Logger logger = Logger.getLogger(Launcher.class.getPackageName());
+	private static final Logger logger = LoggerFactory.getLogger(Launcher.class);
 
 	// jobs to replace with mocks (during development)
 	private static final List<String> jobsToMock = Arrays.asList();
@@ -59,13 +59,14 @@ public class Launcher {
 	}
 
 	public void launch() throws IOException {
+	
 		final OAuthCredentialsProvider cred = buildCredentialsProvider();
 
 		try (final ZeebeClient client = ZeebeClient.newClientBuilder().numJobWorkerExecutionThreads(50)
 				.brokerContactPoint(testOrchestrationContactPoint).credentialsProvider(cred).build();) {
 			client.newTopologyRequest().send().join();
 
-			logger.log(Level.INFO, "Connection to cluster established");
+			logger.info("Connection to cluster established");
 
 			boolean success = new WorkflowDeployer(client).deployWorkflowsInClasspathFolder("workflows");
 
@@ -130,20 +131,20 @@ public class Launcher {
 	}
 
 	private void registerWorker(ZeebeClient client, String jobType, JobHandler jobHandler, Duration timeout) {
-		logger.log(Level.INFO, "Registering job worker " + jobHandler.getClass().getSimpleName() + " for: " + jobType);
+		logger.info("Registering job worker " + jobHandler.getClass().getSimpleName() + " for: " + jobType);
 
 		final JobWorker workerRegistration = client.newWorker().jobType(jobType).handler(jobHandler).timeout(timeout)
 				.open();
 
 		registeredJobWorkers.put(jobType, workerRegistration);
 
-		String workflowId = "execute-job-worker-" + jobType + "-in-isolation";
-		BpmnModelInstance workflow = new SequenceWorkflowBuilder(Optional.of(1), Optional.of(jobType))
-				.buildWorkflow(workflowId);
+//		String workflowId = "execute-job-worker-" + jobType + "-in-isolation";
+//		BpmnModelInstance workflow = new SequenceWorkflowBuilder(Optional.of(1), Optional.of(jobType))
+//				.buildWorkflow(workflowId);
+//
+//		client.newDeployCommand().addWorkflowModel(workflow, workflowId + ".bpmn").send().join();
 
-		client.newDeployCommand().addWorkflowModel(workflow, workflowId + ".bpmn").send().join();
-
-		logger.log(Level.INFO, "Job worker opened and receiving jobs.");
+		logger.info("Job worker opened and receiving jobs.");
 	}
 
 	private OAuthCredentialsProvider buildCredentialsProvider() {

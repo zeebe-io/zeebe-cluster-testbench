@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
       - name: testbench
-        image: gcr.io/zeebe-io/zeebe-cluster-testbench:0.0.1-SNAPSHOT
+        image: gcr.io/zeebe-io/zeebe-cluster-testbench:latest
         imagePullPolicy: Always
         env:
           - name: ZCTB_AUTHENTICATION_SERVER_URL
@@ -59,4 +59,4 @@ spec:
             memory: 256Mi
           requests:
             cpu: 2
-            memory: 1002Mi
+            memory: 100Mi

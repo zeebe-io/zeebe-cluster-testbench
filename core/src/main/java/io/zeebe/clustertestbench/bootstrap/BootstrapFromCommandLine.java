@@ -1,12 +1,10 @@
 package io.zeebe.clustertestbench.bootstrap;
 
-import java.util.HashMap;
-import java.util.Map;
 import java.util.concurrent.Callable;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
-import io.zeebe.client.api.worker.JobWorker;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import picocli.CommandLine;
 import picocli.CommandLine.Command;
 import picocli.CommandLine.Option;
@@ -15,7 +13,7 @@ import picocli.CommandLine.Option;
 		" 0: Successful program execution", "-1: Unsuccessful program execution" })
 public class BootstrapFromCommandLine implements Callable<Integer> {
 
-	private static final Logger logger = Logger.getLogger(BootstrapFromCommandLine.class.getPackageName());
+	private static final Logger logger = LoggerFactory.getLogger(BootstrapFromCommandLine.class);
 
 	@Option(names = { "-r",
 			"--report-sheet-id" }, description = "ID of the Google Sheet into which the test reports will be written", required = true)
@@ -67,31 +65,34 @@ public class BootstrapFromCommandLine implements Callable<Integer> {
 
 	@Override
 	public Integer call() throws Exception {
-		logger.log(Level.INFO, "Bootstrapper starting");
+
+		logger.info("Bootstrapper starting");
 
 		deriveMissingOptions();
 
-		logger.log(Level.INFO, "Testbench cluster - contactPoint: " + contactPoint);
-		logger.log(Level.INFO, "Testbench cluster - audience: " + audience);
-		logger.log(Level.INFO, "Testbench cluster - clientId: " + clientId);
+		logger.info("Testbench cluster - contactPoint: " + contactPoint);
+		logger.info("Testbench cluster - audience: " + audience);
+		logger.info("Testbench cluster - clientId: " + clientId);
 
 		if (authenticationServerUrl != null) {
-			logger.log(Level.INFO, "Testbench cluster - authorizationServerUrl:" + authenticationServerUrl);
+			logger.info("Testbench cluster - authorizationServerUrl:" + authenticationServerUrl);
 		}
 
-		logger.log(Level.INFO, "Camunda cloud - API URL: " + cloudApiUrl);
-		logger.log(Level.INFO, "Camunda cloud - audience: " + cloudApiAudience);
-		logger.log(Level.INFO, "Camunda cloud - clientId: " + cloudApiClientId);
-		logger.log(Level.INFO, "Camunda cloud - authorizationServerUrl:" + cloudApiAuthenticationServerUrl);
-		
-		final OAuthAuthenticationDetails testOrchestrationAuthenticatonDetails = new OAuthAuthenticationDetails(authenticationServerUrl, audience, clientId, clientSecret);
-		final OAuthAuthenticationDetails cloudApiAuthenticationDetails = new OAuthAuthenticationDetails(cloudApiAuthenticationServerUrl, cloudApiAudience, cloudApiClientId, cloudApiClientSecret);
+		logger.info("Camunda cloud - API URL: " + cloudApiUrl);
+		logger.info("Camunda cloud - audience: " + cloudApiAudience);
+		logger.info("Camunda cloud - clientId: " + cloudApiClientId);
+		logger.info("Camunda cloud - authorizationServerUrl:" + cloudApiAuthenticationServerUrl);
+
+		final OAuthAuthenticationDetails testOrchestrationAuthenticatonDetails = new OAuthAuthenticationDetails(
+				authenticationServerUrl, audience, clientId, clientSecret);
+		final OAuthAuthenticationDetails cloudApiAuthenticationDetails = new OAuthAuthenticationDetails(
+				cloudApiAuthenticationServerUrl, cloudApiAudience, cloudApiClientId, cloudApiClientSecret);
 
 		try {
 			new Launcher(contactPoint, testOrchestrationAuthenticatonDetails, cloudApiUrl,
 					cloudApiAuthenticationDetails, reportSheetID, slackToken).launch();
 		} catch (Throwable t) {
-			logger.log(Level.SEVERE, t.getMessage(), t);
+			logger.error(t.getMessage(), t);
 			System.exit(-1);
 		}
 
