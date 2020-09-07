@@ -16,3 +16,4 @@ buildNumber.properties
 *.iml
 config.properties
 **/secrets
+/secrets.yaml

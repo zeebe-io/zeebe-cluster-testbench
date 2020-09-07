@@ -86,18 +86,18 @@ public class Launcher {
 				}
 			});
 
-			Map<String, Object> variables = new HashMap<>();
-			variables.put("clusterPlans",
-					Arrays.asList("Development", "Production - S", "Production - M", "Production - L"));
-			variables.put("generation", "Zeebe 0.24.2");
-			variables.put("channel", "Internal Dev");
-			variables.put("region", "Europe West 1D");
-			variables.put("sequentialTestParams", SequentialTestParameters.defaultParams());
-
-			logger.log(Level.INFO,
-					"Starting workflow instance of 'run-all-tests-in-camunda-cloud-per-cluster-plan-process'");
-			client.newCreateInstanceCommand().bpmnProcessId("run-all-tests-in-camunda-cloud-per-cluster-plan-process")
-					.latestVersion().variables(variables).send().join();
+//			Map<String, Object> variables = new HashMap<>();
+//			variables.put("clusterPlans",
+//					Arrays.asList("Development", "Production - S", "Production - M", "Production - L"));
+//			variables.put("generation", "Zeebe 0.24.2");
+//			variables.put("channel", "Internal Dev");
+//			variables.put("region", "Europe West 1D");
+//			variables.put("sequentialTestParams", SequentialTestParameters.defaultParams());
+//
+//			logger.log(Level.INFO,
+//					"Starting workflow instance of 'run-all-tests-in-camunda-cloud-per-cluster-plan-process'");
+//			client.newCreateInstanceCommand().bpmnProcessId("run-all-tests-in-camunda-cloud-per-cluster-plan-process")
+//					.latestVersion().variables(variables).send().join();
 
 			waitUntilSystemInput("exit");
 		}
