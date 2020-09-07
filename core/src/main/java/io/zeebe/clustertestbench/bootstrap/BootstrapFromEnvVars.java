@@ -19,12 +19,6 @@ public class BootstrapFromEnvVars {
 		logger.info( "Bootstrapper starting");
 		
 		try {
-		 URL url = Thread.currentThread().getContextClassLoader().getResource("log4j.xml");
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-
-		try {
 
 			// test orchestration Zeebe cluster
 			final String contactPoint = getEnvironmentvariable("CONTACT_POINT", false);

@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Scanner;
+import java.util.concurrent.CountDownLatch;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -59,7 +60,7 @@ public class Launcher {
 	}
 
 	public void launch() throws IOException {
-	
+
 		final OAuthCredentialsProvider cred = buildCredentialsProvider();
 
 		try (final ZeebeClient client = ZeebeClient.newClientBuilder().numJobWorkerExecutionThreads(50)
@@ -79,9 +80,11 @@ public class Launcher {
 			MockBootstrapper mockBootstrapper = new MockBootstrapper(client, jobsToMock);
 			mockBootstrapper.registerMockWorkers();
 
-			getRuntime().addShutdownHook(new Thread("Gateway close thread") {
+			getRuntime().addShutdownHook(new Thread("Close thread") {
 				@Override
 				public void run() {
+					logger.info("Received shutdown signal");
+
 					mockBootstrapper.stop();
 					registeredJobWorkers.values().forEach(JobWorker::close);
 				}
@@ -100,7 +103,9 @@ public class Launcher {
 //			client.newCreateInstanceCommand().bpmnProcessId("run-all-tests-in-camunda-cloud-per-cluster-plan-process")
 //					.latestVersion().variables(variables).send().join();
 
-			waitUntilSystemInput("exit");
+			waitForInterruption();
+			
+			logger.info("About to complete normally");
 		}
 	}
 
@@ -162,14 +167,12 @@ public class Launcher {
 		}
 	}
 
-	private static void waitUntilSystemInput(final String exitCode) {
-		try (final Scanner scanner = new Scanner(System.in)) {
-			while (scanner.hasNextLine()) {
-				final String nextLine = scanner.nextLine();
-				if (nextLine.contains(exitCode)) {
-					return;
-				}
-			}
+	private static void waitForInterruption() {
+		CountDownLatch countDownLatch = new CountDownLatch(1);		
+		try {
+			countDownLatch.await();
+		} catch (InterruptedException e) {
+			logger.info(e.getMessage(), e);
 		}
 	}
 
