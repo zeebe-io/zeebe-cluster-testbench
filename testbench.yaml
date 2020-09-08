@@ -47,7 +47,7 @@ spec:
                 name: testbench-secrets
                 key: cloudClientSecret
           - name: ZCTB_SHEETS_API_KEYFILE_CONTENT      
-          	valueFrom:
+            valueFrom:
               secretKeyRef:
                 name: testbench-secrets
                 key: sheetsApiKeyfileContent        
