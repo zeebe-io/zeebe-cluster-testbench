@@ -22,6 +22,7 @@
 	<properties>
 		<version.jackson>2.11.2</version.jackson>
 		<version.resteasy>4.5.6.Final</version.resteasy>
+		<version.jaxrs>3.0.12.Final</version.jaxrs>		
 	</properties>
 
 	<dependencies>
@@ -43,12 +44,12 @@
 		<dependency>
 			<groupId>org.jboss.resteasy</groupId>
 			<artifactId>resteasy-jaxrs</artifactId>
-			<version>3.0.12.Final</version>
+			<version>${version.jaxrs}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.jboss.resteasy</groupId>
 			<artifactId>jaxrs-api</artifactId>
-			<version>3.0.12.Final</version>
+			<version>${version.jaxrs}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.jboss.resteasy</groupId>
@@ -60,13 +61,7 @@
 			<artifactId>resteasy-jackson2-provider</artifactId>
 			<version>${version.resteasy}</version>
 		</dependency>
-		
-		<dependency>
-		    <groupId>org.glassfish.jersey.core</groupId>
-    		<artifactId>jersey-common</artifactId>
-			<version>2.22.2</version>
-		</dependency>
-		
+			
 		<dependency>
 			<groupId>com.fasterxml.jackson.core</groupId>
 			<artifactId>jackson-core</artifactId>

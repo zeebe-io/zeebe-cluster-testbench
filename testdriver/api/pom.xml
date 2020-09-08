@@ -23,17 +23,10 @@
 		<dependency>
 			<groupId>io.zeebe</groupId>
 			<artifactId>zeebe-client-java</artifactId>
-			<version>${zeebe.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>io.zeebe</groupId>
 			<artifactId>zeebe-workflow-generator</artifactId>
-			<version>0.0.2-SNAPSHOT</version>
-		</dependency>
-		<dependency>
-			<groupId>info.picocli</groupId>
-			<artifactId>picocli</artifactId>
-			<version>4.5.0</version>
 		</dependency>
 	</dependencies>
 
