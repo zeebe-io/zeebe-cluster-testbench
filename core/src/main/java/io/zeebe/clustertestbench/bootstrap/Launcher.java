@@ -2,9 +2,15 @@ package io.zeebe.clustertestbench.bootstrap;
 
 import static java.lang.Runtime.getRuntime;
 
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.security.GeneralSecurityException;
 import java.time.Duration;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -13,13 +19,32 @@ import java.util.concurrent.CountDownLatch;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.google.api.client.auth.oauth2.Credential;
+import com.google.api.client.extensions.java6.auth.oauth2.AuthorizationCodeInstalledApp;
+import com.google.api.client.extensions.jetty.auth.oauth2.LocalServerReceiver;
+import com.google.api.client.googleapis.auth.oauth2.GoogleAuthorizationCodeFlow;
+import com.google.api.client.googleapis.auth.oauth2.GoogleClientSecrets;
+import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
+import com.google.api.client.http.javanet.NetHttpTransport;
+import com.google.api.client.json.JsonFactory;
+import com.google.api.client.json.jackson2.JacksonFactory;
+import com.google.api.client.util.store.FileDataStoreFactory;
+import com.google.api.services.sheets.v4.Sheets;
+import com.google.api.services.sheets.v4.SheetsScopes;
+import com.google.api.services.sheets.v4.model.ValueRange;
+import com.slack.api.Slack;
+import com.slack.api.methods.MethodsClient;
+import com.slack.api.methods.request.api.ApiTestRequest;
+import com.slack.api.methods.response.api.ApiTestResponse;
+
 import io.zeebe.client.ZeebeClient;
 import io.zeebe.client.api.worker.JobHandler;
 import io.zeebe.client.api.worker.JobWorker;
 import io.zeebe.client.impl.oauth.OAuthCredentialsProvider;
 import io.zeebe.client.impl.oauth.OAuthCredentialsProviderBuilder;
 import io.zeebe.clustertestbench.bootstrap.mock.MockBootstrapper;
-import io.zeebe.clustertestbench.testdriver.sequential.SequentialTestParameters;
+import io.zeebe.clustertestbench.cloud.CloudAPIClient;
+import io.zeebe.clustertestbench.cloud.CloudAPIClientFactory;
 import io.zeebe.clustertestbench.worker.CreateClusterInCamundaCloudWorker;
 import io.zeebe.clustertestbench.worker.DeleteClusterInCamundaCloudWorker;
 import io.zeebe.clustertestbench.worker.MapNamesToUUIDsWorker;
@@ -57,14 +82,12 @@ public class Launcher {
 	}
 
 	public void launch() throws IOException {
+		performSelfTest();
 
 		final OAuthCredentialsProvider cred = buildCredentialsProvider();
 
 		try (final ZeebeClient client = ZeebeClient.newClientBuilder().numJobWorkerExecutionThreads(50)
 				.brokerContactPoint(testOrchestrationContactPoint).credentialsProvider(cred).build();) {
-			client.newTopologyRequest().send().join();
-
-			logger.info("Connection to cluster established");
 
 			boolean success = new WorkflowDeployer(client).deployWorkflowsInClasspathFolder("workflows");
 
@@ -87,21 +110,112 @@ public class Launcher {
 				}
 			});
 
-			Map<String, Object> variables = new HashMap<>();
-			variables.put("clusterPlans",
-					Arrays.asList("Development", "Production - S", "Production - M", "Production - L"));
-			variables.put("generation", "Zeebe 0.24.2");
-			variables.put("channel", "Internal Dev");
-			variables.put("region", "Europe West 1D");
-			variables.put("sequentialTestParams", SequentialTestParameters.defaultParams());
-
-			logger.info("Starting workflow instance of 'run-all-tests-in-camunda-cloud-per-cluster-plan-process'");
-			client.newCreateInstanceCommand().bpmnProcessId("run-all-tests-in-camunda-cloud-per-cluster-plan-process")
-					.latestVersion().variables(variables).send().join();
+//			Map<String, Object> variables = new HashMap<>();
+//			variables.put("clusterPlans",
+//					Arrays.asList("Development", "Production - S", "Production - M", "Production - L"));
+//			variables.put("generation", "Zeebe 0.24.2");
+//			variables.put("channel", "Internal Dev");
+//			variables.put("region", "Europe West 1D");
+//			variables.put("sequentialTestParams", SequentialTestParameters.defaultParams());
+//
+//			logger.info("Starting workflow instance of 'run-all-tests-in-camunda-cloud-per-cluster-plan-process'");
+//			client.newCreateInstanceCommand().bpmnProcessId("run-all-tests-in-camunda-cloud-per-cluster-plan-process")
+//					.latestVersion().variables(variables).send().join();
 
 			waitForInterruption();
-			
+
 			logger.info("About to complete normally");
+		}
+	}
+
+	private void performSelfTest() {
+		testConnectionToOrchestrationCluster();
+		testConnectionToCloudApi();
+		testConnectionToSlack();
+		testConnectionToGooglSheets();
+	}
+
+	private void testConnectionToOrchestrationCluster() {
+		final OAuthCredentialsProvider cred = buildCredentialsProvider();
+
+		try (final ZeebeClient client = ZeebeClient.newClientBuilder().numJobWorkerExecutionThreads(50)
+				.brokerContactPoint(testOrchestrationContactPoint).credentialsProvider(cred).build();) {
+			client.newTopologyRequest().send().join();
+
+			logger.info("Selftest - Successfully established connection to test orchestration cluster");
+		} catch (Throwable t) {
+			logger.error("Selftest - Unable to establish connection to test orchestration cluster", t);
+		}
+	}
+
+	private void testConnectionToCloudApi() {
+		try {
+			final OAuthAuthenticationDetails authenticationDetails = cloudApiAuthenticationDetails;
+
+			final String cloudApiAuthenticationServerUrl = authenticationDetails.getServerURL();
+			final String cloudApiAudience = authenticationDetails.getAudience();
+			final String cloudApiClientId = authenticationDetails.getClientId();
+			final String cloudApiClientSecret = authenticationDetails.getClientSecret();
+
+			CloudAPIClient client = new CloudAPIClientFactory().createCloudAPIClient(cloudApiUrl,
+					cloudApiAuthenticationServerUrl, cloudApiAudience, cloudApiClientId, cloudApiClientSecret);
+			client.getParameters();
+
+			logger.info("Selftest - Successfully established connection to cloud API");
+		} catch (Throwable t) {
+			logger.error("Selftest - Unable to establish connection to cloud API", t);
+		}
+	}
+
+	private void testConnectionToSlack() {
+		Slack slack = Slack.getInstance();
+
+		MethodsClient slackClient = slack.methods(slackToken);
+
+		try {
+			ApiTestResponse response = slackClient.apiTest(ApiTestRequest.builder().foo("test").build());
+
+			String returnedFoo = response.getArgs().getFoo();
+
+			if ("test".equalsIgnoreCase(returnedFoo)) {
+				logger.info("Selftest - Successfully established connection to Slack");
+			} else {
+				logger.error("Selftest - Wrong respponse when establishing connection to Slack: " + returnedFoo);
+			}
+		} catch (Throwable t) {
+			logger.error("Selftest - Unable to establish connection to Slack", t);
+		}
+	}
+
+	private void testConnectionToGooglSheets() {
+		JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+
+		NetHttpTransport HTTP_TRANSPORT;
+		try {
+			HTTP_TRANSPORT = GoogleNetHttpTransport.newTrustedTransport();
+
+			InputStream in = new FileInputStream(new File("secrets/credentials.json"));
+			GoogleClientSecrets clientSecrets = GoogleClientSecrets.load(jsonFactory, new InputStreamReader(in));
+
+			// Build flow and trigger user authorization request.
+			GoogleAuthorizationCodeFlow flow = new GoogleAuthorizationCodeFlow.Builder(HTTP_TRANSPORT, jsonFactory,
+					clientSecrets, Collections.singletonList(SheetsScopes.SPREADSHEETS))
+							.setDataStoreFactory(new FileDataStoreFactory(new java.io.File("secrets")))
+							.setAccessType("offline").build();
+			LocalServerReceiver receiver = new LocalServerReceiver.Builder().setPort(8888).build();
+
+			Credential credential = new AuthorizationCodeInstalledApp(flow, receiver).authorize("user");
+
+			Sheets service = new Sheets.Builder(HTTP_TRANSPORT, jsonFactory, credential)
+					.setApplicationName("Zeebe Cluster Testbench - Publish Test Results Worker").build();
+
+			Sheets.Spreadsheets.Values.Get request = service.spreadsheets().values().get(reportSheetID, "Sheet1!A1:B1");
+
+			request.execute();
+
+			logger.error("Selftest - Successfully established connection to Google Sheet");
+		} catch (Throwable t) {
+			logger.error("Selftest - Unable to establish connection to Google Sheet", t);
 		}
 	}
 
@@ -164,7 +278,7 @@ public class Launcher {
 	}
 
 	private static void waitForInterruption() {
-		CountDownLatch countDownLatch = new CountDownLatch(1);		
+		CountDownLatch countDownLatch = new CountDownLatch(1);
 		try {
 			countDownLatch.await();
 		} catch (InterruptedException e) {
