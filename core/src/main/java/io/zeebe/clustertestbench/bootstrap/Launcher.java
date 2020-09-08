@@ -8,8 +8,6 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
-import java.util.Scanner;
 import java.util.concurrent.CountDownLatch;
 
 import org.slf4j.Logger;
@@ -21,14 +19,13 @@ import io.zeebe.client.api.worker.JobWorker;
 import io.zeebe.client.impl.oauth.OAuthCredentialsProvider;
 import io.zeebe.client.impl.oauth.OAuthCredentialsProviderBuilder;
 import io.zeebe.clustertestbench.bootstrap.mock.MockBootstrapper;
+import io.zeebe.clustertestbench.testdriver.sequential.SequentialTestParameters;
 import io.zeebe.clustertestbench.worker.CreateClusterInCamundaCloudWorker;
 import io.zeebe.clustertestbench.worker.DeleteClusterInCamundaCloudWorker;
 import io.zeebe.clustertestbench.worker.MapNamesToUUIDsWorker;
 import io.zeebe.clustertestbench.worker.NotifyEngineersWorker;
 import io.zeebe.clustertestbench.worker.RecordTestResultWorker;
 import io.zeebe.clustertestbench.worker.SequentialTestLauncher;
-import io.zeebe.model.bpmn.BpmnModelInstance;
-import io.zeebe.workflow.generator.builder.SequenceWorkflowBuilder;
 
 public class Launcher {
 
@@ -90,18 +87,17 @@ public class Launcher {
 				}
 			});
 
-//			Map<String, Object> variables = new HashMap<>();
-//			variables.put("clusterPlans",
-//					Arrays.asList("Development", "Production - S", "Production - M", "Production - L"));
-//			variables.put("generation", "Zeebe 0.24.2");
-//			variables.put("channel", "Internal Dev");
-//			variables.put("region", "Europe West 1D");
-//			variables.put("sequentialTestParams", SequentialTestParameters.defaultParams());
-//
-//			logger.log(Level.INFO,
-//					"Starting workflow instance of 'run-all-tests-in-camunda-cloud-per-cluster-plan-process'");
-//			client.newCreateInstanceCommand().bpmnProcessId("run-all-tests-in-camunda-cloud-per-cluster-plan-process")
-//					.latestVersion().variables(variables).send().join();
+			Map<String, Object> variables = new HashMap<>();
+			variables.put("clusterPlans",
+					Arrays.asList("Development", "Production - S", "Production - M", "Production - L"));
+			variables.put("generation", "Zeebe 0.24.2");
+			variables.put("channel", "Internal Dev");
+			variables.put("region", "Europe West 1D");
+			variables.put("sequentialTestParams", SequentialTestParameters.defaultParams());
+
+			logger.info("Starting workflow instance of 'run-all-tests-in-camunda-cloud-per-cluster-plan-process'");
+			client.newCreateInstanceCommand().bpmnProcessId("run-all-tests-in-camunda-cloud-per-cluster-plan-process")
+					.latestVersion().variables(variables).send().join();
 
 			waitForInterruption();
 			

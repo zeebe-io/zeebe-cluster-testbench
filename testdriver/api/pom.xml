@@ -18,15 +18,19 @@
 	<packaging>jar</packaging>
 
 	<name>Zeebe Cluster Testbench - API for Testdrivers</name>
-
+	
 	<dependencies>
 		<dependency>
 			<groupId>io.zeebe</groupId>
 			<artifactId>zeebe-client-java</artifactId>
+		</dependency>		
+		<dependency>
+			<groupId>com.fasterxml.jackson.core</groupId>
+			<artifactId>jackson-core</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>io.zeebe</groupId>
-			<artifactId>zeebe-workflow-generator</artifactId>
+			<groupId>com.fasterxml.jackson.core</groupId>
+			<artifactId>jackson-databind</artifactId>
 		</dependency>
 	</dependencies>
 
