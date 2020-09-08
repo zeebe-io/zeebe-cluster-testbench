@@ -15,9 +15,13 @@ public class BootstrapFromCommandLine implements Callable<Integer> {
 
 	private static final Logger logger = LoggerFactory.getLogger(BootstrapFromCommandLine.class);
 
+	@Option(names = {"--sheets-api-keyfile-content"}, description = "Content of the keyfile for the servcie account to access the sheets API", required = true)
+	private String sheetsApiKeyfileContent;
+	
 	@Option(names = { "-r",
 			"--report-sheet-id" }, description = "ID of the Google Sheet into which the test reports will be written", required = true)
 	private String reportSheetID;
+	
 
 	@Option(names = { "-t", "--slack-token" }, description = "Token to access slack API", required = true)
 	private String slackToken;
@@ -90,7 +94,7 @@ public class BootstrapFromCommandLine implements Callable<Integer> {
 
 		try {
 			new Launcher(contactPoint, testOrchestrationAuthenticatonDetails, cloudApiUrl,
-					cloudApiAuthenticationDetails, reportSheetID, slackToken).launch();
+					cloudApiAuthenticationDetails, sheetsApiKeyfileContent, reportSheetID, slackToken).launch();
 		} catch (Throwable t) {
 			logger.error(t.getMessage(), t);
 			System.exit(-1);

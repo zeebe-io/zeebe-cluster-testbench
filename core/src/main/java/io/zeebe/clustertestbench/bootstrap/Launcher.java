@@ -1,12 +1,11 @@
 package io.zeebe.clustertestbench.bootstrap;
 
+import static com.google.api.client.googleapis.javanet.GoogleNetHttpTransport.newTrustedTransport;
+import static com.google.api.client.json.jackson2.JacksonFactory.getDefaultInstance;
 import static java.lang.Runtime.getRuntime;
 
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
+import java.io.StringBufferInputStream;
 import java.security.GeneralSecurityException;
 import java.time.Duration;
 import java.util.Arrays;
@@ -19,19 +18,13 @@ import java.util.concurrent.CountDownLatch;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.google.api.client.auth.oauth2.Credential;
-import com.google.api.client.extensions.java6.auth.oauth2.AuthorizationCodeInstalledApp;
-import com.google.api.client.extensions.jetty.auth.oauth2.LocalServerReceiver;
-import com.google.api.client.googleapis.auth.oauth2.GoogleAuthorizationCodeFlow;
-import com.google.api.client.googleapis.auth.oauth2.GoogleClientSecrets;
+import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
 import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
 import com.google.api.client.http.javanet.NetHttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
-import com.google.api.client.util.store.FileDataStoreFactory;
 import com.google.api.services.sheets.v4.Sheets;
 import com.google.api.services.sheets.v4.SheetsScopes;
-import com.google.api.services.sheets.v4.model.ValueRange;
 import com.slack.api.Slack;
 import com.slack.api.methods.MethodsClient;
 import com.slack.api.methods.request.api.ApiTestRequest;
@@ -67,16 +60,20 @@ public class Launcher {
 	private final String cloudApiUrl;
 	private final OAuthAuthenticationDetails cloudApiAuthenticationDetails;
 
+	private String sheetsApiKeyFileContent;
 	private final String reportSheetID;
+
 	private final String slackToken;
 
 	public Launcher(String testOrchestrationContactPoint,
 			OAuthAuthenticationDetails testOrchestrationAuthenticatonDetails, String cloudApiUrl,
-			OAuthAuthenticationDetails cloudApiAuthenticationDetails, String reportSheetID, String slackToken) {
+			OAuthAuthenticationDetails cloudApiAuthenticationDetails, String sheetsApiKeyfileContent,
+			String reportSheetID, String slackToken) {
 		this.testOrchestrationContactPoint = testOrchestrationContactPoint;
 		this.testOrchestrationAuthenticatonDetails = testOrchestrationAuthenticatonDetails;
 		this.cloudApiUrl = cloudApiUrl;
 		this.cloudApiAuthenticationDetails = cloudApiAuthenticationDetails;
+		this.sheetsApiKeyFileContent = sheetsApiKeyfileContent;
 		this.reportSheetID = reportSheetID;
 		this.slackToken = slackToken;
 	}
@@ -132,7 +129,7 @@ public class Launcher {
 		testConnectionToOrchestrationCluster();
 		testConnectionToCloudApi();
 		testConnectionToSlack();
-		testConnectionToGooglSheets();
+		testConnectionToGoogleSheets();
 	}
 
 	private void testConnectionToOrchestrationCluster() {
@@ -187,35 +184,21 @@ public class Launcher {
 		}
 	}
 
-	private void testConnectionToGooglSheets() {
-		JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
-
-		NetHttpTransport HTTP_TRANSPORT;
+	private void testConnectionToGoogleSheets() {
 		try {
-			HTTP_TRANSPORT = GoogleNetHttpTransport.newTrustedTransport();
+			GoogleCredential credential = GoogleCredential
+					.fromStream(new StringBufferInputStream(sheetsApiKeyFileContent))
+					.createScoped(Collections.singleton(SheetsScopes.SPREADSHEETS));
 
-			InputStream in = new FileInputStream(new File("secrets/credentials.json"));
-			GoogleClientSecrets clientSecrets = GoogleClientSecrets.load(jsonFactory, new InputStreamReader(in));
-
-			// Build flow and trigger user authorization request.
-			GoogleAuthorizationCodeFlow flow = new GoogleAuthorizationCodeFlow.Builder(HTTP_TRANSPORT, jsonFactory,
-					clientSecrets, Collections.singletonList(SheetsScopes.SPREADSHEETS))
-							.setDataStoreFactory(new FileDataStoreFactory(new java.io.File("secrets")))
-							.setAccessType("offline").build();
-			LocalServerReceiver receiver = new LocalServerReceiver.Builder().setPort(8888).build();
-
-			Credential credential = new AuthorizationCodeInstalledApp(flow, receiver).authorize("user");
-
-			Sheets service = new Sheets.Builder(HTTP_TRANSPORT, jsonFactory, credential)
+			Sheets service = new Sheets.Builder(newTrustedTransport(), getDefaultInstance(), credential)
 					.setApplicationName("Zeebe Cluster Testbench - Publish Test Results Worker").build();
 
 			Sheets.Spreadsheets.Values.Get request = service.spreadsheets().values().get(reportSheetID, "Sheet1!A1:B1");
 
 			request.execute();
-
-			logger.error("Selftest - Successfully established connection to Google Sheet");
+			logger.error("Selftest - Successfully established connection to Google Sheets");
 		} catch (Throwable t) {
-			logger.error("Selftest - Unable to establish connection to Google Sheet", t);
+			logger.error("Selftest - Unable to establish connection to Google Sheets", t);
 		}
 	}
 
@@ -236,8 +219,14 @@ public class Launcher {
 						cloudApiAuthenticationServerUrl, cloudApiAudience, cloudApiClientId, cloudApiClientSecret),
 				Duration.ofMinutes(18));
 		registerWorker(client, "run-sequential-test-job", new SequentialTestLauncher(), Duration.ofMinutes(30));
-		registerWorker(client, "record-test-result-job", new RecordTestResultWorker(reportSheetID),
-				Duration.ofSeconds(10));
+		
+		try {
+			registerWorker(client, "record-test-result-job", new RecordTestResultWorker(sheetsApiKeyFileContent, reportSheetID),
+					Duration.ofSeconds(10));
+		} catch (IOException | GeneralSecurityException e) {
+			logger.error("Exception while creating and registering worker for 'record-test-result-job'", e);
+		}
+		
 		registerWorker(client, "notify-engineers-job", new NotifyEngineersWorker(slackToken), Duration.ofSeconds(10));
 		registerWorker(
 				client, "destroy-zeebe-cluster-in-camunda-cloud-job", new DeleteClusterInCamundaCloudWorker(cloudApiUrl,
