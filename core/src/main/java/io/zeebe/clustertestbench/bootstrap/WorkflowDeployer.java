@@ -1,10 +1,8 @@
 package io.zeebe.clustertestbench.bootstrap;
 
-import java.io.BufferedReader;
+import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 
@@ -24,14 +22,16 @@ public class WorkflowDeployer {
 
 	protected boolean deployWorkflowsInClasspathFolder(String folderName) throws IOException {
 		boolean success = true;
-		List<String> workflowsToDeploy = getResourceFiles(folderName);
+		List<File> workflowsToDeploy = getWorkflows(folderName);
 
 		logger.info("Found workflows to deploy:" + workflowsToDeploy);
 
-		for (String workflow : workflowsToDeploy) {
+		for (File workflow : workflowsToDeploy) {
 			try {
-				logger.info("Deploying " + workflow);
-				zeebeClient.newDeployCommand().addResourceFromClasspath(folderName + "/" + workflow).send().join();
+				String workflowName = workflow.getName();
+
+				logger.info("Deploying " + workflowName);
+				zeebeClient.newDeployCommand().addResourceFile(workflow.getAbsolutePath()).send().join();
 			} catch (Throwable t) {
 				logger.error(t.getMessage(), t);
 				success = false;
@@ -41,29 +41,15 @@ public class WorkflowDeployer {
 		return success;
 	}
 
-	protected List<String> getResourceFiles(String path) throws IOException {
-		List<String> filenames = new ArrayList<>();
+	protected List<File> getWorkflows(String path) throws IOException {
 
-		try (InputStream in = getResourceAsStream(path);
-				BufferedReader br = new BufferedReader(new InputStreamReader(in))) {
-			String resource;
-
-			while ((resource = br.readLine()) != null) {
-				filenames.add(resource);
-			}
+		File folder = new File(path);
+		
+		if (folder.exists()) {
+			logger.error("Folder '" + path + "' does not exist");
 		}
 
-		return filenames;
-	}
-
-	private InputStream getResourceAsStream(String resource) {
-		final InputStream in = getContextClassLoader().getResourceAsStream(resource);
-
-		return in == null ? getClass().getResourceAsStream(resource) : in;
-	}
-
-	private ClassLoader getContextClassLoader() {
-		return Thread.currentThread().getContextClassLoader();
+		return Arrays.asList(folder.listFiles(file -> file.getName().endsWith(".bpmn")));
 	}
 
 }

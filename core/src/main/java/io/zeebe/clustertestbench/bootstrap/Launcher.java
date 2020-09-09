@@ -86,10 +86,14 @@ public class Launcher {
 		try (final ZeebeClient client = ZeebeClient.newClientBuilder().numJobWorkerExecutionThreads(50)
 				.brokerContactPoint(testOrchestrationContactPoint).credentialsProvider(cred).build();) {
 
-			boolean success = new WorkflowDeployer(client).deployWorkflowsInClasspathFolder("workflows");
+			try {
+				boolean success = new WorkflowDeployer(client).deployWorkflowsInClasspathFolder("workflows");
 
-			if (!success) {
-				throw new IllegalStateException("Deployment failed");
+				if (!success) {
+					logger.warn("Deployment failed");
+				}
+			} catch (IOException e) {
+				logger.error("Error while deploying workflow: " + e.getMessage(), e);
 			}
 
 			registerWorkers(client);
@@ -219,14 +223,14 @@ public class Launcher {
 						cloudApiAuthenticationServerUrl, cloudApiAudience, cloudApiClientId, cloudApiClientSecret),
 				Duration.ofMinutes(18));
 		registerWorker(client, "run-sequential-test-job", new SequentialTestLauncher(), Duration.ofMinutes(30));
-		
+
 		try {
-			registerWorker(client, "record-test-result-job", new RecordTestResultWorker(sheetsApiKeyFileContent, reportSheetID),
-					Duration.ofSeconds(10));
+			registerWorker(client, "record-test-result-job",
+					new RecordTestResultWorker(sheetsApiKeyFileContent, reportSheetID), Duration.ofSeconds(10));
 		} catch (IOException | GeneralSecurityException e) {
 			logger.error("Exception while creating and registering worker for 'record-test-result-job'", e);
 		}
-		
+
 		registerWorker(client, "notify-engineers-job", new NotifyEngineersWorker(slackToken), Duration.ofSeconds(10));
 		registerWorker(
 				client, "destroy-zeebe-cluster-in-camunda-cloud-job", new DeleteClusterInCamundaCloudWorker(cloudApiUrl,
