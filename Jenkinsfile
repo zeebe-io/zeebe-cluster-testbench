@@ -23,6 +23,7 @@ pipeline {
 
   environment {
     NEXUS = credentials("camunda-nexus")
+    DOCKER_GCR = credentials("zeebe-gcr-serviceaccount-json")
   }
 
   parameters {
@@ -92,6 +93,18 @@ pipeline {
           }
         }
       }
+    }
+    
+    stage('Push Image') {
+    	when { branch 'master' }
+    	
+    	steps {
+    		container('docker') {
+    			sh 'echo ${DOCKER_GCR} | docker login -u _json_key --password-stdin https://gcr.io'    			
+    			sh 'docker build -t gcr.io/zeebe-io/zeebe-cluster-testbench:latest .'
+    			sh 'docker push gcr.io/zeebe-io/zeebe-cluster-testbench:latest'
+    		}
+    	}
     }
 
     stage('Release') {
