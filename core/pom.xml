@@ -120,9 +120,9 @@
 							<mainClass>io.zeebe.clustertestbench.bootstrap.BootstrapFromEnvVars</mainClass>
 						</manifest>
 					</archive>
-					<descriptorRefs>
-						<descriptorRef>jar-with-dependencies</descriptorRef>
-					</descriptorRefs>
+					<descriptors>
+						<descriptor>src/main/assembly.xml</descriptor>
+					</descriptors>
 					<finalName>zeebe-cluster-testbench-uber</finalName>
 				</configuration>
 				<executions>
