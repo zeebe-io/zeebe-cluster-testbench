@@ -21,7 +21,7 @@ public class WorkflowDeployer {
 	}
 
 	protected boolean deployWorkflowsInClasspathFolder(String folderName) throws IOException {
-		boolean success = true;
+		boolean success = true;		
 		List<File> workflowsToDeploy = getWorkflows(folderName);
 
 		logger.info("Found workflows to deploy:" + workflowsToDeploy);
