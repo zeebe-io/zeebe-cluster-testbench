@@ -18,7 +18,7 @@ public class WorkflowDeployer {
 
 	private final ZeebeClient zeebeClient;
 
-	protected WorkflowDeployer(ZeebeClient zeebeClient) {
+	public WorkflowDeployer(ZeebeClient zeebeClient) {
 		this.zeebeClient = Objects.requireNonNull(zeebeClient);
 	}
 
@@ -41,7 +41,7 @@ public class WorkflowDeployer {
 		return success;
 	}
 
-	private List<String> getResourceFiles(String path) throws IOException {
+	protected List<String> getResourceFiles(String path) throws IOException {
 		List<String> filenames = new ArrayList<>();
 
 		try (InputStream in = getResourceAsStream(path);
