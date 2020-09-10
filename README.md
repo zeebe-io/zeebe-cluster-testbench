@@ -2,10 +2,15 @@
 
 Test bench to run tests against a Zeebe cluster .
 
-## Current State
-This code base is in very early stages. Currently we are doing an exploration of ideas towards a PoC.
+### Current State
+This code base is in very early stages. Currently, we are close to a MVP.
 
-## Tests
+## Available Documentation
+
+* [Operator handbook](docs/operator-handbook.md)
+
+## User Guide
+### Tests
 
 ### Sequential Test
 In the sequential test a sequential workflow is executed several times in succession. There is at most one active workflow instance at any given time. In other words, there is no parallelism - neither inside the workflow being tested nor in the test driver that starts workflow instances.
@@ -23,14 +28,14 @@ This test will fail, if any of the following conditions occur:
 
 In case of backpressure the iteration will be repeated. The time spent making requests that return backpressure responses and repeating those requests is included in the overall execution time, which must be smaller than _maxTimeForCompleteTest_ for the test to pass.
 
-## Workflows
+### Workflows
 The testbench deploys several workflows to orchestrate the test execution. The work flows reference each other - a higher level workflow will call a lower level workflow. 
 However, lower level workflows can also be called directly if only a certain test execution is wanted.
 
-### Run All Tests in Camunda Cloud per Cluster Plan
+#### Run All Tests in Camunda Cloud per Cluster Plan
 This workflow runs all tests in a fresh cluster in Camunda Cloud in different cluster plans:
 
-![run-all-tests-in-camunda-cloud-per-clusterplan workflow](assets/run-all-tests-in-camunda-cloud-per-clusterplan.png "Run all Tests in Camunda Cloud workflow")
+![run-all-tests-in-camunda-cloud-per-clusterplan workflow](docs/assets/run-all-tests-in-camunda-cloud-per-clusterplan.png "Run all Tests in Camunda Cloud workflow")
 
 
 **Workflow ID:** `run-all-tests-in-camunda-cloud-per-cluster-plan-process`
@@ -43,10 +48,10 @@ This workflow runs all tests in a fresh cluster in Camunda Cloud in different cl
 | `region` | name of the region for the cluster | `String` |
 | `sequentialTestParams` | Settings to parameterize the sequential test | `SequentialTestParameters` |
 
-### Run All Tests in Camunda Cloud per Region
+#### Run All Tests in Camunda Cloud per Region
 This workflow runs all tests in a fresh cluster in Camunda Cloud in different regions:
 
-![run-all-tests-in-camunda-cloud-per-region workflow](assets/run-all-tests-in-camunda-cloud-per-region.png "Run all Tests in Camunda Cloud per Region workflow")
+![run-all-tests-in-camunda-cloud-per-region workflow](docs/assets/run-all-tests-in-camunda-cloud-per-region.png "Run all Tests in Camunda Cloud per Region workflow")
 
 
 **Workflow ID:** `run-all-tests-in-camunda-cloud-per-region-process`
@@ -59,10 +64,10 @@ This workflow runs all tests in a fresh cluster in Camunda Cloud in different re
 | `regions` | names of the regions for the clusters | `List<String>` |
 | `sequentialTestParams` | Settings to parameterize the sequential test | `SequentialTestParameters` |
 
-### Run All Tests in Camunda Cloud 
+#### Run All Tests in Camunda Cloud 
 This workflow runs all tests in a fresh cluster in Camunda Cloud:
 
-![run-all-tests-in-camunda-cloud workflow](assets/run-all-tests-in-camunda-cloud.png "Run all Tests in Camunda Cloud workflow")
+![run-all-tests-in-camunda-cloud workflow](docs/assets/run-all-tests-in-camunda-cloud.png "Run all Tests in Camunda Cloud workflow")
 
 
 Currently, it only has steps for the _sequential test_, but this could be extended in the future.
@@ -83,15 +88,15 @@ The cluster parameters can either be specified using human-friendly names or mac
 | ------- | ----------- | ---- |
 | `sequentialTestResult` | Test result for sequential test | `List<TestResult>` |
 
-#### Run Sequential Test in Camunda Cloud
+##### Run Sequential Test in Camunda Cloud
 This workflow runs the sequential test in a fresh cluster in Camunda Cloud:
 
-![run-sequential-test-in-camunda-cloud workflow](assets/run-sequential-test-in-camunda-cloud.png "Run Sequential Test in Camunda Cloud workflow")
+![run-sequential-test-in-camunda-cloud workflow](docs/assets/run-sequential-test-in-camunda-cloud.png "Run Sequential Test in Camunda Cloud workflow")
 
 **Notes**
 * The _Notify Engineers_ step is a workaround until we have user tasks
 
-**Workflow ID:** `run-sequential-test-in-clusterplan`
+**Workflow ID:** `run-sequential-test-in-clusterplan-process`
  
 | Inputs | Description | Type |
 | ------ | ----------- | ---- |
@@ -116,7 +121,7 @@ The cluster parameters shall be given as name and UUID. The UUIDs are used to cr
 | `testReport` | test report | `TestReport` |
 | `testResult` | test result | `TestResult` |
 
-## Service Tasks
+### Service Tasks
 
 | Service Task | ID / Job Type | Input | Output | Headers |
 | ------------ | ------------- | ----- | ------ | ------- |
@@ -127,7 +132,7 @@ The cluster parameters shall be given as name and UUID. The UUIDs are used to cr
 | Notify Engineers | `notify-engineers` / `notify-engineers-job` | `generation`, `clusterPlan`, `clusterName`, `testReport` | | `channel` - Slack channel to post to, `testType` - test type (will be part of the error message
 | Destroy Zeebe Cluster in Camunda CLoud | `destroy-zeebe-cluster-in-camunda-cloud` / `destroy-zeebe-cluster-in-camunda-cloud-job` | `clusterId` |
  
-## Messages
+### Messages
 | Message | ID  | Correlation Key  | 
 | ------- | --- | ---------------- |  
 | Analysis Completed | `msg-analysis-completed` | `clusterId` | 

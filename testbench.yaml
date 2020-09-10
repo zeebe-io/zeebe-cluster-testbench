@@ -22,7 +22,7 @@ spec:
           - name: ZCTB_AUTHENTICATION_SERVER_URL
             value: "https://login.cloud.ultrawombat.com/oauth/token"
           - name: ZCTB_CLIENT_ID
-            value: "9VahED9_bzhBLGhHt3kVRDzCzYpmLhe_"
+            value: "W5a4JUc3I1NIetNnodo3YTvdsRIFb12w"
           - name: ZCTB_CLIENT_SECRET
             valueFrom:
               secretKeyRef:
@@ -40,7 +40,7 @@ spec:
           - name: ZCTB_CLOUD_AUTHENTICATION_SERVER_URL
             value: "https://login.cloud.ultrawombat.com/oauth/token"
           - name: ZCTB_CLOUD_CLIENT_ID
-            value: "9wGSXQvbUNn0fzi~"
+            value: "CW_I50Di-STzDE2i"
           - name: ZCTB_CLOUD_CLIENT_SECRET
             valueFrom:
               secretKeyRef:
@@ -52,7 +52,7 @@ spec:
                 name: testbench-secrets
                 key: sheetsApiKeyfileContent        
           - name: ZCTB_REPORT_SHEET_ID
-            value: "1l3ofIIHKHWTjRs1IpZYl1ULMfqkyGpL7JRarkR0of94"
+            value: "1ruQ1zmOj_Wed-WqDOU69wF79hsBHce5CvUAF5UEbC20"
           - name: ZCTB_SLACK_TOKEN
             valueFrom:
               secretKeyRef:

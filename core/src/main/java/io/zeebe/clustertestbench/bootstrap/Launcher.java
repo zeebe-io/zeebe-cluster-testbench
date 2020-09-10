@@ -197,7 +197,7 @@ public class Launcher {
 			Sheets.Spreadsheets.Values.Get request = service.spreadsheets().values().get(reportSheetID, "Sheet1!A1:B1");
 
 			request.execute();
-			logger.error("Selftest - Successfully established connection to Google Sheets");
+			logger.info("Selftest - Successfully established connection to Google Sheets");
 		} catch (Throwable t) {
 			logger.error("Selftest - Unable to establish connection to Google Sheets", t);
 		}

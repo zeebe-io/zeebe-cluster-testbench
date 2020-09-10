@@ -45,7 +45,7 @@ public class WorkflowDeployer {
 
 		File folder = new File(path);
 		
-		if (folder.exists()) {
+		if (!folder.exists()) {
 			logger.error("Folder '" + path + "' does not exist");
 		}
 
