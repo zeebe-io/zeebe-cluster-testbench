@@ -23,6 +23,7 @@ pipeline {
 
   environment {
     NEXUS = credentials("camunda-nexus")
+    DOCKER_GCR = credentials("zeebe-gcr-serviceaccount-json")
   }
 
   parameters {
@@ -79,7 +80,7 @@ pipeline {
         failure {
             zip zipFile: 'test-reports.zip', archive: true, glob: "**/*/surefire-reports/**"
             archive "**/hs_err_*.log"
-        }        
+        }
       }
     }
 
@@ -92,6 +93,23 @@ pipeline {
           }
         }
       }
+    }
+
+    stage('Push Image') {
+    	when { branch 'master' }
+
+    	steps {
+    		container('docker') {
+          sh """
+            set +x # prevent credentials from being logged in console
+            echo ${DOCKER_GCR} | docker login -u _json_key --password-stdin https://gcr.io'
+            set -x # enable logging again
+
+            docker build -t gcr.io/zeebe-io/zeebe-cluster-testbench:latest .'
+            docker push gcr.io/zeebe-io/zeebe-cluster-testbench:latest'
+          """
+    		}
+    	}
     }
 
     stage('Release') {
