@@ -1,11 +1,5 @@
 package io.zeebe.clustertestbench.worker;
 
-import static org.awaitility.Awaitility.with;
-
-import java.util.Optional;
-import java.util.concurrent.TimeUnit;
-
-import org.awaitility.core.ConditionTimeoutException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -18,8 +12,6 @@ import io.zeebe.clustertestbench.cloud.CloudAPIClient;
 import io.zeebe.clustertestbench.cloud.CloudAPIClientFactory;
 import io.zeebe.clustertestbench.cloud.request.CreateClusterRequest;
 import io.zeebe.clustertestbench.cloud.request.CreateZeebeClientRequest;
-import io.zeebe.clustertestbench.cloud.response.ClusterInfo;
-import io.zeebe.clustertestbench.cloud.response.ClusterStatus;
 import io.zeebe.clustertestbench.cloud.response.CreateClusterResponse;
 import io.zeebe.clustertestbench.cloud.response.CreateZeebeClientResponse;
 import io.zeebe.clustertestbench.cloud.response.ZeebeClientConnectiontInfo;
@@ -52,34 +44,20 @@ public class CreateClusterInCamundaCloudWorker implements JobHandler {
 
 		String clusterId = createClusterRepoonse.getClusterId();
 
-		CreateZeebeClientResponse createZeebeClientResponse = cloudClient.createZeebeClient(clusterId,
-				new CreateZeebeClientRequest(name + "_client"));
-
-		ZeebeClientConnectiontInfo connectionInfo = cloudClient.getZeebeClientInfo(clusterId,
-				createZeebeClientResponse.getClientId());
-
 		try {
-			with().pollDelay(3, TimeUnit.SECONDS).and().pollInterval(10, TimeUnit.SECONDS).await()
-					.atMost(15, TimeUnit.MINUTES).until(() -> clusterIsReady(clusterId, name));
-			
-			String operateURL = cloudClient.getClusterInfo(clusterId).getStatus().getOperateUrl();
+			CreateZeebeClientResponse createZeebeClientResponse = cloudClient.createZeebeClient(clusterId,
+					new CreateZeebeClientRequest(name + "_client"));
 
-			client.newCompleteCommand(job.getKey()).variables(new Output(connectionInfo, name, clusterId, operateURL)).send();
-		} catch (ConditionTimeoutException e) {
+			ZeebeClientConnectiontInfo connectionInfo = cloudClient.getZeebeClientInfo(clusterId,
+					createZeebeClientResponse.getClientId());
+
+			client.newCompleteCommand(job.getKey()).variables(new Output(connectionInfo, name, clusterId)).send();
+		} catch (Throwable t) {
 			cloudClient.deleteCluster(clusterId);
 
 			client.newFailCommand(job.getKey()).retries(job.getRetries() - 1)
-					.errorMessage("Cluster took too long to start");
+					.errorMessage("Error while creating stack trace: " + t.getMessage());
 		}
-	}
-
-	private boolean clusterIsReady(String clusterId, String clusterName) {
-		String readyStatus = Optional.of(cloudClient.getClusterInfo(clusterId)).map(ClusterInfo::getStatus)
-				.map(ClusterStatus::getReady).orElse("Unknown");
-
-		logger.info("Checking status of '" + clusterName + "`: " + readyStatus);
-
-		return readyStatus.equalsIgnoreCase("healthy");
 	}
 
 	private static final class Input {
@@ -127,17 +105,14 @@ public class CreateClusterInCamundaCloudWorker implements JobHandler {
 		private CamundaCLoudAuthenticationDetailsImpl authenticationDetails;
 		private String clusterId;
 		private String clusterName;
-		private String operateURL;
-		
 
-		public Output(ZeebeClientConnectiontInfo connectionInfo, String clusterName, String clusterId, String operateURL) {
+		public Output(ZeebeClientConnectiontInfo connectionInfo, String clusterName, String clusterId) {
 			this.authenticationDetails = new CamundaCLoudAuthenticationDetailsImpl(
 					connectionInfo.getZeebeAuthorizationServerUrl(), connectionInfo.getZeebeAudience(),
 					connectionInfo.getZeebeAddress(), connectionInfo.getZeebeClientId(),
 					connectionInfo.getZeebeClientSecret());
-			this.clusterName = clusterName;			
+			this.clusterName = clusterName;
 			this.clusterId = clusterId;
-			this.operateURL = operateURL;
 		}
 
 		@JsonProperty(CamundaCloudAuthenticationDetails.VARIABLE_KEY)
@@ -154,24 +129,8 @@ public class CreateClusterInCamundaCloudWorker implements JobHandler {
 			return clusterId;
 		}
 
-		public void setClusterId(String clusterId) {
-			this.clusterId = clusterId;
-		}
-
 		public String getClusterName() {
 			return clusterName;
-		}
-
-		public void setClusterName(String clusterName) {
-			this.clusterName = clusterName;
-		}
-
-		public String getOperateURL() {
-			return operateURL;
-		}
-
-		public void setOperateURL(String operateURL) {
-			this.operateURL = operateURL;
 		}
 
 	}
