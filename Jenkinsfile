@@ -24,6 +24,7 @@ pipeline {
   environment {
     NEXUS = credentials("camunda-nexus")
     DOCKER_GCR = credentials("zeebe-gcr-serviceaccount-json")
+    SA_CREDENTIALS = credentials("zeebe-jenkins-deploy-serviceaccount-json")
   }
 
   parameters {
@@ -95,7 +96,7 @@ pipeline {
 //      }
 //    }
 
-    stage('Push Image') {
+    stage('Deploy') {
     	when { branch 'master' }
 
     	steps {
@@ -108,9 +109,14 @@ pipeline {
     			sh 'docker build -t gcr.io/zeebe-io/zeebe-cluster-testbench:latest .'
     			sh 'docker push gcr.io/zeebe-io/zeebe-cluster-testbench:latest'
     		}
+    		
+    		container('gcloud') {
+    			sh '.ci/scripts/prepare-deploy.sh'
+    			sh '.ci/scripts/deploy.sh'
+    		}
     	}
     }
-
+    
     stage('Release') {
       when { expression { params.RELEASE } }
 

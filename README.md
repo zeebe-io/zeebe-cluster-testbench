@@ -3,7 +3,7 @@
 Test bench to run tests against a Zeebe cluster .
 
 ### Current State
-This code base is in very early stages. Currently, we are close to a MVP.
+This code base is in very early stages.
 
 ## Available Documentation
 

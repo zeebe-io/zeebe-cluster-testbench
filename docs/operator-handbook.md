@@ -1,8 +1,14 @@
 # Operator Handbook
 
 ## Update
-1. `kubectl delete -f testbench.yaml`
-1. `kubectl apply -f testbench.yaml`
+
+### Inside Camunda environment
+
+Changes to `master` are automatically deployed to production.
+
+### In Kubernetes
+
+`kubectl apply -f testbench.yaml`
 
 ## Initial Setup
 
