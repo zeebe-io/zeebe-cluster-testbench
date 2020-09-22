@@ -100,15 +100,11 @@ pipeline {
 
     	steps {
     		container('docker') {
-//	          sh """
-//	            # set +x # prevent credentials from being logged in console
-//	            echo "${DOCKER_GCR}" | docker login -u _json_key --password-stdin https://gcr.io
-//	            # set -x # enable logging again
-//	
-//	            docker build -t gcr.io/zeebe-io/zeebe-cluster-testbench:latest .
-//	            docker push gcr.io/zeebe-io/zeebe-cluster-testbench:latest
-//	          """
-	          	sh 'echo ${DOCKER_GCR} | docker login -u _json_key --password-stdin https://gcr.io'    			
+    			/* this command is a little convoluted to avoid leaking of the secret; the secret contains line breaks; 
+    			 * this is why the built-in Jenkins mechanism doesn't work out of the box
+    			 */
+	          	sh 'set +x ; echo ${DOCKER_GCR} | docker login -u _json_key --password-stdin https://gcr.io ; set -x'
+	          	    			
     			sh 'docker build -t gcr.io/zeebe-io/zeebe-cluster-testbench:latest .'
     			sh 'docker push gcr.io/zeebe-io/zeebe-cluster-testbench:latest'
     		}
