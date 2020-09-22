@@ -121,6 +121,24 @@ The cluster parameters shall be given as name and UUID. The UUIDs are used to cr
 | `testReport` | test report | `TestReport` |
 | `testResult` | test result | `TestResult` |
 
+### Test Protocols
+#### Daily Test
+
+![daily-test-protocol](docs/assets/daily-test-protocol.png "Daily test protocol")
+
+The daily test protocol runs all tests in all cluster plans. Tests are repeated every day, until they are stopped by sending a message to a running process instance.
+
+| Inputs | Description | Type |
+| ------ | ----------- | ---- | 
+| `generation` | name of the generation for the cluster | `String` |
+| `id` | id of the workflow instance, needed as correlation key when stopping the daily tests | `String` | 
+
+The following defaults are defined in the process description:
+* `clusterPlans` 
+* `channel` 
+* `region` 
+* `sequentialTestParams` 
+
 ### Utility Workflows
 Utility workflows are utilized by the test workflows to perform certain technical tasks
 
@@ -167,3 +185,4 @@ This workflow creates a Zeebe cluster in Camnuda cloud and waits until the clust
 | Message | ID  | Correlation Key  | 
 | ------- | --- | ---------------- |  
 | Analysis Completed | `msg-analysis-completed` | `clusterId` | 
+| Stop Daily Test | `msg-stop-daily-test` | `id` |
