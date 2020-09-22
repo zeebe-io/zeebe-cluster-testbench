@@ -100,14 +100,17 @@ pipeline {
 
     	steps {
     		container('docker') {
-	          sh """
-	            # set +x # prevent credentials from being logged in console
-	            echo "${DOCKER_GCR}" | docker login -u _json_key --password-stdin https://gcr.io
-	            # set -x # enable logging again
-	
-	            docker build -t gcr.io/zeebe-io/zeebe-cluster-testbench:latest .
-	            docker push gcr.io/zeebe-io/zeebe-cluster-testbench:latest
-	          """
+//	          sh """
+//	            # set +x # prevent credentials from being logged in console
+//	            echo "${DOCKER_GCR}" | docker login -u _json_key --password-stdin https://gcr.io
+//	            # set -x # enable logging again
+//	
+//	            docker build -t gcr.io/zeebe-io/zeebe-cluster-testbench:latest .
+//	            docker push gcr.io/zeebe-io/zeebe-cluster-testbench:latest
+//	          """
+	          	sh 'echo ${DOCKER_GCR} | docker login -u _json_key --password-stdin https://gcr.io'    			
+    			sh 'docker build -t gcr.io/zeebe-io/zeebe-cluster-testbench:latest .'
+    			sh 'docker push gcr.io/zeebe-io/zeebe-cluster-testbench:latest'
     		}
     	}
     }
