@@ -76,9 +76,12 @@ pipeline {
                   runAlways: true
             )
             zip zipFile: 'test-coverage-reports.zip', archive: true, glob: "**/target/site/jacoco/**"
+            
+            zip zipFile: 'test-reports.zip', archive: true, glob: "**/*/surefire-reports/**"
         }
         failure {
-            zip zipFile: 'test-reports.zip', archive: true, glob: "**/*/surefire-reports/**"
+            
+            
             archive "**/hs_err_*.log"
         }
       }
