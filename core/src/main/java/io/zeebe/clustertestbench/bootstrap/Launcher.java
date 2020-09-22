@@ -8,10 +8,8 @@ import java.io.IOException;
 import java.io.StringBufferInputStream;
 import java.security.GeneralSecurityException;
 import java.time.Duration;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CountDownLatch;
 
@@ -31,10 +29,8 @@ import io.zeebe.client.api.worker.JobHandler;
 import io.zeebe.client.api.worker.JobWorker;
 import io.zeebe.client.impl.oauth.OAuthCredentialsProvider;
 import io.zeebe.client.impl.oauth.OAuthCredentialsProviderBuilder;
-import io.zeebe.clustertestbench.bootstrap.mock.MockBootstrapper;
 import io.zeebe.clustertestbench.cloud.CloudAPIClient;
 import io.zeebe.clustertestbench.cloud.CloudAPIClientFactory;
-import io.zeebe.clustertestbench.testdriver.sequential.SequentialTestParameters;
 import io.zeebe.clustertestbench.worker.CreateClusterInCamundaCloudWorker;
 import io.zeebe.clustertestbench.worker.DeleteClusterInCamundaCloudWorker;
 import io.zeebe.clustertestbench.worker.GatherInformationAboutClusterInCamundaCloudWorker;
@@ -47,9 +43,6 @@ import io.zeebe.clustertestbench.worker.SequentialTestLauncher;
 public class Launcher {
 
 	private static final Logger logger = LoggerFactory.getLogger(Launcher.class);
-
-	// jobs to replace with mocks (during development)
-	private static final List<String> jobsToMock = Arrays.asList();
 
 	private final Map<String, JobWorker> registeredJobWorkers = new HashMap<>();
 
@@ -97,29 +90,15 @@ public class Launcher {
 
 			registerWorkers(client);
 
-			MockBootstrapper mockBootstrapper = new MockBootstrapper(client, jobsToMock);
-			mockBootstrapper.registerMockWorkers();
 
 			getRuntime().addShutdownHook(new Thread("Close thread") {
 				@Override
 				public void run() {
 					logger.info("Received shutdown signal");
 
-					mockBootstrapper.stop();
 					registeredJobWorkers.values().forEach(JobWorker::close);
 				}
 			});
-
-//			Map<String, Object> variables = new HashMap<>();
-//			variables.put("clusterPlans", Arrays.asList("Production - S", "Production - M"));
-//			variables.put("generation", "Zeebe 0.24.2");
-//			variables.put("channel", "Internal Dev");
-//			variables.put("region", "Europe West 1D");
-//			variables.put("sequentialTestParams", SequentialTestParameters.defaultParams());
-//
-//			logger.info("Starting workflow instance of 'run-all-tests-in-camunda-cloud-per-cluster-plan-process'");
-//			client.newCreateInstanceCommand().bpmnProcessId("run-all-tests-in-camunda-cloud-per-cluster-plan-process")
-//					.latestVersion().variables(variables).send().join();
 
 			waitForInterruption();
 
@@ -251,12 +230,6 @@ public class Launcher {
 				.open();
 
 		registeredJobWorkers.put(jobType, workerRegistration);
-
-//		String workflowId = "execute-job-worker-" + jobType + "-in-isolation";
-//		BpmnModelInstance workflow = new SequenceWorkflowBuilder(Optional.of(1), Optional.of(jobType))
-//				.buildWorkflow(workflowId);
-//
-//		client.newDeployCommand().addWorkflowModel(workflow, workflowId + ".bpmn").send().join();
 
 		logger.info("Job worker opened and receiving jobs.");
 	}
