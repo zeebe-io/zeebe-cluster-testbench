@@ -76,12 +76,9 @@ pipeline {
                   runAlways: true
             )
             zip zipFile: 'test-coverage-reports.zip', archive: true, glob: "**/target/site/jacoco/**"
-            
-            zip zipFile: 'test-reports.zip', archive: true, glob: "**/*/surefire-reports/**"
         }
         failure {
-            
-            
+            zip zipFile: 'test-reports.zip', archive: true, glob: "**/*/surefire-reports/**"
             archive "**/hs_err_*.log"
         }
       }
@@ -103,10 +100,7 @@ pipeline {
 
     	steps {
     		container('docker') {
-    			/* this command is a little convoluted to avoid leaking of the secret; the secret contains line breaks; 
-    			 * this is why the built-in Jenkins mechanism doesn't work out of the box
-    			 */
-	          	sh 'set +x ; echo ${DOCKER_GCR} | docker login -u _json_key --password-stdin https://gcr.io ; set -x'
+	          	sh 'echo ${DOCKER_GCR} | docker login -u _json_key --password-stdin https://gcr.io'
 	          	    			
     			sh 'docker build -t gcr.io/zeebe-io/zeebe-cluster-testbench:latest .'
     			sh 'docker push gcr.io/zeebe-io/zeebe-cluster-testbench:latest'
