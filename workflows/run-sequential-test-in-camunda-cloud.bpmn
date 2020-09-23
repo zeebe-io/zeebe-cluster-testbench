@@ -4,15 +4,8 @@
     <bpmn:startEvent id="start" name="Start">
       <bpmn:outgoing>Flow_0u0o693</bpmn:outgoing>
     </bpmn:startEvent>
-    <bpmn:sequenceFlow id="Flow_0u0o693" sourceRef="start" targetRef="create-zeebe-cluster-in-camunda-cloud" />
-    <bpmn:serviceTask id="create-zeebe-cluster-in-camunda-cloud" name="Create Zeebe Cluster in Camunda Cloud">
-      <bpmn:extensionElements>
-        <zeebe:taskDefinition type="create-zeebe-cluster-in-camunda-cloud-job" />
-      </bpmn:extensionElements>
-      <bpmn:incoming>Flow_0u0o693</bpmn:incoming>
-      <bpmn:outgoing>Flow_15k26ho</bpmn:outgoing>
-    </bpmn:serviceTask>
-    <bpmn:sequenceFlow id="Flow_15k26ho" sourceRef="create-zeebe-cluster-in-camunda-cloud" targetRef="run-sequential-test" />
+    <bpmn:sequenceFlow id="Flow_0u0o693" sourceRef="start" targetRef="prepare-zeebe-cluster-in-camunda-cloud" />
+    <bpmn:sequenceFlow id="Flow_15k26ho" sourceRef="prepare-zeebe-cluster-in-camunda-cloud" targetRef="run-sequential-test" />
     <bpmn:serviceTask id="run-sequential-test" name="Run Sequential Test">
       <bpmn:extensionElements>
         <zeebe:taskDefinition type="run-sequential-test-job" />
@@ -73,6 +66,14 @@
       <bpmn:incoming>Flow_1cth1vv</bpmn:incoming>
     </bpmn:endEvent>
     <bpmn:sequenceFlow id="Flow_1cth1vv" sourceRef="destroy-zeebe-cluster-in-camunda-cloud" targetRef="Event_1i1rnvk" />
+    <bpmn:callActivity id="prepare-zeebe-cluster-in-camunda-cloud" name="Prepare Zeebe Cluster in Camunda Cloud">
+      <bpmn:extensionElements>
+        <zeebe:taskDefinition type="create-zeebe-cluster-in-camunda-cloud-job" />
+        <zeebe:calledElement processId="prepare-zeebe-cluster-in-camunda-cloud-process" />
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_0u0o693</bpmn:incoming>
+      <bpmn:outgoing>Flow_15k26ho</bpmn:outgoing>
+    </bpmn:callActivity>
   </bpmn:process>
   <bpmn:message id="msg-analysis-completed" name="Analysis Completed">
     <bpmn:extensionElements>
@@ -132,9 +133,6 @@
           <dc:Bounds x="159" y="125" width="25" height="14" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_1253d10_di" bpmnElement="create-zeebe-cluster-in-camunda-cloud">
-        <dc:Bounds x="240" y="60" width="100" height="80" />
-      </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Activity_16a5vtv_di" bpmnElement="run-sequential-test">
         <dc:Bounds x="400" y="60" width="100" height="80" />
       </bpmndi:BPMNShape>
@@ -164,6 +162,9 @@
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Event_1i1rnvk_di" bpmnElement="Event_1i1rnvk">
         <dc:Bounds x="1302" y="82" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1hh2a2j_di" bpmnElement="prepare-zeebe-cluster-in-camunda-cloud">
+        <dc:Bounds x="240" y="60" width="100" height="80" />
       </bpmndi:BPMNShape>
     </bpmndi:BPMNPlane>
   </bpmndi:BPMNDiagram>

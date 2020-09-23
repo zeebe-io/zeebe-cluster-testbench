@@ -28,7 +28,7 @@ This test will fail, if any of the following conditions occur:
 
 In case of backpressure the iteration will be repeated. The time spent making requests that return backpressure responses and repeating those requests is included in the overall execution time, which must be smaller than _maxTimeForCompleteTest_ for the test to pass.
 
-### Workflows
+### Test Workflows
 The testbench deploys several workflows to orchestrate the test execution. The work flows reference each other - a higher level workflow will call a lower level workflow. 
 However, lower level workflows can also be called directly if only a certain test execution is wanted.
 
@@ -121,14 +121,45 @@ The cluster parameters shall be given as name and UUID. The UUIDs are used to cr
 | `testReport` | test report | `TestReport` |
 | `testResult` | test result | `TestResult` |
 
+### Utility Workflows
+Utility workflows are utilized by the test workflows to perform certain technical tasks
+
+##### Prepare Zeebe Cluster in Camunda Cloud
+This workflow creates a Zeebe cluster in Camnuda cloud and waits until the cluster is ready:
+
+![prepare-zeebe-cluster-in-camunda-cloud-process](docs/assets/prepare-zeebe-cluster-in-camunda-cloud.png "Prepare Zeebe Cluster in Camunda Cloud Workflow")
+
+
+**Workflow ID:** `prepare-zeebe-cluster-in-camunda-cloud-process`
+ 
+| Inputs | Description | Type |
+| ------ | ----------- | ---- |
+| `generationUUID` | UUID of the generation for the cluster | `String` |
+| `clusterPlanUUID` | UUID of the cluster plan for the cluster | `String` |
+| `channelUUID` | UUID of the channel for the cluster | `String` |
+| `regionUUID` | UUID of the region for the cluster | `String` |
+
+| Runtime Variables | Description | Type |
+| ----------------- | ----------- | ---- |
+| `clusterStatus` | Current status of the newly created cluster | `String` |
+
+| Outputs | Description | Type |
+| ----------------- | ----------- | ---- |
+| `clusterId` | ID of the cluster in which Zeebe is tested | `String` |
+| `clusterName` | Name of the cluster in which Zeebe is tested | `String` |
+| `authenticationDetails` | Credentials to authenticate against the cluster | `CamundaCloudAutenticationDetails` |
+| `operateURL` | URL to Operate web interface | `String` |
+
 ### Service Tasks
 
 | Service Task | ID / Job Type | Input | Output | Headers |
 | ------------ | ------------- | ----- | ------ | ------- |
 | Map names to UUIDs | `map-names-to-uuids` / `map-names-to-uuids-job` | `channel`, `clusterPlan`, `region`, `generation`, `channelUUID`, `clusterPlanUUID`, `regionUUID`, `generationUUID` | `channel`, `clusterPlan`, `region`, `generation`, `channelUUID`, `clusterPlanUUID`, `regionUUID`, `generationUUID` |  
-| Create Zeebe Cluster in Camunda cloud | `creae-zeebe-cluster-in-camunda-cloud` / `create-zeebe-cluster-in-camunda-cloud-job` | `channelUUID`, `clusterPlanUUID`, `regionUUID`, `generationUUID` | `clusterId`, `clusterName`, `operateURL`, `authenticationDetails` |   
+| Create Zeebe Cluster in Camunda Cloud | `creae-zeebe-cluster-in-camunda-cloud` / `create-zeebe-cluster-in-camunda-cloud-job` | `channelUUID`, `clusterPlanUUID`, `regionUUID`, `generationUUID` | `clusterId`, `clusterName`, `authenticationDetails` |
+| Query Zeebe Cluster State in Camunda Cloud | `query-zeebe-cluster-state-in-camunda-cloud` / `query-zeebe-cluster-state-in-camunda-cloud-job` | `clusterId`, `clusterName` | `clusterStatus` |
+| Gather Information about Cluster in Camunda Cloud | `gather-information-about-cluster-in-camunda-cloud` / `gather-information-about-cluster-in-camunda-cloud-job` | `clusterId`, `clusterName` | `operateURL` |   
 | Run Sequential Test | `run-sequential-test` / `run-sequential-test-job` | `authenticationDetails`, `testParams` | `testResult`, `testReport` 
-| Record Test Result | `record-test-result` / `record-test-result-job` |`channel`, `clusterPlan`, `region`, `generation` `clusterId`, `clusterName`, `operateURL`, `testReport` |
+| Record Test Result | `record-test-result` / `record-test-result-job` |`channel`, `clusterPlan`, `region`, `generation`, `clusterId`, `clusterName`, `operateURL`, `testReport` |
 | Notify Engineers | `notify-engineers` / `notify-engineers-job` | `generation`, `clusterPlan`, `clusterName`, `testReport` | | `channel` - Slack channel to post to, `testType` - test type (will be part of the error message
 | Destroy Zeebe Cluster in Camunda CLoud | `destroy-zeebe-cluster-in-camunda-cloud` / `destroy-zeebe-cluster-in-camunda-cloud-job` | `clusterId` |
  

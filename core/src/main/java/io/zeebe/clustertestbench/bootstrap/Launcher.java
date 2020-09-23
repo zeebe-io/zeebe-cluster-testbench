@@ -37,8 +37,10 @@ import io.zeebe.clustertestbench.cloud.CloudAPIClientFactory;
 import io.zeebe.clustertestbench.testdriver.sequential.SequentialTestParameters;
 import io.zeebe.clustertestbench.worker.CreateClusterInCamundaCloudWorker;
 import io.zeebe.clustertestbench.worker.DeleteClusterInCamundaCloudWorker;
+import io.zeebe.clustertestbench.worker.GatherInformationAboutClusterInCamundaCloudWorker;
 import io.zeebe.clustertestbench.worker.MapNamesToUUIDsWorker;
 import io.zeebe.clustertestbench.worker.NotifyEngineersWorker;
+import io.zeebe.clustertestbench.worker.QueryClusterStateInCamundaCloudWorker;
 import io.zeebe.clustertestbench.worker.RecordTestResultWorker;
 import io.zeebe.clustertestbench.worker.SequentialTestLauncher;
 
@@ -109,8 +111,7 @@ public class Launcher {
 			});
 
 //			Map<String, Object> variables = new HashMap<>();
-//			variables.put("clusterPlans",
-//					Arrays.asList("Development", "Production - S", "Production - M", "Production - L"));
+//			variables.put("clusterPlans", Arrays.asList("Production - S", "Production - M"));
 //			variables.put("generation", "Zeebe 0.24.2");
 //			variables.put("channel", "Internal Dev");
 //			variables.put("region", "Europe West 1D");
@@ -218,7 +219,15 @@ public class Launcher {
 		registerWorker(
 				client, "create-zeebe-cluster-in-camunda-cloud-job", new CreateClusterInCamundaCloudWorker(cloudApiUrl,
 						cloudApiAuthenticationServerUrl, cloudApiAudience, cloudApiClientId, cloudApiClientSecret),
-				Duration.ofMinutes(18));
+				Duration.ofMinutes(1));
+		registerWorker(client, "query-zeebe-cluster-state-in-camunda-cloud-job",
+				new QueryClusterStateInCamundaCloudWorker(cloudApiUrl, cloudApiAuthenticationServerUrl,
+						cloudApiAudience, cloudApiClientId, cloudApiClientSecret),
+				Duration.ofSeconds(10));
+		registerWorker(client, "gather-information-about-cluster-in-camunda-cloud-job",
+				new GatherInformationAboutClusterInCamundaCloudWorker(cloudApiUrl, cloudApiAuthenticationServerUrl,
+						cloudApiAudience, cloudApiClientId, cloudApiClientSecret),
+				Duration.ofSeconds(10));
 		registerWorker(client, "run-sequential-test-job", new SequentialTestLauncher(), Duration.ofMinutes(30));
 
 		try {

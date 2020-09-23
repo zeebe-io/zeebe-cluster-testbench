@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:zeebe="http://camunda.org/schema/zeebe/1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" id="Definitions_10jos80" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Zeebe Modeler" exporterVersion="0.9.1">
+  <bpmn:process id="prepare-zeebe-cluster-in-camunda-cloud-process" name="Prepare Zeebe Cluster in Camunda Cloud" isExecutable="true">
+    <bpmn:startEvent id="start" name="Start">
+      <bpmn:outgoing>Flow_0v89qt6</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:sequenceFlow id="Flow_0v89qt6" sourceRef="start" targetRef="create-zeebe-cluster-in-camunda-cloud" />
+    <bpmn:serviceTask id="create-zeebe-cluster-in-camunda-cloud" name="Create Zeebe Cluster in Camunda Cloud">
+      <bpmn:extensionElements>
+        <zeebe:taskDefinition type="create-zeebe-cluster-in-camunda-cloud-job" retries="" />
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_0v89qt6</bpmn:incoming>
+      <bpmn:outgoing>Flow_0f4lf0m</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:exclusiveGateway id="Gateway_0h5nxf3">
+      <bpmn:incoming>Flow_0f4lf0m</bpmn:incoming>
+      <bpmn:incoming>Flow_1t5mjg2</bpmn:incoming>
+      <bpmn:outgoing>Flow_1nplddv</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:sequenceFlow id="Flow_0f4lf0m" sourceRef="create-zeebe-cluster-in-camunda-cloud" targetRef="Gateway_0h5nxf3" />
+    <bpmn:sequenceFlow id="Flow_1nplddv" sourceRef="Gateway_0h5nxf3" targetRef="timer-ten-seconds" />
+    <bpmn:exclusiveGateway id="Gateway_0rsc9zf" default="Flow_1t5mjg2">
+      <bpmn:incoming>Flow_1ggxjdm</bpmn:incoming>
+      <bpmn:outgoing>Flow_1t5mjg2</bpmn:outgoing>
+      <bpmn:outgoing>condition-healthy</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:sequenceFlow id="Flow_1ggxjdm" sourceRef="query-zeebe-cluster-state-in-camunda-cloud" targetRef="Gateway_0rsc9zf" />
+    <bpmn:serviceTask id="query-zeebe-cluster-state-in-camunda-cloud" name="Query Zeebe Cluster State in Camunda Cloud">
+      <bpmn:extensionElements>
+        <zeebe:taskDefinition type="query-zeebe-cluster-state-in-camunda-cloud-job" />
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_0xvisg0</bpmn:incoming>
+      <bpmn:outgoing>Flow_1ggxjdm</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:endEvent id="Event_025t7ts">
+      <bpmn:incoming>Flow_0wk7aco</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="Flow_1t5mjg2" sourceRef="Gateway_0rsc9zf" targetRef="Gateway_0h5nxf3" />
+    <bpmn:intermediateCatchEvent id="timer-ten-seconds" name="10s">
+      <bpmn:incoming>Flow_1nplddv</bpmn:incoming>
+      <bpmn:outgoing>Flow_0xvisg0</bpmn:outgoing>
+      <bpmn:timerEventDefinition id="TimerEventDefinition_0lqf24y">
+        <bpmn:timeDuration xsi:type="bpmn:tFormalExpression">PT10S</bpmn:timeDuration>
+      </bpmn:timerEventDefinition>
+    </bpmn:intermediateCatchEvent>
+    <bpmn:sequenceFlow id="Flow_0xvisg0" sourceRef="timer-ten-seconds" targetRef="query-zeebe-cluster-state-in-camunda-cloud" />
+    <bpmn:sequenceFlow id="condition-healthy" name="Healthy" sourceRef="Gateway_0rsc9zf" targetRef="gather-information-about-cluster-in-camunda-cloud">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">= clusterStatus = "Healthy"</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="Flow_0wk7aco" sourceRef="gather-information-about-cluster-in-camunda-cloud" targetRef="Event_025t7ts" />
+    <bpmn:serviceTask id="gather-information-about-cluster-in-camunda-cloud" name="Gather Information about Cluster in Camunda Cloud">
+      <bpmn:extensionElements>
+        <zeebe:taskDefinition type="gather-information-about-cluster-in-camunda-cloud-job" />
+      </bpmn:extensionElements>
+      <bpmn:incoming>condition-healthy</bpmn:incoming>
+      <bpmn:outgoing>Flow_0wk7aco</bpmn:outgoing>
+    </bpmn:serviceTask>
+  </bpmn:process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="prepare-zeebe-cluster-in-camunda-cloud-process">
+      <bpmndi:BPMNEdge id="Flow_0v89qt6_di" bpmnElement="Flow_0v89qt6">
+        <di:waypoint x="215" y="117" />
+        <di:waypoint x="270" y="117" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0f4lf0m_di" bpmnElement="Flow_0f4lf0m">
+        <di:waypoint x="370" y="117" />
+        <di:waypoint x="425" y="117" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1nplddv_di" bpmnElement="Flow_1nplddv">
+        <di:waypoint x="475" y="117" />
+        <di:waypoint x="522" y="117" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1ggxjdm_di" bpmnElement="Flow_1ggxjdm">
+        <di:waypoint x="700" y="117" />
+        <di:waypoint x="755" y="117" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1t5mjg2_di" bpmnElement="Flow_1t5mjg2">
+        <di:waypoint x="780" y="142" />
+        <di:waypoint x="780" y="200" />
+        <di:waypoint x="450" y="200" />
+        <di:waypoint x="450" y="142" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0xvisg0_di" bpmnElement="Flow_0xvisg0">
+        <di:waypoint x="558" y="117" />
+        <di:waypoint x="600" y="117" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0krlig2_di" bpmnElement="condition-healthy">
+        <di:waypoint x="805" y="117" />
+        <di:waypoint x="920" y="117" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="844" y="99" width="38" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0wk7aco_di" bpmnElement="Flow_0wk7aco">
+        <di:waypoint x="1020" y="117" />
+        <di:waypoint x="1092" y="117" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="_BPMNShape_StartEvent_2" bpmnElement="start">
+        <dc:Bounds x="179" y="99" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="185" y="142" width="25" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0fqnyt6_di" bpmnElement="create-zeebe-cluster-in-camunda-cloud">
+        <dc:Bounds x="270" y="77" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_0h5nxf3_di" bpmnElement="Gateway_0h5nxf3" isMarkerVisible="true">
+        <dc:Bounds x="425" y="92" width="50" height="50" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_0rsc9zf_di" bpmnElement="Gateway_0rsc9zf" isMarkerVisible="true">
+        <dc:Bounds x="755" y="92" width="50" height="50" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0ukqd8v_di" bpmnElement="query-zeebe-cluster-state-in-camunda-cloud">
+        <dc:Bounds x="600" y="77" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_1si8upl_di" bpmnElement="timer-ten-seconds">
+        <dc:Bounds x="522" y="99" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="531" y="142" width="19" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_025t7ts_di" bpmnElement="Event_025t7ts">
+        <dc:Bounds x="1092" y="99" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1w3gv94_di" bpmnElement="gather-information-about-cluster-in-camunda-cloud">
+        <dc:Bounds x="920" y="77" width="100" height="80" />
+      </bpmndi:BPMNShape>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>
