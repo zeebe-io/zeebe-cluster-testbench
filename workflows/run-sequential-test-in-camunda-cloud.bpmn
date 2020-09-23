@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:zeebe="http://camunda.org/schema/zeebe/1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" id="Definitions_1r7i4vf" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Zeebe Modeler" exporterVersion="0.9.1">
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:zeebe="http://camunda.org/schema/zeebe/1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" id="Definitions_1r7i4vf" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Zeebe Modeler" exporterVersion="0.10.0">
   <bpmn:process id="run-sequential-test-in-camunda-cloud-process" name="Run Sequential Test in Camunda Cloud" isExecutable="true">
     <bpmn:startEvent id="start" name="Start">
       <bpmn:outgoing>Flow_0u0o693</bpmn:outgoing>
@@ -34,7 +34,7 @@
       <bpmn:extensionElements>
         <zeebe:taskDefinition type="notify-engineers-job" />
         <zeebe:taskHeaders>
-          <zeebe:header key="channel" value="#slack-bot-dev" />
+          <zeebe:header key="channel" value="#testbench" />
           <zeebe:header key="testType" value="sequential test" />
         </zeebe:taskHeaders>
       </bpmn:extensionElements>

@@ -19,7 +19,7 @@ public class NotifyEngineersWorker implements JobHandler {
 
 	private static final String CHANNEL_HEADER_KEY = "channel";
 	private static final String TEST_TYPE_HEADER_KEY = "testType";
-	private static final String DEFAULT_CHANNEL = "#slack-bot-dev";
+	private static final String DEFAULT_CHANNEL = "#testbench";
 	private static final String DEFAULT_TEST_TYPE = "(undefined test)";
 
 	private final MethodsClient slackClient;
