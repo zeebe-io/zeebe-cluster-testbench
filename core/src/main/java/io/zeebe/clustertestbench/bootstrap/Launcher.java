@@ -90,7 +90,6 @@ public class Launcher {
 
 			registerWorkers(client);
 
-
 			getRuntime().addShutdownHook(new Thread("Close thread") {
 				@Override
 				public void run() {
@@ -166,9 +165,8 @@ public class Launcher {
 	}
 
 	private void testConnectionToGoogleSheets() {
-		try {
-			GoogleCredential credential = GoogleCredential
-					.fromStream(new StringBufferInputStream(sheetsApiKeyFileContent))
+		try (var inputStream = new StringBufferInputStream(sheetsApiKeyFileContent)) {
+			GoogleCredential credential = GoogleCredential.fromStream(inputStream)
 					.createScoped(Collections.singleton(SheetsScopes.SPREADSHEETS));
 
 			Sheets service = new Sheets.Builder(newTrustedTransport(), getDefaultInstance(), credential)

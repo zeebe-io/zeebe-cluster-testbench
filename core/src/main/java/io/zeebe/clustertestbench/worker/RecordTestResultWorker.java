@@ -43,20 +43,21 @@ public class RecordTestResultWorker implements JobHandler {
 	private final String spreadSheetId;
 
 	private final String sheetsApiKeyFileContent;
-	
+
 	private final Sheets service;
 
-	public RecordTestResultWorker(String sheetsApiKeyfileContent, String spreadSheetId) throws IOException, GeneralSecurityException {
+	public RecordTestResultWorker(String sheetsApiKeyfileContent, String spreadSheetId)
+			throws IOException, GeneralSecurityException {
 		super();
 		this.sheetsApiKeyFileContent = sheetsApiKeyfileContent;
 		this.spreadSheetId = spreadSheetId;
-		
-		GoogleCredential credential = GoogleCredential
-				.fromStream(new StringBufferInputStream(sheetsApiKeyFileContent))
-				.createScoped(SCOPES);
-		
-		service = new Sheets.Builder(GoogleNetHttpTransport.newTrustedTransport(), getDefaultInstance(), credential)
-				.setApplicationName(APPLICATION_NAME).build();
+
+		try (var inputStream = new StringBufferInputStream(sheetsApiKeyFileContent)) {
+			GoogleCredential credential = GoogleCredential.fromStream(inputStream).createScoped(SCOPES);
+
+			service = new Sheets.Builder(GoogleNetHttpTransport.newTrustedTransport(), getDefaultInstance(), credential)
+					.setApplicationName(APPLICATION_NAME).build();
+		}
 	}
 
 	@Override
@@ -64,7 +65,7 @@ public class RecordTestResultWorker implements JobHandler {
 		final Input input = job.getVariablesAsType(Input.class);
 
 		List<Object> rowData = buildRowDataForSheet(input);
-		
+
 		ValueRange body = new ValueRange().setValues(Collections.singletonList(rowData));
 		service.spreadsheets().values().append(spreadSheetId, RANGE, body).setValueInputOption("USER_ENTERED")
 				.execute();
@@ -83,7 +84,7 @@ public class RecordTestResultWorker implements JobHandler {
 		result.add(input.getClusterName());
 		result.add(input.getClusterId());
 		result.add(input.getOperateURL());
-		
+
 		TestReport testReport = input.getTestReport();
 		result.add(testReport.getTestResult().name());
 		result.add(testReport.getFailureCount());
