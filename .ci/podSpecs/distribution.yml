@@ -56,3 +56,19 @@ spec:
         - name: shared-data
           mountPath: /home/shared
           mountPropagation: Bidirectional
+    - name: gcloud
+      image: google/cloud-sdk:slim
+      securityContext:
+        privileged: true
+      tty: true
+      resources:
+        limits:
+          cpu: 2
+          memory: 2Gi
+        requests:
+          cpu: 1
+          memory: 1Gi
+      volumeMounts:
+        - name: shared-data
+          mountPath: /home/shared
+          mountPropagation: Bidirectional          
