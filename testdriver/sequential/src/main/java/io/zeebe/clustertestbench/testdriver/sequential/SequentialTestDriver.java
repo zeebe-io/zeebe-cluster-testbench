@@ -3,7 +3,12 @@ package io.zeebe.clustertestbench.testdriver.sequential;
 import static java.util.Objects.requireNonNull;
 
 import java.time.Duration;
+import java.time.Instant;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
+import java.time.format.FormatStyle;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Optional;
 
@@ -30,14 +35,19 @@ import io.zeebe.workflow.generator.builder.SequenceWorkflowBuilder;
 
 public class SequentialTestDriver implements TestDriver {
 
-	private static final String KEY_PROCESS_ID = "processId";
-
-	private static final String KEY_ITERATION = "iteration";
-
 	private static final Logger logger = LoggerFactory.getLogger(SequentialTestDriver.class);
+	
+	private static final DateTimeFormatter INSTANT_FORMATTER = DateTimeFormatter.ofLocalizedDateTime(FormatStyle.SHORT)
+			.withLocale(Locale.US).withZone(ZoneId.systemDefault());
+	
+	private static final String KEY_ITERATION = "iteration";
+	private static final String KEY_PROCESS_ID = "processId";
+	private static final String KEY_START_TIME = "startTime";
 
 	private static final String JOB_TYPE = "test-job";
 	private static final String WORKFLOW_ID = "sequential-test-workflow";
+
+	
 
 	private final ZeebeClient client;
 	private final SequentialTestParameters testParameters;
@@ -83,6 +93,7 @@ public class SequentialTestDriver implements TestDriver {
 						"Iteration " + i + " exceeded maximum time of " + timeForIteration, testReport::addFailure)) {
 					
 					var variables = new HashMap<String, Object>();
+					variables.put(KEY_START_TIME, convertMillisToString(iterationTimingContxt.getStartTime()));
 					variables.put(KEY_ITERATION, i);
 
 					var result = client.newCreateInstanceCommand().bpmnProcessId(WORKFLOW_ID).latestVersion().variables(variables).withResult()
@@ -125,6 +136,12 @@ public class SequentialTestDriver implements TestDriver {
 					.audience(authenticationDetails.getAudience()).clientId(authenticationDetails.getClientId())
 					.clientSecret(authenticationDetails.getClientSecret()).build();
 		}
+	}
+	
+	private static String convertMillisToString(long millis) {
+		Instant instant = Instant.ofEpochMilli(millis);
+
+		return INSTANT_FORMATTER.format(instant);
 	}
 
 	private Map<String, Object> buildTestReportMetaData() {
