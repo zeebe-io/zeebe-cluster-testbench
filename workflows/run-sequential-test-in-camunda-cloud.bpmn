@@ -74,6 +74,11 @@
       <bpmn:incoming>Flow_0u0o693</bpmn:incoming>
       <bpmn:outgoing>Flow_15k26ho</bpmn:outgoing>
     </bpmn:callActivity>
+    <bpmn:textAnnotation id="TextAnnotation_1g43008">
+      <bpmn:text>messageId: msg-analysis-completed
+correlationKey: cluserId</bpmn:text>
+    </bpmn:textAnnotation>
+    <bpmn:association id="Association_04pugfi" sourceRef="analysis-completed" targetRef="TextAnnotation_1g43008" />
   </bpmn:process>
   <bpmn:message id="msg-analysis-completed" name="Analysis Completed">
     <bpmn:extensionElements>
@@ -82,6 +87,9 @@
   </bpmn:message>
   <bpmndi:BPMNDiagram id="BPMNDiagram_1">
     <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="run-sequential-test-in-camunda-cloud-process">
+      <bpmndi:BPMNShape id="TextAnnotation_1g43008_di" bpmnElement="TextAnnotation_1g43008">
+        <dc:Bounds x="1080" y="230" width="340" height="40" />
+      </bpmndi:BPMNShape>
       <bpmndi:BPMNEdge id="Flow_1cth1vv_di" bpmnElement="Flow_1cth1vv">
         <di:waypoint x="1260" y="100" />
         <di:waypoint x="1302" y="100" />
@@ -166,6 +174,10 @@
       <bpmndi:BPMNShape id="Activity_1hh2a2j_di" bpmnElement="prepare-zeebe-cluster-in-camunda-cloud">
         <dc:Bounds x="240" y="60" width="100" height="80" />
       </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Association_04pugfi_di" bpmnElement="Association_04pugfi">
+        <di:waypoint x="1034" y="211" />
+        <di:waypoint x="1080" y="245" />
+      </bpmndi:BPMNEdge>
     </bpmndi:BPMNPlane>
   </bpmndi:BPMNDiagram>
 </bpmn:definitions>
