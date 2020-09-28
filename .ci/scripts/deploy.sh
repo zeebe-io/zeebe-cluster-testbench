@@ -18,4 +18,4 @@ gcloud container clusters get-credentials zeebe-cluster
 kubectl apply --namespace=testbench -f testbench.yaml
 
 # trigger restart to load newest version of the image 
-kubectl rollout restart deployment testbench
+kubectl rollout restart deployment testbench --namespace=testbench
