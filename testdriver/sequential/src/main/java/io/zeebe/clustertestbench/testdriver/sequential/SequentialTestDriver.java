@@ -3,6 +3,7 @@ package io.zeebe.clustertestbench.testdriver.sequential;
 import static java.util.Objects.requireNonNull;
 
 import java.time.Duration;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
@@ -28,6 +29,10 @@ import io.zeebe.model.bpmn.BpmnModelInstance;
 import io.zeebe.workflow.generator.builder.SequenceWorkflowBuilder;
 
 public class SequentialTestDriver implements TestDriver {
+
+	private static final String KEY_PROCESS_ID = "processId";
+
+	private static final String KEY_ITERATION = "iteration";
 
 	private static final Logger logger = LoggerFactory.getLogger(SequentialTestDriver.class);
 
@@ -76,9 +81,14 @@ public class SequentialTestDriver implements TestDriver {
 			for (int i = 0; i < testParameters.getIterations(); i++) {
 				try (TestTimingContext iterationTimingContxt = new TestTimingContext(timeForIteration,
 						"Iteration " + i + " exceeded maximum time of " + timeForIteration, testReport::addFailure)) {
+					
+					var variables = new HashMap<String, Object>();
+					variables.put(KEY_ITERATION, i);
 
-					client.newCreateInstanceCommand().bpmnProcessId(WORKFLOW_ID).latestVersion().withResult()
+					var result = client.newCreateInstanceCommand().bpmnProcessId(WORKFLOW_ID).latestVersion().variables(variables).withResult()
 							.requestTimeout(timeForIteration.multipliedBy(2)).send().get();
+					
+					iterationTimingContxt.putMetaData(KEY_PROCESS_ID, result.getBpmnProcessId());
 
 				} catch (Throwable t) {
 

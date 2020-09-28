@@ -1,6 +1,8 @@
 package io.zeebe.clustertestbench.testdriver.impl;
 
 import java.time.Duration;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.function.Consumer;
 
 public class TestTimingContext implements AutoCloseable {
@@ -12,6 +14,8 @@ public class TestTimingContext implements AutoCloseable {
 	private final String errorMessage;
 
 	private final Consumer<String> errorCollector;
+	
+	private final Map<String, Object> metaData = new HashMap<>();
 
 	public TestTimingContext(Duration maxTime, String errorMessage, Consumer<String> errorCollector) {
 		super();
@@ -26,8 +30,24 @@ public class TestTimingContext implements AutoCloseable {
 		long endTime = System.currentTimeMillis();
 
 		if (endTime - startTime > maxTime) {
-			errorCollector.accept(errorMessage);
+			errorCollector.accept(composeErrorMessage());
 		}
+	}
+	
+	protected String composeErrorMessage() {
+		StringBuilder errorMessageBuilder = new StringBuilder();
+		
+		errorMessageBuilder.append(errorMessage);
+		
+		if (!metaData.isEmpty()) {
+			errorMessageBuilder.append("; metaData:").append(metaData);
+		}
+		
+		return errorMessageBuilder.toString();
+	}
+
+	public void putMetaData(String key, Object value) {
+		metaData.put(key, value);
 	}
 
 }
