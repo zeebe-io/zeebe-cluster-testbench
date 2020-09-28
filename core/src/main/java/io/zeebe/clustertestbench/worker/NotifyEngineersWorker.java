@@ -17,6 +17,7 @@ import io.zeebe.clustertestbench.testdriver.impl.TestReportDTO;
 
 public class NotifyEngineersWorker implements JobHandler {
 
+	private static final int TEST_FAILURE_SUMMARY_ITEMS = 10;
 	private static final String CHANNEL_HEADER_KEY = "channel";
 	private static final String TEST_TYPE_HEADER_KEY = "testType";
 	private static final String DEFAULT_CHANNEL = "#testbench";
@@ -40,8 +41,7 @@ public class NotifyEngineersWorker implements JobHandler {
 		final Input input = job.getVariablesAsType(Input.class);
 
 		ChatPostMessageRequest request = ChatPostMessageRequest.builder().channel(channel)
-				.text(composeMessage(testType, input))
-				.build();
+				.text(composeMessage(testType, input)).build();
 
 		ChatPostMessageResponse response = slackClient.chatPostMessage(request);
 		if (response.getError() != null) {
@@ -50,38 +50,46 @@ public class NotifyEngineersWorker implements JobHandler {
 			client.newCompleteCommand(job.getKey()).send();
 		}
 	}
-	
-	protected String composeMessage(String testType, Input input) {		
+
+	protected String composeMessage(String testType, Input input) {
 		StringBuilder resultBuilder = new StringBuilder();
-		
+
 		// icon
 		resultBuilder.append(":bpmn-error-throw-event:");
-		
+
 		resultBuilder.append("\n");
-		
+
 		// message
-		resultBuilder.append("_" + testType + "_")
-					 .append(" on ").append("_" + input.getClusterPlan() + "_")
-					 .append(" failed for generation ").append("`" + input.getGeneration() + "`")
-					 .append(" on cluster ").append("_" + input.getClusterName()+ "_");
-		
+		resultBuilder.append("_" + testType + "_") //
+				.append(" on ").append("_" + input.getClusterPlan() + "_") //
+				.append(" failed for generation ").append("`" + input.getGeneration() + "`") //
+				.append(" on cluster ").append("_" + input.getClusterName() + "_");
+
 		resultBuilder.append("\n");
-		
+
 		// operate link
-		resultBuilder.append("<")
-					 .append(input.getOperateURL())
-					 .append("|")
-					 .append("Operate")
-					 .append(">");
-		
+		resultBuilder.append("<") //
+				.append(input.getOperateURL()) //
+				.append("|") //
+				.append("Operate") //
+				.append(">");
+
 		resultBuilder.append("\n");
-		
+
 		// number of test failures
-		resultBuilder.append("There were ")
-					 .append(input.getTestReport().getFailureCount()) 
-					 .append(" failures.");
-		
-		return resultBuilder.toString(); 
+		resultBuilder.append("There were ") //
+				.append(input.getTestReport().getFailureCount()) //
+				.append(" failures.");
+
+		input.getTestReport().getFailureMessages().stream() //
+				.limit(TEST_FAILURE_SUMMARY_ITEMS) //
+				.forEachOrdered(msg -> resultBuilder.append(msg).append("\n"));
+
+		if (input.getTestReport().getFailureCount() > TEST_FAILURE_SUMMARY_ITEMS) {
+			resultBuilder.append("...\n");
+		}
+
+		return resultBuilder.toString();
 	}
 
 	private static final class Input {
