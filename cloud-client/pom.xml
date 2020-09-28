@@ -20,7 +20,7 @@
 	<name>Zeebe Cluster Testbench - Camunda Cloud Client</name>
 
 	<properties>
-		<version.resteasy>4.5.6.Final</version.resteasy>
+		<version.resteasy>4.5.8.Final</version.resteasy>
 	</properties>
 
 	<dependencies>
