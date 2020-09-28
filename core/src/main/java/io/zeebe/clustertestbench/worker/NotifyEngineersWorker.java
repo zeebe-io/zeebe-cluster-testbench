@@ -40,9 +40,7 @@ public class NotifyEngineersWorker implements JobHandler {
 		final Input input = job.getVariablesAsType(Input.class);
 
 		ChatPostMessageRequest request = ChatPostMessageRequest.builder().channel(channel)
-				.text(":bpmn-error-throw-event: \n_" + testType + "_ on _" + input.getClusterPlan()
-						+ "_ failed for generation `" + input.getGeneration() + " on cluster _" + input.getClusterName()
-						+ "_.\nThere were " + input.getTestReport().getFailureCount() + " failures.")
+				.text(composeMessage(testType, input))
 				.build();
 
 		ChatPostMessageResponse response = slackClient.chatPostMessage(request);
@@ -52,11 +50,45 @@ public class NotifyEngineersWorker implements JobHandler {
 			client.newCompleteCommand(job.getKey()).send();
 		}
 	}
+	
+	protected String composeMessage(String testType, Input input) {		
+		StringBuilder resultBuilder = new StringBuilder();
+		
+		// icon
+		resultBuilder.append(":bpmn-error-throw-event:");
+		
+		resultBuilder.append("\n");
+		
+		// message
+		resultBuilder.append("_" + testType + "_")
+					 .append(" on ").append("_" + input.getClusterPlan() + "_")
+					 .append(" failed for generation ").append("`" + input.getGeneration() + "`")
+					 .append(" on cluster ").append("_" + input.getClusterName()+ "_");
+		
+		resultBuilder.append("\n");
+		
+		// operate link
+		resultBuilder.append("<")
+					 .append(input.getOperateURL())
+					 .append("|")
+					 .append("Operate")
+					 .append(">");
+		
+		resultBuilder.append("\n");
+		
+		// number of test failures
+		resultBuilder.append("There were ")
+					 .append(input.getTestReport().getFailureCount()) 
+					 .append(" failures.");
+		
+		return resultBuilder.toString(); 
+	}
 
 	private static final class Input {
 		private String generation;
 		private String clusterPlan;
 		private String clusterName;
+		private String operateURL;
 
 		private TestReportDTO testReport;
 
@@ -92,6 +124,14 @@ public class NotifyEngineersWorker implements JobHandler {
 		@JsonProperty(TestDriver.VARIABLE_KEY_TEST_REPORT)
 		public void setTestReport(TestReportDTO testReport) {
 			this.testReport = testReport;
+		}
+
+		public String getOperateURL() {
+			return operateURL;
+		}
+
+		public void setOperateURL(String operateURL) {
+			this.operateURL = operateURL;
 		}
 	}
 }
