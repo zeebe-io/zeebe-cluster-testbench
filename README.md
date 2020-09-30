@@ -82,7 +82,7 @@ Currently, it only has steps for the _sequential test_, but this could be extend
 | `region`/`regionUUID` | name/UUID of the region for the cluster | `String` |
 | `sequentialTestParams` | Settings to parameterize the sequential test | `SequentialTestParameters` |
 
-The cluster parameters can either be specified using human-friendly names or machine-friendly UUIDs. Both are possible and the counterpart will be found as part of the process. The generation can be ommitted. In that case the channel's default generation will be used.
+The cluster parameters can either be specified using human-friendly names or machine-friendly UUIDs. Both are possible and the counterpart will be found as part of the process. The generation can be omitted. In that case the channel's default generation will be used.
 
 | Outputs | Description | Type |
 | ------- | ----------- | ---- |
