@@ -104,15 +104,16 @@ public class SequentialTestDriver implements TestDriver {
 				} catch (Throwable t) {
 
 					final Throwable cause = t.getCause();
+
 					if (cause instanceof StatusRuntimeException) {
 						final StatusRuntimeException statusRuntimeException = (StatusRuntimeException) cause;
 						if (statusRuntimeException.getStatus().getCode() != Code.RESOURCE_EXHAUSTED) {
-							testReport.addFailure(t.getMessage() + " caused by " + cause.getMessage());
+							testReport.addFailure("Exception in iteration " + i + ":"+ t.getMessage() + " caused by " + cause.getMessage());
 						} else {
 							i--;
 						}
 					} else {
-						testReport.addFailure(t.getMessage() + " caused by " + cause.getMessage());
+						testReport.addFailure("Exception in iteration " + i + ":"+ t.getMessage() + " caused by " + cause.getMessage());
 					}
 				}
 			}
