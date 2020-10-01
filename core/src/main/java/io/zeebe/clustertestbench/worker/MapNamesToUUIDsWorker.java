@@ -33,6 +33,8 @@ public class MapNamesToUUIDsWorker implements JobHandler {
 	public void handle(JobClient client, ActivatedJob job) throws Exception {
 		logger.info("Mapping names to UUIDs and vice versa");
 		final InputOutput inputOutput = job.getVariablesAsType(InputOutput.class);
+		
+		logger.info("Input: " + inputOutput);
 
 		ParametersResponse parameters = cloudClient.getParameters();
 
@@ -43,6 +45,7 @@ public class MapNamesToUUIDsWorker implements JobHandler {
 		mapClusterPlan(inputOutput, parameters);
 		mapRegion(inputOutput, parameters);
 
+		logger.info("Output: " + inputOutput);
 		client.newCompleteCommand(job.getKey()).variables(inputOutput).send();
 	}
 
@@ -244,6 +247,13 @@ public class MapNamesToUUIDsWorker implements JobHandler {
 
 		public void setChannelUUID(String channelUUID) {
 			this.channelUUID = channelUUID;
+		}
+
+		@Override
+		public String toString() {
+			return "InputOutput [generation=" + generation + ", generationUUID=" + generationUUID + ", region=" + region
+					+ ", regionUUID=" + regionUUID + ", clusterPlan=" + clusterPlan + ", clusterPlanUUID="
+					+ clusterPlanUUID + ", channel=" + channel + ", channelUUID=" + channelUUID + "]";
 		}
 
 	}
