@@ -8,11 +8,12 @@ This code base is in very early stages.
 ## Available Documentation
 
 * [Operator handbook](docs/operator-handbook.md)
+* [Technical documentation](docs/technical-documentation.md)
 
 ## User Guide
 ### Tests
 
-### Sequential Test
+#### Sequential Test
 In the sequential test a sequential workflow is executed several times in succession. There is at most one active workflow instance at any given time. In other words, there is no parallelism - neither inside the workflow being tested nor in the test driver that starts workflow instances.
 
 A sequential test has the following parameters:
