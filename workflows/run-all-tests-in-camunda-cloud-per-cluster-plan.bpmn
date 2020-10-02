@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:zeebe="http://camunda.org/schema/zeebe/1.0" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" id="Definitions_128z1jm" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Zeebe Modeler" exporterVersion="0.9.1">
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:zeebe="http://camunda.org/schema/zeebe/1.0" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" id="Definitions_128z1jm" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Zeebe Modeler" exporterVersion="0.10.0">
   <bpmn:process id="run-all-tests-in-camunda-cloud-per-cluster-plan-process" name="Run All Tests in Camunda Cloud per Cluster Plan" isExecutable="true">
     <bpmn:startEvent id="start" name="Start">
       <bpmn:outgoing>Flow_0km5u5r</bpmn:outgoing>
@@ -7,6 +7,9 @@
     <bpmn:callActivity id="run-all-tests-in-camunda-cloud-per-cluster-plan" name="Run All Tests in Camunda Cloud per Cluster Plan">
       <bpmn:extensionElements>
         <zeebe:calledElement processId="run-all-tests-in-camunda-cloud-process" />
+        <zeebe:ioMapping>
+          <zeebe:output source="=&#34;block variable propagation&#34;" target="dummy" />
+        </zeebe:ioMapping>
       </bpmn:extensionElements>
       <bpmn:incoming>Flow_0km5u5r</bpmn:incoming>
       <bpmn:outgoing>Flow_0hwqcpb</bpmn:outgoing>
