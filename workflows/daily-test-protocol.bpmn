@@ -22,6 +22,7 @@
             <zeebe:input source="=&#34;Internal Dev&#34;" target="channel" />
             <zeebe:input source="=[&#34;Development&#34;, &#34;Production - S&#34;, &#34;Production - M&#34;, &#34;Production - L&#34;]" target="clusterPlans" />
             <zeebe:input source="={&#34;steps&#34;:3,&#34;iterations&#34;:10,&#34;maxTimeForIteration&#34;:&#34;PT10S&#34;,&#34;maxTimeForCompleteTest&#34;:&#34;PT2M&#34;}" target="sequentialTestParams" />
+            <zeebe:output source="=&#34;block variable propagation&#34;" target="dummy" />
           </zeebe:ioMapping>
           <zeebe:calledElement processId="run-all-tests-in-camunda-cloud-per-cluster-plan-process" />
         </bpmn:extensionElements>
@@ -67,9 +68,6 @@ correlationKey: id</bpmn:text>
   </bpmn:message>
   <bpmndi:BPMNDiagram id="BPMNDiagram_1">
     <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="daily-test-protocol">
-      <bpmndi:BPMNShape id="TextAnnotation_1mv67mf_di" bpmnElement="TextAnnotation_1mv67mf">
-        <dc:Bounds x="650" y="90" width="220" height="40" />
-      </bpmndi:BPMNShape>
       <bpmndi:BPMNEdge id="Flow_1gt1xs8_di" bpmnElement="Flow_1gt1xs8">
         <di:waypoint x="178" y="190" />
         <di:waypoint x="612" y="190" />
@@ -124,6 +122,9 @@ correlationKey: id</bpmn:text>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="TextAnnotation_0sixl3w_di" bpmnElement="TextAnnotation_0sixl3w">
         <dc:Bounds x="230" y="430" width="680" height="82" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="TextAnnotation_1mv67mf_di" bpmnElement="TextAnnotation_1mv67mf">
+        <dc:Bounds x="650" y="90" width="220" height="40" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNEdge id="Association_093haej_di" bpmnElement="Association_093haej">
         <di:waypoint x="158" y="172" />
