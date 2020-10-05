@@ -24,7 +24,7 @@
 		<version.resteasy>4.5.6.Final</version.resteasy>
 		<version.jaxrs>3.0.12.Final</version.jaxrs>
 		<version.google-api>1.30.4</version.google-api>
-		<version.google-sheets-api>v4-rev20200908-1.30.10</version.google-sheets-api>
+		<version.google-sheets-api>v4-rev20200922-1.30.10</version.google-sheets-api>
 		<version.slack-api>1.1.6</version.slack-api>
 		<version.google-http-client>1.36.0</version.google-http-client>
 
