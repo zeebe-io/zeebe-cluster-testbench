@@ -39,6 +39,7 @@ import io.zeebe.clustertestbench.worker.NotifyEngineersWorker;
 import io.zeebe.clustertestbench.worker.QueryClusterStateInCamundaCloudWorker;
 import io.zeebe.clustertestbench.worker.RecordTestResultWorker;
 import io.zeebe.clustertestbench.worker.SequentialTestLauncher;
+import io.zeebe.clustertestbench.worker.WarmUpClusterWorker;
 
 public class Launcher {
 
@@ -205,6 +206,8 @@ public class Launcher {
 				new GatherInformationAboutClusterInCamundaCloudWorker(cloudApiUrl, cloudApiAuthenticationServerUrl,
 						cloudApiAudience, cloudApiClientId, cloudApiClientSecret),
 				Duration.ofSeconds(10));
+		registerWorker(client, "warm-up-cluster-job", new WarmUpClusterWorker(), Duration.ofMinutes(3));
+
 		registerWorker(client, "run-sequential-test-job", new SequentialTestLauncher(), Duration.ofMinutes(30));
 
 		try {
