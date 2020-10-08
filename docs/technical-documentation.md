@@ -61,7 +61,7 @@ Modules
 
 Runtime View
 ============
-Most of the runtime behavior is determined by the workflows deployed to the _testbench_ test orchestration cluster. See [README.md](../README.md) for a documentation of the different processes. 
+Most of the runtime behavior is determined by the workflows deployed to the _testbench_ cluster. See [README.md](../README.md) for a documentation of the different processes. 
 
 Startup
 -------
@@ -72,12 +72,12 @@ Startup
 
 Fault Tolerance/Recovery
 ------------------------
-Fault tolerance and recovery are handled by the _testbench_ test orchestration cluster:
+Fault tolerance and recovery are handled by the _testbench_ cluster:
  * Whenever a task fails, it will be retried. 
  * If a worker dies, the job will time out and be reactivated.
  * If the application crashes, all workers die. As soon as the application is back up, workers can poll for job again.
  
- The _testbench_ test orchestration cluster is deployed to a high availability cluster. 
+ The _testbench_ cluster is deployed to a high availability cluster. 
 
 Design Decisions
 ================
@@ -107,7 +107,7 @@ Glossary
 | Term | Definition |
 | --- | --- |
 | Cloud API | API provided by Camunda Cloud to create, query and destroy clusters, and to create, query and delete client accounts for these clusters |
-| _testbench_ test orchestration cluster | The Zeebe cluster in which the tests are orchestrated |
+| _testbench_ cluster | The Zeebe cluster in which the tests are orchestrated |
 | test driver | Set of classes to run a test and determine the outcome of the test |
 | worker | Class that handles Zeebe jobs. Workers are registered for _service tasks_ of a given job type. | 
 
