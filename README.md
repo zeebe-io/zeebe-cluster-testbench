@@ -8,11 +8,16 @@ This code base is in very early stages.
 ## Available Documentation
 
 * [Operator handbook](docs/operator-handbook.md)
+* [Technical documentation](docs/technical-documentation.md)
 
 ## User Guide
+This document describes the different workflows that are deployed as part of this project. These workflows can either be launched directly - for ad hoc test runs - or they are launched by Zeebe as part of one of the periodic test protocols (e.g _Daily Test_).
+
+This document also contains a list of the available workers. Users are encouraged to use these workers and define and deploy additional workflows based on these building blocks.
+
 ### Tests
 
-### Sequential Test
+#### Sequential Test
 In the sequential test a sequential workflow is executed several times in succession. There is at most one active workflow instance at any given time. In other words, there is no parallelism - neither inside the workflow being tested nor in the test driver that starts workflow instances.
 
 A sequential test has the following parameters:
@@ -76,7 +81,7 @@ Currently, it only has steps for the _sequential test_, but this could be extend
  
 | Inputs | Description | Type |
 | ------ | ----------- | ---- | 
-| `generation`/`generationUUID` (optional) | name/UUID of the generation for the cluster | `String` |
+| `generation`/`generationUUID` | name/UUID of the generation for the cluster | `String` |
 | `clusterPlan`/`clusterPlanUUID` | name/UUID of the cluster plan for the cluster | `String` |
 | `channel`/`channelUUID` | name/UUID of the channel for the cluster | `String` |
 | `region`/`regionUUID` | name/UUID of the region for the cluster | `String` |
