@@ -85,16 +85,16 @@ pipeline {
       }
     }
 
-//    stage('Upload') {
-//      when { not { expression { params.RELEASE } } }
-//      steps {
-//        container('maven') {
-//          configFileProvider([configFile(fileId: 'maven-nexus-settings-zeebe', variable: 'MAVEN_SETTINGS_XML')]) {
-//            sh 'mvn -B -s $MAVEN_SETTINGS_XML generate-sources source:jar javadoc:jar deploy -DskipTests'
-//          }
-//        }
-//      }
-//    }
+    stage('Upload') {
+      when { not { expression { params.RELEASE } } }
+      steps {
+        container('maven') {
+          configFileProvider([configFile(fileId: 'maven-nexus-settings-zeebe', variable: 'MAVEN_SETTINGS_XML')]) {
+            sh 'mvn -B -s $MAVEN_SETTINGS_XML generate-sources source:jar javadoc:jar deploy -DskipTests'
+          }
+        }
+      }
+    }
 
     stage('Deploy') {
     	when { branch 'master' }
