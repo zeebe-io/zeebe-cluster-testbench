@@ -86,7 +86,10 @@ pipeline {
     }
 
     stage('Upload') {
-      when { not { expression { params.RELEASE } } }
+      when {       
+      	not { expression { params.RELEASE } } 
+      	branch 'master' 
+      }
       steps {
         container('maven') {
           configFileProvider([configFile(fileId: 'maven-nexus-settings-zeebe', variable: 'MAVEN_SETTINGS_XML')]) {
