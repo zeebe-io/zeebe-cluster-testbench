@@ -56,7 +56,6 @@ pipeline {
     }
 
     stage('Build') {
-      when { not { expression { params.RELEASE } } }
       steps {
         container('maven') {
           configFileProvider([configFile(fileId: 'maven-nexus-settings-zeebe', variable: 'MAVEN_SETTINGS_XML')]) {
