@@ -188,7 +188,7 @@ This workflow creates a Zeebe cluster in Camnuda cloud and waits until the clust
 | Destroy Zeebe Cluster in Camunda CLoud | `destroy-zeebe-cluster-in-camunda-cloud` / `destroy-zeebe-cluster-in-camunda-cloud-job` | `clusterId` |
  
 ### Messages
-| Message | ID  | Correlation Key  | 
+| Message | Message Name  | Correlation Key  | 
 | ------- | --- | ---------------- |  
-| Analysis Completed | `msg-analysis-completed` | `clusterId` | 
-| Stop Daily Test | `msg-stop-daily-test` | `id` |
+| Analysis Completed | `Analysis Completed` | `clusterId` | 
+| Stop Daily Test | `Stop Daily Test` | `id` |
