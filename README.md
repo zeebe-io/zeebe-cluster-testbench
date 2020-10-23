@@ -1,9 +1,6 @@
 # Zeebe Cluster Testbench
 
-Test bench to run tests against a Zeebe cluster .
-
-### Current State
-This code base is in very early stages.
+Test bench to run tests against a Zeebe cluster.
 
 ## Available Documentation
 
