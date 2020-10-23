@@ -56,7 +56,7 @@ sequentialTestParams = {"steps":3,"iterations":10,"maxTimeForIteration":"PT10S",
     </bpmn:textAnnotation>
     <bpmn:association id="Association_12qpqds" sourceRef="Activity_0ga0m8g" targetRef="TextAnnotation_0sixl3w" />
     <bpmn:textAnnotation id="TextAnnotation_1mv67mf">
-      <bpmn:text>messageId: msg-stop-daily-test
+      <bpmn:text>messageName: Stop Daily Test
 correlationKey: id</bpmn:text>
     </bpmn:textAnnotation>
     <bpmn:association id="Association_1wltllz" sourceRef="Event_10m6wb5" targetRef="TextAnnotation_1mv67mf" />
