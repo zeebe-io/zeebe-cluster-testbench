@@ -51,7 +51,7 @@
 		<version.assertj>3.17.2</version.assertj>
 		<version.workflowgenerator>1.0.0</version.workflowgenerator>
 		<version.jackson>2.11.3</version.jackson>
-		<version.mockito>3.5.13</version.mockito>
+		<version.mockito>3.5.15</version.mockito>
 
 		<plugin.version.surefire>3.0.0-M5</plugin.version.surefire>
 		<plugin.version.javadoc>3.2.0</plugin.version.javadoc>
