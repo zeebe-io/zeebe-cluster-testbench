@@ -5,11 +5,11 @@ import io.zeebe.client.api.worker.JobClient;
 import io.zeebe.client.api.worker.JobHandler;
 import io.zeebe.clustertestbench.internal.cloud.InternalCloudAPIClient;
 
-public class DeleteGenerationInCamundaCloudWorker implements JobHandler {
+public final class DeleteGenerationInCamundaCloudWorker implements JobHandler {
 
 	private final InternalCloudAPIClient internalApiClient;
 
-	protected DeleteGenerationInCamundaCloudWorker(InternalCloudAPIClient internalApiClient) {
+	public DeleteGenerationInCamundaCloudWorker(InternalCloudAPIClient internalApiClient) {
 		this.internalApiClient = internalApiClient;
 	}
 

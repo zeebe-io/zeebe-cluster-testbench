@@ -22,7 +22,7 @@ import io.zeebe.clustertestbench.worker.DeleteGenerationInCamundaCloudWorker.Inp
 @ExtendWith(MockitoExtension.class)
 class DeleteGenerationInCamundaCloudWorkerTest {
 
-	private static final String generationUUID = "test-generation-uuid";
+	private static final String TEST_GENERATION_UUID = "test-generation-uuid";
 
 	@Mock
 	InternalCloudAPIClient mockInternalApiClient;
@@ -50,7 +50,7 @@ class DeleteGenerationInCamundaCloudWorkerTest {
 		when(mockCompleteJobCommandStep1.send()).thenReturn(mockZeebeFuture);
 
 		var input = new Input();
-		input.setGenerationUUID(generationUUID);
+		input.setGenerationUUID(TEST_GENERATION_UUID);
 
 		when(mockActivatedJob.getVariablesAsType(Input.class)).thenReturn(input);
 	}
@@ -71,7 +71,7 @@ class DeleteGenerationInCamundaCloudWorkerTest {
 		sut.handle(mockJobClient, mockActivatedJob);
 
 		// then
-		verify(mockInternalApiClient).deleteGeneration(generationUUID);
+		verify(mockInternalApiClient).deleteGeneration(TEST_GENERATION_UUID);
 		verifyNoMoreInteractions(mockInternalApiClient);
 	}
 

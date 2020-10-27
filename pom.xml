@@ -84,6 +84,12 @@
 			</dependency>
 			<dependency>
 				<groupId>io.zeebe</groupId>
+				<artifactId>zeebe-cluster-testbench-internal-cloud-client</artifactId>
+				<type>test-jar</type>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>io.zeebe</groupId>
 				<artifactId>zeebe-cluster-testbench-testdriver-sequential</artifactId>
 				<version>${project.version}</version>
 			</dependency>
