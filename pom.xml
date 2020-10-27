@@ -32,6 +32,7 @@
 	<modules>
 		<module>core</module>
 		<module>cloud-client</module>
+        <module>internal-cloud-client</module>
 		<module>testdriver/api</module>
 		<module>testdriver/sequential</module>
         <module>integration-tests</module>
