@@ -13,7 +13,7 @@ class OAuthTokenRequestTest {
 	@Test
 	void testSerialization() throws JsonProcessingException {
 		// given
-		OAuthTokenRequest request = new OAuthTokenRequest("<audience>", "clientId>", "<clientSecret>", "<grantType>");
+		OAuthServiceAccountTokenRequest request = new OAuthServiceAccountTokenRequest("<audience>", "clientId>", "<clientSecret>", "<grantType>");
 
 		// when
 		String actual = OBJECT_MAPPER.writeValueAsString(request);

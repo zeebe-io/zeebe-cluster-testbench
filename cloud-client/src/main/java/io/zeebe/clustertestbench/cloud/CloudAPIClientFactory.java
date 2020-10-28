@@ -13,8 +13,8 @@ public class CloudAPIClientFactory {
 	public CloudAPIClient createCloudAPIClient(String cloudApiUrl, String authenticationServerURL, String audience,
 			String clientId, String clientSecret) {
 
-		OAuthInterceptor oauthInterceptor = new OAuthInterceptor(authenticationServerURL, audience, clientId,
-				clientSecret);
+		OAuthInterceptor oauthInterceptor = OAuthInterceptor.forServiceAccountAuthorization(authenticationServerURL,
+				audience, clientId, clientSecret);
 
 		Client client = ClientBuilder.newBuilder().register(oauthInterceptor).build();
 		WebTarget target = client.target(cloudApiUrl);
