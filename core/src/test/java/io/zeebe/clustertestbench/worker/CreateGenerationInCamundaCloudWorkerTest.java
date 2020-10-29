@@ -167,7 +167,7 @@ class CreateGenerationInCamundaCloudWorkerTest {
 					.map(GenerationInfo::getUuid).collect(Collectors.toList());
 
 			assertThat(request.getName()).isEqualTo(StubInternalCloudAPIClient.DEFAULT_CHANNEL_NAME);
-			assertThat(request.getAllowedGeneerationIds()).containsExactlyElementsOf(generationUUIDs);
+			assertThat(request.getAllowedGenerationIds()).containsExactlyElementsOf(generationUUIDs);
 		}
 
 		@Test

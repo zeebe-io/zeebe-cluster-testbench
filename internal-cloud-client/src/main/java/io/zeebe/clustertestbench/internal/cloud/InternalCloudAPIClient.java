@@ -16,31 +16,36 @@ import io.zeebe.clustertestbench.cloud.response.GenerationInfo;
 import io.zeebe.clustertestbench.internal.cloud.request.CreateGenerationRequest;
 import io.zeebe.clustertestbench.internal.cloud.request.UpdateChannelRequest;
 
-@Path("/api")
+@Path("api")
 public interface InternalCloudAPIClient {
 
 	@GET
-	@Path("/generations")
+	@Path("generations")
 	@Consumes("application/json")
 	List<GenerationInfo> listGenerationInfos();
 
 	@POST
-	@Path("/generations")
+	@Path("generations")
 	@Produces("application/json")
+	@Consumes("application/json")
 	void createGeneration(CreateGenerationRequest request);
 
 	@DELETE
-	@Path("/generations/{generationUUID}")
+	@Path("generations/{generationUUID}")
+	@Produces("application/json")
+	@Consumes("application/json")
 	void deleteGeneration(@PathParam("generationUUID") String generationUUID);
 
 	@GET
-	@Path("/channels")
+	@Path("channels")
+	@Produces("application/json")
 	@Consumes("application/json")
 	List<ChannelInfo> listChannelInfos();
 
 	@PATCH
-	@Path("/channels/{channelUUID}")
+	@Path("channels/{channelUUID}")
 	@Produces("application/json")
+	@Consumes("application/json")
 	void updateChannel(@PathParam("channelUUID") String channelUUID, UpdateChannelRequest request);
 
 }

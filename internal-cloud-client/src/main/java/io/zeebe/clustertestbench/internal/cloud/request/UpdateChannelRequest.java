@@ -2,41 +2,44 @@ package io.zeebe.clustertestbench.internal.cloud.request;
 
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 public class UpdateChannelRequest {
 
 	private final String name;
 	private final boolean isDefault;
-	private final String defaultgenerationId;
-	private final List<String> allowedGeneerationIds;
+	private final String defaultGenerationId;
+	private final List<String> allowedGenerationIds;
 
 	public UpdateChannelRequest(String name, boolean isDefault, String defaultgenerationId,
 			List<String> allowedGeneerationIds) {
 		this.name = name;
 		this.isDefault = isDefault;
-		this.defaultgenerationId = defaultgenerationId;
-		this.allowedGeneerationIds = allowedGeneerationIds;
+		this.defaultGenerationId = defaultgenerationId;
+		this.allowedGenerationIds = allowedGeneerationIds;
 	}
 
 	public String getName() {
 		return name;
 	}
 
+	@JsonProperty("isDefault")
 	public boolean isDefault() {
 		return isDefault;
 	}
 
-	public String getDefaultgenerationId() {
-		return defaultgenerationId;
+	public String getDefaultGenerationId() {
+		return defaultGenerationId;
 	}
 
-	public List<String> getAllowedGeneerationIds() {
-		return allowedGeneerationIds;
+	public List<String> getAllowedGenerationIds() {
+		return allowedGenerationIds;
 	}
 
 	@Override
 	public String toString() {
 		return "UpdateChannelRequest [name=" + name + ", isDefault=" + isDefault + ", defaultgenerationId="
-				+ defaultgenerationId + ", allowedGeneerationIds=" + allowedGeneerationIds + "]";
+				+ defaultGenerationId + ", allowedGeneerationIds=" + allowedGenerationIds + "]";
 	}
 
 }
