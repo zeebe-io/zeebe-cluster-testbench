@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:zeebe="http://camunda.org/schema/zeebe/1.0" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" id="Definitions_06r49fl" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Zeebe Modeler" exporterVersion="0.10.0">
+  <bpmn:process id="qa-protocol" name="QA Protocol" isExecutable="true">
+    <bpmn:startEvent id="StartEvent_1">
+      <bpmn:outgoing>Flow_0s03s3e</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:sequenceFlow id="Flow_0s03s3e" sourceRef="StartEvent_1" targetRef="create-generation-in-camunda-cloud" />
+    <bpmn:sequenceFlow id="Flow_0cosuvw" sourceRef="create-generation-in-camunda-cloud" targetRef="run-all-tests-in-camunda-cloud-per-cluster-plan" />
+    <bpmn:sequenceFlow id="Flow_1hq3wl3" sourceRef="run-all-tests-in-camunda-cloud-per-cluster-plan" targetRef="delete-generation-in-camunda-cloud" />
+    <bpmn:callActivity id="run-all-tests-in-camunda-cloud-per-cluster-plan" name="Run All Tests in Camunda Cloud per Cluster Plan">
+      <bpmn:extensionElements>
+        <zeebe:calledElement processId="run-all-tests-in-camunda-cloud-per-cluster-plan-process" />
+        <zeebe:ioMapping>
+          <zeebe:input source="=&#34;new chaos&#34;" target="region" />
+          <zeebe:input source="=[&#34;Development&#34;, &#34;Production - S&#34;, &#34;Production - M&#34;, &#34;Production - L&#34;]" target="clusterPlans" />
+          <zeebe:input source="={&#34;steps&#34;:3,&#34;iterations&#34;:10,&#34;maxTimeForIteration&#34;:&#34;PT10S&#34;,&#34;maxTimeForCompleteTest&#34;:&#34;PT2M&#34;}" target="sequentialTestParams" />
+        </zeebe:ioMapping>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_0cosuvw</bpmn:incoming>
+      <bpmn:outgoing>Flow_1hq3wl3</bpmn:outgoing>
+    </bpmn:callActivity>
+    <bpmn:endEvent id="Event_0ttw717">
+      <bpmn:incoming>Flow_1qkrt5u</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="Flow_1qkrt5u" sourceRef="delete-generation-in-camunda-cloud" targetRef="Event_0ttw717" />
+    <bpmn:serviceTask id="create-generation-in-camunda-cloud" name="Create Generation In Camunda Cloud">
+      <bpmn:extensionElements>
+        <zeebe:taskDefinition type="create-generation-in-camunda-cloud-job" />
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_0s03s3e</bpmn:incoming>
+      <bpmn:outgoing>Flow_0cosuvw</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:serviceTask id="delete-generation-in-camunda-cloud" name="Delete Generation In Camunda Cloud">
+      <bpmn:extensionElements>
+        <zeebe:taskDefinition type="delete-generation-in-camunda-cloud-job" />
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_1hq3wl3</bpmn:incoming>
+      <bpmn:outgoing>Flow_1qkrt5u</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:textAnnotation id="TextAnnotation_1vy46wr">
+      <bpmn:text>Defaults:
+region = "new chaos"
+clusterPlans = ["Development", "Production - S", "Production - M", "Production - L"]
+sequentialTestParams = {"steps":3,"iterations":10,"maxTimeForIteration":"PT10S","maxTimeForCompleteTest":"PT2M"}</bpmn:text>
+    </bpmn:textAnnotation>
+    <bpmn:association id="Association_0din8b3" sourceRef="run-all-tests-in-camunda-cloud-per-cluster-plan" targetRef="TextAnnotation_1vy46wr" />
+    <bpmn:textAnnotation id="TextAnnotation_0lbo537">
+      <bpmn:text>zeebeImage: Zeebe image to use
+generationTemplate: existing geenration used as template for the versions of Operate and ElasticSearch
+channel: channel in which the QA tests shall be run</bpmn:text>
+    </bpmn:textAnnotation>
+    <bpmn:association id="Association_0x03pf4" sourceRef="StartEvent_1" targetRef="TextAnnotation_0lbo537" />
+  </bpmn:process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="qa-protocol">
+      <bpmndi:BPMNShape id="TextAnnotation_0lbo537_di" bpmnElement="TextAnnotation_0lbo537">
+        <dc:Bounds x="147" y="40" width="608" height="48" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="TextAnnotation_1vy46wr_di" bpmnElement="TextAnnotation_1vy46wr">
+        <dc:Bounds x="160" y="280" width="750" height="70" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Flow_0s03s3e_di" bpmnElement="Flow_0s03s3e">
+        <di:waypoint x="215" y="177" />
+        <di:waypoint x="270" y="177" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0cosuvw_di" bpmnElement="Flow_0cosuvw">
+        <di:waypoint x="370" y="177" />
+        <di:waypoint x="430" y="177" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1hq3wl3_di" bpmnElement="Flow_1hq3wl3">
+        <di:waypoint x="530" y="177" />
+        <di:waypoint x="590" y="177" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1qkrt5u_di" bpmnElement="Flow_1qkrt5u">
+        <di:waypoint x="690" y="177" />
+        <di:waypoint x="752" y="177" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="_BPMNShape_StartEvent_2" bpmnElement="StartEvent_1">
+        <dc:Bounds x="179" y="159" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0z30w0h_di" bpmnElement="run-all-tests-in-camunda-cloud-per-cluster-plan">
+        <dc:Bounds x="430" y="137" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_0ttw717_di" bpmnElement="Event_0ttw717">
+        <dc:Bounds x="752" y="159" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1azabwm_di" bpmnElement="create-generation-in-camunda-cloud">
+        <dc:Bounds x="270" y="137" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_057v3rl_di" bpmnElement="delete-generation-in-camunda-cloud">
+        <dc:Bounds x="590" y="137" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Association_0x03pf4_di" bpmnElement="Association_0x03pf4">
+        <di:waypoint x="197" y="159" />
+        <di:waypoint x="197" y="88" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Association_0din8b3_di" bpmnElement="Association_0din8b3">
+        <di:waypoint x="430" y="199" />
+        <di:waypoint x="244" y="280" />
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>
