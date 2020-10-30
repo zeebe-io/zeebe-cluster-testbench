@@ -96,6 +96,7 @@ Risks and Technical Debts
 * The process to create a cluster has a potential infinite loop. If the cluster is created, but never gets ready, then the process will not terminate.
 * The worker `MapNamesToUUIDsWorker` writes to the same variables that it uses as input. Once overwritten, it is no longer possible to look at what the input was. This already confused root cause analysis for a bug.
 * The _CloudAPI_ might change and become incompatible. Diagnosing these problems is quite tricky with the RESTEasy Client API. It does a great job at giving developers a nice interface; however if a given REST endpoint returns e.g. a HTML page with a helpful human readable error message it is difficult to get a hold of this error message.
+* The _Internal Cloud API_ might change and become incompatible. We are using a Camunda internal API here with no guarantees on backwards compatibility.
 
 Appendix 
 ========
@@ -107,6 +108,7 @@ Glossary
 | Term | Definition |
 | --- | --- |
 | Cloud API | API provided by Camunda Cloud to create, query and destroy clusters, and to create, query and delete client accounts for these clusters |
+| Internal Cloud API/Cloud Backend | Internal API of Camunda Cloud. It is used to perform administrative actions like creating new generations for clusters to test. |
 | _testbench_ cluster | The Zeebe cluster in which the tests are orchestrated |
 | test driver | Set of classes to run a test and determine the outcome of the test |
 | worker | Class that handles Zeebe jobs. Workers are registered for _service tasks_ of a given job type. | 

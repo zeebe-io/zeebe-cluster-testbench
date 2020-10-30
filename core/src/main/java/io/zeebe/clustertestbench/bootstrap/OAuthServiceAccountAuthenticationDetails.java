@@ -1,13 +1,13 @@
 package io.zeebe.clustertestbench.bootstrap;
 
-public class OAuthAuthenticationDetails {
+public class OAuthServiceAccountAuthenticationDetails {
 
 	private final String serverURL;
 	private final String audience;
 	private final String clientId;
 	private final String clientSecret;
 	
-	public OAuthAuthenticationDetails(String serverURL, String audience, String clientId, String clientSecret) {
+	public OAuthServiceAccountAuthenticationDetails(String serverURL, String audience, String clientId, String clientSecret) {
 		this.serverURL = serverURL;
 		this.audience = audience;
 		this.clientId = clientId;

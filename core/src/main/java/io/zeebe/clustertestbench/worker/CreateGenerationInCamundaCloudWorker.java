@@ -16,11 +16,11 @@ import io.zeebe.clustertestbench.internal.cloud.InternalCloudAPIClient;
 import io.zeebe.clustertestbench.internal.cloud.request.CreateGenerationRequest;
 import io.zeebe.clustertestbench.internal.cloud.request.UpdateChannelRequest;
 
-public class CreateGeneratonInCamundaCloudWorker implements JobHandler {
+public class CreateGenerationInCamundaCloudWorker implements JobHandler {
 
 	private final InternalCloudAPIClient internalApiClient;
 
-	public CreateGeneratonInCamundaCloudWorker(InternalCloudAPIClient internalApiClient) {
+	public CreateGenerationInCamundaCloudWorker(InternalCloudAPIClient internalApiClient) {
 		this.internalApiClient = internalApiClient;
 	}
 
