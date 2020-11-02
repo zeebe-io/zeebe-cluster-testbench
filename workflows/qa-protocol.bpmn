@@ -9,7 +9,7 @@
     <bpmn:sequenceFlow id="Flow_1hq3wl3" sourceRef="run-all-tests-in-camunda-cloud-per-cluster-plan" targetRef="delete-generation-in-camunda-cloud" />
     <bpmn:callActivity id="run-all-tests-in-camunda-cloud-per-cluster-plan" name="Run All Tests in Camunda Cloud per Cluster Plan">
       <bpmn:extensionElements>
-        <zeebe:calledElement processId="run-all-tests-in-camunda-cloud-per-cluster-plan-process" />
+        <zeebe:calledElement processId="run-all-tests-in-camunda-cloud-per-cluster-plan" />
         <zeebe:ioMapping>
           <zeebe:input source="=&#34;new chaos&#34;" target="region" />
           <zeebe:input source="=[&#34;Development&#34;, &#34;Production - S&#34;, &#34;Production - M&#34;, &#34;Production - L&#34;]" target="clusterPlans" />
@@ -53,27 +53,21 @@ channel: channel in which the QA tests shall be run</bpmn:text>
   </bpmn:process>
   <bpmndi:BPMNDiagram id="BPMNDiagram_1">
     <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="qa-protocol">
-      <bpmndi:BPMNShape id="TextAnnotation_0lbo537_di" bpmnElement="TextAnnotation_0lbo537">
-        <dc:Bounds x="147" y="40" width="608" height="48" />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="TextAnnotation_1vy46wr_di" bpmnElement="TextAnnotation_1vy46wr">
-        <dc:Bounds x="160" y="280" width="750" height="70" />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNEdge id="Flow_0s03s3e_di" bpmnElement="Flow_0s03s3e">
-        <di:waypoint x="215" y="177" />
-        <di:waypoint x="270" y="177" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_0cosuvw_di" bpmnElement="Flow_0cosuvw">
-        <di:waypoint x="370" y="177" />
-        <di:waypoint x="430" y="177" />
+      <bpmndi:BPMNEdge id="Flow_1qkrt5u_di" bpmnElement="Flow_1qkrt5u">
+        <di:waypoint x="690" y="177" />
+        <di:waypoint x="752" y="177" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_1hq3wl3_di" bpmnElement="Flow_1hq3wl3">
         <di:waypoint x="530" y="177" />
         <di:waypoint x="590" y="177" />
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_1qkrt5u_di" bpmnElement="Flow_1qkrt5u">
-        <di:waypoint x="690" y="177" />
-        <di:waypoint x="752" y="177" />
+      <bpmndi:BPMNEdge id="Flow_0cosuvw_di" bpmnElement="Flow_0cosuvw">
+        <di:waypoint x="370" y="177" />
+        <di:waypoint x="430" y="177" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0s03s3e_di" bpmnElement="Flow_0s03s3e">
+        <di:waypoint x="215" y="177" />
+        <di:waypoint x="270" y="177" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNShape id="_BPMNShape_StartEvent_2" bpmnElement="StartEvent_1">
         <dc:Bounds x="179" y="159" width="36" height="36" />
@@ -90,13 +84,19 @@ channel: channel in which the QA tests shall be run</bpmn:text>
       <bpmndi:BPMNShape id="Activity_057v3rl_di" bpmnElement="delete-generation-in-camunda-cloud">
         <dc:Bounds x="590" y="137" width="100" height="80" />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNEdge id="Association_0x03pf4_di" bpmnElement="Association_0x03pf4">
-        <di:waypoint x="197" y="159" />
-        <di:waypoint x="197" y="88" />
-      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="TextAnnotation_1vy46wr_di" bpmnElement="TextAnnotation_1vy46wr">
+        <dc:Bounds x="160" y="280" width="750" height="70" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="TextAnnotation_0lbo537_di" bpmnElement="TextAnnotation_0lbo537">
+        <dc:Bounds x="147" y="40" width="608" height="48" />
+      </bpmndi:BPMNShape>
       <bpmndi:BPMNEdge id="Association_0din8b3_di" bpmnElement="Association_0din8b3">
         <di:waypoint x="430" y="199" />
         <di:waypoint x="244" y="280" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Association_0x03pf4_di" bpmnElement="Association_0x03pf4">
+        <di:waypoint x="197" y="159" />
+        <di:waypoint x="197" y="88" />
       </bpmndi:BPMNEdge>
     </bpmndi:BPMNPlane>
   </bpmndi:BPMNDiagram>
