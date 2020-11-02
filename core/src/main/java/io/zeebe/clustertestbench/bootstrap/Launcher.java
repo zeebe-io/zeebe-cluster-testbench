@@ -4,6 +4,7 @@ import static com.google.api.client.googleapis.javanet.GoogleNetHttpTransport.ne
 import static com.google.api.client.json.jackson2.JacksonFactory.getDefaultInstance;
 import static java.lang.Runtime.getRuntime;
 
+import io.zeebe.clustertestbench.notification.SlackNotificationService;
 import java.io.IOException;
 import java.io.StringBufferInputStream;
 import java.security.GeneralSecurityException;
@@ -217,7 +218,8 @@ public class Launcher {
 			logger.error("Exception while creating and registering worker for 'record-test-result-job'", e);
 		}
 
-		registerWorker(client, "notify-engineers-job", new NotifyEngineersWorker(slackToken), Duration.ofSeconds(10));
+		final var slackNotificationService = new SlackNotificationService(slackToken);
+		registerWorker(client, "notify-engineers-job", new NotifyEngineersWorker(slackNotificationService), Duration.ofSeconds(10));
 		registerWorker(
 				client, "destroy-zeebe-cluster-in-camunda-cloud-job", new DeleteClusterInCamundaCloudWorker(cloudApiUrl,
 						cloudApiAuthenticationServerUrl, cloudApiAudience, cloudApiClientId, cloudApiClientSecret),
