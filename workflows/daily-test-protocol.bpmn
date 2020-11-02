@@ -16,15 +16,15 @@
     <bpmn:subProcess id="Activity_01rcw4r" triggeredByEvent="true">
       <bpmn:callActivity id="Activity_0ga0m8g" name="Run All Tests in Camunda Cloud per Cluster Plan">
         <bpmn:extensionElements>
-          <zeebe:taskDefinition type="run-all-tests-in-camunda-cloud-per-cluster-plan-process" />
           <zeebe:ioMapping>
             <zeebe:input source="= &#34;new chaos&#34;" target="region" />
             <zeebe:input source="=&#34;Internal Dev&#34;" target="channel" />
             <zeebe:input source="=[&#34;Development&#34;, &#34;Production - S&#34;, &#34;Production - M&#34;, &#34;Production - L&#34;]" target="clusterPlans" />
             <zeebe:input source="={&#34;steps&#34;:3,&#34;iterations&#34;:10,&#34;maxTimeForIteration&#34;:&#34;PT10S&#34;,&#34;maxTimeForCompleteTest&#34;:&#34;PT2M&#34;}" target="sequentialTestParams" />
+            <zeebe:input source="={}" target="chaosTestParams" />
             <zeebe:output source="=&#34;block variable propagation&#34;" target="dummy" />
           </zeebe:ioMapping>
-          <zeebe:calledElement processId="run-all-tests-in-camunda-cloud-per-cluster-plan-process" />
+          <zeebe:calledElement processId="run-all-tests-in-camunda-cloud-per-cluster-plan" />
         </bpmn:extensionElements>
         <bpmn:incoming>Flow_1d7hw5p</bpmn:incoming>
         <bpmn:outgoing>Flow_0br4aao</bpmn:outgoing>

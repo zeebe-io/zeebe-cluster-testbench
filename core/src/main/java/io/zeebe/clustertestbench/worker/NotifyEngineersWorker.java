@@ -1,34 +1,25 @@
 package io.zeebe.clustertestbench.worker;
 
-import java.util.Map;
-import java.util.Optional;
-
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.slack.api.Slack;
-import com.slack.api.methods.MethodsClient;
-import com.slack.api.methods.request.chat.ChatPostMessageRequest;
-import com.slack.api.methods.response.chat.ChatPostMessageResponse;
-
 import io.zeebe.client.api.response.ActivatedJob;
 import io.zeebe.client.api.worker.JobClient;
 import io.zeebe.client.api.worker.JobHandler;
+import io.zeebe.clustertestbench.notification.NotificationService;
 import io.zeebe.clustertestbench.testdriver.api.TestDriver;
 import io.zeebe.clustertestbench.testdriver.impl.TestReportDTO;
+import java.util.Map;
+import java.util.Optional;
 
 public class NotifyEngineersWorker implements JobHandler {
 
 	private static final int TEST_FAILURE_SUMMARY_ITEMS = 10;
 	private static final String CHANNEL_HEADER_KEY = "channel";
-	private static final String TEST_TYPE_HEADER_KEY = "testType";
 	private static final String DEFAULT_CHANNEL = "#testbench";
-	private static final String DEFAULT_TEST_TYPE = "(undefined test)";
 
-	private final MethodsClient slackClient;
+	private final NotificationService notificationService;
 
-	public NotifyEngineersWorker(String token) {
-		Slack slack = Slack.getInstance();
-
-		slackClient = slack.methods(token);
+	public NotifyEngineersWorker(NotificationService notificationService) {
+		this.notificationService = notificationService;
 	}
 
 	@Override
@@ -36,22 +27,15 @@ public class NotifyEngineersWorker implements JobHandler {
 		Map<String, String> headers = job.getCustomHeaders();
 
 		String channel = Optional.ofNullable(headers.get(CHANNEL_HEADER_KEY)).orElse(DEFAULT_CHANNEL);
-		String testType = Optional.ofNullable(headers.get(TEST_TYPE_HEADER_KEY)).orElse(DEFAULT_TEST_TYPE);
 
 		final Input input = job.getVariablesAsType(Input.class);
+		final var message = composeMessage(input);
 
-		ChatPostMessageRequest request = ChatPostMessageRequest.builder().channel(channel)
-				.text(composeMessage(testType, input)).build();
-
-		ChatPostMessageResponse response = slackClient.chatPostMessage(request);
-		if (response.getError() != null) {
-			throw new Exception(response.getError());
-		} else {
-			client.newCompleteCommand(job.getKey()).send();
-		}
+		notificationService.sendNotification(channel, message);
+		client.newCompleteCommand(job.getKey()).send();
 	}
 
-	protected String composeMessage(String testType, Input input) {
+	protected String composeMessage(Input input) {
 		StringBuilder resultBuilder = new StringBuilder();
 
 		// icon
@@ -60,7 +44,7 @@ public class NotifyEngineersWorker implements JobHandler {
 		resultBuilder.append("\n");
 
 		// message
-		resultBuilder.append("_" + testType + "_") //
+		resultBuilder.append("_").append(input.getTestWorkflowId()).append("_") //
 				.append(" on ").append("_" + input.getClusterPlan() + "_") //
 				.append(" failed for generation ").append("`" + input.getGeneration() + "`") //
 				.append(" on cluster ").append("_" + input.getClusterName() + "_");
@@ -92,11 +76,12 @@ public class NotifyEngineersWorker implements JobHandler {
 		return resultBuilder.toString();
 	}
 
-	private static final class Input {
+	static final class Input {
 		private String generation;
 		private String clusterPlan;
 		private String clusterName;
 		private String operateURL;
+		private String testWorkflowId;
 
 		private TestReportDTO testReport;
 
@@ -140,6 +125,14 @@ public class NotifyEngineersWorker implements JobHandler {
 
 		public void setOperateURL(String operateURL) {
 			this.operateURL = operateURL;
+		}
+
+		public String getTestWorkflowId() {
+			return testWorkflowId;
+		}
+
+		public void setTestWorkflowId(final String testWorkflowId) {
+			this.testWorkflowId = testWorkflowId;
 		}
 	}
 }
