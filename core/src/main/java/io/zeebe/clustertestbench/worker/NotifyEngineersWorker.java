@@ -1,20 +1,17 @@
 package io.zeebe.clustertestbench.worker;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+
 import io.zeebe.client.api.response.ActivatedJob;
 import io.zeebe.client.api.worker.JobClient;
 import io.zeebe.client.api.worker.JobHandler;
 import io.zeebe.clustertestbench.notification.NotificationService;
 import io.zeebe.clustertestbench.testdriver.api.TestDriver;
 import io.zeebe.clustertestbench.testdriver.impl.TestReportDTO;
-import java.util.Map;
-import java.util.Optional;
 
 public class NotifyEngineersWorker implements JobHandler {
 
 	private static final int TEST_FAILURE_SUMMARY_ITEMS = 10;
-	private static final String CHANNEL_HEADER_KEY = "channel";
-	private static final String DEFAULT_CHANNEL = "#testbench";
 
 	private final NotificationService notificationService;
 
@@ -24,14 +21,10 @@ public class NotifyEngineersWorker implements JobHandler {
 
 	@Override
 	public void handle(JobClient client, ActivatedJob job) throws Exception {
-		Map<String, String> headers = job.getCustomHeaders();
-
-		String channel = Optional.ofNullable(headers.get(CHANNEL_HEADER_KEY)).orElse(DEFAULT_CHANNEL);
-
 		final Input input = job.getVariablesAsType(Input.class);
 		final var message = composeMessage(input);
 
-		notificationService.sendNotification(channel, message);
+		notificationService.sendNotification(message);
 		client.newCompleteCommand(job.getKey()).send();
 	}
 

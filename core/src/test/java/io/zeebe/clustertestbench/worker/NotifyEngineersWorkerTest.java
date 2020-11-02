@@ -38,7 +38,6 @@ public class NotifyEngineersWorkerTest {
 
     // then
     verify(jobClientMock).newCompleteCommand(0xCAFEL);
-    assertThat(simpleNotificationService.lastTarget).isEqualTo("CHANNEL_A");
     assertThat(simpleNotificationService.lastMessage)
         .contains("CLUSTER_A")
         .contains("CLUSTER_PLAN_B")
@@ -53,7 +52,7 @@ public class NotifyEngineersWorkerTest {
   public void shouldNotCompleteJobWhenExceptionIsThrownInNotificationService() throws Exception {
     // given
     final var notificationService = mock(NotificationService.class);
-    doThrow(new Exception()).when(notificationService).sendNotification(anyString(), anyString());
+    doThrow(new Exception()).when(notificationService).sendNotification(anyString());
     final var jobClientMock = mock(JobClient.class);
     final var mock = mock(CompleteJobCommandStep1.class);
     when(jobClientMock.newCompleteCommand(anyLong()))
@@ -70,12 +69,10 @@ public class NotifyEngineersWorkerTest {
 
   private static final class SimpleNotificationService implements NotificationService {
 
-    private String lastTarget;
     private String lastMessage;
 
     @Override
-    public void sendNotification(final String target, final String message) throws Exception {
-      lastTarget = target;
+    public void sendNotification(final String message) throws Exception {
       lastMessage = message;
     }
   }
