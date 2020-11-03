@@ -53,9 +53,10 @@ public class BootstrapFromEnvVars {
 			final String reportSheetID = getEnvironmentvariable("REPORT_SHEET_ID", false);
 			
 			final String slackToken = getEnvironmentvariable("SLACK_TOKEN", false);
+			final String slackChannel = getEnvironmentvariable("SLACK_CHANNEL", false);
 
 			new Launcher(contactPoint, testOrchestrationAuthenticatonDetails, cloudApiUrl,
-					cloudApiAuthenticationDetails, sheetsApiKeyfileContent, reportSheetID, slackToken).launch();
+					cloudApiAuthenticationDetails, sheetsApiKeyfileContent, reportSheetID, slackToken, slackChannel).launch();
 		} catch (Throwable t) {
 			logger.error(t.getMessage(), t);
 			System.exit(-1);

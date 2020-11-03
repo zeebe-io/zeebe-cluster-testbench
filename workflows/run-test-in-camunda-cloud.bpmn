@@ -17,9 +17,6 @@
     <bpmn:serviceTask id="notify-engineers" name="Notify Engineers">
       <bpmn:extensionElements>
         <zeebe:taskDefinition type="notify-engineers-job" />
-        <zeebe:taskHeaders>
-          <zeebe:header key="channel" value="#testbench" />
-        </zeebe:taskHeaders>
       </bpmn:extensionElements>
       <bpmn:incoming>test_not_passed</bpmn:incoming>
       <bpmn:outgoing>Flow_1l84l1r</bpmn:outgoing>

@@ -83,12 +83,11 @@ Setup and deployment:
 1. Download token to authenticate the app
 1. Give it permissions to write to channels
 1. Invite your app to the channel it should publish to
-1. Edit BPMN files that use slack-based service tasks; the channel to publish to is a header field
-![Slack Channel Configuration](assets/operator-guide-slack-channel.png "Set channel in header for service task")
 1. Fill deployment descriptors as follows:
 
 | File | Field | Content |
 | ---- | ----- | ------- | 
+| testbench.yaml | ZCTB_SLACK_CHANNEL | The slack channel to publish to |
 | secrets.yaml | slackToken | The token for your app |
 
 ### Deployment

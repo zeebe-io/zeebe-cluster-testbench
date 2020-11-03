@@ -57,7 +57,9 @@ spec:
             valueFrom:
               secretKeyRef:
                 name: testbench-secrets
-                key: slackToken            
+                key: slackToken
+          - name: ZCTB_SLACK_CHANNEL
+            value: "#testbench"                  
         resources:
           limits:
             cpu: 4

@@ -58,11 +58,12 @@ public class Launcher {
 	private final String reportSheetID;
 
 	private final String slackToken;
+	private final String slackChannel;
 
 	public Launcher(String testOrchestrationContactPoint,
 			OAuthAuthenticationDetails testOrchestrationAuthenticatonDetails, String cloudApiUrl,
 			OAuthAuthenticationDetails cloudApiAuthenticationDetails, String sheetsApiKeyfileContent,
-			String reportSheetID, String slackToken) {
+			String reportSheetID, String slackToken, String slackChannel) {
 		this.testOrchestrationContactPoint = testOrchestrationContactPoint;
 		this.testOrchestrationAuthenticatonDetails = testOrchestrationAuthenticatonDetails;
 		this.cloudApiUrl = cloudApiUrl;
@@ -70,6 +71,7 @@ public class Launcher {
 		this.sheetsApiKeyFileContent = sheetsApiKeyfileContent;
 		this.reportSheetID = reportSheetID;
 		this.slackToken = slackToken;
+		this.slackChannel = slackChannel;
 	}
 
 	public void launch() throws IOException {
@@ -218,7 +220,7 @@ public class Launcher {
 			logger.error("Exception while creating and registering worker for 'record-test-result-job'", e);
 		}
 
-		final var slackNotificationService = new SlackNotificationService(slackToken);
+		final var slackNotificationService = new SlackNotificationService(slackToken, slackChannel);
 		registerWorker(client, "notify-engineers-job", new NotifyEngineersWorker(slackNotificationService), Duration.ofSeconds(10));
 		registerWorker(
 				client, "destroy-zeebe-cluster-in-camunda-cloud-job", new DeleteClusterInCamundaCloudWorker(cloudApiUrl,
