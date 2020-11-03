@@ -17,5 +17,8 @@ gcloud container clusters get-credentials zeebe-cluster
 # apply changes to testbench.yaml, if any
 kubectl apply --namespace=testbench -f testbench.yaml
 
+# apply changes to chaosWorker.yaml, if any
+kubectl apply --namespace=testbench -f core/chaos-workers/chaosWorker.yaml
+
 # trigger restart to load newest version of the image 
 kubectl rollout restart deployment testbench --namespace=testbench

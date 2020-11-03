@@ -1,0 +1,42 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: chaos-worker
+  labels:
+    app: chaos-worker
+spec:
+  selector:
+    matchLabels:
+      app: chaos-worker
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: chaos-worker
+    spec:
+      containers:
+      - name: chaos-worker
+        image: gcr.io/zeebe-io/zeebe-cluster-testbench-chaos:latest
+        imagePullPolicy: Always
+        env:
+          - name: ZEEBE_AUTHENTICATION_SERVER_URL
+            value: "https://login.cloud.ultrawombat.com/oauth/token"
+          - name: ZEEBE_CLIENT_ID
+            value: "W5a4JUc3I1NIetNnodo3YTvdsRIFb12w"
+          - name: ZEEBE_CLIENT_SECRET
+            valueFrom:
+              secretKeyRef:
+                name: testbench-secrets
+                key: clientSecret
+          - name: ZEEBE_CONTACT_POINT
+            valueFrom:
+              secretKeyRef:
+                name: testbench-secrets
+                key: contactPoint
+        resources:
+          limits:
+            cpu: 4
+            memory: 256Mi
+          requests:
+            cpu: 2
+            memory: 100Mi

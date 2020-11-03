@@ -85,9 +85,9 @@ pipeline {
     }
 
     stage('Upload') {
-      when {       
-      	not { expression { params.RELEASE } } 
-      	branch 'master' 
+      when {
+      	not { expression { params.RELEASE } }
+      	branch 'master'
       }
       steps {
         container('maven') {
@@ -103,22 +103,33 @@ pipeline {
 
     	steps {
     		container('docker') {
-    			/* this command is a little convoluted to avoid leaking of the secret; 
+    			/* this command is a little convoluted to avoid leaking of the secret;
     			 * it is unclear why the built-in Jenkins mechanism doesn't work out of the box
     			 */
 	          	sh 'set +x ; echo ${DOCKER_GCR} | docker login -u _json_key --password-stdin https://gcr.io ; set -x'
-	          	    			
+
     			sh 'docker build -t gcr.io/zeebe-io/zeebe-cluster-testbench:latest .'
     			sh 'docker push gcr.io/zeebe-io/zeebe-cluster-testbench:latest'
+                withVault([vaultSecrets: [
+                        [path: 'secret/common/ci-zeebe/zeebe-chaos-service-account', secretValues: [
+                                [vaultKey: 'token'],
+                        ]],
+                ]]) {
+
+                  dir('core/chaos-workers/') {
+                    sh 'docker build . -t gcr.io/zeebe-io/zeebe-cluster-testbench-chaos:latest --build-arg TOKEN=${token}'
+                    sh 'docker push gcr.io/zeebe-io/zeebe-cluster-testbench-chaos:latest'
+                  }
+                }
     		}
-    		
+
     		container('gcloud') {
     			sh '.ci/scripts/prepare-deploy.sh'
     			sh '.ci/scripts/deploy.sh'
     		}
     	}
     }
-    
+
     stage('Release') {
       when { expression { params.RELEASE } }
 
