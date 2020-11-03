@@ -28,7 +28,7 @@ spec:
               secretKeyRef:
                 name: testbench-secrets
                 key: clientSecret
-          - name: ZEEBE_CONTACT_POINT
+          - name: ZEEBE_ADDRESS
             valueFrom:
               secretKeyRef:
                 name: testbench-secrets
