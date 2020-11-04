@@ -205,7 +205,7 @@ The following defaults are defined in the process description:
 
 ![qa-protocol](docs/assets/qa-protocol.png "QA protocol")
 
-The QA protocol runs all tests that are part of the QA suite. Tests are run on demand (e.g. for a PR merge or to test a release candidate)
+The QA protocol runs all tests. Tests are run on demand (e.g. for a PR merge or to test a release candidate)
 
 | Inputs | Description | Type |
 | ------ | ----------- | ---- | 
@@ -257,7 +257,7 @@ This workflow creates a Zeebe cluster in Camnuda cloud and waits until the clust
 | Notify Engineers | `notify-engineers` / `notify-engineers-job` | `generation`, `clusterPlan`, `clusterName`, `operateURL`, `testReport` |
 | Destroy Zeebe Cluster in Camunda CLoud | `destroy-zeebe-cluster-in-camunda-cloud` / `destroy-zeebe-cluster-in-camunda-cloud-job` | `clusterId` |
 | Create Generation in Camunda Cloud | `create-generation-in-camunda-cloud` / `create-generation-in-camunda-cloud-job` | `zeebeImage`, `generationTemplate`, `channel` | `generation`, `generationUUID` | |
-| Delete Generation in Camunda Cloud | `create-generation-in-camunda-cloud` / `create-generation-in-camunda-cloud-job` | `generationUUID` | | |
+| Delete Generation in Camunda Cloud | `delete-generation-in-camunda-cloud` / `delete-generation-in-camunda-cloud-job` | `generationUUID` | | |
  
 ### Messages
 | Message | Message Name  | Correlation Key  | 
