@@ -1,4 +1,4 @@
-package io.zeebe.clustertestbench.worker;
+package io.zeebe.clustertestbench.handler;
 
 import java.util.Collections;
 import java.util.HashMap;
@@ -16,11 +16,11 @@ import io.zeebe.clustertestbench.internal.cloud.InternalCloudAPIClient;
 import io.zeebe.clustertestbench.internal.cloud.request.CreateGenerationRequest;
 import io.zeebe.clustertestbench.internal.cloud.request.UpdateChannelRequest;
 
-public class CreateGenerationInCamundaCloudWorker implements JobHandler {
+public class CreateGenerationInCamundaCloudHandler implements JobHandler {
 
 	private final InternalCloudAPIClient internalApiClient;
 
-	public CreateGenerationInCamundaCloudWorker(InternalCloudAPIClient internalApiClient) {
+	public CreateGenerationInCamundaCloudHandler(InternalCloudAPIClient internalApiClient) {
 		this.internalApiClient = internalApiClient;
 	}
 

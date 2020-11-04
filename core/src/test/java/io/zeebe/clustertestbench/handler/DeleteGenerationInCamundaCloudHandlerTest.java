@@ -1,4 +1,4 @@
-package io.zeebe.clustertestbench.worker;
+package io.zeebe.clustertestbench.handler;
 
 import static org.mockito.Mockito.inOrder;
 import static org.mockito.Mockito.verify;
@@ -16,11 +16,12 @@ import io.zeebe.client.api.ZeebeFuture;
 import io.zeebe.client.api.command.CompleteJobCommandStep1;
 import io.zeebe.client.api.response.ActivatedJob;
 import io.zeebe.client.api.worker.JobClient;
+import io.zeebe.clustertestbench.handler.DeleteGenerationInCamundaCloudHandler;
+import io.zeebe.clustertestbench.handler.DeleteGenerationInCamundaCloudHandler.Input;
 import io.zeebe.clustertestbench.internal.cloud.InternalCloudAPIClient;
-import io.zeebe.clustertestbench.worker.DeleteGenerationInCamundaCloudWorker.Input;
 
 @ExtendWith(MockitoExtension.class)
-class DeleteGenerationInCamundaCloudWorkerTest {
+class DeleteGenerationInCamundaCloudHandlerTest {
 
 	private static final String TEST_GENERATION_UUID = "test-generation-uuid";
 
@@ -40,12 +41,12 @@ class DeleteGenerationInCamundaCloudWorkerTest {
 	@Mock
 	ActivatedJob mockActivatedJob;
 
-	DeleteGenerationInCamundaCloudWorker sut;
+	DeleteGenerationInCamundaCloudHandler sut;
 
 	@SuppressWarnings("unchecked")
 	@BeforeEach
 	public void setUp() {
-		sut = new DeleteGenerationInCamundaCloudWorker(mockInternalApiClient);
+		sut = new DeleteGenerationInCamundaCloudHandler(mockInternalApiClient);
 		when(mockJobClient.newCompleteCommand(Mockito.anyLong())).thenReturn(mockCompleteJobCommandStep1);
 		when(mockCompleteJobCommandStep1.send()).thenReturn(mockZeebeFuture);
 

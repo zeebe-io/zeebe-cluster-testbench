@@ -1,4 +1,4 @@
-package io.zeebe.clustertestbench.worker;
+package io.zeebe.clustertestbench.handler;
 
 import java.util.Optional;
 
@@ -13,13 +13,13 @@ import io.zeebe.clustertestbench.cloud.CloudAPIClientFactory;
 import io.zeebe.clustertestbench.cloud.response.ClusterInfo;
 import io.zeebe.clustertestbench.cloud.response.ClusterStatus;
 
-public class QueryClusterStateInCamundaCloudWorker implements JobHandler {
+public class QueryClusterStateInCamundaCloudHandler implements JobHandler {
 
-	private static final Logger logger = LoggerFactory.getLogger(QueryClusterStateInCamundaCloudWorker.class);
+	private static final Logger logger = LoggerFactory.getLogger(QueryClusterStateInCamundaCloudHandler.class);
 
 	private final CloudAPIClient cloudClient;
 
-	public QueryClusterStateInCamundaCloudWorker(String cloudApiUrl, String cloudApiAuthenticationServerURL,
+	public QueryClusterStateInCamundaCloudHandler(String cloudApiUrl, String cloudApiAuthenticationServerURL,
 			String cloudApiAudience, String cloudApiClientId, String cloudApiClientSecret) {
 		this.cloudClient = new CloudAPIClientFactory().createCloudAPIClient(cloudApiUrl,
 				cloudApiAuthenticationServerURL, cloudApiAudience, cloudApiClientId, cloudApiClientSecret);

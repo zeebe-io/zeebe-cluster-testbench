@@ -1,4 +1,4 @@
-package io.zeebe.clustertestbench.worker;
+package io.zeebe.clustertestbench.handler;
 
 import static java.util.Objects.requireNonNull;
 
@@ -18,9 +18,9 @@ import io.zeebe.client.impl.oauth.OAuthCredentialsProviderBuilder;
 import io.zeebe.clustertestbench.testdriver.api.CamundaCloudAuthenticationDetails;
 import io.zeebe.clustertestbench.testdriver.impl.CamundaCLoudAuthenticationDetailsImpl;
 
-public class WarmUpClusterWorker implements JobHandler {
+public class WarmUpClusterHandler implements JobHandler {
 
-	private static final Logger logger = LoggerFactory.getLogger(WarmUpClusterWorker.class);
+	private static final Logger logger = LoggerFactory.getLogger(WarmUpClusterHandler.class);
 
 	private static final String WORKFLOW_RESOURCE = "warmup.bpmn";
 	private static final String WORKFLOW_ID = "warmup";

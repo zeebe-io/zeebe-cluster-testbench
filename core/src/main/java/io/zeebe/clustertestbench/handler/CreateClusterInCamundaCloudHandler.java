@@ -1,4 +1,4 @@
-package io.zeebe.clustertestbench.worker;
+package io.zeebe.clustertestbench.handler;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -18,15 +18,15 @@ import io.zeebe.clustertestbench.cloud.response.ZeebeClientConnectiontInfo;
 import io.zeebe.clustertestbench.testdriver.api.CamundaCloudAuthenticationDetails;
 import io.zeebe.clustertestbench.testdriver.impl.CamundaCLoudAuthenticationDetailsImpl;
 
-public class CreateClusterInCamundaCloudWorker implements JobHandler {
+public class CreateClusterInCamundaCloudHandler implements JobHandler {
 
-	private static final Logger logger = LoggerFactory.getLogger(CreateClusterInCamundaCloudWorker.class);
+	private static final Logger logger = LoggerFactory.getLogger(CreateClusterInCamundaCloudHandler.class);
 
 	private static final RandomNameGenerator NAME_GENRATOR = new RandomNameGenerator();
 
 	private final CloudAPIClient cloudClient;
 
-	public CreateClusterInCamundaCloudWorker(String cloudApiUrl, String cloudApiAuthenticationServerURL,
+	public CreateClusterInCamundaCloudHandler(String cloudApiUrl, String cloudApiAuthenticationServerURL,
 			String cloudApiAudience, String cloudApiClientId, String cloudApiClientSecret) {
 		this.cloudClient = new CloudAPIClientFactory().createCloudAPIClient(cloudApiUrl,
 				cloudApiAuthenticationServerURL, cloudApiAudience, cloudApiClientId, cloudApiClientSecret);

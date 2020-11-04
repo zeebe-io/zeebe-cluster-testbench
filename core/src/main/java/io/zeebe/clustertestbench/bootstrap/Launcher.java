@@ -32,19 +32,19 @@ import io.zeebe.client.impl.oauth.OAuthCredentialsProvider;
 import io.zeebe.client.impl.oauth.OAuthCredentialsProviderBuilder;
 import io.zeebe.clustertestbench.cloud.CloudAPIClient;
 import io.zeebe.clustertestbench.cloud.CloudAPIClientFactory;
+import io.zeebe.clustertestbench.handler.CreateClusterInCamundaCloudHandler;
+import io.zeebe.clustertestbench.handler.CreateGenerationInCamundaCloudHandler;
+import io.zeebe.clustertestbench.handler.DeleteClusterInCamundaCloudHandler;
+import io.zeebe.clustertestbench.handler.DeleteGenerationInCamundaCloudHandler;
+import io.zeebe.clustertestbench.handler.GatherInformationAboutClusterInCamundaCloudHandler;
+import io.zeebe.clustertestbench.handler.MapNamesToUUIDsWorker;
+import io.zeebe.clustertestbench.handler.NotifyEngineersHandler;
+import io.zeebe.clustertestbench.handler.QueryClusterStateInCamundaCloudHandler;
+import io.zeebe.clustertestbench.handler.RecordTestResultHandler;
+import io.zeebe.clustertestbench.handler.SequentialTestHandler;
+import io.zeebe.clustertestbench.handler.WarmUpClusterHandler;
 import io.zeebe.clustertestbench.internal.cloud.InternalCloudAPIClient;
 import io.zeebe.clustertestbench.internal.cloud.InternalCloudAPIClientFactory;
-import io.zeebe.clustertestbench.worker.CreateClusterInCamundaCloudWorker;
-import io.zeebe.clustertestbench.worker.CreateGenerationInCamundaCloudWorker;
-import io.zeebe.clustertestbench.worker.DeleteClusterInCamundaCloudWorker;
-import io.zeebe.clustertestbench.worker.DeleteGenerationInCamundaCloudWorker;
-import io.zeebe.clustertestbench.worker.GatherInformationAboutClusterInCamundaCloudWorker;
-import io.zeebe.clustertestbench.worker.MapNamesToUUIDsWorker;
-import io.zeebe.clustertestbench.worker.NotifyEngineersWorker;
-import io.zeebe.clustertestbench.worker.QueryClusterStateInCamundaCloudWorker;
-import io.zeebe.clustertestbench.worker.RecordTestResultWorker;
-import io.zeebe.clustertestbench.worker.SequentialTestLauncher;
-import io.zeebe.clustertestbench.worker.WarmUpClusterWorker;
 
 public class Launcher {
 
@@ -232,39 +232,39 @@ public class Launcher {
 						cloudApiAuthenticationServerUrl, cloudApiAudience, cloudApiClientId, cloudApiClientSecret),
 				Duration.ofSeconds(10));
 		registerWorker(
-				client, "create-zeebe-cluster-in-camunda-cloud-job", new CreateClusterInCamundaCloudWorker(cloudApiUrl,
+				client, "create-zeebe-cluster-in-camunda-cloud-job", new CreateClusterInCamundaCloudHandler(cloudApiUrl,
 						cloudApiAuthenticationServerUrl, cloudApiAudience, cloudApiClientId, cloudApiClientSecret),
 				Duration.ofMinutes(1));
 		registerWorker(client, "query-zeebe-cluster-state-in-camunda-cloud-job",
-				new QueryClusterStateInCamundaCloudWorker(cloudApiUrl, cloudApiAuthenticationServerUrl,
+				new QueryClusterStateInCamundaCloudHandler(cloudApiUrl, cloudApiAuthenticationServerUrl,
 						cloudApiAudience, cloudApiClientId, cloudApiClientSecret),
 				Duration.ofSeconds(10));
 		registerWorker(client, "gather-information-about-cluster-in-camunda-cloud-job",
-				new GatherInformationAboutClusterInCamundaCloudWorker(cloudApiUrl, cloudApiAuthenticationServerUrl,
+				new GatherInformationAboutClusterInCamundaCloudHandler(cloudApiUrl, cloudApiAuthenticationServerUrl,
 						cloudApiAudience, cloudApiClientId, cloudApiClientSecret),
 				Duration.ofSeconds(10));
-		registerWorker(client, "warm-up-cluster-job", new WarmUpClusterWorker(), Duration.ofMinutes(3));
+		registerWorker(client, "warm-up-cluster-job", new WarmUpClusterHandler(), Duration.ofMinutes(3));
 
-		registerWorker(client, "run-sequential-test-job", new SequentialTestLauncher(), Duration.ofMinutes(30));
+		registerWorker(client, "run-sequential-test-job", new SequentialTestHandler(), Duration.ofMinutes(30));
 
 		try {
 			registerWorker(client, "record-test-result-job",
-					new RecordTestResultWorker(sheetsApiKeyFileContent, reportSheetID), Duration.ofSeconds(10));
+					new RecordTestResultHandler(sheetsApiKeyFileContent, reportSheetID), Duration.ofSeconds(10));
 		} catch (IOException | GeneralSecurityException e) {
 			logger.error("Exception while creating and registering worker for 'record-test-result-job'", e);
 		}
 
 		final var slackNotificationService = new SlackNotificationService(slackToken, slackChannel);
-		registerWorker(client, "notify-engineers-job", new NotifyEngineersWorker(slackNotificationService), Duration.ofSeconds(10));
+		registerWorker(client, "notify-engineers-job", new NotifyEngineersHandler(slackNotificationService), Duration.ofSeconds(10));
 		registerWorker(
-				client, "destroy-zeebe-cluster-in-camunda-cloud-job", new DeleteClusterInCamundaCloudWorker(cloudApiUrl,
+				client, "destroy-zeebe-cluster-in-camunda-cloud-job", new DeleteClusterInCamundaCloudHandler(cloudApiUrl,
 						cloudApiAuthenticationServerUrl, cloudApiAudience, cloudApiClientId, cloudApiClientSecret),
 				Duration.ofSeconds(10));
 
 		registerWorker(client, "create-generation-in-camunda-cloud-job",
-				new CreateGenerationInCamundaCloudWorker(internalCloudApiClient), Duration.ofSeconds(10));
+				new CreateGenerationInCamundaCloudHandler(internalCloudApiClient), Duration.ofSeconds(10));
 		registerWorker(client, "delete-generation-in-camunda-cloud-job",
-				new DeleteGenerationInCamundaCloudWorker(internalCloudApiClient), Duration.ofSeconds(10));
+				new DeleteGenerationInCamundaCloudHandler(internalCloudApiClient), Duration.ofSeconds(10));
 	}
 
 	private void registerWorker(ZeebeClient client, String jobType, JobHandler jobHandler, Duration timeout) {

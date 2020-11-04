@@ -1,4 +1,4 @@
-package io.zeebe.clustertestbench.worker;
+package io.zeebe.clustertestbench.handler;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -13,14 +13,16 @@ import static org.mockito.Mockito.when;
 import io.zeebe.client.api.command.CompleteJobCommandStep1;
 import io.zeebe.client.api.response.ActivatedJob;
 import io.zeebe.client.api.worker.JobClient;
+import io.zeebe.clustertestbench.handler.NotifyEngineersHandler;
+import io.zeebe.clustertestbench.handler.NotifyEngineersHandler.Input;
 import io.zeebe.clustertestbench.notification.NotificationService;
 import io.zeebe.clustertestbench.testdriver.impl.TestReportDTO;
-import io.zeebe.clustertestbench.worker.NotifyEngineersWorker.Input;
+
 import java.util.List;
 import java.util.Map;
 import org.junit.jupiter.api.Test;
 
-public class NotifyEngineersWorkerTest {
+public class NotifyEngineersHandlerTest {
 
   @Test
   public void shouldSendNotificationOverNotificationService() throws Exception {
@@ -31,7 +33,7 @@ public class NotifyEngineersWorkerTest {
     when(jobClientMock.newCompleteCommand(anyLong()))
         .thenReturn(mock);
     final var jobMock = createJobMock();
-    final var notifyEngineersWorker = new NotifyEngineersWorker(simpleNotificationService);
+    final var notifyEngineersWorker = new NotifyEngineersHandler(simpleNotificationService);
 
     // when
     notifyEngineersWorker.handle(jobClientMock, jobMock);
@@ -58,7 +60,7 @@ public class NotifyEngineersWorkerTest {
     when(jobClientMock.newCompleteCommand(anyLong()))
         .thenReturn(mock);
     final var jobMock = createJobMock();
-    final var notifyEngineersWorker = new NotifyEngineersWorker(notificationService);
+    final var notifyEngineersWorker = new NotifyEngineersHandler(notificationService);
 
     // when
     assertThatThrownBy(() -> notifyEngineersWorker.handle(jobClientMock, jobMock)).isInstanceOf(Exception.class);

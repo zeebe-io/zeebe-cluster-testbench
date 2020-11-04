@@ -1,4 +1,4 @@
-package io.zeebe.clustertestbench.worker;
+package io.zeebe.clustertestbench.handler;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
@@ -13,7 +13,7 @@ import io.zeebe.clustertestbench.testdriver.impl.CamundaCLoudAuthenticationDetai
 import io.zeebe.clustertestbench.testdriver.sequential.SequentialTestDriver;
 import io.zeebe.clustertestbench.testdriver.sequential.SequentialTestParameters;
 
-public class SequentialTestLauncher implements JobHandler {
+public class SequentialTestHandler implements JobHandler {
 
 	@Override
 	public void handle(final JobClient client, final ActivatedJob job) throws Exception {

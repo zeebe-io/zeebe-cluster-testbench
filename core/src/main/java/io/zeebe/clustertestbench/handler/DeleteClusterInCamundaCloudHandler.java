@@ -1,4 +1,4 @@
-package io.zeebe.clustertestbench.worker;
+package io.zeebe.clustertestbench.handler;
 
 import io.zeebe.client.api.response.ActivatedJob;
 import io.zeebe.client.api.worker.JobClient;
@@ -6,11 +6,11 @@ import io.zeebe.client.api.worker.JobHandler;
 import io.zeebe.clustertestbench.cloud.CloudAPIClient;
 import io.zeebe.clustertestbench.cloud.CloudAPIClientFactory;
 
-public class DeleteClusterInCamundaCloudWorker implements JobHandler {
+public class DeleteClusterInCamundaCloudHandler implements JobHandler {
 
 	private final CloudAPIClient cloudClient;
 
-	public DeleteClusterInCamundaCloudWorker(String cloudApiUrl, String cloudApiAuthenticationServerURL, String cloudApiAudience,
+	public DeleteClusterInCamundaCloudHandler(String cloudApiUrl, String cloudApiAuthenticationServerURL, String cloudApiAudience,
 			String cloudApiClientId, String cloudApiClientSecret) {
 		this.cloudClient = new CloudAPIClientFactory().createCloudAPIClient(cloudApiUrl, cloudApiAuthenticationServerURL,
 				cloudApiAudience, cloudApiClientId, cloudApiClientSecret);

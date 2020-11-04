@@ -1,4 +1,4 @@
-package io.zeebe.clustertestbench.worker;
+package io.zeebe.clustertestbench.handler;
 
 import static io.zeebe.clustertestbench.internal.cloud.StubInternalCloudAPIClient.DEFAULT_CHANNEL_NAME;
 import static io.zeebe.clustertestbench.internal.cloud.StubInternalCloudAPIClient.DEFAULT_CHANNEL_UUID;
@@ -37,15 +37,16 @@ import io.zeebe.client.api.command.CompleteJobCommandStep1;
 import io.zeebe.client.api.response.ActivatedJob;
 import io.zeebe.client.api.worker.JobClient;
 import io.zeebe.clustertestbench.cloud.response.GenerationInfo;
+import io.zeebe.clustertestbench.handler.CreateGenerationInCamundaCloudHandler;
+import io.zeebe.clustertestbench.handler.CreateGenerationInCamundaCloudHandler.Input;
+import io.zeebe.clustertestbench.handler.CreateGenerationInCamundaCloudHandler.Output;
 import io.zeebe.clustertestbench.internal.cloud.InternalCloudAPIClient;
 import io.zeebe.clustertestbench.internal.cloud.StubInternalCloudAPIClient;
 import io.zeebe.clustertestbench.internal.cloud.request.CreateGenerationRequest;
 import io.zeebe.clustertestbench.internal.cloud.request.UpdateChannelRequest;
-import io.zeebe.clustertestbench.worker.CreateGenerationInCamundaCloudWorker.Input;
-import io.zeebe.clustertestbench.worker.CreateGenerationInCamundaCloudWorker.Output;
 
 @ExtendWith(MockitoExtension.class)
-class CreateGenerationInCamundaCloudWorkerTest {
+class CreateGenerationInCamundaCloudHandlerTest {
 	private static final String ZEEBE_IMAGE = "testImage";
 
 	@Nested
@@ -56,7 +57,7 @@ class CreateGenerationInCamundaCloudWorkerTest {
 
 		InternalCloudAPIClient spyInternalApiClient;
 
-		CreateGenerationInCamundaCloudWorker sut;
+		CreateGenerationInCamundaCloudHandler sut;
 
 		@Mock
 		JobClient mockJobClient;
@@ -76,7 +77,7 @@ class CreateGenerationInCamundaCloudWorkerTest {
 		@BeforeEach
 		public void setUp() {
 			spyInternalApiClient = spy(stubInternalApiClient);
-			sut = new CreateGenerationInCamundaCloudWorker(spyInternalApiClient);
+			sut = new CreateGenerationInCamundaCloudHandler(spyInternalApiClient);
 
 			final var input = new Input();
 			input.setZeebeImage(ZEEBE_IMAGE);
@@ -142,7 +143,7 @@ class CreateGenerationInCamundaCloudWorkerTest {
 			final var brokenStubInternalApiClient = new StubInternalCloudAPIClient(true);
 			final var spyStubInternalApiClient = spy(brokenStubInternalApiClient);
 
-			final var sutLocal = new CreateGenerationInCamundaCloudWorker(spyStubInternalApiClient);
+			final var sutLocal = new CreateGenerationInCamundaCloudHandler(spyStubInternalApiClient);
 
 			// when + then
 			assertThatThrownBy(() -> sutLocal.handle(mockJobClient, mockActivatedJob))
@@ -259,7 +260,7 @@ class CreateGenerationInCamundaCloudWorkerTest {
 		@Test
 		void shouldContainZeebeImage() {
 			// when
-			var actual = CreateGenerationInCamundaCloudWorker.createGenerationName(ZEEBE_IMAGE);
+			var actual = CreateGenerationInCamundaCloudHandler.createGenerationName(ZEEBE_IMAGE);
 
 			// then
 			assertThat(actual).contains(ZEEBE_IMAGE);
@@ -268,7 +269,7 @@ class CreateGenerationInCamundaCloudWorkerTest {
 		@Test
 		void shouldStartWithTemp() {
 			// when
-			var actual = CreateGenerationInCamundaCloudWorker.createGenerationName(ZEEBE_IMAGE);
+			var actual = CreateGenerationInCamundaCloudHandler.createGenerationName(ZEEBE_IMAGE);
 
 			// then
 			assertThat(actual).startsWith("temp");
@@ -277,8 +278,8 @@ class CreateGenerationInCamundaCloudWorkerTest {
 		@Test
 		void shouldGenerateDifferentNamesWhenCalledMultipletimes() {
 			// when
-			var actual1 = CreateGenerationInCamundaCloudWorker.createGenerationName(ZEEBE_IMAGE);
-			var actual2 = CreateGenerationInCamundaCloudWorker.createGenerationName(ZEEBE_IMAGE);
+			var actual1 = CreateGenerationInCamundaCloudHandler.createGenerationName(ZEEBE_IMAGE);
+			var actual2 = CreateGenerationInCamundaCloudHandler.createGenerationName(ZEEBE_IMAGE);
 
 			// then
 			assertThat(actual1).isNotEqualTo(actual2);

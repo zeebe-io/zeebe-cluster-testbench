@@ -1,4 +1,4 @@
-package io.zeebe.clustertestbench.worker;
+package io.zeebe.clustertestbench.handler;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
@@ -9,13 +9,13 @@ import io.zeebe.clustertestbench.notification.NotificationService;
 import io.zeebe.clustertestbench.testdriver.api.TestDriver;
 import io.zeebe.clustertestbench.testdriver.impl.TestReportDTO;
 
-public class NotifyEngineersWorker implements JobHandler {
+public class NotifyEngineersHandler implements JobHandler {
 
 	private static final int TEST_FAILURE_SUMMARY_ITEMS = 10;
 
 	private final NotificationService notificationService;
 
-	public NotifyEngineersWorker(NotificationService notificationService) {
+	public NotifyEngineersHandler(NotificationService notificationService) {
 		this.notificationService = notificationService;
 	}
 
