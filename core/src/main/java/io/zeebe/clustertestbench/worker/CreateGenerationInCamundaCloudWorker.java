@@ -53,9 +53,9 @@ public class CreateGenerationInCamundaCloudWorker implements JobHandler {
 
 		versions.put("zeebe", zeebeImage);
 
-		final var createGenerationrequest = new CreateGenerationRequest(generation, versions, Collections.emptyList());
+		final var createGenerationRequest = new CreateGenerationRequest(generation, versions, Collections.emptyList());
 
-		internalApiClient.createGeneration(createGenerationrequest);
+		internalApiClient.createGeneration(createGenerationRequest);
 
 		final var optNewlyCreatedGeneration = findGenerationInfoByName(generation);
 
@@ -67,12 +67,12 @@ public class CreateGenerationInCamundaCloudWorker implements JobHandler {
 	}
 
 	private void addGenerationToChannel(final ChannelInfo channelInfo, final String generationUUID) {
-		List<String> allowedGeneerationIds = channelInfo.getAllowedGenerations().stream().map(GenerationInfo::getUuid)
+		List<String> allowedGenerationIds = channelInfo.getAllowedGenerations().stream().map(GenerationInfo::getUuid)
 				.collect(Collectors.toList());
-		allowedGeneerationIds.add(generationUUID);
+		allowedGenerationIds.add(generationUUID);
 
 		var updateChannelRequest = new UpdateChannelRequest(channelInfo.getName(), channelInfo.isDefault(),
-				channelInfo.getDefaultGeneration().getUuid(), allowedGeneerationIds);
+				channelInfo.getDefaultGeneration().getUuid(), allowedGenerationIds);
 
 		internalApiClient.updateChannel(channelInfo.getUuid(), updateChannelRequest);
 	}

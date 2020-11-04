@@ -20,7 +20,7 @@ final class KeyedOAuthCredentialsCache {
 		cachedCredentials.remove(key);
 	}
 
-	public static synchronized OAuthCredentialsCache getCredentialsCahce(Object request) {
+	public static synchronized OAuthCredentialsCache getCredentialsCache(Object request) {
 		return new OAuthCredentialsCacheImpl(request);
 	}
 

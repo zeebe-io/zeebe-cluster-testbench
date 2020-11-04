@@ -68,7 +68,7 @@ public class OAuthInterceptor implements ClientRequestFilter, ClientResponseFilt
 
 		final Supplier<OAuthCredentials> credentialSupplier = () -> oauthClient.requestToken(tokenRequest);
 
-		return new OAuthInterceptor(KeyedOAuthCredentialsCache.getCredentialsCahce(tokenRequest), credentialSupplier);
+		return new OAuthInterceptor(KeyedOAuthCredentialsCache.getCredentialsCache(tokenRequest), credentialSupplier);
 	}
 
 	public static OAuthInterceptor forUserAccountAuthorization(String authenticationServerURL, String audience,
@@ -80,7 +80,7 @@ public class OAuthInterceptor implements ClientRequestFilter, ClientResponseFilt
 
 		final Supplier<OAuthCredentials> credentialSupplier = () -> oauthClient.requestToken(tokenRequest);
 
-		return new OAuthInterceptor(KeyedOAuthCredentialsCache.getCredentialsCahce(tokenRequest), credentialSupplier);
+		return new OAuthInterceptor(KeyedOAuthCredentialsCache.getCredentialsCache(tokenRequest), credentialSupplier);
 	}
 
 }

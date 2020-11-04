@@ -205,7 +205,7 @@ class CreateGenerationInCamundaCloudWorkerTest {
 		}
 
 		@Test
-		void shouldSetGeneratioNameAndUuidUponCompletion() throws Exception {
+		void shouldSetGenerationNameAndUuidUponCompletion() throws Exception {
 			// given
 			mockJobCompletChain();
 			final var initialGenerations = new ArrayList<>(stubInternalApiClient.listGenerationInfos());

@@ -207,10 +207,9 @@ The following defaults are defined in the process description:
 
 The QA protocol runs all tests that are part of the QA suite. Tests are run on demand (e.g. for a PR merge or to test a release candidate)
 
-
 | Inputs | Description | Type |
 | ------ | ----------- | ---- | 
-| `zeebeImage` | The Zeebe image that shall be tested (fully qualified name, including registry and label | `String` |
+| `zeebeImage` | The Zeebe image that shall be tested (fully qualified name, including registry and label) | `String` |
 | `generationTemplate` | Name of an existing generation that will be used as a template for the generation to be created. The template will serve to identify the versions of Operate and Elasticsearch that Zeebe image shall be paired with | `String` | 
 | `channel` | name of the channel for the tests | `String` | 
 
