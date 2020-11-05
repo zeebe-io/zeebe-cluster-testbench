@@ -134,8 +134,8 @@ public class Launcher {
 			client.newTopologyRequest().send().join();
 
 			logger.info("Selftest - Successfully established connection to test orchestration cluster");
-		} catch (Throwable t) {
-			logger.error("Selftest - Unable to establish connection to test orchestration cluster", t);
+		} catch (Exception e) {
+			logger.error("Selftest - Unable to establish connection to test orchestration cluster", e);
 		}
 	}
 
@@ -153,8 +153,8 @@ public class Launcher {
 			client.getParameters();
 
 			logger.info("Selftest - Successfully established connection to cloud API");
-		} catch (Throwable t) {
-			logger.error("Selftest - Unable to establish connection to cloud API", t);
+		} catch (Exception e) {
+			logger.error("Selftest - Unable to establish connection to cloud API", e);
 		}
 	}
 
@@ -163,8 +163,8 @@ public class Launcher {
 			internalCloudApiClient.listGenerationInfos();
 
 			logger.info("Selftest - Successfully established connection to internal cloud API");
-		} catch (Throwable t) {
-			logger.error("Selftest - Unable to establish connection to internal cloud API", t);
+		} catch (Exception e) {
+			logger.error("Selftest - Unable to establish connection to internal cloud API", e);
 		}
 	}
 
@@ -197,8 +197,8 @@ public class Launcher {
 			} else {
 				logger.error("Selftest - Wrong respponse when establishing connection to Slack: " + returnedFoo);
 			}
-		} catch (Throwable t) {
-			logger.error("Selftest - Unable to establish connection to Slack", t);
+		} catch (Exception e) {
+			logger.error("Selftest - Unable to establish connection to Slack", e);
 		}
 	}
 
@@ -214,8 +214,8 @@ public class Launcher {
 
 			request.execute();
 			logger.info("Selftest - Successfully established connection to Google Sheets");
-		} catch (Throwable t) {
-			logger.error("Selftest - Unable to establish connection to Google Sheets", t);
+		} catch (Exception e) {
+			logger.error("Selftest - Unable to establish connection to Google Sheets", e);
 		}
 	}
 

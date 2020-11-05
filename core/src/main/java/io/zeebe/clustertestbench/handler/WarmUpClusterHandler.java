@@ -46,7 +46,7 @@ public class WarmUpClusterHandler implements JobHandler {
 				try {
 					zeebeClient.newCreateInstanceCommand().bpmnProcessId(WORKFLOW_ID).latestVersion().withResult()
 							.requestTimeout(Duration.ofSeconds(15)).send().join();
-				} catch (Throwable t) {
+				} catch (Exception e) {
 					// repeat iteration
 					i--;
 				}

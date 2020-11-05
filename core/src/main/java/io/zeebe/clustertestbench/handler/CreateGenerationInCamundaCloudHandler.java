@@ -42,9 +42,9 @@ public class CreateGenerationInCamundaCloudHandler implements JobHandler {
 			final var output = new Output(generation, generationUUID);
 
 			client.newCompleteCommand(job.getKey()).variables(output).send().join();
-		} catch (Throwable t) {
+		} catch (Exception e) {
 			internalApiClient.deleteGeneration(generationUUID);
-			throw t;
+			throw e;
 		}
 	}
 

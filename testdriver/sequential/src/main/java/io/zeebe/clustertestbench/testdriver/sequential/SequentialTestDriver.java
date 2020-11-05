@@ -99,7 +99,7 @@ public class SequentialTestDriver implements TestDriver {
 
 					iterationTimingContxt.putMetaData(KEY_WORKFLOW_INSTANCE, result.getWorkflowInstanceKey());
 
-				} catch (Throwable t) {
+				} catch (Exception e) {
 					var exceptionFilter = new ExceptionFilterBuilder() //
 							.ignoreRessourceExhaustedExceptions() //
 							// can occur because deployment needs to be distributed to other partitions
@@ -107,7 +107,7 @@ public class SequentialTestDriver implements TestDriver {
 							.build();
 
 					if (exceptionFilter.test(t)) {
-						testReport.addFailure("Exception in iteration " + i + ":" + t.getMessage() + " caused by "
+						testReport.addFailure("Exception in iteration " + i + ":" + e.getMessage() + " caused by "
 								+ ofNullable(t.getCause()).map(Throwable::getMessage).orElse("[cuase is empty]"));
 					} else {
 						// repeat iteration

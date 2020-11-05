@@ -52,11 +52,11 @@ public class CreateClusterInCamundaCloudHandler implements JobHandler {
 					createZeebeClientResponse.getClientId());
 
 			client.newCompleteCommand(job.getKey()).variables(new Output(connectionInfo, name, clusterId)).send();
-		} catch (Throwable t) {
+		} catch (Exception e) {
 			cloudClient.deleteCluster(clusterId);
 
 			client.newFailCommand(job.getKey()).retries(job.getRetries() - 1)
-					.errorMessage("Error while creating stack trace: " + t.getMessage());
+					.errorMessage("Error while creating stack trace: " + e.getMessage());
 		}
 	}
 

@@ -70,8 +70,8 @@ public class BootstrapFromEnvVars {
 			new Launcher(contactPoint, testOrchestrationAuthenticatonDetails, cloudApiUrl,
 					cloudApiAuthenticationDetails, inernalCloudApiUrl, internalCloudApiAuthenticationDetails,
 					sheetsApiKeyfileContent, reportSheetID, slackToken, slackChannel).launch();
-		} catch (Throwable t) {
-			logger.error(t.getMessage(), t);
+		} catch (Exception e) {
+			logger.error(e.getMessage(), e);
 			System.exit(-1);
 		}
 	}
