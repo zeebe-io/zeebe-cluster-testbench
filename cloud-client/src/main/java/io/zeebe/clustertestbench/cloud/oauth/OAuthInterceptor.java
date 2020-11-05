@@ -2,7 +2,6 @@ package io.zeebe.clustertestbench.cloud.oauth;
 
 import java.io.IOException;
 import java.util.Collections;
-import java.util.Optional;
 import java.util.function.Supplier;
 
 import javax.ws.rs.client.ClientRequestContext;
@@ -18,25 +17,17 @@ public class OAuthInterceptor implements ClientRequestFilter, ClientResponseFilt
 	private static final String GRANT_TYPE_CLIENT_CREDENTIALS = "client_credentials";
 	private static final String GRANT_TYPE_PASWORD = "password";
 
-	private final OAuthCredentialsCache credentialsCache;
-	final Supplier<OAuthCredentials> credentialSupplier;
+	private volatile OAuthCredentials credentials;
+	private final Supplier<OAuthCredentials> credentialSupplier;
 
-	private OAuthInterceptor(final OAuthCredentialsCache credentialsCache,
-			final Supplier<OAuthCredentials> credentialSupplier) {
-		this.credentialsCache = credentialsCache;
+	private OAuthInterceptor(final Supplier<OAuthCredentials> credentialSupplier) {
 		this.credentialSupplier = credentialSupplier;
 	}
 
 	@Override
 	public void filter(ClientRequestContext requestContext) throws IOException {
-		Optional<OAuthCredentials> optCredentials = credentialsCache.get();
-
-		final OAuthCredentials credentials;
-		if (optCredentials.isEmpty()) {
+		if (credentials == null) {
 			credentials = credentialSupplier.get();
-			credentialsCache.put(credentials);
-		} else {
-			credentials = optCredentials.get();
 		}
 
 		String type = credentials.getTokenType();
@@ -55,7 +46,7 @@ public class OAuthInterceptor implements ClientRequestFilter, ClientResponseFilt
 	@Override
 	public void filter(ClientRequestContext requestContext, ClientResponseContext responseContext) throws IOException {
 		if (responseContext.getStatus() == HttpStatus.SC_UNAUTHORIZED) {
-			credentialsCache.remove();
+			credentials = null;
 		}
 	}
 
@@ -68,7 +59,7 @@ public class OAuthInterceptor implements ClientRequestFilter, ClientResponseFilt
 
 		final Supplier<OAuthCredentials> credentialSupplier = () -> oauthClient.requestToken(tokenRequest);
 
-		return new OAuthInterceptor(KeyedOAuthCredentialsCache.getCredentialsCache(tokenRequest), credentialSupplier);
+		return new OAuthInterceptor(credentialSupplier);
 	}
 
 	public static OAuthInterceptor forUserAccountAuthorization(String authenticationServerURL, String audience,
@@ -80,7 +71,7 @@ public class OAuthInterceptor implements ClientRequestFilter, ClientResponseFilt
 
 		final Supplier<OAuthCredentials> credentialSupplier = () -> oauthClient.requestToken(tokenRequest);
 
-		return new OAuthInterceptor(KeyedOAuthCredentialsCache.getCredentialsCache(tokenRequest), credentialSupplier);
+		return new OAuthInterceptor(credentialSupplier);
 	}
 
 }
