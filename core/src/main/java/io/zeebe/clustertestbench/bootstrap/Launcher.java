@@ -4,7 +4,6 @@ import static com.google.api.client.googleapis.javanet.GoogleNetHttpTransport.ne
 import static com.google.api.client.json.jackson2.JacksonFactory.getDefaultInstance;
 import static java.lang.Runtime.getRuntime;
 
-import io.zeebe.clustertestbench.notification.SlackNotificationService;
 import java.io.IOException;
 import java.io.StringBufferInputStream;
 import java.security.GeneralSecurityException;
@@ -45,6 +44,7 @@ import io.zeebe.clustertestbench.handler.SequentialTestHandler;
 import io.zeebe.clustertestbench.handler.WarmUpClusterHandler;
 import io.zeebe.clustertestbench.internal.cloud.InternalCloudAPIClient;
 import io.zeebe.clustertestbench.internal.cloud.InternalCloudAPIClientFactory;
+import io.zeebe.clustertestbench.notification.SlackNotificationService;
 
 public class Launcher {
 
@@ -55,15 +55,13 @@ public class Launcher {
 	private final String testOrchestrationContactPoint;
 	private final OAuthServiceAccountAuthenticationDetails testOrchestrationAuthenticatonDetails;
 
-	private final String cloudApiUrl;
-	private final OAuthServiceAccountAuthenticationDetails cloudApiAuthenticationDetails;
-
 	private String sheetsApiKeyFileContent;
 	private final String reportSheetID;
 
 	private final String slackToken;
 	private final String slackChannel;
 
+	private final CloudAPIClient cloudApiClient;
 	private final InternalCloudAPIClient internalCloudApiClient;
 
 	public Launcher(String testOrchestrationContactPoint,
@@ -73,13 +71,12 @@ public class Launcher {
 			String reportSheetID, String slackToken, String slackChannel) {
 		this.testOrchestrationContactPoint = testOrchestrationContactPoint;
 		this.testOrchestrationAuthenticatonDetails = testOrchestrationAuthenticatonDetails;
-		this.cloudApiUrl = cloudApiUrl;
-		this.cloudApiAuthenticationDetails = cloudApiAuthenticationDetails;
 		this.sheetsApiKeyFileContent = sheetsApiKeyfileContent;
 		this.reportSheetID = reportSheetID;
 		this.slackToken = slackToken;
 		this.slackChannel = slackChannel;
 
+		cloudApiClient = createCloudApiClient(cloudApiUrl, cloudApiAuthenticationDetails);
 		internalCloudApiClient = createInternalCloudApiClient(internalCloudApiUrl, internalCloudApiAuthenticationDetails);
 	}
 
@@ -141,16 +138,7 @@ public class Launcher {
 
 	private void testConnectionToCloudApi() {
 		try {
-			final OAuthServiceAccountAuthenticationDetails authenticationDetails = cloudApiAuthenticationDetails;
-
-			final String aerverUrl = authenticationDetails.getServerURL();
-			final String audience = authenticationDetails.getAudience();
-			final String clientId = authenticationDetails.getClientId();
-			final String clientSecret = authenticationDetails.getClientSecret();
-
-			CloudAPIClient client = new CloudAPIClientFactory().createCloudAPIClient(cloudApiUrl, aerverUrl, audience,
-					clientId, clientSecret);
-			client.getParameters();
+			cloudApiClient.getParameters();
 
 			logger.info("Selftest - Successfully established connection to cloud API");
 		} catch (Exception e) {
@@ -167,10 +155,21 @@ public class Launcher {
 			logger.error("Selftest - Unable to establish connection to internal cloud API", e);
 		}
 	}
+	
+	private CloudAPIClient createCloudApiClient(final String cloudApiUrl,
+			final OAuthServiceAccountAuthenticationDetails authenticationDetails) {
+		final String authenticationServerUrl = authenticationDetails.getServerURL();
+		final String audience = authenticationDetails.getAudience();
+		final String clientId = authenticationDetails.getClientId();
+		final String clientSecret = authenticationDetails.getClientSecret();
+
+
+		return new CloudAPIClientFactory().createCloudAPIClient(cloudApiUrl, authenticationServerUrl, audience, clientId, clientSecret);
+	}
 
 	private InternalCloudAPIClient createInternalCloudApiClient(final String internalCloudApiUrl,
 			final OAuthUserAccountAuthenticationDetails authenticationDetails) {
-		final String serverUrl = authenticationDetails.getServerURL();
+		final String authenticationServerUrl = authenticationDetails.getServerURL();
 		final String audience = authenticationDetails.getAudience();
 		final String clientId = authenticationDetails.getClientId();
 		final String clientSecret = authenticationDetails.getClientSecret();
@@ -178,7 +177,7 @@ public class Launcher {
 		final String password = authenticationDetails.getPassword();
 
 		return new InternalCloudAPIClientFactory().createCloudAPIClient(internalCloudApiUrl,
-				serverUrl, audience, clientId, clientSecret, username, password);
+				authenticationServerUrl, audience, clientId, clientSecret, username, password);
 	}
 
 	private void testConnectionToSlack() {
@@ -219,28 +218,17 @@ public class Launcher {
 	}
 
 	private void registerWorkers(final ZeebeClient client) {
-		final OAuthServiceAccountAuthenticationDetails authenticationDetails = cloudApiAuthenticationDetails;
-
-		final String cloudApiAuthenticationServerUrl = authenticationDetails.getServerURL();
-		final String cloudApiAudience = authenticationDetails.getAudience();
-		final String cloudApiClientId = authenticationDetails.getClientId();
-		final String cloudApiClientSecret = authenticationDetails.getClientSecret();
-
 		registerWorker(
-				client, "map-names-to-uuids-job", new MapNamesToUUIDsWorker(cloudApiUrl,
-						cloudApiAuthenticationServerUrl, cloudApiAudience, cloudApiClientId, cloudApiClientSecret),
+				client, "map-names-to-uuids-job", new MapNamesToUUIDsWorker(cloudApiClient),
 				Duration.ofSeconds(10));
 		registerWorker(
-				client, "create-zeebe-cluster-in-camunda-cloud-job", new CreateClusterInCamundaCloudHandler(cloudApiUrl,
-						cloudApiAuthenticationServerUrl, cloudApiAudience, cloudApiClientId, cloudApiClientSecret),
+				client, "create-zeebe-cluster-in-camunda-cloud-job", new CreateClusterInCamundaCloudHandler(cloudApiClient),
 				Duration.ofMinutes(1));
 		registerWorker(client, "query-zeebe-cluster-state-in-camunda-cloud-job",
-				new QueryClusterStateInCamundaCloudHandler(cloudApiUrl, cloudApiAuthenticationServerUrl,
-						cloudApiAudience, cloudApiClientId, cloudApiClientSecret),
+				new QueryClusterStateInCamundaCloudHandler(cloudApiClient),
 				Duration.ofSeconds(10));
 		registerWorker(client, "gather-information-about-cluster-in-camunda-cloud-job",
-				new GatherInformationAboutClusterInCamundaCloudHandler(cloudApiUrl, cloudApiAuthenticationServerUrl,
-						cloudApiAudience, cloudApiClientId, cloudApiClientSecret),
+				new GatherInformationAboutClusterInCamundaCloudHandler(cloudApiClient),
 				Duration.ofSeconds(10));
 		registerWorker(client, "warm-up-cluster-job", new WarmUpClusterHandler(), Duration.ofMinutes(3));
 
@@ -256,8 +244,7 @@ public class Launcher {
 		final var slackNotificationService = new SlackNotificationService(slackToken, slackChannel);
 		registerWorker(client, "notify-engineers-job", new NotifyEngineersHandler(slackNotificationService), Duration.ofSeconds(10));
 		registerWorker(
-				client, "destroy-zeebe-cluster-in-camunda-cloud-job", new DeleteClusterInCamundaCloudHandler(cloudApiUrl,
-						cloudApiAuthenticationServerUrl, cloudApiAudience, cloudApiClientId, cloudApiClientSecret),
+				client, "destroy-zeebe-cluster-in-camunda-cloud-job", new DeleteClusterInCamundaCloudHandler(cloudApiClient),
 				Duration.ofSeconds(10));
 
 		registerWorker(client, "create-generation-in-camunda-cloud-job",

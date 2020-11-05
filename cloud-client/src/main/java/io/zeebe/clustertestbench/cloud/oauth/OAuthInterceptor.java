@@ -17,7 +17,7 @@ public class OAuthInterceptor implements ClientRequestFilter, ClientResponseFilt
 	private static final String GRANT_TYPE_CLIENT_CREDENTIALS = "client_credentials";
 	private static final String GRANT_TYPE_PASWORD = "password";
 
-	private volatile OAuthCredentials credentials;
+	private OAuthCredentials credentials;
 	private final Supplier<OAuthCredentials> credentialSupplier;
 
 	private OAuthInterceptor(final Supplier<OAuthCredentials> credentialSupplier) {
@@ -26,8 +26,10 @@ public class OAuthInterceptor implements ClientRequestFilter, ClientResponseFilt
 
 	@Override
 	public void filter(ClientRequestContext requestContext) throws IOException {
-		if (credentials == null) {
-			credentials = credentialSupplier.get();
+		synchronized (this) {
+			if (credentials == null) {
+				credentials = credentialSupplier.get();
+			}
 		}
 
 		String type = credentials.getTokenType();
@@ -46,8 +48,10 @@ public class OAuthInterceptor implements ClientRequestFilter, ClientResponseFilt
 	@Override
 	public void filter(ClientRequestContext requestContext, ClientResponseContext responseContext) throws IOException {
 		if (responseContext.getStatus() == HttpStatus.SC_UNAUTHORIZED) {
-			credentials = null;
-		}
+			synchronized (this) {
+				credentials = null;
+			}
+		}			
 	}
 
 	public static OAuthInterceptor forServiceAccountAuthorization(String authenticationServerURL, String audience,

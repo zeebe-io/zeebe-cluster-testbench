@@ -9,7 +9,6 @@ import io.zeebe.client.api.response.ActivatedJob;
 import io.zeebe.client.api.worker.JobClient;
 import io.zeebe.client.api.worker.JobHandler;
 import io.zeebe.clustertestbench.cloud.CloudAPIClient;
-import io.zeebe.clustertestbench.cloud.CloudAPIClientFactory;
 import io.zeebe.clustertestbench.cloud.response.ClusterInfo;
 import io.zeebe.clustertestbench.cloud.response.ClusterStatus;
 
@@ -17,19 +16,17 @@ public class QueryClusterStateInCamundaCloudHandler implements JobHandler {
 
 	private static final Logger logger = LoggerFactory.getLogger(QueryClusterStateInCamundaCloudHandler.class);
 
-	private final CloudAPIClient cloudClient;
+	private final CloudAPIClient cloudApiClient;
 
-	public QueryClusterStateInCamundaCloudHandler(String cloudApiUrl, String cloudApiAuthenticationServerURL,
-			String cloudApiAudience, String cloudApiClientId, String cloudApiClientSecret) {
-		this.cloudClient = new CloudAPIClientFactory().createCloudAPIClient(cloudApiUrl,
-				cloudApiAuthenticationServerURL, cloudApiAudience, cloudApiClientId, cloudApiClientSecret);
+	public QueryClusterStateInCamundaCloudHandler(CloudAPIClient cloudApiClient) {
+		this.cloudApiClient = cloudApiClient;
 	}
 
 	@Override
 	public void handle(JobClient client, ActivatedJob job) throws Exception {
 		final Input input = job.getVariablesAsType(Input.class);
 
-		String clusterStatus = Optional.ofNullable(cloudClient.getClusterInfo(input.getClusterId()))
+		String clusterStatus = Optional.ofNullable(cloudApiClient.getClusterInfo(input.getClusterId()))
 				.map(ClusterInfo::getStatus).map(ClusterStatus::getReady).orElse("Unknown");
 
 		logger.info("Status of cluster " + input.getClusterName() + " " + clusterStatus);

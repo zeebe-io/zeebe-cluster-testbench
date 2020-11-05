@@ -9,7 +9,6 @@ import io.zeebe.client.api.response.ActivatedJob;
 import io.zeebe.client.api.worker.JobClient;
 import io.zeebe.client.api.worker.JobHandler;
 import io.zeebe.clustertestbench.cloud.CloudAPIClient;
-import io.zeebe.clustertestbench.cloud.CloudAPIClientFactory;
 import io.zeebe.clustertestbench.cloud.request.CreateClusterRequest;
 import io.zeebe.clustertestbench.cloud.request.CreateZeebeClientRequest;
 import io.zeebe.clustertestbench.cloud.response.CreateClusterResponse;
@@ -24,12 +23,10 @@ public class CreateClusterInCamundaCloudHandler implements JobHandler {
 
 	private static final RandomNameGenerator NAME_GENRATOR = new RandomNameGenerator();
 
-	private final CloudAPIClient cloudClient;
+	private final CloudAPIClient cloudApiClient;
 
-	public CreateClusterInCamundaCloudHandler(String cloudApiUrl, String cloudApiAuthenticationServerURL,
-			String cloudApiAudience, String cloudApiClientId, String cloudApiClientSecret) {
-		this.cloudClient = new CloudAPIClientFactory().createCloudAPIClient(cloudApiUrl,
-				cloudApiAuthenticationServerURL, cloudApiAudience, cloudApiClientId, cloudApiClientSecret);
+	public CreateClusterInCamundaCloudHandler(final CloudAPIClient cloudApiClient) {
+		this.cloudApiClient = cloudApiClient;
 	}
 
 	@Override
@@ -39,21 +36,21 @@ public class CreateClusterInCamundaCloudHandler implements JobHandler {
 		String name = NAME_GENRATOR.next();
 
 		logger.info("Creating cluster" + name);
-		CreateClusterResponse createClusterRepoonse = cloudClient.createCluster(new CreateClusterRequest(name,
+		CreateClusterResponse createClusterRepoonse = cloudApiClient.createCluster(new CreateClusterRequest(name,
 				input.getClusterPlanUUID(), input.getChannelUUID(), input.getGenerationUUID(), input.getRegionUUID()));
 
 		String clusterId = createClusterRepoonse.getClusterId();
 
 		try {
-			CreateZeebeClientResponse createZeebeClientResponse = cloudClient.createZeebeClient(clusterId,
+			CreateZeebeClientResponse createZeebeClientResponse = cloudApiClient.createZeebeClient(clusterId,
 					new CreateZeebeClientRequest(name + "_client"));
 
-			ZeebeClientConnectiontInfo connectionInfo = cloudClient.getZeebeClientInfo(clusterId,
+			ZeebeClientConnectiontInfo connectionInfo = cloudApiClient.getZeebeClientInfo(clusterId,
 					createZeebeClientResponse.getClientId());
 
 			client.newCompleteCommand(job.getKey()).variables(new Output(connectionInfo, name, clusterId)).send();
 		} catch (Exception e) {
-			cloudClient.deleteCluster(clusterId);
+			cloudApiClient.deleteCluster(clusterId);
 
 			client.newFailCommand(job.getKey()).retries(job.getRetries() - 1)
 					.errorMessage("Error while creating stack trace: " + e.getMessage());
