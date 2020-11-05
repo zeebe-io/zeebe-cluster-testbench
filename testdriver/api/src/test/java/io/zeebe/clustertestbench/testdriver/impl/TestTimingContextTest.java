@@ -48,13 +48,13 @@ class TestTimingContextTest {
 		Supplier<Long> mockClock = mock(Supplier.class);
 		when(mockClock.get()).thenReturn(1l);
 		
-		var sut = new TestTimingContext(mockClock, Duration.ofSeconds(1), "Test error message", null);		
+		var sutTimingContext = new TestTimingContext(mockClock, Duration.ofSeconds(1), "Test error message", null);		
 		reset(mockClock);
 		
 		when(mockClock.get()).thenReturn(42l);
 		
 		// when
-		sut.close();
+		sutTimingContext.close();
 		
 		// then
 		verify(mockClock).get();
@@ -67,9 +67,9 @@ class TestTimingContextTest {
 	void testGetStartTime() {
 		// given
 		
-		TestTimingContext sut = new TestTimingContext(()-> 42l, Duration.ofSeconds(1), "Test error message", null);		
+		TestTimingContext sutTimingContext = new TestTimingContext(()-> 42l, Duration.ofSeconds(1), "Test error message", null);		
 		// when
-		long actual = sut.getStartTime();
+		long actual = sutTimingContext.getStartTime();
 		
 		// then
 		assertThat(actual).isEqualTo(42);
@@ -80,10 +80,10 @@ class TestTimingContextTest {
 	@DisplayName("composeErrorNessage() should only contain error message if no metadata is present")
 	void testComposeErrorMessageNoMetaData() {
 		// given
-		TestTimingContext sut = new TestTimingContext(Duration.ofSeconds(1), "Test error message", null);
+		TestTimingContext sutTimingContext = new TestTimingContext(Duration.ofSeconds(1), "Test error message", null);
 
 		// when
-		String actual = sut.composeErrorMessage();
+		String actual = sutTimingContext.composeErrorMessage();
 
 		// then
 		assertThat(actual).startsWith("Test error message").doesNotContain("metaData");
@@ -94,10 +94,10 @@ class TestTimingContextTest {
 	@DisplayName("composeErrorNessage() should contain elpasedTime")
 	void testComposeErrorMessageShouldShowElapsedTime() {
 		// given
-		TestTimingContext sut = new TestTimingContext(Duration.ofSeconds(1), "Test error message", null);
+		TestTimingContext sutTimingContext = new TestTimingContext(Duration.ofSeconds(1), "Test error message", null);
 
 		// when
-		String actual = sut.composeErrorMessage();
+		String actual = sutTimingContext.composeErrorMessage();
 
 		// then
 		assertThat(actual).contains("elapsedTime: PT0S");
@@ -108,11 +108,11 @@ class TestTimingContextTest {
 	@DisplayName("composeErrorMessage() should contain metadata if present")
 	void testComposeErrorMessageWithMetaData() {
 		// given
-		TestTimingContext sut = new TestTimingContext(Duration.ofSeconds(1), "Test error message", null);
-		sut.putMetaData("key", "value");
+		TestTimingContext sutTimingContext = new TestTimingContext(Duration.ofSeconds(1), "Test error message", null);
+		sutTimingContext.putMetaData("key", "value");
 
 		// when
-		String actual = sut.composeErrorMessage();
+		String actual = sutTimingContext.composeErrorMessage();
 
 		// then
 		assertThat(actual).startsWith("Test error message").contains("metaData", "key", "value");
@@ -129,14 +129,14 @@ class TestTimingContextTest {
 		Supplier<Long> mockClock = mock(Supplier.class);
 		when(mockClock.get()).thenReturn(1000l);
 		
-		TestTimingContext sut = new TestTimingContext(mockClock, Duration.ofSeconds(1), "Test error message", mockErrorCollector);
-		sut.putMetaData("key", "value");
+		TestTimingContext sutTimingContext = new TestTimingContext(mockClock, Duration.ofSeconds(1), "Test error message", mockErrorCollector);
+		sutTimingContext.putMetaData("key", "value");
 		
 		// when
 		when(mockClock.get()).thenReturn(3000l);
-		sut.close();
+		sutTimingContext.close();
 		
-		String actual = sut.composeErrorMessage();
+		String actual = sutTimingContext.composeErrorMessage();
 		
 		// then		
 		assertThat(actual).isEqualTo("Test error message; elapsedTime: PT2S; metaData:{key=value}");

@@ -57,7 +57,7 @@ class CreateGenerationInCamundaCloudHandlerTest {
 
 		InternalCloudAPIClient spyInternalApiClient;
 
-		CreateGenerationInCamundaCloudHandler sut;
+		CreateGenerationInCamundaCloudHandler sutCreateGenerationHandler;
 
 		@Mock
 		JobClient mockJobClient;
@@ -77,7 +77,7 @@ class CreateGenerationInCamundaCloudHandlerTest {
 		@BeforeEach
 		public void setUp() {
 			spyInternalApiClient = spy(stubInternalApiClient);
-			sut = new CreateGenerationInCamundaCloudHandler(spyInternalApiClient);
+			sutCreateGenerationHandler = new CreateGenerationInCamundaCloudHandler(spyInternalApiClient);
 
 			final var input = new Input();
 			input.setZeebeImage(ZEEBE_IMAGE);
@@ -97,7 +97,7 @@ class CreateGenerationInCamundaCloudHandlerTest {
 			when(mockActivatedJob.getVariablesAsType(Input.class)).thenReturn(input);
 
 			// when + then
-			assertThatThrownBy(() -> sut.handle(mockJobClient, mockActivatedJob))
+			assertThatThrownBy(() -> sutCreateGenerationHandler.handle(mockJobClient, mockActivatedJob))
 					.isExactlyInstanceOf(RuntimeException.class).hasMessageContaining("Unable to find generation")
 					.hasMessageContaining("unknown-generation");
 		}
@@ -112,7 +112,7 @@ class CreateGenerationInCamundaCloudHandlerTest {
 			when(mockActivatedJob.getVariablesAsType(Input.class)).thenReturn(input);
 
 			// when + then
-			assertThatThrownBy(() -> sut.handle(mockJobClient, mockActivatedJob))
+			assertThatThrownBy(() -> sutCreateGenerationHandler.handle(mockJobClient, mockActivatedJob))
 					.isExactlyInstanceOf(RuntimeException.class).hasMessageContaining("Unable to find channel")
 					.hasMessageContaining("unknown-channel");
 		}
@@ -123,7 +123,7 @@ class CreateGenerationInCamundaCloudHandlerTest {
 			mockJobCompletChain();
 
 			// when
-			sut.handle(mockJobClient, mockActivatedJob);
+			sutCreateGenerationHandler.handle(mockJobClient, mockActivatedJob);
 
 			// then
 			final var argumentCapture = ArgumentCaptor.forClass(CreateGenerationRequest.class);
@@ -157,7 +157,7 @@ class CreateGenerationInCamundaCloudHandlerTest {
 			mockJobCompletChain();
 
 			// when
-			sut.handle(mockJobClient, mockActivatedJob);
+			sutCreateGenerationHandler.handle(mockJobClient, mockActivatedJob);
 
 			// then
 			final var argumentCapture = ArgumentCaptor.forClass(UpdateChannelRequest.class);
@@ -177,7 +177,7 @@ class CreateGenerationInCamundaCloudHandlerTest {
 			mockJobCompletChain();
 
 			// when
-			sut.handle(mockJobClient, mockActivatedJob);
+			sutCreateGenerationHandler.handle(mockJobClient, mockActivatedJob);
 
 			// then
 			verify(mockJobClient).newCompleteCommand(Mockito.anyLong());
@@ -199,7 +199,7 @@ class CreateGenerationInCamundaCloudHandlerTest {
 			mockJobCompletChain();
 
 			// when
-			sut.handle(mockJobClient, mockActivatedJob);
+			sutCreateGenerationHandler.handle(mockJobClient, mockActivatedJob);
 
 			// then
 			verify(mockJobClient).newCompleteCommand(jobKey);
@@ -212,7 +212,7 @@ class CreateGenerationInCamundaCloudHandlerTest {
 			final var initialGenerations = new ArrayList<>(stubInternalApiClient.listGenerationInfos());
 
 			// when
-			sut.handle(mockJobClient, mockActivatedJob);
+			sutCreateGenerationHandler.handle(mockJobClient, mockActivatedJob);
 
 			// then
 			final var argumentCapture = ArgumentCaptor.forClass(Output.class);
@@ -239,7 +239,7 @@ class CreateGenerationInCamundaCloudHandlerTest {
 					Mockito.any());
 
 			// when + then
-			assertThatThrownBy(() -> sut.handle(mockJobClient, mockActivatedJob))
+			assertThatThrownBy(() -> sutCreateGenerationHandler.handle(mockJobClient, mockActivatedJob))
 					.isExactlyInstanceOf(RuntimeException.class).hasMessage(message);
 
 			verify(spyInternalApiClient).deleteGeneration(Mockito.any());

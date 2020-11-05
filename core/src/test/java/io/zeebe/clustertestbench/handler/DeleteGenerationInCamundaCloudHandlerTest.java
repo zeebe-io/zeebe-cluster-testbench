@@ -16,7 +16,6 @@ import io.zeebe.client.api.ZeebeFuture;
 import io.zeebe.client.api.command.CompleteJobCommandStep1;
 import io.zeebe.client.api.response.ActivatedJob;
 import io.zeebe.client.api.worker.JobClient;
-import io.zeebe.clustertestbench.handler.DeleteGenerationInCamundaCloudHandler;
 import io.zeebe.clustertestbench.handler.DeleteGenerationInCamundaCloudHandler.Input;
 import io.zeebe.clustertestbench.internal.cloud.InternalCloudAPIClient;
 
@@ -41,12 +40,12 @@ class DeleteGenerationInCamundaCloudHandlerTest {
 	@Mock
 	ActivatedJob mockActivatedJob;
 
-	DeleteGenerationInCamundaCloudHandler sut;
+	DeleteGenerationInCamundaCloudHandler sutDeleteGenerationhandler;
 
 	@SuppressWarnings("unchecked")
 	@BeforeEach
 	public void setUp() {
-		sut = new DeleteGenerationInCamundaCloudHandler(mockInternalApiClient);
+		sutDeleteGenerationhandler = new DeleteGenerationInCamundaCloudHandler(mockInternalApiClient);
 		when(mockJobClient.newCompleteCommand(Mockito.anyLong())).thenReturn(mockCompleteJobCommandStep1);
 		when(mockCompleteJobCommandStep1.send()).thenReturn(mockZeebeFuture);
 
@@ -59,7 +58,7 @@ class DeleteGenerationInCamundaCloudHandlerTest {
 	@Test
 	void shouldCallApiToDeleteGeneration() throws Exception {
 		// when
-		sut.handle(mockJobClient, mockActivatedJob);
+		sutDeleteGenerationhandler.handle(mockJobClient, mockActivatedJob);
 
 		// then
 		verify(mockInternalApiClient).deleteGeneration(Mockito.any());
@@ -69,7 +68,7 @@ class DeleteGenerationInCamundaCloudHandlerTest {
 	@Test
 	void shouldDeleteTheRightGeneration() throws Exception {
 		// when
-		sut.handle(mockJobClient, mockActivatedJob);
+		sutDeleteGenerationhandler.handle(mockJobClient, mockActivatedJob);
 
 		// then
 		verify(mockInternalApiClient).deleteGeneration(TEST_GENERATION_UUID);
@@ -79,7 +78,7 @@ class DeleteGenerationInCamundaCloudHandlerTest {
 	@Test
 	void shouldCompleteJob() throws Exception {
 		// when
-		sut.handle(mockJobClient, mockActivatedJob);
+		sutDeleteGenerationhandler.handle(mockJobClient, mockActivatedJob);
 
 		// then
 		verify(mockJobClient).newCompleteCommand(Mockito.anyLong());
@@ -94,7 +93,7 @@ class DeleteGenerationInCamundaCloudHandlerTest {
 	@Test
 	void shouldCompleteJobAfterDeletingTheGeneration() throws Exception {
 		// when
-		sut.handle(mockJobClient, mockActivatedJob);
+		sutDeleteGenerationhandler.handle(mockJobClient, mockActivatedJob);
 
 		// then
 		var inOrder = inOrder(mockInternalApiClient, mockJobClient);
@@ -113,7 +112,7 @@ class DeleteGenerationInCamundaCloudHandlerTest {
 		when(mockActivatedJob.getKey()).thenReturn(jobKey);
 
 		// when
-		sut.handle(mockJobClient, mockActivatedJob);
+		sutDeleteGenerationhandler.handle(mockJobClient, mockActivatedJob);
 
 		// then
 		verify(mockJobClient).newCompleteCommand(jobKey);
