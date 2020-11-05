@@ -177,9 +177,8 @@ public class Launcher {
 		final String username = authenticationDetails.getUsername();
 		final String password = authenticationDetails.getPassword();
 
-		InternalCloudAPIClient client = new InternalCloudAPIClientFactory().createCloudAPIClient(internalCloudApiUrl,
+		return new InternalCloudAPIClientFactory().createCloudAPIClient(internalCloudApiUrl,
 				serverUrl, audience, clientId, clientSecret, username, password);
-		return client;
 	}
 
 	private void testConnectionToSlack() {

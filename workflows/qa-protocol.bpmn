@@ -46,7 +46,7 @@ sequentialTestParams = {"steps":3,"iterations":10,"maxTimeForIteration":"PT10S",
     <bpmn:association id="Association_0din8b3" sourceRef="run-all-tests-in-camunda-cloud-per-cluster-plan" targetRef="TextAnnotation_1vy46wr" />
     <bpmn:textAnnotation id="TextAnnotation_0lbo537">
       <bpmn:text>zeebeImage: Zeebe image to use
-generationTemplate: existing geenration used as template for the versions of Operate and ElasticSearch
+generationTemplate: existing genration used as template for the versions of Operate and ElasticSearch
 channel: channel in which the QA tests shall be run</bpmn:text>
     </bpmn:textAnnotation>
     <bpmn:association id="Association_0x03pf4" sourceRef="StartEvent_1" targetRef="TextAnnotation_0lbo537" />

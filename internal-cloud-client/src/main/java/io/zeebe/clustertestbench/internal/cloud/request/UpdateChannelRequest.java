@@ -12,11 +12,11 @@ public class UpdateChannelRequest {
 	private final List<String> allowedGenerationIds;
 
 	public UpdateChannelRequest(String name, boolean isDefault, String defaultgenerationId,
-			List<String> allowedGeneerationIds) {
+			List<String> allowedGenerationIds) {
 		this.name = name;
 		this.isDefault = isDefault;
 		this.defaultGenerationId = defaultgenerationId;
-		this.allowedGenerationIds = allowedGeneerationIds;
+		this.allowedGenerationIds = allowedGenerationIds;
 	}
 
 	public String getName() {

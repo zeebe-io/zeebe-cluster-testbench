@@ -106,9 +106,9 @@ public class SequentialTestDriver implements TestDriver {
 							.ignoreWorkflowNotFoundExceptions(WORKFLOW_ID) //
 							.build();
 
-					if (exceptionFilter.test(t)) {
+					if (exceptionFilter.test(e)) {
 						testReport.addFailure("Exception in iteration " + i + ":" + e.getMessage() + " caused by "
-								+ ofNullable(t.getCause()).map(Throwable::getMessage).orElse("[cuase is empty]"));
+								+ ofNullable(e.getCause()).map(Throwable::getMessage).orElse("[cuase is empty]"));
 					} else {
 						// repeat iteration
 						i--;
