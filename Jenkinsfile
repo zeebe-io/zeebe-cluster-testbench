@@ -168,9 +168,22 @@ pipeline {
               if (agentDisconnected()) {
                     currentBuild.result = 'ABORTED'
                     currentBuild.description = "Aborted due to connection error"
-                  build job: currentBuild.projectName, propagate: false, quietPeriod: 60, wait: false
-              }
+                  build job: currentBuild.projectName, propagate: false, quietPeriod: 20, wait: false
+              }                     
           }
+      }
+      
+    failure {
+        script {
+            if (env.BRANCH_NAME != 'master' || agentDisconnected()) {
+                return
+            }
+           
+            slackSend( 
+                channel: "#zeebe-testbench-ci",
+                message: "Zeebe Cluster Testbench failed on ${env.BRANCH_NAME} for build ${currentBuild.absoluteUrl}"
+           )    
+        }       
       }
   }
 }
