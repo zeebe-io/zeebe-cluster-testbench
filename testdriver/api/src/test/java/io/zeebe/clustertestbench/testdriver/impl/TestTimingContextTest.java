@@ -10,137 +10,138 @@ import static org.mockito.Mockito.when;
 import java.time.Duration;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
-
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-
-
 @ExtendWith(MockitoExtension.class)
 class TestTimingContextTest {
-	
-	
-	@SuppressWarnings({ "resource", "unchecked" })
-	@Test
-	@DisplayName("constructor should take start time")
-	void testConstructorTakesStartTime() {
-		
-		// given
-		Supplier<Long> mockClock = mock(Supplier.class);
-		when(mockClock.get()).thenReturn(1l);
-		
-		// when
-		new TestTimingContext(mockClock, Duration.ofSeconds(1), "Test error message", null);
-		
-		// then
-		verify(mockClock).get();
-		verifyNoMoreInteractions(mockClock);
-	}
-	
-	@SuppressWarnings("unchecked")
-	@Test
-	@DisplayName("close() should take end time")
-	void testCloseTakesEndTime() {
-		
-		// given
-		Supplier<Long> mockClock = mock(Supplier.class);
-		when(mockClock.get()).thenReturn(1l);
-		
-		var sutTimingContext = new TestTimingContext(mockClock, Duration.ofSeconds(1), "Test error message", null);		
-		reset(mockClock);
-		
-		when(mockClock.get()).thenReturn(42l);
-		
-		// when
-		sutTimingContext.close();
-		
-		// then
-		verify(mockClock).get();
-		verifyNoMoreInteractions(mockClock);
-	}
-	
-	@SuppressWarnings("resource")
-	@Test
-	@DisplayName("getStartTime() should return time given by time supplier during construction") 
-	void testGetStartTime() {
-		// given
-		
-		TestTimingContext sutTimingContext = new TestTimingContext(()-> 42l, Duration.ofSeconds(1), "Test error message", null);		
-		// when
-		long actual = sutTimingContext.getStartTime();
-		
-		// then
-		assertThat(actual).isEqualTo(42);
-	}
 
-	@SuppressWarnings("resource")
-	@Test
-	@DisplayName("composeErrorNessage() should only contain error message if no metadata is present")
-	void testComposeErrorMessageNoMetaData() {
-		// given
-		TestTimingContext sutTimingContext = new TestTimingContext(Duration.ofSeconds(1), "Test error message", null);
+  @SuppressWarnings({"resource", "unchecked"})
+  @Test
+  @DisplayName("constructor should take start time")
+  void testConstructorTakesStartTime() {
 
-		// when
-		String actual = sutTimingContext.composeErrorMessage();
+    // given
+    Supplier<Long> mockClock = mock(Supplier.class);
+    when(mockClock.get()).thenReturn(1l);
 
-		// then
-		assertThat(actual).startsWith("Test error message").doesNotContain("metaData");
-	}
-	
-	@SuppressWarnings("resource")
-	@Test
-	@DisplayName("composeErrorNessage() should contain elpasedTime")
-	void testComposeErrorMessageShouldShowElapsedTime() {
-		// given
-		TestTimingContext sutTimingContext = new TestTimingContext(Duration.ofSeconds(1), "Test error message", null);
+    // when
+    new TestTimingContext(mockClock, Duration.ofSeconds(1), "Test error message", null);
 
-		// when
-		String actual = sutTimingContext.composeErrorMessage();
+    // then
+    verify(mockClock).get();
+    verifyNoMoreInteractions(mockClock);
+  }
 
-		// then
-		assertThat(actual).contains("elapsedTime: PT0S");
-	}
+  @SuppressWarnings("unchecked")
+  @Test
+  @DisplayName("close() should take end time")
+  void testCloseTakesEndTime() {
 
-	@SuppressWarnings("resource")
-	@Test
-	@DisplayName("composeErrorMessage() should contain metadata if present")
-	void testComposeErrorMessageWithMetaData() {
-		// given
-		TestTimingContext sutTimingContext = new TestTimingContext(Duration.ofSeconds(1), "Test error message", null);
-		sutTimingContext.putMetaData("key", "value");
+    // given
+    Supplier<Long> mockClock = mock(Supplier.class);
+    when(mockClock.get()).thenReturn(1l);
 
-		// when
-		String actual = sutTimingContext.composeErrorMessage();
+    var sutTimingContext =
+        new TestTimingContext(mockClock, Duration.ofSeconds(1), "Test error message", null);
+    reset(mockClock);
 
-		// then
-		assertThat(actual).startsWith("Test error message").contains("metaData", "key", "value");
-	}
-	
+    when(mockClock.get()).thenReturn(42l);
 
-	@SuppressWarnings({ "resource", "unchecked" })
-	@Test
-	@DisplayName("composeErrorMessage() should contain the error message, the elapsed time and the metadata")
-	void testComposeErrorMessageAllParts() {
-		// given
-		Consumer<String> mockErrorCollector = mock(Consumer.class);
-		
-		Supplier<Long> mockClock = mock(Supplier.class);
-		when(mockClock.get()).thenReturn(1000l);
-		
-		TestTimingContext sutTimingContext = new TestTimingContext(mockClock, Duration.ofSeconds(1), "Test error message", mockErrorCollector);
-		sutTimingContext.putMetaData("key", "value");
-		
-		// when
-		when(mockClock.get()).thenReturn(3000l);
-		sutTimingContext.close();
-		
-		String actual = sutTimingContext.composeErrorMessage();
-		
-		// then		
-		assertThat(actual).isEqualTo("Test error message; elapsedTime: PT2S; metaData:{key=value}");
-	}
-	
+    // when
+    sutTimingContext.close();
 
+    // then
+    verify(mockClock).get();
+    verifyNoMoreInteractions(mockClock);
+  }
+
+  @SuppressWarnings("resource")
+  @Test
+  @DisplayName("getStartTime() should return time given by time supplier during construction")
+  void testGetStartTime() {
+    // given
+
+    TestTimingContext sutTimingContext =
+        new TestTimingContext(() -> 42l, Duration.ofSeconds(1), "Test error message", null);
+    // when
+    long actual = sutTimingContext.getStartTime();
+
+    // then
+    assertThat(actual).isEqualTo(42);
+  }
+
+  @SuppressWarnings("resource")
+  @Test
+  @DisplayName("composeErrorNessage() should only contain error message if no metadata is present")
+  void testComposeErrorMessageNoMetaData() {
+    // given
+    TestTimingContext sutTimingContext =
+        new TestTimingContext(Duration.ofSeconds(1), "Test error message", null);
+
+    // when
+    String actual = sutTimingContext.composeErrorMessage();
+
+    // then
+    assertThat(actual).startsWith("Test error message").doesNotContain("metaData");
+  }
+
+  @SuppressWarnings("resource")
+  @Test
+  @DisplayName("composeErrorNessage() should contain elpasedTime")
+  void testComposeErrorMessageShouldShowElapsedTime() {
+    // given
+    TestTimingContext sutTimingContext =
+        new TestTimingContext(Duration.ofSeconds(1), "Test error message", null);
+
+    // when
+    String actual = sutTimingContext.composeErrorMessage();
+
+    // then
+    assertThat(actual).contains("elapsedTime: PT0S");
+  }
+
+  @SuppressWarnings("resource")
+  @Test
+  @DisplayName("composeErrorMessage() should contain metadata if present")
+  void testComposeErrorMessageWithMetaData() {
+    // given
+    TestTimingContext sutTimingContext =
+        new TestTimingContext(Duration.ofSeconds(1), "Test error message", null);
+    sutTimingContext.putMetaData("key", "value");
+
+    // when
+    String actual = sutTimingContext.composeErrorMessage();
+
+    // then
+    assertThat(actual).startsWith("Test error message").contains("metaData", "key", "value");
+  }
+
+  @SuppressWarnings({"resource", "unchecked"})
+  @Test
+  @DisplayName(
+      "composeErrorMessage() should contain the error message, the elapsed time and the metadata")
+  void testComposeErrorMessageAllParts() {
+    // given
+    Consumer<String> mockErrorCollector = mock(Consumer.class);
+
+    Supplier<Long> mockClock = mock(Supplier.class);
+    when(mockClock.get()).thenReturn(1000l);
+
+    TestTimingContext sutTimingContext =
+        new TestTimingContext(
+            mockClock, Duration.ofSeconds(1), "Test error message", mockErrorCollector);
+    sutTimingContext.putMetaData("key", "value");
+
+    // when
+    when(mockClock.get()).thenReturn(3000l);
+    sutTimingContext.close();
+
+    String actual = sutTimingContext.composeErrorMessage();
+
+    // then
+    assertThat(actual).isEqualTo("Test error message; elapsedTime: PT2S; metaData:{key=value}");
+  }
 }

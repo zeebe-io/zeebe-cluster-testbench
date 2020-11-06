@@ -4,27 +4,27 @@ import java.util.List;
 import java.util.Map;
 
 public interface TestReport {
-	
-	public enum TestResult {
-		PASSED, FAILED
-	}
 
-	TestResult getTestResult();
+  public enum TestResult {
+    PASSED,
+    FAILED
+  }
 
-	List<String> getFailureMessages();
+  TestResult getTestResult();
 
-	int getFailureCount();
+  List<String> getFailureMessages();
 
-	Map<String, Object> getMetaData();
+  int getFailureCount();
 
-	long getStartTime();
+  Map<String, Object> getMetaData();
 
-	long getEndTime();
+  long getStartTime();
 
-	default long getDuration() {
-		return getEndTime() - getStartTime();
-	}
+  long getEndTime();
 
-	long getTimeOfFirstFailure();
+  default long getDuration() {
+    return getEndTime() - getStartTime();
+  }
 
+  long getTimeOfFirstFailure();
 }

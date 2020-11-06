@@ -1,11 +1,5 @@
 package io.zeebe.clustertestbench.handler;
 
-import java.util.Optional;
-import java.util.function.Predicate;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import io.zeebe.client.api.response.ActivatedJob;
 import io.zeebe.client.api.worker.JobClient;
 import io.zeebe.client.api.worker.JobHandler;
@@ -15,244 +9,267 @@ import io.zeebe.clustertestbench.cloud.response.ClusterPlanTypeInfo;
 import io.zeebe.clustertestbench.cloud.response.GenerationInfo;
 import io.zeebe.clustertestbench.cloud.response.ParametersResponse;
 import io.zeebe.clustertestbench.cloud.response.RegionInfo;
+import java.util.Optional;
+import java.util.function.Predicate;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class MapNamesToUUIDsWorker implements JobHandler {
 
-	private static final Logger logger = LoggerFactory.getLogger(MapNamesToUUIDsWorker.class);
+  private static final Logger logger = LoggerFactory.getLogger(MapNamesToUUIDsWorker.class);
 
-	private final CloudAPIClient cloudClient;
+  private final CloudAPIClient cloudClient;
 
-	public MapNamesToUUIDsWorker(final CloudAPIClient cloudAPIClient) {
-		this.cloudClient = cloudAPIClient;
-	}
+  public MapNamesToUUIDsWorker(final CloudAPIClient cloudAPIClient) {
+    this.cloudClient = cloudAPIClient;
+  }
 
-	@Override
-	public void handle(JobClient client, ActivatedJob job) throws Exception {
-		logger.info("Mapping names to UUIDs and vice versa");
-		final InputOutput inputOutput = job.getVariablesAsType(InputOutput.class);
-		
-		logger.info("Input: " + inputOutput);
+  @Override
+  public void handle(JobClient client, ActivatedJob job) throws Exception {
+    logger.info("Mapping names to UUIDs and vice versa");
+    final InputOutput inputOutput = job.getVariablesAsType(InputOutput.class);
 
-		ParametersResponse parameters = cloudClient.getParameters();
+    logger.info("Input: " + inputOutput);
 
-		final ChannelInfo channelInfo = mapChannel(inputOutput, parameters);
+    ParametersResponse parameters = cloudClient.getParameters();
 
-		mapGeneration(inputOutput, channelInfo);
+    final ChannelInfo channelInfo = mapChannel(inputOutput, parameters);
 
-		mapClusterPlan(inputOutput, parameters);
-		mapRegion(inputOutput, parameters);
+    mapGeneration(inputOutput, channelInfo);
 
-		logger.info("Output: " + inputOutput);
-		client.newCompleteCommand(job.getKey()).variables(inputOutput).send();
-	}
+    mapClusterPlan(inputOutput, parameters);
+    mapRegion(inputOutput, parameters);
 
-	private ChannelInfo mapChannel(InputOutput inputOutput, ParametersResponse parameters) {
-		final ChannelInfo channelInfo;
+    logger.info("Output: " + inputOutput);
+    client.newCompleteCommand(job.getKey()).variables(inputOutput).send();
+  }
 
-		if ((inputOutput.getChannelUUID() == null) && (inputOutput.getChannel() == null)) {
-			throw new IllegalArgumentException("Neither 'generation' nor 'generationUUID' are provided");
-		}
+  private ChannelInfo mapChannel(InputOutput inputOutput, ParametersResponse parameters) {
+    final ChannelInfo channelInfo;
 
-		final String notFoundMessage;
-		final Predicate<ChannelInfo> channelFilter;
+    if ((inputOutput.getChannelUUID() == null) && (inputOutput.getChannel() == null)) {
+      throw new IllegalArgumentException("Neither 'generation' nor 'generationUUID' are provided");
+    }
 
-		if (inputOutput.getChannelUUID() == null) {
-			notFoundMessage = "Unable to find channel with name " + inputOutput.getChannel();
-			channelFilter = (item) -> inputOutput.getChannel().equalsIgnoreCase(item.getName());
-		} else {
-			notFoundMessage = "Unable to find channel with UUID " + inputOutput.getChannelUUID();
-			channelFilter = (item) -> inputOutput.getChannelUUID().equals(item.getUuid());
-		}
+    final String notFoundMessage;
+    final Predicate<ChannelInfo> channelFilter;
 
-		Optional<ChannelInfo> optChannelInfo = parameters.getChannels().stream().filter(channelFilter).findFirst();
+    if (inputOutput.getChannelUUID() == null) {
+      notFoundMessage = "Unable to find channel with name " + inputOutput.getChannel();
+      channelFilter = (item) -> inputOutput.getChannel().equalsIgnoreCase(item.getName());
+    } else {
+      notFoundMessage = "Unable to find channel with UUID " + inputOutput.getChannelUUID();
+      channelFilter = (item) -> inputOutput.getChannelUUID().equals(item.getUuid());
+    }
 
-		if (optChannelInfo.isEmpty()) {
-			throw new IllegalArgumentException(notFoundMessage + ". " + parameters.getChannels().toString());
-		}
+    Optional<ChannelInfo> optChannelInfo =
+        parameters.getChannels().stream().filter(channelFilter).findFirst();
 
-		channelInfo = optChannelInfo.get();
+    if (optChannelInfo.isEmpty()) {
+      throw new IllegalArgumentException(
+          notFoundMessage + ". " + parameters.getChannels().toString());
+    }
 
-		inputOutput.setChannel(channelInfo.getName());
-		inputOutput.setChannelUUID(channelInfo.getUuid());
+    channelInfo = optChannelInfo.get();
 
-		return channelInfo;
-	}
+    inputOutput.setChannel(channelInfo.getName());
+    inputOutput.setChannelUUID(channelInfo.getUuid());
 
-	private void mapGeneration(InputOutput inputOutput, ChannelInfo channelInfo) {
-		final GenerationInfo generationInfo;
-		if ((inputOutput.getGenerationUUID() == null) && (inputOutput.getGeneration() == null)) {
-			generationInfo = channelInfo.getDefaultGeneration();
-		} else {
-			final String notFoundMessage;
-			final Predicate<GenerationInfo> generationFilter;
+    return channelInfo;
+  }
 
-			if (inputOutput.getGenerationUUID() == null) {
-				notFoundMessage = "Unable to find generation with name " + inputOutput.getGeneration();
-				generationFilter = (item) -> inputOutput.getGeneration().equalsIgnoreCase(item.getName());
-			} else {
-				notFoundMessage = "Unable to find generation with UUID " + inputOutput.getGenerationUUID();
-				generationFilter = (item) -> inputOutput.getGenerationUUID().equals(item.getUuid());
-			}
+  private void mapGeneration(InputOutput inputOutput, ChannelInfo channelInfo) {
+    final GenerationInfo generationInfo;
+    if ((inputOutput.getGenerationUUID() == null) && (inputOutput.getGeneration() == null)) {
+      generationInfo = channelInfo.getDefaultGeneration();
+    } else {
+      final String notFoundMessage;
+      final Predicate<GenerationInfo> generationFilter;
 
-			Optional<GenerationInfo> optGenerationInfo = channelInfo.getAllowedGenerations().stream()
-					.filter(generationFilter).findFirst();
+      if (inputOutput.getGenerationUUID() == null) {
+        notFoundMessage = "Unable to find generation with name " + inputOutput.getGeneration();
+        generationFilter = (item) -> inputOutput.getGeneration().equalsIgnoreCase(item.getName());
+      } else {
+        notFoundMessage = "Unable to find generation with UUID " + inputOutput.getGenerationUUID();
+        generationFilter = (item) -> inputOutput.getGenerationUUID().equals(item.getUuid());
+      }
 
-			if (optGenerationInfo.isEmpty()) {
-				throw new IllegalArgumentException(notFoundMessage + ". " + channelInfo.getAllowedGenerations());
-			}
+      Optional<GenerationInfo> optGenerationInfo =
+          channelInfo.getAllowedGenerations().stream().filter(generationFilter).findFirst();
 
-			generationInfo = optGenerationInfo.get();
-		}
+      if (optGenerationInfo.isEmpty()) {
+        throw new IllegalArgumentException(
+            notFoundMessage + ". " + channelInfo.getAllowedGenerations());
+      }
 
-		inputOutput.setGeneration(generationInfo.getName());
-		inputOutput.setGenerationUUID(generationInfo.getUuid());
-	}
+      generationInfo = optGenerationInfo.get();
+    }
 
-	private void mapClusterPlan(InputOutput inputOutput, ParametersResponse parameters) {
-		final ClusterPlanTypeInfo clusterPlanInfo;
+    inputOutput.setGeneration(generationInfo.getName());
+    inputOutput.setGenerationUUID(generationInfo.getUuid());
+  }
 
-		if ((inputOutput.getClusterPlanUUID() == null) && (inputOutput.getClusterPlan() == null)) {
-			throw new IllegalArgumentException("Neither 'clusterPlan' nor 'clusterPlanUUID' are provided");
-		}
+  private void mapClusterPlan(InputOutput inputOutput, ParametersResponse parameters) {
+    final ClusterPlanTypeInfo clusterPlanInfo;
 
-		final String notFoundMessage;
-		final Predicate<ClusterPlanTypeInfo> clusterPlanFilter;
+    if ((inputOutput.getClusterPlanUUID() == null) && (inputOutput.getClusterPlan() == null)) {
+      throw new IllegalArgumentException(
+          "Neither 'clusterPlan' nor 'clusterPlanUUID' are provided");
+    }
 
-		if (inputOutput.getClusterPlanUUID() == null) {
-			notFoundMessage = "Unable to find clusterPlan with name " + inputOutput.getClusterPlan();
-			clusterPlanFilter = (item) -> inputOutput.getClusterPlan().equalsIgnoreCase(item.getName());
-		} else {
-			notFoundMessage = "Unable to find clusterPlan with UUID " + inputOutput.getClusterPlanUUID();
-			clusterPlanFilter = (item) -> inputOutput.getClusterPlanUUID().equals(item.getUuid());
-		}
+    final String notFoundMessage;
+    final Predicate<ClusterPlanTypeInfo> clusterPlanFilter;
 
-		Optional<ClusterPlanTypeInfo> optClusterPlanInfo = parameters.getClusterPlanTypes().stream()
-				.filter(clusterPlanFilter).findFirst();
+    if (inputOutput.getClusterPlanUUID() == null) {
+      notFoundMessage = "Unable to find clusterPlan with name " + inputOutput.getClusterPlan();
+      clusterPlanFilter = (item) -> inputOutput.getClusterPlan().equalsIgnoreCase(item.getName());
+    } else {
+      notFoundMessage = "Unable to find clusterPlan with UUID " + inputOutput.getClusterPlanUUID();
+      clusterPlanFilter = (item) -> inputOutput.getClusterPlanUUID().equals(item.getUuid());
+    }
 
-		if (optClusterPlanInfo.isEmpty()) {
-			throw new IllegalArgumentException(notFoundMessage + ". " + parameters.getClusterPlanTypes().toString());
-		}
+    Optional<ClusterPlanTypeInfo> optClusterPlanInfo =
+        parameters.getClusterPlanTypes().stream().filter(clusterPlanFilter).findFirst();
 
-		clusterPlanInfo = optClusterPlanInfo.get();
+    if (optClusterPlanInfo.isEmpty()) {
+      throw new IllegalArgumentException(
+          notFoundMessage + ". " + parameters.getClusterPlanTypes().toString());
+    }
 
-		inputOutput.setClusterPlan(clusterPlanInfo.getName());
-		inputOutput.setClusterPlanUUID(clusterPlanInfo.getUuid());
-	}
+    clusterPlanInfo = optClusterPlanInfo.get();
 
-	private void mapRegion(InputOutput inputOutput, ParametersResponse parameters) {
-		final RegionInfo regionInfo;
+    inputOutput.setClusterPlan(clusterPlanInfo.getName());
+    inputOutput.setClusterPlanUUID(clusterPlanInfo.getUuid());
+  }
 
-		if ((inputOutput.getRegionUUID() == null) && (inputOutput.getRegion() == null)) {
-			throw new IllegalArgumentException("Neither 'region' nor 'regionUUID' are provided");
-		}
+  private void mapRegion(InputOutput inputOutput, ParametersResponse parameters) {
+    final RegionInfo regionInfo;
 
-		final String notFoundMessage;
-		final Predicate<RegionInfo> regionFilter;
+    if ((inputOutput.getRegionUUID() == null) && (inputOutput.getRegion() == null)) {
+      throw new IllegalArgumentException("Neither 'region' nor 'regionUUID' are provided");
+    }
 
-		if (inputOutput.getRegionUUID() == null) {
-			notFoundMessage = "Unable to find region with name " + inputOutput.getRegion();
-			regionFilter = (item) -> inputOutput.getRegion().equalsIgnoreCase(item.getName());
-		} else {
-			notFoundMessage = "Unable to find region with UUID " + inputOutput.getRegionUUID();
-			regionFilter = (item) -> inputOutput.getRegionUUID().equals(item.getUuid());
-		}
+    final String notFoundMessage;
+    final Predicate<RegionInfo> regionFilter;
 
-		Optional<RegionInfo> optRegionInfo = parameters.getRegions().stream().filter(regionFilter).findFirst();
+    if (inputOutput.getRegionUUID() == null) {
+      notFoundMessage = "Unable to find region with name " + inputOutput.getRegion();
+      regionFilter = (item) -> inputOutput.getRegion().equalsIgnoreCase(item.getName());
+    } else {
+      notFoundMessage = "Unable to find region with UUID " + inputOutput.getRegionUUID();
+      regionFilter = (item) -> inputOutput.getRegionUUID().equals(item.getUuid());
+    }
 
-		if (optRegionInfo.isEmpty()) {
-			throw new IllegalArgumentException(notFoundMessage + ". " + parameters.getRegions().toString());
-		}
+    Optional<RegionInfo> optRegionInfo =
+        parameters.getRegions().stream().filter(regionFilter).findFirst();
 
-		regionInfo = optRegionInfo.get();
+    if (optRegionInfo.isEmpty()) {
+      throw new IllegalArgumentException(
+          notFoundMessage + ". " + parameters.getRegions().toString());
+    }
 
-		inputOutput.setRegion(regionInfo.getName());
-		inputOutput.setRegionUUID(regionInfo.getUuid());
-	}
+    regionInfo = optRegionInfo.get();
 
-	private static final class InputOutput {
-		private String generation;
-		private String generationUUID;
+    inputOutput.setRegion(regionInfo.getName());
+    inputOutput.setRegionUUID(regionInfo.getUuid());
+  }
 
-		private String region;
-		private String regionUUID;
+  private static final class InputOutput {
+    private String generation;
+    private String generationUUID;
 
-		private String clusterPlan;
-		private String clusterPlanUUID;
+    private String region;
+    private String regionUUID;
 
-		private String channel;
-		private String channelUUID;
+    private String clusterPlan;
+    private String clusterPlanUUID;
 
-		public String getGeneration() {
-			return generation;
-		}
+    private String channel;
+    private String channelUUID;
 
-		public void setGeneration(String generation) {
-			this.generation = generation;
-		}
+    public String getGeneration() {
+      return generation;
+    }
 
-		public String getGenerationUUID() {
-			return generationUUID;
-		}
+    public void setGeneration(String generation) {
+      this.generation = generation;
+    }
 
-		public void setGenerationUUID(String generationUUID) {
-			this.generationUUID = generationUUID;
-		}
+    public String getGenerationUUID() {
+      return generationUUID;
+    }
 
-		public String getRegion() {
-			return region;
-		}
+    public void setGenerationUUID(String generationUUID) {
+      this.generationUUID = generationUUID;
+    }
 
-		public void setRegion(String region) {
-			this.region = region;
-		}
+    public String getRegion() {
+      return region;
+    }
 
-		public String getRegionUUID() {
-			return regionUUID;
-		}
+    public void setRegion(String region) {
+      this.region = region;
+    }
 
-		public void setRegionUUID(String regionUUID) {
-			this.regionUUID = regionUUID;
-		}
+    public String getRegionUUID() {
+      return regionUUID;
+    }
 
-		public String getClusterPlan() {
-			return clusterPlan;
-		}
+    public void setRegionUUID(String regionUUID) {
+      this.regionUUID = regionUUID;
+    }
 
-		public void setClusterPlan(String clusterPlan) {
-			this.clusterPlan = clusterPlan;
-		}
+    public String getClusterPlan() {
+      return clusterPlan;
+    }
 
-		public String getClusterPlanUUID() {
-			return clusterPlanUUID;
-		}
+    public void setClusterPlan(String clusterPlan) {
+      this.clusterPlan = clusterPlan;
+    }
 
-		public void setClusterPlanUUID(String clusterPlanUUID) {
-			this.clusterPlanUUID = clusterPlanUUID;
-		}
+    public String getClusterPlanUUID() {
+      return clusterPlanUUID;
+    }
 
-		public String getChannel() {
-			return channel;
-		}
+    public void setClusterPlanUUID(String clusterPlanUUID) {
+      this.clusterPlanUUID = clusterPlanUUID;
+    }
 
-		public void setChannel(String channel) {
-			this.channel = channel;
-		}
+    public String getChannel() {
+      return channel;
+    }
 
-		public String getChannelUUID() {
-			return channelUUID;
-		}
+    public void setChannel(String channel) {
+      this.channel = channel;
+    }
 
-		public void setChannelUUID(String channelUUID) {
-			this.channelUUID = channelUUID;
-		}
+    public String getChannelUUID() {
+      return channelUUID;
+    }
 
-		@Override
-		public String toString() {
-			return "InputOutput [generation=" + generation + ", generationUUID=" + generationUUID + ", region=" + region
-					+ ", regionUUID=" + regionUUID + ", clusterPlan=" + clusterPlan + ", clusterPlanUUID="
-					+ clusterPlanUUID + ", channel=" + channel + ", channelUUID=" + channelUUID + "]";
-		}
+    public void setChannelUUID(String channelUUID) {
+      this.channelUUID = channelUUID;
+    }
 
-	}
-
+    @Override
+    public String toString() {
+      return "InputOutput [generation="
+          + generation
+          + ", generationUUID="
+          + generationUUID
+          + ", region="
+          + region
+          + ", regionUUID="
+          + regionUUID
+          + ", clusterPlan="
+          + clusterPlan
+          + ", clusterPlanUUID="
+          + clusterPlanUUID
+          + ", channel="
+          + channel
+          + ", channelUUID="
+          + channelUUID
+          + "]";
+    }
+  }
 }

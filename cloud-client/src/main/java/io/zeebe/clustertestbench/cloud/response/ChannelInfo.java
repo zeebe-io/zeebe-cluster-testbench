@@ -1,68 +1,76 @@
 package io.zeebe.clustertestbench.cloud.response;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import com.fasterxml.jackson.annotation.JsonAlias;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import java.util.ArrayList;
+import java.util.List;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class ChannelInfo {
 
-	private List<GenerationInfo> allowedGenerations = new ArrayList();
+  private List<GenerationInfo> allowedGenerations = new ArrayList();
 
-	private GenerationInfo defaultGeneration;
+  private GenerationInfo defaultGeneration;
 
-	@JsonAlias("isDefault")
-	private boolean isDefault;
-	private String name;
-	private String uuid;
+  @JsonAlias("isDefault")
+  private boolean isDefault;
 
-	public List<GenerationInfo> getAllowedGenerations() {
-		return allowedGenerations;
-	}
+  private String name;
+  private String uuid;
 
-	public void setAllowedGenerations(List<GenerationInfo> allowedGenerations) {
-		this.allowedGenerations = allowedGenerations;
-	}
+  public List<GenerationInfo> getAllowedGenerations() {
+    return allowedGenerations;
+  }
 
-	public GenerationInfo getDefaultGeneration() {
-		return defaultGeneration;
-	}
+  public void setAllowedGenerations(List<GenerationInfo> allowedGenerations) {
+    this.allowedGenerations = allowedGenerations;
+  }
 
-	public void setDefaultGeneration(GenerationInfo defaultGeneration) {
-		this.defaultGeneration = defaultGeneration;
-	}
+  public GenerationInfo getDefaultGeneration() {
+    return defaultGeneration;
+  }
 
-	public boolean isDefault() {
-		return isDefault;
-	}
+  public void setDefaultGeneration(GenerationInfo defaultGeneration) {
+    this.defaultGeneration = defaultGeneration;
+  }
 
-	@JsonAlias("isDefault")
-	public void setDefault(boolean isDefault) {
-		this.isDefault = isDefault;
-	}
+  public boolean isDefault() {
+    return isDefault;
+  }
 
-	public String getName() {
-		return name;
-	}
+  @JsonAlias("isDefault")
+  public void setDefault(boolean isDefault) {
+    this.isDefault = isDefault;
+  }
 
-	public void setName(String name) {
-		this.name = name;
-	}
+  public String getName() {
+    return name;
+  }
 
-	public String getUuid() {
-		return uuid;
-	}
+  public void setName(String name) {
+    this.name = name;
+  }
 
-	public void setUuid(String uuid) {
-		this.uuid = uuid;
-	}
+  public String getUuid() {
+    return uuid;
+  }
 
-	@Override
-	public String toString() {
-		return "ChannelInfo [allowedGenerations=" + allowedGenerations + ", defaultGenerations=" + defaultGeneration
-				+ ", isDefault=" + isDefault + ", name=" + name + ", uuid=" + uuid + "]";
-	}
+  public void setUuid(String uuid) {
+    this.uuid = uuid;
+  }
 
+  @Override
+  public String toString() {
+    return "ChannelInfo [allowedGenerations="
+        + allowedGenerations
+        + ", defaultGenerations="
+        + defaultGeneration
+        + ", isDefault="
+        + isDefault
+        + ", name="
+        + name
+        + ", uuid="
+        + uuid
+        + "]";
+  }
 }

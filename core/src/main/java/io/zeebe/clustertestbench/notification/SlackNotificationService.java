@@ -20,14 +20,15 @@ public class SlackNotificationService implements NotificationService {
 
   @Override
   public void sendNotification(final String message) throws Exception {
-    ChatPostMessageRequest request = ChatPostMessageRequest.builder().channel(slackChannel)
-        .text(message).build();
-
+    ChatPostMessageRequest request =
+        ChatPostMessageRequest.builder().channel(slackChannel).text(message).build();
 
     ChatPostMessageResponse response = slackClient.chatPostMessage(request);
     if (response.getError() != null) {
-      final var errorMessage = String
-          .format("Expected to send message %s to channel %s, but failed with %s.", message, slackChannel, response.getError());
+      final var errorMessage =
+          String.format(
+              "Expected to send message %s to channel %s, but failed with %s.",
+              message, slackChannel, response.getError());
       throw new Exception(errorMessage);
     }
   }

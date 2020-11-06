@@ -5,32 +5,37 @@ import java.util.Map;
 
 public class CreateGenerationRequest {
 
-	private final String name;
-	private final Map<String, String> versions;
-	private final List<String> upgradeableFrom;
-	
-	public CreateGenerationRequest(String name, Map<String, String> versions, List<String> upgradeableFrom) {
-		this.name = name;
-		this.versions = versions;
-		this.upgradeableFrom = upgradeableFrom;
-	}
+  private final String name;
+  private final Map<String, String> versions;
+  private final List<String> upgradeableFrom;
 
-	public String getName() {
-		return name;
-	}
+  public CreateGenerationRequest(
+      String name, Map<String, String> versions, List<String> upgradeableFrom) {
+    this.name = name;
+    this.versions = versions;
+    this.upgradeableFrom = upgradeableFrom;
+  }
 
-	public Map<String, String> getVersions() {
-		return versions;
-	}
+  public String getName() {
+    return name;
+  }
 
-	public List<String> getUpgradeableFrom() {
-		return upgradeableFrom;
-	}
+  public Map<String, String> getVersions() {
+    return versions;
+  }
 
-	@Override
-	public String toString() {
-		return "CreateGenerationRequest [name=" + name + ", versions=" + versions + ", upgradeableFrom="
-				+ upgradeableFrom + "]";
-	}
-	
+  public List<String> getUpgradeableFrom() {
+    return upgradeableFrom;
+  }
+
+  @Override
+  public String toString() {
+    return "CreateGenerationRequest [name="
+        + name
+        + ", versions="
+        + versions
+        + ", upgradeableFrom="
+        + upgradeableFrom
+        + "]";
+  }
 }

@@ -63,6 +63,7 @@
 		<plugin.version.flakytestextractor>2.0.2</plugin.version.flakytestextractor>
 		<plugin.version.dependency>3.1.2</plugin.version.dependency>
 		<plugin.version.build-helper>3.2.0</plugin.version.build-helper>
+		<plugin.version.fmt>2.9</plugin.version.fmt>
 	</properties>
 
 	<dependencyManagement>
@@ -209,6 +210,19 @@
 	<build>
 		<pluginManagement>
 			<plugins>
+				<!-- Google code format plugin -->
+				<plugin>
+					<groupId>com.coveo</groupId>
+					<artifactId>fmt-maven-plugin</artifactId>
+					<version>${plugin.version.fmt}</version>
+					<executions>
+						<execution>
+							<goals>
+								<goal>format</goal>
+							</goals>
+						</execution>
+					</executions>
+				</plugin>
 			</plugins>
 		</pluginManagement>
 		<plugins>
@@ -272,6 +286,11 @@
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-dependency-plugin</artifactId>
 				<version>${plugin.version.dependency}</version>
+			</plugin>
+
+			<plugin>
+				<groupId>com.coveo</groupId>
+				<artifactId>fmt-maven-plugin</artifactId>
 			</plugin>
 		</plugins>
 	</build>

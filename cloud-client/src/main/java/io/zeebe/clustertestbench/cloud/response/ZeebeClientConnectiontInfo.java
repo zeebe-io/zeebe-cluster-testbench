@@ -6,69 +6,76 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class ZeebeClientConnectiontInfo {
 
-	private String name;
-	
-	@JsonAlias("ZEEBE_ADDRESS")
-	private String zeebeAddress;
+  private String name;
 
-	@JsonAlias("ZEEBE_CLIENT_ID")
-	private String zeebeClientId;
+  @JsonAlias("ZEEBE_ADDRESS")
+  private String zeebeAddress;
 
-	@JsonAlias("ZEEBE_CLIENT_SECRET")
-	private String zeebeClientSecret;
+  @JsonAlias("ZEEBE_CLIENT_ID")
+  private String zeebeClientId;
 
-	@JsonAlias("ZEEBE_AUTHORIZATION_SERVER_URL")
-	private String zeebeAuthorizationServerUrl;
-	
-	public String getName() {
-		return name;
-	}
+  @JsonAlias("ZEEBE_CLIENT_SECRET")
+  private String zeebeClientSecret;
 
-	public void setName(String name) {
-		this.name = name;
-	}
+  @JsonAlias("ZEEBE_AUTHORIZATION_SERVER_URL")
+  private String zeebeAuthorizationServerUrl;
 
-	public String getZeebeAddress() {
-		return zeebeAddress;
-	}
+  public String getName() {
+    return name;
+  }
 
-	public void setZeebeAddress(String zeebeAddress) {
-		this.zeebeAddress = zeebeAddress;
-	}
+  public void setName(String name) {
+    this.name = name;
+  }
 
-	public String getZeebeClientId() {
-		return zeebeClientId;
-	}
+  public String getZeebeAddress() {
+    return zeebeAddress;
+  }
 
-	public void setZeebeClientId(String zeebeClientId) {
-		this.zeebeClientId = zeebeClientId;
-	}
+  public void setZeebeAddress(String zeebeAddress) {
+    this.zeebeAddress = zeebeAddress;
+  }
 
-	public String getZeebeClientSecret() {
-		return zeebeClientSecret;
-	}
+  public String getZeebeClientId() {
+    return zeebeClientId;
+  }
 
-	public void setZeebeClientSecret(String zeebeClientSecret) {
-		this.zeebeClientSecret = zeebeClientSecret;
-	}
+  public void setZeebeClientId(String zeebeClientId) {
+    this.zeebeClientId = zeebeClientId;
+  }
 
-	public String getZeebeAuthorizationServerUrl() {
-		return zeebeAuthorizationServerUrl;
-	}
+  public String getZeebeClientSecret() {
+    return zeebeClientSecret;
+  }
 
-	public void setZeebeAuthorizationServerUrl(String zeebeAuthorizationServerUrl) {
-		this.zeebeAuthorizationServerUrl = zeebeAuthorizationServerUrl;
-	}
-	
-	public String getZeebeAudience() {
-		return zeebeAddress.substring(0, zeebeAddress.lastIndexOf(":"));
-	}
+  public void setZeebeClientSecret(String zeebeClientSecret) {
+    this.zeebeClientSecret = zeebeClientSecret;
+  }
 
-	@Override
-	public String toString() {
-		return "ZeebeClientConnectiontInfo [name=" + name + ", zeebeAddress=" + zeebeAddress + ", zeebeClientId="
-				+ zeebeClientId + ", zeebeClientSecret=" + zeebeClientSecret + ", zeebeAuthorizationServerUrl="
-				+ zeebeAuthorizationServerUrl + "]";
-	}
-	
+  public String getZeebeAuthorizationServerUrl() {
+    return zeebeAuthorizationServerUrl;
+  }
+
+  public void setZeebeAuthorizationServerUrl(String zeebeAuthorizationServerUrl) {
+    this.zeebeAuthorizationServerUrl = zeebeAuthorizationServerUrl;
+  }
+
+  public String getZeebeAudience() {
+    return zeebeAddress.substring(0, zeebeAddress.lastIndexOf(":"));
+  }
+
+  @Override
+  public String toString() {
+    return "ZeebeClientConnectiontInfo [name="
+        + name
+        + ", zeebeAddress="
+        + zeebeAddress
+        + ", zeebeClientId="
+        + zeebeClientId
+        + ", zeebeClientSecret="
+        + zeebeClientSecret
+        + ", zeebeAuthorizationServerUrl="
+        + zeebeAuthorizationServerUrl
+        + "]";
+  }
 }

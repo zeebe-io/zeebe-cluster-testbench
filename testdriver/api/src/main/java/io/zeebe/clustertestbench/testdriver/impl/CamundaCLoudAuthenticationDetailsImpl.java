@@ -5,72 +5,74 @@ import io.zeebe.clustertestbench.testdriver.api.CamundaCloudAuthenticationDetail
 
 public class CamundaCLoudAuthenticationDetailsImpl implements CamundaCloudAuthenticationDetails {
 
-	private String audience;
-	private String authorizationURL;
-	private String clientId;
-	private String clientSecret;
-	private String contactPoint;
+  private String audience;
+  private String authorizationURL;
+  private String clientId;
+  private String clientSecret;
+  private String contactPoint;
 
-	public CamundaCLoudAuthenticationDetailsImpl() {
-	}
+  public CamundaCLoudAuthenticationDetailsImpl() {}
 
-	public CamundaCLoudAuthenticationDetailsImpl(String authorizationURL, String audience, String contactPoint,
-			String clientId, String clientSecret) {
-		this.audience = audience;
-		this.authorizationURL = authorizationURL;
-		this.clientId = clientId;
-		this.clientSecret = clientSecret;
-		this.contactPoint = contactPoint;
-	}
+  public CamundaCLoudAuthenticationDetailsImpl(
+      String authorizationURL,
+      String audience,
+      String contactPoint,
+      String clientId,
+      String clientSecret) {
+    this.audience = audience;
+    this.authorizationURL = authorizationURL;
+    this.clientId = clientId;
+    this.clientSecret = clientSecret;
+    this.contactPoint = contactPoint;
+  }
 
-	@Override
-	public String getAudience() {
-		return audience;
-	}
+  @Override
+  public String getAudience() {
+    return audience;
+  }
 
-	public void setAudience(String audience) {
-		this.audience = audience;
-	}
+  public void setAudience(String audience) {
+    this.audience = audience;
+  }
 
-	@Override
-	public String getAuthorizationURL() {
-		return authorizationURL;
-	}
+  @Override
+  public String getAuthorizationURL() {
+    return authorizationURL;
+  }
 
-	public void setAuthorizationURL(String authorizationURL) {
-		this.authorizationURL = authorizationURL;
-	}
+  public void setAuthorizationURL(String authorizationURL) {
+    this.authorizationURL = authorizationURL;
+  }
 
-	@Override
-	public String getClientId() {
-		return clientId;
-	}
+  @Override
+  public String getClientId() {
+    return clientId;
+  }
 
-	public void setClientId(String clientId) {
-		this.clientId = clientId;
-	}
+  public void setClientId(String clientId) {
+    this.clientId = clientId;
+  }
 
-	@Override
-	public String getClientSecret() {
-		return clientSecret;
-	}
+  @Override
+  public String getClientSecret() {
+    return clientSecret;
+  }
 
-	public void setClientSecret(String clientSecret) {
-		this.clientSecret = clientSecret;
-	}
+  public void setClientSecret(String clientSecret) {
+    this.clientSecret = clientSecret;
+  }
 
-	@Override
-	public String getContactPoint() {
-		return contactPoint;
-	}
+  @Override
+  public String getContactPoint() {
+    return contactPoint;
+  }
 
-	public void setContactPoint(String contactPoint) {
-		this.contactPoint = contactPoint;
-	}
+  public void setContactPoint(String contactPoint) {
+    this.contactPoint = contactPoint;
+  }
 
-	@Override
-	public String toString() {
-		return new ZeebeObjectMapper().toJson(this);
-	}
-
+  @Override
+  public String toString() {
+    return new ZeebeObjectMapper().toJson(this);
+  }
 }
