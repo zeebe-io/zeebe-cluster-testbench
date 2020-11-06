@@ -49,9 +49,9 @@ spec:
           - name: ZCTB_INTERNAL_CLOUD_AUTHENTICATION_SERVER_URL
             value: "https://weblogin.cloud.ultrawombat.com/oauth/token"      
           - name: ZCTB_INTERNAL_CLOUD_API_URL
-            value: "https://console.cloud.dev.ultrawombat.com/"
+            value: "https://console.cloud.ultrawombat.com/"
           - name: ZCTB_INTERNAL_CLOUD_AUDIENCE
-            value: "cloud.dev.ultrawombat.com"
+            value: "cloud.ultrawombat.com"
           - name: ZCTB_INTERNAL_CLOUD_CLIENT_ID
             value: "0Z2Ohfu3lVzDjtv8rYcGRZtUxrKa2Q96"
           - name: ZCTB_INTERNAL_CLOUD_CLIENT_SECRET
