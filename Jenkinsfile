@@ -123,9 +123,10 @@ pipeline {
                 }
     		}
 
+
     		container('gcloud') {
-    			sh '.ci/scripts/prepare-deploy.sh'
-    			sh '.ci/scripts/deploy.sh'
+                sh '.ci/scripts/prepare-deploy.sh'
+                sh '.ci/scripts/deploy.sh'
     		}
     	}
     }

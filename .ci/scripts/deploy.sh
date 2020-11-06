@@ -22,3 +22,8 @@ kubectl apply --namespace=testbench -f core/chaos-workers/chaosWorker.yaml
 
 # trigger restart to load newest version of the image 
 kubectl rollout restart deployment testbench --namespace=testbench
+kubectl rollout restart deployment chaos-worker --namespace=testbench
+
+# wait for pods getting started
+kubectl wait --for=condition=Ready pod -l app=testbench --timeout=180s
+kubectl wait --for=condition=Ready pod -l app=chaos-worker --timeout=180s
