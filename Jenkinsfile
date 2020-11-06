@@ -28,9 +28,10 @@ pipeline {
   }
 
   parameters {
+    booleanParam(name: 'DEPLOY_TO_DEV', defaultValue: false, description: 'Should this version be deployed to dev stage (by default master will deploy to int stage; other branches do not deploy at all)');
     booleanParam(name: 'RELEASE', defaultValue: false, description: 'Build a release from current commit?')
     string(name: 'RELEASE_VERSION', defaultValue: '0.X.0', description: 'Which version to release?')
-    string(name: 'DEVELOPMENT_VERSION', defaultValue: '0.Y.0-SNAPSHOT', description: 'Next development version?')
+    string(name: 'DEVELOPMENT_VERSION', defaultValue: '0.Y.0-SNAPSHOT', description: 'Next development version?')    
   }
 
   stages {
@@ -113,7 +114,16 @@ pipeline {
     }
 
     stage('Deploy') {
-    	when { branch 'master' }
+    	when { 
+    	   anyOf {
+    	       branch 'master'
+    	       expression { params.DEPLOY_TO_DEV }
+    	   } 
+    	}
+    	
+        environment {
+            TAG = getTag()            
+        }
 
     	steps {
     		container('docker') {
@@ -122,8 +132,8 @@ pipeline {
     			 */
 	          	sh 'set +x ; echo ${DOCKER_GCR} | docker login -u _json_key --password-stdin https://gcr.io ; set -x'
 
-    			sh 'docker build -t gcr.io/zeebe-io/zeebe-cluster-testbench:latest .'
-    			sh 'docker push gcr.io/zeebe-io/zeebe-cluster-testbench:latest'
+    			sh "docker build -t gcr.io/zeebe-io/zeebe-cluster-testbench:${env.TAG} ."
+    			sh "docker push gcr.io/zeebe-io/zeebe-cluster-testbench:${env.TAG}"
                 withVault([vaultSecrets: [
                         [path: 'secret/common/ci-zeebe/zeebe-chaos-service-account', secretValues: [
                                 [vaultKey: 'token'],
@@ -131,8 +141,8 @@ pipeline {
                 ]]) {
 
                   dir('core/chaos-workers/') {
-                    sh 'docker build . -t gcr.io/zeebe-io/zeebe-cluster-testbench-chaos:latest --build-arg TOKEN=${token}'
-                    sh 'docker push gcr.io/zeebe-io/zeebe-cluster-testbench-chaos:latest'
+                    sh "docker build . -t gcr.io/zeebe-io/zeebe-cluster-testbench-chaos:${env.TAG} --build-arg TOKEN=${env.token}"
+                    sh "docker push gcr.io/zeebe-io/zeebe-cluster-testbench-chaos:${env.TAG}"
                   }
                 }
     		}
@@ -140,7 +150,7 @@ pipeline {
 
     		container('gcloud') {
                 sh '.ci/scripts/prepare-deploy.sh'
-                sh '.ci/scripts/deploy.sh'
+                sh ".ci/scripts/deploy.sh ${env.TAG}"
     		}
     	}
     }
@@ -201,4 +211,8 @@ pipeline {
         }       
       }
   }
+}
+
+def getTag() {
+    return params.DEPLOY_TO_DEV ? "dev" : "latest"
 }
