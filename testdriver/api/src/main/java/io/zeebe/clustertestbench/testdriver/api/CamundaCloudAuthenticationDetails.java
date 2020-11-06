@@ -2,16 +2,15 @@ package io.zeebe.clustertestbench.testdriver.api;
 
 public interface CamundaCloudAuthenticationDetails {
 
-	String VARIABLE_KEY = "authenticationDetails";
+  String VARIABLE_KEY = "authenticationDetails";
 
-	String getAudience();
+  String getAudience();
 
-	String getAuthorizationURL();
+  String getAuthorizationURL();
 
-	String getClientId();
+  String getClientId();
 
-	String getClientSecret();
+  String getClientSecret();
 
-	String getContactPoint();
-
+  String getContactPoint();
 }

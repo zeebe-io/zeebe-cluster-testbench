@@ -8,5 +8,5 @@ public interface NotificationService {
    * @param message the message which should be sent
    * @throws Exception is thrown when an error happens during sending the given message
    */
-  void sendNotification(String message) throws Exception ;
+  void sendNotification(String message) throws Exception;
 }

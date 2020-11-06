@@ -5,115 +5,131 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class ClusterInfo {
 
-	private ClusterPlanTypeInfo planType;
+  private ClusterPlanTypeInfo planType;
 
-	private K8sContextInfo k8sContext;
+  private K8sContextInfo k8sContext;
 
-	private String uuid;
-	private String ownerId;
-	private String name;
+  private String uuid;
+  private String ownerId;
+  private String name;
 
-	private boolean internal;
+  private boolean internal;
 
-	private GenerationInfo generation;
+  private GenerationInfo generation;
 
-	private ChannelInfo channel;
+  private ChannelInfo channel;
 
-	private ClusterStatus status;
-	
-	private ClusterMetadata metadata;
+  private ClusterStatus status;
 
-	public ClusterPlanTypeInfo getPlanType() {
-		return planType;
-	}
+  private ClusterMetadata metadata;
 
-	public void setPlanType(ClusterPlanTypeInfo planType) {
-		this.planType = planType;
-	}
+  public ClusterPlanTypeInfo getPlanType() {
+    return planType;
+  }
 
-	public K8sContextInfo getK8sContext() {
-		return k8sContext;
-	}
+  public void setPlanType(ClusterPlanTypeInfo planType) {
+    this.planType = planType;
+  }
 
-	public void setK8sContext(K8sContextInfo k8sContext) {
-		this.k8sContext = k8sContext;
-	}
+  public K8sContextInfo getK8sContext() {
+    return k8sContext;
+  }
 
-	public String getUuid() {
-		return uuid;
-	}
+  public void setK8sContext(K8sContextInfo k8sContext) {
+    this.k8sContext = k8sContext;
+  }
 
-	public void setUuid(String uuid) {
-		this.uuid = uuid;
-	}
+  public String getUuid() {
+    return uuid;
+  }
 
-	public String getOwnerId() {
-		return ownerId;
-	}
+  public void setUuid(String uuid) {
+    this.uuid = uuid;
+  }
 
-	public void setOwnerId(String ownerId) {
-		this.ownerId = ownerId;
-	}
+  public String getOwnerId() {
+    return ownerId;
+  }
 
-	public String getName() {
-		return name;
-	}
+  public void setOwnerId(String ownerId) {
+    this.ownerId = ownerId;
+  }
 
-	public void setName(String name) {
-		this.name = name;
-	}
+  public String getName() {
+    return name;
+  }
 
-	public boolean isInternal() {
-		return internal;
-	}
+  public void setName(String name) {
+    this.name = name;
+  }
 
-	public void setInternal(boolean internal) {
-		this.internal = internal;
-	}
+  public boolean isInternal() {
+    return internal;
+  }
 
-	public GenerationInfo getGeneration() {
-		return generation;
-	}
+  public void setInternal(boolean internal) {
+    this.internal = internal;
+  }
 
-	public void setGeneration(GenerationInfo generation) {
-		this.generation = generation;
-	}
+  public GenerationInfo getGeneration() {
+    return generation;
+  }
 
-	public ChannelInfo getChannel() {
-		return channel;
-	}
+  public void setGeneration(GenerationInfo generation) {
+    this.generation = generation;
+  }
 
-	public void setChannel(ChannelInfo channel) {
-		this.channel = channel;
-	}
+  public ChannelInfo getChannel() {
+    return channel;
+  }
 
-	public ClusterStatus getStatus() {
-		return status;
-	}
+  public void setChannel(ChannelInfo channel) {
+    this.channel = channel;
+  }
 
-	public void setStatus(ClusterStatus status) {
-		this.status = status;
-	}
+  public ClusterStatus getStatus() {
+    return status;
+  }
 
-	public ClusterMetadata getMetadata() {
-		return metadata;
-	}
+  public void setStatus(ClusterStatus status) {
+    this.status = status;
+  }
 
-	public void setMetadata(ClusterMetadata metadata) {
-		this.metadata = metadata;
-	}
+  public ClusterMetadata getMetadata() {
+    return metadata;
+  }
 
-	@Override
-	public String toString() {
-		return "ClusterInfo [planType=" + planType + ", k8sContext=" + k8sContext + ", uuid=" + uuid + ", ownerId="
-				+ ownerId + ", name=" + name + ", internal=" + internal + ", generation=" + generation + ", channel="
-				+ channel + ", status=" + status + ", metadata=" + metadata + "]";
-	}
-	
-	/* TODO 
-	 * - field "spec"
-	 **/
-	
-	
+  public void setMetadata(ClusterMetadata metadata) {
+    this.metadata = metadata;
+  }
+
+  @Override
+  public String toString() {
+    return "ClusterInfo [planType="
+        + planType
+        + ", k8sContext="
+        + k8sContext
+        + ", uuid="
+        + uuid
+        + ", ownerId="
+        + ownerId
+        + ", name="
+        + name
+        + ", internal="
+        + internal
+        + ", generation="
+        + generation
+        + ", channel="
+        + channel
+        + ", status="
+        + status
+        + ", metadata="
+        + metadata
+        + "]";
+  }
+
+  /* TODO
+   * - field "spec"
+   **/
 
 }

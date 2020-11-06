@@ -8,63 +8,67 @@ import java.util.function.Supplier;
 
 public class TestTimingContext implements AutoCloseable {
 
-	private final Supplier<Long> timeSupplier;
-	
-	private final long startTime;
-	private long elapsedTime;
-	private long endTime;
+  private final Supplier<Long> timeSupplier;
 
-	private final long maxDuration;
+  private final long startTime;
+  private long elapsedTime;
+  private long endTime;
 
-	private final String errorMessage;
+  private final long maxDuration;
 
-	private final Consumer<String> errorCollector;
+  private final String errorMessage;
 
-	private final Map<String, Object> metaData = new HashMap<>();
+  private final Consumer<String> errorCollector;
 
-	public TestTimingContext(Duration maxTime, String errorMessage, Consumer<String> errorCollector) {
-		this(System::currentTimeMillis, maxTime, errorMessage, errorCollector);
-	}
+  private final Map<String, Object> metaData = new HashMap<>();
 
-	protected TestTimingContext(Supplier<Long> timeSupplier, Duration maxDuration, String errorMessage, Consumer<String> errorCollector) {
-		super();		
-		this.timeSupplier = timeSupplier;
-		this.startTime = timeSupplier.get();
-		this.maxDuration = maxDuration.toMillis();
-		this.errorMessage = errorMessage;
-		this.errorCollector = errorCollector;
-	}
+  public TestTimingContext(Duration maxTime, String errorMessage, Consumer<String> errorCollector) {
+    this(System::currentTimeMillis, maxTime, errorMessage, errorCollector);
+  }
 
-	public long getStartTime() {
-		return startTime;
-	}
+  protected TestTimingContext(
+      Supplier<Long> timeSupplier,
+      Duration maxDuration,
+      String errorMessage,
+      Consumer<String> errorCollector) {
+    super();
+    this.timeSupplier = timeSupplier;
+    this.startTime = timeSupplier.get();
+    this.maxDuration = maxDuration.toMillis();
+    this.errorMessage = errorMessage;
+    this.errorCollector = errorCollector;
+  }
 
-	protected String composeErrorMessage() {
-		StringBuilder errorMessageBuilder = new StringBuilder();
+  public long getStartTime() {
+    return startTime;
+  }
 
-		errorMessageBuilder.append(errorMessage);
-		
-		errorMessageBuilder.append("; elapsedTime: ").append(Duration.ofMillis(elapsedTime));
+  protected String composeErrorMessage() {
+    StringBuilder errorMessageBuilder = new StringBuilder();
 
-		if (!metaData.isEmpty()) {
-			errorMessageBuilder.append("; metaData:").append(metaData);
-		}
-		
-		return errorMessageBuilder.toString();
-	}
+    errorMessageBuilder.append(errorMessage);
 
-	public void putMetaData(String key, Object value) {
-		metaData.put(key, value);
-	}
+    errorMessageBuilder.append("; elapsedTime: ").append(Duration.ofMillis(elapsedTime));
 
-	@Override
-	public void close() {
-		endTime = timeSupplier.get();
-		
-		elapsedTime = endTime - startTime;
-		
-		if (elapsedTime > maxDuration) {
-			errorCollector.accept(composeErrorMessage());
-		}
-	}
+    if (!metaData.isEmpty()) {
+      errorMessageBuilder.append("; metaData:").append(metaData);
+    }
+
+    return errorMessageBuilder.toString();
+  }
+
+  public void putMetaData(String key, Object value) {
+    metaData.put(key, value);
+  }
+
+  @Override
+  public void close() {
+    endTime = timeSupplier.get();
+
+    elapsedTime = endTime - startTime;
+
+    if (elapsedTime > maxDuration) {
+      errorCollector.accept(composeErrorMessage());
+    }
+  }
 }

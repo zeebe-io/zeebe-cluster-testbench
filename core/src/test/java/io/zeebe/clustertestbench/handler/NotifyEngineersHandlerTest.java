@@ -13,11 +13,9 @@ import static org.mockito.Mockito.when;
 import io.zeebe.client.api.command.CompleteJobCommandStep1;
 import io.zeebe.client.api.response.ActivatedJob;
 import io.zeebe.client.api.worker.JobClient;
-import io.zeebe.clustertestbench.handler.NotifyEngineersHandler;
 import io.zeebe.clustertestbench.handler.NotifyEngineersHandler.Input;
 import io.zeebe.clustertestbench.notification.NotificationService;
 import io.zeebe.clustertestbench.testdriver.impl.TestReportDTO;
-
 import java.util.List;
 import java.util.Map;
 import org.junit.jupiter.api.Test;
@@ -30,8 +28,7 @@ public class NotifyEngineersHandlerTest {
     final var simpleNotificationService = new SimpleNotificationService();
     final var jobClientMock = mock(JobClient.class);
     final var mock = mock(CompleteJobCommandStep1.class);
-    when(jobClientMock.newCompleteCommand(anyLong()))
-        .thenReturn(mock);
+    when(jobClientMock.newCompleteCommand(anyLong())).thenReturn(mock);
     final var jobMock = createJobMock();
     final var notifyEngineersWorker = new NotifyEngineersHandler(simpleNotificationService);
 
@@ -49,7 +46,6 @@ public class NotifyEngineersHandlerTest {
         .contains("ERROR");
   }
 
-
   @Test
   public void shouldNotCompleteJobWhenExceptionIsThrownInNotificationService() throws Exception {
     // given
@@ -57,13 +53,13 @@ public class NotifyEngineersHandlerTest {
     doThrow(new Exception()).when(notificationService).sendNotification(anyString());
     final var jobClientMock = mock(JobClient.class);
     final var mock = mock(CompleteJobCommandStep1.class);
-    when(jobClientMock.newCompleteCommand(anyLong()))
-        .thenReturn(mock);
+    when(jobClientMock.newCompleteCommand(anyLong())).thenReturn(mock);
     final var jobMock = createJobMock();
     final var notifyEngineersWorker = new NotifyEngineersHandler(notificationService);
 
     // when
-    assertThatThrownBy(() -> notifyEngineersWorker.handle(jobClientMock, jobMock)).isInstanceOf(Exception.class);
+    assertThatThrownBy(() -> notifyEngineersWorker.handle(jobClientMock, jobMock))
+        .isInstanceOf(Exception.class);
 
     // then
     verify(jobClientMock, never()).newCompleteCommand(anyLong());
