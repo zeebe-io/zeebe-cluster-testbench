@@ -209,7 +209,7 @@ The QA protocol runs all tests. Tests are run on demand (e.g. for a PR merge or 
 
 | Inputs | Description | Type |
 | ------ | ----------- | ---- | 
-| `zeebeImage` | The Zeebe image that shall be tested (fully qualified name, including registry and label) | `String` |
+| `zeebeImage` | The Zeebe image that shall be tested (fully qualified name, including registry and label). *Note* the label/tag must start with a semantic version, otherwise it will be rejected by the backend | `String` |
 | `generationTemplate` | Name of an existing generation that will be used as a template for the generation to be created. The template will serve to identify the versions of Operate and Elasticsearch that Zeebe image shall be paired with | `String` | 
 | `channel` | name of the channel for the tests | `String` | 
 

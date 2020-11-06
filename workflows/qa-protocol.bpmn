@@ -14,6 +14,7 @@
           <zeebe:input source="=&#34;new chaos&#34;" target="region" />
           <zeebe:input source="=[&#34;Development&#34;, &#34;Production - S&#34;, &#34;Production - M&#34;, &#34;Production - L&#34;]" target="clusterPlans" />
           <zeebe:input source="={&#34;steps&#34;:3,&#34;iterations&#34;:10,&#34;maxTimeForIteration&#34;:&#34;PT10S&#34;,&#34;maxTimeForCompleteTest&#34;:&#34;PT2M&#34;}" target="sequentialTestParams" />
+          <zeebe:input source="={}" target="chaosTestParams" />
         </zeebe:ioMapping>
       </bpmn:extensionElements>
       <bpmn:incoming>Flow_0cosuvw</bpmn:incoming>
