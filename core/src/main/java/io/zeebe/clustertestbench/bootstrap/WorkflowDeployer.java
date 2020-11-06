@@ -32,8 +32,8 @@ public class WorkflowDeployer {
 
 				logger.info("Deploying " + workflowName);
 				zeebeClient.newDeployCommand().addResourceFile(workflow.getAbsolutePath()).send().join();
-			} catch (Throwable t) {
-				logger.error(t.getMessage(), t);
+			} catch (Exception e) {
+				logger.error(e.getMessage(), e);
 				success = false;
 			}
 		}

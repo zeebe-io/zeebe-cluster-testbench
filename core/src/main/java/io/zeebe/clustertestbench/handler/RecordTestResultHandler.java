@@ -1,4 +1,4 @@
-package io.zeebe.clustertestbench.worker;
+package io.zeebe.clustertestbench.handler;
 
 import static com.google.api.client.json.jackson2.JacksonFactory.getDefaultInstance;
 
@@ -30,7 +30,7 @@ import io.zeebe.clustertestbench.testdriver.api.TestReport;
 import io.zeebe.clustertestbench.testdriver.api.TestReport.TestResult;
 import io.zeebe.clustertestbench.testdriver.impl.TestReportDTO;
 
-public class RecordTestResultWorker implements JobHandler {
+public class RecordTestResultHandler implements JobHandler {
 
 	private static final DateTimeFormatter INSTANT_FORMATTER = DateTimeFormatter.ofLocalizedDateTime(FormatStyle.SHORT)
 			.withLocale(Locale.US).withZone(ZoneId.systemDefault());
@@ -46,7 +46,7 @@ public class RecordTestResultWorker implements JobHandler {
 
 	private final Sheets service;
 
-	public RecordTestResultWorker(String sheetsApiKeyfileContent, String spreadSheetId)
+	public RecordTestResultHandler(String sheetsApiKeyfileContent, String spreadSheetId)
 			throws IOException, GeneralSecurityException {
 		super();
 		this.sheetsApiKeyFileContent = sheetsApiKeyfileContent;

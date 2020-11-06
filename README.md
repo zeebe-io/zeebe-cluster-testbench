@@ -201,6 +201,19 @@ The following defaults are defined in the process description:
 * `region` 
 * `sequentialTestParams` 
 
+#### QA Protocol
+
+![qa-protocol](docs/assets/qa-protocol.png "QA protocol")
+
+The QA protocol runs all tests. Tests are run on demand (e.g. for a PR merge or to test a release candidate)
+
+| Inputs | Description | Type |
+| ------ | ----------- | ---- | 
+| `zeebeImage` | The Zeebe image that shall be tested (fully qualified name, including registry and label) | `String` |
+| `generationTemplate` | Name of an existing generation that will be used as a template for the generation to be created. The template will serve to identify the versions of Operate and Elasticsearch that Zeebe image shall be paired with | `String` | 
+| `channel` | name of the channel for the tests | `String` | 
+
+
 ### Utility Workflows
 Utility workflows are utilized by the test workflows to perform certain technical tasks
 
@@ -243,6 +256,8 @@ This workflow creates a Zeebe cluster in Camnuda cloud and waits until the clust
 | Record Test Result | `record-test-result` / `record-test-result-job` |`channel`, `clusterPlan`, `region`, `generation`, `clusterId`, `clusterName`, `operateURL`, `testReport` |
 | Notify Engineers | `notify-engineers` / `notify-engineers-job` | `generation`, `clusterPlan`, `clusterName`, `operateURL`, `testReport` |
 | Destroy Zeebe Cluster in Camunda CLoud | `destroy-zeebe-cluster-in-camunda-cloud` / `destroy-zeebe-cluster-in-camunda-cloud-job` | `clusterId` |
+| Create Generation in Camunda Cloud | `create-generation-in-camunda-cloud` / `create-generation-in-camunda-cloud-job` | `zeebeImage`, `generationTemplate`, `channel` | `generation`, `generationUUID` | |
+| Delete Generation in Camunda Cloud | `delete-generation-in-camunda-cloud` / `delete-generation-in-camunda-cloud-job` | `generationUUID` | | |
  
 ### Messages
 | Message | Message Name  | Correlation Key  | 

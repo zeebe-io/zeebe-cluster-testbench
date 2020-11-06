@@ -24,12 +24,12 @@ class ExceptionFilterBuilderTest {
 	@DisplayName("predicate ressource exhausted")
 	class ResourceExhaustedPredicateTest {
 
-		private final Predicate<Throwable> sutPredicate = ExceptionFilterBuilder.RESSOURCE_EXHAUSTED_ERROR_PREDICATE;
+		private final Predicate<Exception> sutPredicate = ExceptionFilterBuilder.RESSOURCE_EXHAUSTED_ERROR_PREDICATE;
 
 		@Test
-		void shouldNotMatchForArbitraryThrowables() {
+		void shouldNotMatchForArbitraryExceptions() {
 			// given
-			Throwable t = new Throwable();
+			Exception t = new Exception();
 
 			// when
 			boolean match = sutPredicate.test(t);
@@ -42,7 +42,7 @@ class ExceptionFilterBuilderTest {
 		@EnumSource(mode = EXCLUDE, names = "RESOURCE_EXHAUSTED")
 		void shouldNotMatchForStatusRuntimeExceptionsThatAreNotRessourceExhasueted(Code code) {
 			// given
-			Throwable t = createNestedStatusRuntimeException(code);
+			Exception t = createNestedStatusRuntimeException(code);
 
 			// when
 			boolean match = sutPredicate.test(t);
@@ -54,7 +54,7 @@ class ExceptionFilterBuilderTest {
 		@Test
 		void shouldMatchForNextedRessourceExhaustedException() {
 			// given
-			Throwable t = createNestedStatusRuntimeException(Code.RESOURCE_EXHAUSTED);
+			Exception t = createNestedStatusRuntimeException(Code.RESOURCE_EXHAUSTED);
 
 			// when
 			boolean match = sutPredicate.test(t);
@@ -68,12 +68,12 @@ class ExceptionFilterBuilderTest {
 	@DisplayName("predicate workflow not found")
 	class WorkflowNotFoundPredicateTest {
 
-		private final Predicate<Throwable> sutPredicate = new WorkflowNotFoundPredicate(TEST_PROCESS_ID);
+		private final Predicate<Exception> sutPredicate = new WorkflowNotFoundPredicate(TEST_PROCESS_ID);
 
 		@Test
-		void shouldNotMatchForArbitraryThrowables() {
+		void shouldNotMatchForArbitraryExceptions() {
 			// given
-			Throwable t = new Throwable();
+			Exception t = new Exception();
 
 			// when
 			boolean match = sutPredicate.test(t);
@@ -85,7 +85,7 @@ class ExceptionFilterBuilderTest {
 		@Test
 		void shouldMatchForDifferentWorkflowMentionedInException() {
 			// given
-			Throwable t = createNestedStatusRuntimeException(Code.NOT_FOUND,
+			Exception t = createNestedStatusRuntimeException(Code.NOT_FOUND,
 					"Command rejected with code 'CREATE_WITH_AWAITING_RESULT': Expected to find workflow definition with process ID 'some-other-workflow', but none found");
 
 			// when
@@ -100,7 +100,7 @@ class ExceptionFilterBuilderTest {
 			// given
 
 			// message as was observed in production
-			Throwable t = createNestedStatusRuntimeException(Code.NOT_FOUND,
+			Exception t = createNestedStatusRuntimeException(Code.NOT_FOUND,
 					"Command rejected with code 'CREATE_WITH_AWAITING_RESULT': Expected to find workflow definition with process ID 'test-workflow', but none found");
 
 			// when
@@ -113,7 +113,7 @@ class ExceptionFilterBuilderTest {
 		@Test
 		void shouldMatchForArbitrayCommands() {
 			// given
-			Throwable t = createNestedStatusRuntimeException(Code.NOT_FOUND,
+			Exception t = createNestedStatusRuntimeException(Code.NOT_FOUND,
 					"Command rejected with code 'SOME_OTHER_COMMAND': Expected to find workflow definition with process ID 'test-workflow', but none found");
 
 			// when
@@ -132,9 +132,9 @@ class ExceptionFilterBuilderTest {
 		@Test
 		void shouldTestPositiveForArbitraryException() {
 			// given
-			Throwable t = new Throwable();
+			Exception t = new Exception();
 
-			Predicate<Throwable> sutExceptionFilter = new ExceptionFilterBuilder().build();
+			Predicate<Exception> sutExceptionFilter = new ExceptionFilterBuilder().build();
 
 			// when
 			boolean actual = sutExceptionFilter.test(t);
@@ -146,9 +146,9 @@ class ExceptionFilterBuilderTest {
 		@Test
 		void shouldTestPositiveForRessourceExhaustedException() {
 			// given
-			Throwable t = createNestedStatusRuntimeException(Code.RESOURCE_EXHAUSTED);
+			Exception t = createNestedStatusRuntimeException(Code.RESOURCE_EXHAUSTED);
 
-			Predicate<Throwable> sutExceptionFilter = new ExceptionFilterBuilder().build();
+			Predicate<Exception> sutExceptionFilter = new ExceptionFilterBuilder().build();
 
 			// when
 			boolean actual = sutExceptionFilter.test(t);
@@ -165,9 +165,9 @@ class ExceptionFilterBuilderTest {
 		@Test
 		void shouldTestPositiveForArbitraryException() {
 			// given
-			Throwable t = new Throwable();
+			Exception t = new Exception();
 
-			Predicate<Throwable> sutExceptionFilter = new ExceptionFilterBuilder().ignoreRessourceExhaustedExceptions()
+			Predicate<Exception> sutExceptionFilter = new ExceptionFilterBuilder().ignoreRessourceExhaustedExceptions()
 					.build();
 
 			// when
@@ -180,9 +180,9 @@ class ExceptionFilterBuilderTest {
 		@Test
 		void shouldTestNegativeForRessourceExhaustedException() {
 			// given
-			Throwable t = createNestedStatusRuntimeException(Code.RESOURCE_EXHAUSTED);
+			Exception t = createNestedStatusRuntimeException(Code.RESOURCE_EXHAUSTED);
 
-			Predicate<Throwable> sutExceptionFilter = new ExceptionFilterBuilder().ignoreRessourceExhaustedExceptions()
+			Predicate<Exception> sutExceptionFilter = new ExceptionFilterBuilder().ignoreRessourceExhaustedExceptions()
 					.build();
 
 			// when
@@ -200,9 +200,9 @@ class ExceptionFilterBuilderTest {
 		@Test
 		void shouldTestPositiveForArbitraryException() {
 			// given
-			Throwable t = new Throwable();
+			Exception t = new Exception();
 
-			Predicate<Throwable> sutExceptionFilter = new ExceptionFilterBuilder()
+			Predicate<Exception> sutExceptionFilter = new ExceptionFilterBuilder()
 					.ignoreWorkflowNotFoundExceptions(TEST_PROCESS_ID).ignoreRessourceExhaustedExceptions().build();
 
 			// when
@@ -215,10 +215,10 @@ class ExceptionFilterBuilderTest {
 		@Test
 		void shouldTestNegativeForWorkflowNotFoundException() {
 			// given
-			Throwable t = createNestedStatusRuntimeException(Code.NOT_FOUND,
+			Exception t = createNestedStatusRuntimeException(Code.NOT_FOUND,
 					"Command rejected with code 'CREATE_WITH_AWAITING_RESULT': Expected to find workflow definition with process ID 'test-workflow', but none found");
 
-			Predicate<Throwable> sutExceptionFilter = new ExceptionFilterBuilder()
+			Predicate<Exception> sutExceptionFilter = new ExceptionFilterBuilder()
 					.ignoreWorkflowNotFoundExceptions(TEST_PROCESS_ID).build();
 
 			// when
@@ -236,9 +236,9 @@ class ExceptionFilterBuilderTest {
 		@Test
 		void shouldTestPositiveForArbitraryException() {
 			// given
-			Throwable t = new Throwable();
+			Exception t = new Exception();
 
-			Predicate<Throwable> sutExceptionFilter = new ExceptionFilterBuilder().ignoreRessourceExhaustedExceptions()
+			Predicate<Exception> sutExceptionFilter = new ExceptionFilterBuilder().ignoreRessourceExhaustedExceptions()
 					.ignoreWorkflowNotFoundExceptions(TEST_PROCESS_ID).ignoreRessourceExhaustedExceptions().build();
 
 			// when
@@ -251,10 +251,10 @@ class ExceptionFilterBuilderTest {
 		@Test
 		void shouldTestNegativeForWorkflowNotFoundException() {
 			// given
-			Throwable t = createNestedStatusRuntimeException(Code.NOT_FOUND,
+			Exception t = createNestedStatusRuntimeException(Code.NOT_FOUND,
 					"Command rejected with code 'CREATE_WITH_AWAITING_RESULT': Expected to find workflow definition with process ID 'test-workflow', but none found");
 
-			Predicate<Throwable> sutExceptionFilter = new ExceptionFilterBuilder()
+			Predicate<Exception> sutExceptionFilter = new ExceptionFilterBuilder()
 					.ignoreWorkflowNotFoundExceptions(TEST_PROCESS_ID).ignoreRessourceExhaustedExceptions().build();
 
 			// when
@@ -267,9 +267,9 @@ class ExceptionFilterBuilderTest {
 		@Test
 		void shouldTestNegativeForResourceExhaustedException() {
 			// given
-			Throwable t = createNestedStatusRuntimeException(Code.RESOURCE_EXHAUSTED);
+			Exception t = createNestedStatusRuntimeException(Code.RESOURCE_EXHAUSTED);
 
-			Predicate<Throwable> sutExceptionFilter = new ExceptionFilterBuilder()
+			Predicate<Exception> sutExceptionFilter = new ExceptionFilterBuilder()
 					.ignoreWorkflowNotFoundExceptions(TEST_PROCESS_ID).ignoreRessourceExhaustedExceptions().build();
 
 			// when
@@ -280,15 +280,15 @@ class ExceptionFilterBuilderTest {
 		}
 	}
 
-	private static Throwable createNestedStatusRuntimeException(Code code) {
+	private static Exception createNestedStatusRuntimeException(Code code) {
 		return createNestedStatusRuntimeException(code, "dummy description");
 	}
 
-	private static Throwable createNestedStatusRuntimeException(Code code, String description) {
+	private static Exception createNestedStatusRuntimeException(Code code, String description) {
 		StatusRuntimeException ressourceExhaustedException = new StatusRuntimeException(
 				Status.fromCode(code).withDescription(description));
 
-		Throwable t = new Throwable(ressourceExhaustedException);
+		Exception t = new Exception(ressourceExhaustedException);
 		return t;
 	}
 }

@@ -21,7 +21,6 @@ class OAuthCredentialsTest {
 		// given
 		String exampleResponse = "{\r\n" + "    \"access_token\": \"lorem ipsum\",\r\n"
 				+ "    \"expires_in\": 86400,\r\n"
-				+ "    \"scope\": \"CreateCluster DeleteCluster GetCluster CreateZeebeClient DeleteZeebeClient GetZeebeClient\",\r\n"
 				+ "    \"token_type\": \"Bearer\"\r\n" + "}";
 
 		// when
@@ -29,8 +28,6 @@ class OAuthCredentialsTest {
 
 		// then
 		assertThat(actual.getTokenType()).isEqualTo("Bearer");
-		assertThat(actual.getScope())
-				.isEqualTo("CreateCluster DeleteCluster GetCluster CreateZeebeClient DeleteZeebeClient GetZeebeClient");
 		assertThat(actual.getAccessToken()).isEqualTo("lorem ipsum");
 		assertThat(actual.getExpiry()).isCloseTo(ZonedDateTime.now().plusSeconds(86400),
 				Assertions.within(1, ChronoUnit.SECONDS));

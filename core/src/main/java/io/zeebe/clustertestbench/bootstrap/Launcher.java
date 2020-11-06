@@ -4,7 +4,6 @@ import static com.google.api.client.googleapis.javanet.GoogleNetHttpTransport.ne
 import static com.google.api.client.json.jackson2.JacksonFactory.getDefaultInstance;
 import static java.lang.Runtime.getRuntime;
 
-import io.zeebe.clustertestbench.notification.SlackNotificationService;
 import java.io.IOException;
 import java.io.StringBufferInputStream;
 import java.security.GeneralSecurityException;
@@ -32,15 +31,20 @@ import io.zeebe.client.impl.oauth.OAuthCredentialsProvider;
 import io.zeebe.client.impl.oauth.OAuthCredentialsProviderBuilder;
 import io.zeebe.clustertestbench.cloud.CloudAPIClient;
 import io.zeebe.clustertestbench.cloud.CloudAPIClientFactory;
-import io.zeebe.clustertestbench.worker.CreateClusterInCamundaCloudWorker;
-import io.zeebe.clustertestbench.worker.DeleteClusterInCamundaCloudWorker;
-import io.zeebe.clustertestbench.worker.GatherInformationAboutClusterInCamundaCloudWorker;
-import io.zeebe.clustertestbench.worker.MapNamesToUUIDsWorker;
-import io.zeebe.clustertestbench.worker.NotifyEngineersWorker;
-import io.zeebe.clustertestbench.worker.QueryClusterStateInCamundaCloudWorker;
-import io.zeebe.clustertestbench.worker.RecordTestResultWorker;
-import io.zeebe.clustertestbench.worker.SequentialTestLauncher;
-import io.zeebe.clustertestbench.worker.WarmUpClusterWorker;
+import io.zeebe.clustertestbench.handler.CreateClusterInCamundaCloudHandler;
+import io.zeebe.clustertestbench.handler.CreateGenerationInCamundaCloudHandler;
+import io.zeebe.clustertestbench.handler.DeleteClusterInCamundaCloudHandler;
+import io.zeebe.clustertestbench.handler.DeleteGenerationInCamundaCloudHandler;
+import io.zeebe.clustertestbench.handler.GatherInformationAboutClusterInCamundaCloudHandler;
+import io.zeebe.clustertestbench.handler.MapNamesToUUIDsWorker;
+import io.zeebe.clustertestbench.handler.NotifyEngineersHandler;
+import io.zeebe.clustertestbench.handler.QueryClusterStateInCamundaCloudHandler;
+import io.zeebe.clustertestbench.handler.RecordTestResultHandler;
+import io.zeebe.clustertestbench.handler.SequentialTestHandler;
+import io.zeebe.clustertestbench.handler.WarmUpClusterHandler;
+import io.zeebe.clustertestbench.internal.cloud.InternalCloudAPIClient;
+import io.zeebe.clustertestbench.internal.cloud.InternalCloudAPIClientFactory;
+import io.zeebe.clustertestbench.notification.SlackNotificationService;
 
 public class Launcher {
 
@@ -49,10 +53,7 @@ public class Launcher {
 	private final Map<String, JobWorker> registeredJobWorkers = new HashMap<>();
 
 	private final String testOrchestrationContactPoint;
-	private final OAuthAuthenticationDetails testOrchestrationAuthenticatonDetails;
-
-	private final String cloudApiUrl;
-	private final OAuthAuthenticationDetails cloudApiAuthenticationDetails;
+	private final OAuthServiceAccountAuthenticationDetails testOrchestrationAuthenticatonDetails;
 
 	private String sheetsApiKeyFileContent;
 	private final String reportSheetID;
@@ -60,18 +61,23 @@ public class Launcher {
 	private final String slackToken;
 	private final String slackChannel;
 
+	private final CloudAPIClient cloudApiClient;
+	private final InternalCloudAPIClient internalCloudApiClient;
+
 	public Launcher(String testOrchestrationContactPoint,
-			OAuthAuthenticationDetails testOrchestrationAuthenticatonDetails, String cloudApiUrl,
-			OAuthAuthenticationDetails cloudApiAuthenticationDetails, String sheetsApiKeyfileContent,
+			OAuthServiceAccountAuthenticationDetails testOrchestrationAuthenticatonDetails, String cloudApiUrl,
+			OAuthServiceAccountAuthenticationDetails cloudApiAuthenticationDetails, String internalCloudApiUrl,
+			OAuthUserAccountAuthenticationDetails internalCloudApiAuthenticationDetails, String sheetsApiKeyfileContent,
 			String reportSheetID, String slackToken, String slackChannel) {
 		this.testOrchestrationContactPoint = testOrchestrationContactPoint;
 		this.testOrchestrationAuthenticatonDetails = testOrchestrationAuthenticatonDetails;
-		this.cloudApiUrl = cloudApiUrl;
-		this.cloudApiAuthenticationDetails = cloudApiAuthenticationDetails;
 		this.sheetsApiKeyFileContent = sheetsApiKeyfileContent;
 		this.reportSheetID = reportSheetID;
 		this.slackToken = slackToken;
 		this.slackChannel = slackChannel;
+
+		cloudApiClient = createCloudApiClient(cloudApiUrl, cloudApiAuthenticationDetails);
+		internalCloudApiClient = createInternalCloudApiClient(internalCloudApiUrl, internalCloudApiAuthenticationDetails);
 	}
 
 	public void launch() throws IOException {
@@ -112,6 +118,7 @@ public class Launcher {
 	private void performSelfTest() {
 		testConnectionToOrchestrationCluster();
 		testConnectionToCloudApi();
+		testConnectionToInternalCloudApi();
 		testConnectionToSlack();
 		testConnectionToGoogleSheets();
 	}
@@ -124,28 +131,53 @@ public class Launcher {
 			client.newTopologyRequest().send().join();
 
 			logger.info("Selftest - Successfully established connection to test orchestration cluster");
-		} catch (Throwable t) {
-			logger.error("Selftest - Unable to establish connection to test orchestration cluster", t);
+		} catch (Exception e) {
+			logger.error("Selftest - Unable to establish connection to test orchestration cluster", e);
 		}
 	}
 
 	private void testConnectionToCloudApi() {
 		try {
-			final OAuthAuthenticationDetails authenticationDetails = cloudApiAuthenticationDetails;
-
-			final String cloudApiAuthenticationServerUrl = authenticationDetails.getServerURL();
-			final String cloudApiAudience = authenticationDetails.getAudience();
-			final String cloudApiClientId = authenticationDetails.getClientId();
-			final String cloudApiClientSecret = authenticationDetails.getClientSecret();
-
-			CloudAPIClient client = new CloudAPIClientFactory().createCloudAPIClient(cloudApiUrl,
-					cloudApiAuthenticationServerUrl, cloudApiAudience, cloudApiClientId, cloudApiClientSecret);
-			client.getParameters();
+			cloudApiClient.getParameters();
 
 			logger.info("Selftest - Successfully established connection to cloud API");
-		} catch (Throwable t) {
-			logger.error("Selftest - Unable to establish connection to cloud API", t);
+		} catch (Exception e) {
+			logger.error("Selftest - Unable to establish connection to cloud API", e);
 		}
+	}
+
+	private void testConnectionToInternalCloudApi() {
+		try {
+			internalCloudApiClient.listGenerationInfos();
+
+			logger.info("Selftest - Successfully established connection to internal cloud API");
+		} catch (Exception e) {
+			logger.error("Selftest - Unable to establish connection to internal cloud API", e);
+		}
+	}
+	
+	private CloudAPIClient createCloudApiClient(final String cloudApiUrl,
+			final OAuthServiceAccountAuthenticationDetails authenticationDetails) {
+		final String authenticationServerUrl = authenticationDetails.getServerURL();
+		final String audience = authenticationDetails.getAudience();
+		final String clientId = authenticationDetails.getClientId();
+		final String clientSecret = authenticationDetails.getClientSecret();
+
+
+		return new CloudAPIClientFactory().createCloudAPIClient(cloudApiUrl, authenticationServerUrl, audience, clientId, clientSecret);
+	}
+
+	private InternalCloudAPIClient createInternalCloudApiClient(final String internalCloudApiUrl,
+			final OAuthUserAccountAuthenticationDetails authenticationDetails) {
+		final String authenticationServerUrl = authenticationDetails.getServerURL();
+		final String audience = authenticationDetails.getAudience();
+		final String clientId = authenticationDetails.getClientId();
+		final String clientSecret = authenticationDetails.getClientSecret();
+		final String username = authenticationDetails.getUsername();
+		final String password = authenticationDetails.getPassword();
+
+		return new InternalCloudAPIClientFactory().createCloudAPIClient(internalCloudApiUrl,
+				authenticationServerUrl, audience, clientId, clientSecret, username, password);
 	}
 
 	private void testConnectionToSlack() {
@@ -163,8 +195,8 @@ public class Launcher {
 			} else {
 				logger.error("Selftest - Wrong respponse when establishing connection to Slack: " + returnedFoo);
 			}
-		} catch (Throwable t) {
-			logger.error("Selftest - Unable to establish connection to Slack", t);
+		} catch (Exception e) {
+			logger.error("Selftest - Unable to establish connection to Slack", e);
 		}
 	}
 
@@ -180,52 +212,45 @@ public class Launcher {
 
 			request.execute();
 			logger.info("Selftest - Successfully established connection to Google Sheets");
-		} catch (Throwable t) {
-			logger.error("Selftest - Unable to establish connection to Google Sheets", t);
+		} catch (Exception e) {
+			logger.error("Selftest - Unable to establish connection to Google Sheets", e);
 		}
 	}
 
 	private void registerWorkers(final ZeebeClient client) {
-		final OAuthAuthenticationDetails authenticationDetails = cloudApiAuthenticationDetails;
-
-		final String cloudApiAuthenticationServerUrl = authenticationDetails.getServerURL();
-		final String cloudApiAudience = authenticationDetails.getAudience();
-		final String cloudApiClientId = authenticationDetails.getClientId();
-		final String cloudApiClientSecret = authenticationDetails.getClientSecret();
-
 		registerWorker(
-				client, "map-names-to-uuids-job", new MapNamesToUUIDsWorker(cloudApiUrl,
-						cloudApiAuthenticationServerUrl, cloudApiAudience, cloudApiClientId, cloudApiClientSecret),
+				client, "map-names-to-uuids-job", new MapNamesToUUIDsWorker(cloudApiClient),
 				Duration.ofSeconds(10));
 		registerWorker(
-				client, "create-zeebe-cluster-in-camunda-cloud-job", new CreateClusterInCamundaCloudWorker(cloudApiUrl,
-						cloudApiAuthenticationServerUrl, cloudApiAudience, cloudApiClientId, cloudApiClientSecret),
+				client, "create-zeebe-cluster-in-camunda-cloud-job", new CreateClusterInCamundaCloudHandler(cloudApiClient),
 				Duration.ofMinutes(1));
 		registerWorker(client, "query-zeebe-cluster-state-in-camunda-cloud-job",
-				new QueryClusterStateInCamundaCloudWorker(cloudApiUrl, cloudApiAuthenticationServerUrl,
-						cloudApiAudience, cloudApiClientId, cloudApiClientSecret),
+				new QueryClusterStateInCamundaCloudHandler(cloudApiClient),
 				Duration.ofSeconds(10));
 		registerWorker(client, "gather-information-about-cluster-in-camunda-cloud-job",
-				new GatherInformationAboutClusterInCamundaCloudWorker(cloudApiUrl, cloudApiAuthenticationServerUrl,
-						cloudApiAudience, cloudApiClientId, cloudApiClientSecret),
+				new GatherInformationAboutClusterInCamundaCloudHandler(cloudApiClient),
 				Duration.ofSeconds(10));
-		registerWorker(client, "warm-up-cluster-job", new WarmUpClusterWorker(), Duration.ofMinutes(3));
+		registerWorker(client, "warm-up-cluster-job", new WarmUpClusterHandler(), Duration.ofMinutes(3));
 
-		registerWorker(client, "run-sequential-test-job", new SequentialTestLauncher(), Duration.ofMinutes(30));
+		registerWorker(client, "run-sequential-test-job", new SequentialTestHandler(), Duration.ofMinutes(30));
 
 		try {
 			registerWorker(client, "record-test-result-job",
-					new RecordTestResultWorker(sheetsApiKeyFileContent, reportSheetID), Duration.ofSeconds(10));
+					new RecordTestResultHandler(sheetsApiKeyFileContent, reportSheetID), Duration.ofSeconds(10));
 		} catch (IOException | GeneralSecurityException e) {
 			logger.error("Exception while creating and registering worker for 'record-test-result-job'", e);
 		}
 
 		final var slackNotificationService = new SlackNotificationService(slackToken, slackChannel);
-		registerWorker(client, "notify-engineers-job", new NotifyEngineersWorker(slackNotificationService), Duration.ofSeconds(10));
+		registerWorker(client, "notify-engineers-job", new NotifyEngineersHandler(slackNotificationService), Duration.ofSeconds(10));
 		registerWorker(
-				client, "destroy-zeebe-cluster-in-camunda-cloud-job", new DeleteClusterInCamundaCloudWorker(cloudApiUrl,
-						cloudApiAuthenticationServerUrl, cloudApiAudience, cloudApiClientId, cloudApiClientSecret),
+				client, "destroy-zeebe-cluster-in-camunda-cloud-job", new DeleteClusterInCamundaCloudHandler(cloudApiClient),
 				Duration.ofSeconds(10));
+
+		registerWorker(client, "create-generation-in-camunda-cloud-job",
+				new CreateGenerationInCamundaCloudHandler(internalCloudApiClient), Duration.ofSeconds(10));
+		registerWorker(client, "delete-generation-in-camunda-cloud-job",
+				new DeleteGenerationInCamundaCloudHandler(internalCloudApiClient), Duration.ofSeconds(10));
 	}
 
 	private void registerWorker(ZeebeClient client, String jobType, JobHandler jobHandler, Duration timeout) {
@@ -240,7 +265,7 @@ public class Launcher {
 	}
 
 	private OAuthCredentialsProvider buildCredentialsProvider() {
-		final OAuthAuthenticationDetails authenticationDetails = testOrchestrationAuthenticatonDetails;
+		final OAuthServiceAccountAuthenticationDetails authenticationDetails = testOrchestrationAuthenticatonDetails;
 
 		if (authenticationDetails.getServerURL() == null) {
 			// use default server

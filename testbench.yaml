@@ -46,6 +46,26 @@ spec:
               secretKeyRef:
                 name: testbench-secrets
                 key: cloudClientSecret
+          - name: ZCTB_INTERNAL_CLOUD_AUTHENTICATION_SERVER_URL
+            value: "https://weblogin.cloud.ultrawombat.com/oauth/token"      
+          - name: ZCTB_INTERNAL_CLOUD_API_URL
+            value: "https://console.cloud.dev.ultrawombat.com/"
+          - name: ZCTB_INTERNAL_CLOUD_AUDIENCE
+            value: "cloud.dev.ultrawombat.com"
+          - name ZCTB_INTERNAL_CLOUD_CLIENT_ID
+            value: "0Z2Ohfu3lVzDjtv8rYcGRZtUxrKa2Q96"
+          - name ZCTB_INTERNAL_CLOUD_CLIENT_SECRET
+	        valueFrom:
+	          secretKeyRef:
+	            name: testbench-secrets
+	            key: internalCloudClientSecret
+	      - name ZCTB_INTERNAL_CLOUD_USERNAME
+	        value: "zeebe@camunda.com"
+	      - name ZCTB_INTERNAL_CLOUD_PASSWORD
+	        valueFrom:
+	          secretKeyRef:
+	            name: testbench-secrets
+	            key: internalCloudPassword            
           - name: ZCTB_SHEETS_API_KEYFILE_CONTENT      
             valueFrom:
               secretKeyRef:

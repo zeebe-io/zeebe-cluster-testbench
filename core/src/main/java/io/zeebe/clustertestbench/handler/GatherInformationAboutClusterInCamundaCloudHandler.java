@@ -1,26 +1,23 @@
-package io.zeebe.clustertestbench.worker;
+package io.zeebe.clustertestbench.handler;
 
 import io.zeebe.client.api.response.ActivatedJob;
 import io.zeebe.client.api.worker.JobClient;
 import io.zeebe.client.api.worker.JobHandler;
 import io.zeebe.clustertestbench.cloud.CloudAPIClient;
-import io.zeebe.clustertestbench.cloud.CloudAPIClientFactory;
 
-public class GatherInformationAboutClusterInCamundaCloudWorker implements JobHandler {
+public class GatherInformationAboutClusterInCamundaCloudHandler implements JobHandler {
 
-	private final CloudAPIClient cloudClient;
+	private final CloudAPIClient cloudApiClient;
 
-	public GatherInformationAboutClusterInCamundaCloudWorker(String cloudApiUrl, String cloudApiAuthenticationServerURL,
-			String cloudApiAudience, String cloudApiClientId, String cloudApiClientSecret) {
-		this.cloudClient = new CloudAPIClientFactory().createCloudAPIClient(cloudApiUrl,
-				cloudApiAuthenticationServerURL, cloudApiAudience, cloudApiClientId, cloudApiClientSecret);
+	public GatherInformationAboutClusterInCamundaCloudHandler(CloudAPIClient cloudApiClient) {
+		this.cloudApiClient = cloudApiClient;
 	}
 
 	@Override
 	public void handle(JobClient client, ActivatedJob job) throws Exception {
 		final Input input = job.getVariablesAsType(Input.class);
 
-		String operateURL = cloudClient.getClusterInfo(input.getClusterId()).getStatus().getOperateUrl();
+		String operateURL = cloudApiClient.getClusterInfo(input.getClusterId()).getStatus().getOperateUrl();
 
 		client.newCompleteCommand(job.getKey()).variables(new Output(operateURL)).send();
 	}

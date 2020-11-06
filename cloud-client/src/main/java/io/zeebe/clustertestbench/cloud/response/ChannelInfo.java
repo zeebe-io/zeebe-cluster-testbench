@@ -1,5 +1,6 @@
 package io.zeebe.clustertestbench.cloud.response;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonAlias;
@@ -8,7 +9,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class ChannelInfo {
 
-	private List<GenerationInfo> allowedGenerations;
+	private List<GenerationInfo> allowedGenerations = new ArrayList();
 
 	private GenerationInfo defaultGeneration;
 

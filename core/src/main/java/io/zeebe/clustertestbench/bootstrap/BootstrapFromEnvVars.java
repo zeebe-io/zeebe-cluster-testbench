@@ -1,6 +1,5 @@
 package io.zeebe.clustertestbench.bootstrap;
 
-import java.net.URL;
 import java.util.Map;
 
 import org.slf4j.Logger;
@@ -16,15 +15,14 @@ public class BootstrapFromEnvVars {
 	private static final String PREFIX = "ZCTB_"; // "Zeebe Cluster Test Bench"
 
 	public static void main(String[] args) {
-		logger.info( "Bootstrapper starting");
-		
+		logger.info("Bootstrapper starting");
+
 		try {
+			final String authenticationServerUrl = getEnvironmentvariable("AUTHENTICATION_SERVER_URL", true);
+			String audience = getEnvironmentvariable("AUDIENCE", true);
 
 			// test orchestration Zeebe cluster
 			final String contactPoint = getEnvironmentvariable("CONTACT_POINT", false);
-
-			final String authenticationServerUrl = getEnvironmentvariable("AUTHENTICATION_SERVER_URL", true);
-			String audience = getEnvironmentvariable("AUDIENCE", true);
 
 			if (audience == null) {
 				audience = contactPoint.substring(0, contactPoint.lastIndexOf(":"));
@@ -33,7 +31,7 @@ public class BootstrapFromEnvVars {
 			final String clientId = getEnvironmentvariable("CLIENT_ID", false);
 			final String clientSecret = getEnvironmentvariable("CLIENT_SECRET", false);
 
-			final OAuthAuthenticationDetails testOrchestrationAuthenticatonDetails = new OAuthAuthenticationDetails(
+			final OAuthServiceAccountAuthenticationDetails testOrchestrationAuthenticatonDetails = new OAuthServiceAccountAuthenticationDetails(
 					authenticationServerUrl, audience, clientId, clientSecret);
 
 			// cloud API
@@ -45,20 +43,35 @@ public class BootstrapFromEnvVars {
 			final String cloudApiClientId = getEnvironmentvariable("CLOUD_CLIENT_ID", false);
 			final String cloudApiClientSecret = getEnvironmentvariable("CLOUD_CLIENT_SECRET", false);
 
-			final OAuthAuthenticationDetails cloudApiAuthenticationDetails = new OAuthAuthenticationDetails(
+			final OAuthServiceAccountAuthenticationDetails cloudApiAuthenticationDetails = new OAuthServiceAccountAuthenticationDetails(
 					cloudApiAuthenticationServerUrl, cloudApiAudience, cloudApiClientId, cloudApiClientSecret);
+
+			// internal cloud APi
+			final String internalCloudApiAuthenticationServerUrl = getEnvironmentvariable("INTERNAL_CLOUD_AUTHENTICATION_SERVER_URL",
+					false);
+			final String inernalCloudApiUrl = getEnvironmentvariable("INTERNAL_CLOUD_API_URL", false);
+			final String internalCloudApiAudience = getEnvironmentvariable("INTERNAL_CLOUD_AUDIENCE", false);
+			final String internalCloudApiClientId = getEnvironmentvariable("INTERNAL_CLOUD_CLIENT_ID", false);
+			final String internalCloudApiClientSecret = getEnvironmentvariable("INTERNAL_CLOUD_CLIENT_SECRET", false);
+			final String internalCloudApiUsername = getEnvironmentvariable("INTERNAL_CLOUD_USERNAME", false);
+			final String internalCloudApiPassword = getEnvironmentvariable("INTERNAL_CLOUD_PASSWORD", false);
+
+			final OAuthUserAccountAuthenticationDetails internalCloudApiAuthenticationDetails = new OAuthUserAccountAuthenticationDetails(
+					internalCloudApiAuthenticationServerUrl, internalCloudApiAudience, internalCloudApiClientId,
+					internalCloudApiClientSecret, internalCloudApiUsername, internalCloudApiPassword);
 
 			// test report sheets
 			final String sheetsApiKeyfileContent = getEnvironmentvariable("SHEETS_API_KEYFILE_CONTENT", false);
 			final String reportSheetID = getEnvironmentvariable("REPORT_SHEET_ID", false);
-			
+
 			final String slackToken = getEnvironmentvariable("SLACK_TOKEN", false);
 			final String slackChannel = getEnvironmentvariable("SLACK_CHANNEL", false);
 
 			new Launcher(contactPoint, testOrchestrationAuthenticatonDetails, cloudApiUrl,
-					cloudApiAuthenticationDetails, sheetsApiKeyfileContent, reportSheetID, slackToken, slackChannel).launch();
-		} catch (Throwable t) {
-			logger.error(t.getMessage(), t);
+					cloudApiAuthenticationDetails, inernalCloudApiUrl, internalCloudApiAuthenticationDetails,
+					sheetsApiKeyfileContent, reportSheetID, slackToken, slackChannel).launch();
+		} catch (Exception e) {
+			logger.error(e.getMessage(), e);
 			System.exit(-1);
 		}
 	}

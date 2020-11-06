@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+
+	<parent>
+		<groupId>io.zeebe</groupId>
+		<artifactId>zeebe-cluster-testbench</artifactId>
+		<version>2.0.0-SNAPSHOT</version>
+		<!-- do not remove empty tag - http://jira.codehaus.org/browse/MNG-4687 -->
+		<relativePath>..</relativePath>
+	</parent>
+
+	<artifactId>zeebe-cluster-testbench-internal-cloud-client</artifactId>
+	<packaging>jar</packaging>
+
+	<name>Zeebe Cluster Testbench - Internal Camunda Cloud Client</name>
+	<!-- Note that this project implements a client for internal Camunda Cloud 
+		services. These internal services are not officially supported and subject 
+		to change without notice. It is strongly discouraged to depend on this project. -->
+
+	<dependencies>
+		<dependency>
+			<groupId>io.zeebe</groupId>
+			<artifactId>zeebe-cluster-testbench-cloud-client</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>org.jboss.resteasy</groupId>
+			<artifactId>resteasy-client</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>org.jboss.resteasy</groupId>
+			<artifactId>resteasy-jackson2-provider</artifactId>
+		</dependency>
+	</dependencies>
+
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-jar-plugin</artifactId>
+				<version>2.4</version>
+				<executions>
+					<execution>
+						<goals>
+							<goal>test-jar</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+		</plugins>
+	</build>
+
+
+</project>

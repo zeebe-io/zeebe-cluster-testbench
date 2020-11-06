@@ -2,14 +2,13 @@ package io.zeebe.clustertestbench.cloud.oauth;
 
 import java.time.Instant;
 import java.time.ZonedDateTime;
-import java.time.format.DateTimeFormatter;
-import java.util.Objects;
 
 import com.fasterxml.jackson.annotation.JsonAlias;
-import com.fasterxml.jackson.annotation.JsonGetter;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonSetter;
 
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class OAuthCredentials {
 
 	@JsonAlias({ "accesstoken", "access_token" })
@@ -19,8 +18,6 @@ public class OAuthCredentials {
 
 	@JsonAlias({ "tokentype", "token_type" })
 	private String tokenType;
-
-	private String scope;
 
 	public OAuthCredentials() {
 	}
@@ -39,10 +36,6 @@ public class OAuthCredentials {
 		return tokenType;
 	}
 
-	public String getScope() {
-		return scope;
-	}
-	
 	public ZonedDateTime getExpiry() {
 		return expiry;
 	}
@@ -68,7 +61,6 @@ public class OAuthCredentials {
 		int result = 1;
 		result = prime * result + ((accessToken == null) ? 0 : accessToken.hashCode());
 		result = prime * result + ((expiry == null) ? 0 : expiry.hashCode());
-		result = prime * result + ((scope == null) ? 0 : scope.hashCode());
 		result = prime * result + ((tokenType == null) ? 0 : tokenType.hashCode());
 		return result;
 	}
@@ -92,11 +84,6 @@ public class OAuthCredentials {
 				return false;
 		} else if (!expiry.equals(other.expiry))
 			return false;
-		if (scope == null) {
-			if (other.scope != null)
-				return false;
-		} else if (!scope.equals(other.scope))
-			return false;
 		if (tokenType == null) {
 			if (other.tokenType != null)
 				return false;
@@ -107,8 +94,7 @@ public class OAuthCredentials {
 
 	@Override
 	public String toString() {
-		return "OAuthCredentials [accessToken=" + accessToken + ", expiry=" + expiry + ", tokenType=" + tokenType
-				+ ", scope=" + scope + "]";
+		return "OAuthCredentials [accessToken=" + accessToken + ", expiry=" + expiry + ", tokenType=" + tokenType + "]";
 	}
 
 }

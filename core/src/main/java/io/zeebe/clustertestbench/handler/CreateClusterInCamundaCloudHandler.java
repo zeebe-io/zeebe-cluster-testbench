@@ -1,4 +1,4 @@
-package io.zeebe.clustertestbench.worker;
+package io.zeebe.clustertestbench.handler;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -9,7 +9,6 @@ import io.zeebe.client.api.response.ActivatedJob;
 import io.zeebe.client.api.worker.JobClient;
 import io.zeebe.client.api.worker.JobHandler;
 import io.zeebe.clustertestbench.cloud.CloudAPIClient;
-import io.zeebe.clustertestbench.cloud.CloudAPIClientFactory;
 import io.zeebe.clustertestbench.cloud.request.CreateClusterRequest;
 import io.zeebe.clustertestbench.cloud.request.CreateZeebeClientRequest;
 import io.zeebe.clustertestbench.cloud.response.CreateClusterResponse;
@@ -18,18 +17,16 @@ import io.zeebe.clustertestbench.cloud.response.ZeebeClientConnectiontInfo;
 import io.zeebe.clustertestbench.testdriver.api.CamundaCloudAuthenticationDetails;
 import io.zeebe.clustertestbench.testdriver.impl.CamundaCLoudAuthenticationDetailsImpl;
 
-public class CreateClusterInCamundaCloudWorker implements JobHandler {
+public class CreateClusterInCamundaCloudHandler implements JobHandler {
 
-	private static final Logger logger = LoggerFactory.getLogger(CreateClusterInCamundaCloudWorker.class);
+	private static final Logger logger = LoggerFactory.getLogger(CreateClusterInCamundaCloudHandler.class);
 
 	private static final RandomNameGenerator NAME_GENRATOR = new RandomNameGenerator();
 
-	private final CloudAPIClient cloudClient;
+	private final CloudAPIClient cloudApiClient;
 
-	public CreateClusterInCamundaCloudWorker(String cloudApiUrl, String cloudApiAuthenticationServerURL,
-			String cloudApiAudience, String cloudApiClientId, String cloudApiClientSecret) {
-		this.cloudClient = new CloudAPIClientFactory().createCloudAPIClient(cloudApiUrl,
-				cloudApiAuthenticationServerURL, cloudApiAudience, cloudApiClientId, cloudApiClientSecret);
+	public CreateClusterInCamundaCloudHandler(final CloudAPIClient cloudApiClient) {
+		this.cloudApiClient = cloudApiClient;
 	}
 
 	@Override
@@ -39,24 +36,24 @@ public class CreateClusterInCamundaCloudWorker implements JobHandler {
 		String name = NAME_GENRATOR.next();
 
 		logger.info("Creating cluster" + name);
-		CreateClusterResponse createClusterRepoonse = cloudClient.createCluster(new CreateClusterRequest(name,
+		CreateClusterResponse createClusterRepoonse = cloudApiClient.createCluster(new CreateClusterRequest(name,
 				input.getClusterPlanUUID(), input.getChannelUUID(), input.getGenerationUUID(), input.getRegionUUID()));
 
 		String clusterId = createClusterRepoonse.getClusterId();
 
 		try {
-			CreateZeebeClientResponse createZeebeClientResponse = cloudClient.createZeebeClient(clusterId,
+			CreateZeebeClientResponse createZeebeClientResponse = cloudApiClient.createZeebeClient(clusterId,
 					new CreateZeebeClientRequest(name + "_client"));
 
-			ZeebeClientConnectiontInfo connectionInfo = cloudClient.getZeebeClientInfo(clusterId,
+			ZeebeClientConnectiontInfo connectionInfo = cloudApiClient.getZeebeClientInfo(clusterId,
 					createZeebeClientResponse.getClientId());
 
 			client.newCompleteCommand(job.getKey()).variables(new Output(connectionInfo, name, clusterId)).send();
-		} catch (Throwable t) {
-			cloudClient.deleteCluster(clusterId);
+		} catch (Exception e) {
+			cloudApiClient.deleteCluster(clusterId);
 
 			client.newFailCommand(job.getKey()).retries(job.getRetries() - 1)
-					.errorMessage("Error while creating stack trace: " + t.getMessage());
+					.errorMessage("Error while creating stack trace: " + e.getMessage());
 		}
 	}
 

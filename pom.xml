@@ -1,12 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
 	<groupId>io.zeebe</groupId>
 	<artifactId>zeebe-cluster-testbench</artifactId>
-	<version>1.0.1-SNAPSHOT</version>
+	<version>2.0.0-SNAPSHOT</version>
 	<packaging>pom</packaging>
 
 	<name>Zeebe Cluster Testbench</name>
@@ -32,9 +34,10 @@
 	<modules>
 		<module>core</module>
 		<module>cloud-client</module>
+		<module>internal-cloud-client</module>
 		<module>testdriver/api</module>
 		<module>testdriver/sequential</module>
-        <module>integration-tests</module>
+		<module>integration-tests</module>
 	</modules>
 
 	<properties>
@@ -52,6 +55,7 @@
 		<version.workflowgenerator>1.0.1</version.workflowgenerator>
 		<version.jackson>2.11.3</version.jackson>
 		<version.mockito>3.6.0</version.mockito>
+		<version.resteasy>4.5.8.Final</version.resteasy>
 
 		<plugin.version.surefire>3.0.0-M5</plugin.version.surefire>
 		<plugin.version.javadoc>3.2.0</plugin.version.javadoc>
@@ -75,6 +79,17 @@
 			</dependency>
 			<dependency>
 				<groupId>io.zeebe</groupId>
+				<artifactId>zeebe-cluster-testbench-internal-cloud-client</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>io.zeebe</groupId>
+				<artifactId>zeebe-cluster-testbench-internal-cloud-client</artifactId>
+				<type>test-jar</type>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>io.zeebe</groupId>
 				<artifactId>zeebe-cluster-testbench-testdriver-sequential</artifactId>
 				<version>${project.version}</version>
 			</dependency>
@@ -83,7 +98,7 @@
 				<artifactId>zeebe-cluster-testbench-testdriver-api</artifactId>
 				<version>${project.version}</version>
 			</dependency>
-			
+
 			<dependency>
 				<groupId>io.zeebe</groupId>
 				<artifactId>zeebe-client-java</artifactId>
@@ -138,7 +153,19 @@
 				<artifactId>jackson-databind</artifactId>
 				<version>${version.jackson}</version>
 			</dependency>
-			
+
+			<dependency>
+				<groupId>org.jboss.resteasy</groupId>
+				<artifactId>resteasy-client</artifactId>
+				<version>${version.resteasy}</version>
+			</dependency>
+
+			<dependency>
+				<groupId>org.jboss.resteasy</groupId>
+				<artifactId>resteasy-jackson2-provider</artifactId>
+				<version>${version.resteasy}</version>
+			</dependency>
+
 			<dependency>
 				<groupId>org.junit</groupId>
 				<artifactId>junit-bom</artifactId>

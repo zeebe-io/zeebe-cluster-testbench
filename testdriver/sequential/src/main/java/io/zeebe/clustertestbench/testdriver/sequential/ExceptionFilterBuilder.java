@@ -10,7 +10,7 @@ import io.grpc.StatusRuntimeException;
 
 public class ExceptionFilterBuilder {
 
-	protected static final Predicate<Throwable> RESSOURCE_EXHAUSTED_ERROR_PREDICATE = (t) -> {
+	protected static final Predicate<Exception> RESSOURCE_EXHAUSTED_ERROR_PREDICATE = (t) -> {
 		if (t.getCause() instanceof StatusRuntimeException
 				&& ((StatusRuntimeException) t.getCause()).getStatus().getCode() == Code.RESOURCE_EXHAUSTED) {
 			return true;
@@ -19,7 +19,7 @@ public class ExceptionFilterBuilder {
 		}
 	};
 
-	private Predicate<Throwable> exceptionPredicate = (t) -> true;
+	private Predicate<Exception> exceptionPredicate = (t) -> true;
 
 	public ExceptionFilterBuilder() {
 	}
@@ -37,7 +37,7 @@ public class ExceptionFilterBuilder {
 		return this;
 	}
 	
-	private void appendAndNotTerm(Predicate<Throwable> term) {
+	private void appendAndNotTerm(Predicate<Exception> term) {
 		exceptionPredicate = exceptionPredicate.and(not(term));
 	}
 
@@ -47,11 +47,11 @@ public class ExceptionFilterBuilder {
 	 * 
 	 * @return
 	 */
-	public Predicate<Throwable> build() {
+	public Predicate<Exception> build() {
 		return exceptionPredicate;
 	}
 	
-	static final class WorkflowNotFoundPredicate implements Predicate<Throwable> {
+	static final class WorkflowNotFoundPredicate implements Predicate<Exception> {
 		
 		private final String workflowID;
 		
@@ -60,7 +60,7 @@ public class ExceptionFilterBuilder {
 		}
 
 		@Override
-		public boolean test(Throwable t) {
+		public boolean test(Exception t) {
 			if (t.getCause() instanceof StatusRuntimeException) {
 					StatusRuntimeException sre = (StatusRuntimeException)t.getCause();
 					

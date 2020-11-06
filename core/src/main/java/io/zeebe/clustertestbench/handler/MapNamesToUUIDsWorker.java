@@ -1,4 +1,4 @@
-package io.zeebe.clustertestbench.worker;
+package io.zeebe.clustertestbench.handler;
 
 import java.util.Optional;
 import java.util.function.Predicate;
@@ -10,7 +10,6 @@ import io.zeebe.client.api.response.ActivatedJob;
 import io.zeebe.client.api.worker.JobClient;
 import io.zeebe.client.api.worker.JobHandler;
 import io.zeebe.clustertestbench.cloud.CloudAPIClient;
-import io.zeebe.clustertestbench.cloud.CloudAPIClientFactory;
 import io.zeebe.clustertestbench.cloud.response.ChannelInfo;
 import io.zeebe.clustertestbench.cloud.response.ClusterPlanTypeInfo;
 import io.zeebe.clustertestbench.cloud.response.GenerationInfo;
@@ -23,10 +22,8 @@ public class MapNamesToUUIDsWorker implements JobHandler {
 
 	private final CloudAPIClient cloudClient;
 
-	public MapNamesToUUIDsWorker(String cloudApiUrl, String cloudApiAuthenticationServerURL, String cloudApiAudience,
-			String cloudApiClientId, String cloudApiClientSecret) {
-		this.cloudClient = new CloudAPIClientFactory().createCloudAPIClient(cloudApiUrl,
-				cloudApiAuthenticationServerURL, cloudApiAudience, cloudApiClientId, cloudApiClientSecret);
+	public MapNamesToUUIDsWorker(final CloudAPIClient cloudAPIClient) {
+		this.cloudClient = cloudAPIClient;
 	}
 
 	@Override
