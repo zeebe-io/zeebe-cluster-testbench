@@ -35,5 +35,5 @@ extractZeebeAddress() {
 
 extractTargetNamespace() {
   variables=$1
-  echo $(echo "$variables" |  jq -r '.authenticationDetails.audience' | cut -d'.' -f 1)-zeebe
+  echo $(echo "$variables" |  jq -r '.clusterId')-zeebe
 }

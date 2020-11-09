@@ -9,11 +9,17 @@
 
 
 variables="{
-  \"authenticationDetails\":{\"audience\":\"33c00aed-cf34-4c8a-867d-161ee9c8943d.zeebe.ultrawombat.com\",\"authorizationURL\":\"https://login.cloud.ultrawombat.com/oauth/token\",\"clientId\":\"-M-bpgPX7bkW8ssgeuuQof5obhNQgr.O\",\"clientSecret\":\"~EfHvmjQFd4vIViilACpHSOz7IiJrMr~QgoNtDxlvhXbhlvkKut80.joW3On1zb4\",\"contactPoint\":\"33c00aed-cf34-4c8a-867d-161ee9c8943d.zeebe.ultrawombat.com:443\"},
-\"testReport\":{\"testResult\":\"PASSED\",\"startTime\":1603438963772,\"endTime\":1603438989088,\"timeOfFirstFailure\":0,\"failureCount\":0,\"failureMessages\":[],\"metaData\":{\"testParams\":{\"steps\":3,\"iterations\":10,\"maxTimeForIteration\":\"PT10S\",\"maxTimeForCompleteTest\":\"PT2M\"}},\"duration\":25316},
+  \"authenticationDetails\":{
+    \"audience\":\"33c00aed-cf34-4c8a-867d-161ee9c8943d.zeebe.ultrawombat.com\",
+    \"authorizationURL\":\"https://login.cloud.ultrawombat.com/oauth/token\",
+    \"clientId\":\"-M-bpgPX7bkW8ssgeuuQof5obhNQgr.O\",
+    \"clientSecret\":\"~EfHvmjQFd4vIViilACpHSOz7IiJrMr~QgoNtDxlvhXbhlvkKut80.joW3On1zb4\",
+    \"contactPoint\":\"33c00aed-cf34-4c8a-867d-161ee9c8943d.zeebe.ultrawombat.com:443\"
+  },
 \"clusterPlan\":\"Production - M\",
 \"testResult\":\"PASSED\",
-\"testParams\":{\"maxTimeForCompleteTest\":\"PT2M\",\"maxTimeForIteration\":\"PT10S\",\"iterations\":10,\"steps\":3}
+\"testParams\":{},
+\"clusterId\":\"33c00aed-cf34-4c8a-867d-161ee9c8943d\"
 }"
 
 
