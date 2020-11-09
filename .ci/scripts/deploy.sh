@@ -25,5 +25,5 @@ kubectl rollout restart deployment testbench --namespace=testbench
 kubectl rollout restart deployment chaos-worker --namespace=testbench
 
 # wait for pods getting started
-kubectl wait --for=condition=Ready pod -l app=testbench --timeout=180s
-kubectl wait --for=condition=Ready pod -l app=chaos-worker --timeout=180s
+kubectl wait --for=condition=Ready pod -l app=testbench --timeout=180s --namespace=testbench
+kubectl wait --for=condition=Ready pod -l app=chaos-worker --timeout=180s --namespace=testbench
