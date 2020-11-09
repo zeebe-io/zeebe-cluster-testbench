@@ -24,7 +24,7 @@
 		<version.google-api>1.30.11</version.google-api>
 		<version.google-sheets-api>v4-rev20200922-1.30.10</version.google-sheets-api>
 		<version.slack-api>1.2.1</version.slack-api>
-		<version.google-http-client>1.37.0</version.google-http-client>
+		<version.google-http-client>1.38.0</version.google-http-client>
 
 		<plugin.version.assembly>3.3.0</plugin.version.assembly>
 	</properties>
