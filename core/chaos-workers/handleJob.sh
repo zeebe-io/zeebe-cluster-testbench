@@ -1,6 +1,10 @@
 #!/bin/bash
 set -oxu pipefail
 
+
+# import util methods
+. ioHandlerUtil.sh
+
 # called by worker to execute chaos experiments
 # variables can be read from standard in
 logFile="output-$(date +%Y%m%d).log"
@@ -10,29 +14,28 @@ touch "$logFile"
 # EXTRACT INPUT ################################################################
 ################################################################################
 
-variables=$(cat -) # reads complete std in
-# read -r variables reads only one line
+variables=$(readStandardInput)
 
-clusterPlan=$(echo "$variables" | jq -r '.clusterPlan' | tr '[:upper:]' '[:lower:]')
+clusterPlan=$(extractClusterPlan "$variables")
 
-ZEEBE_CLIENT_ID=$(echo "$variables" | jq -r '.authenticationDetails.clientId')
+ZEEBE_CLIENT_ID=$(extractClientId "$variables")
 export ZEEBE_CLIENT_ID
 
-ZEEBE_CLIENT_SECRET=$(echo "$variables" | jq -r '.authenticationDetails.clientSecret')
+ZEEBE_CLIENT_SECRET=$(extractClientSecret "$variables")
 export ZEEBE_CLIENT_SECRET
 
-ZEEBE_AUTHORIZATION_SERVER_URL=$(echo "$variables" | jq -r '.authenticationDetails.authorizationURL')
+ZEEBE_AUTHORIZATION_SERVER_URL=$(extractAuthorizationServerUrl "$variables")
 export ZEEBE_AUTHORIZATION_SERVER_URL
 
-ZEEBE_ADDRESS=$(echo "$variables" | jq -r '.authenticationDetails.contactPoint')
+ZEEBE_ADDRESS=$(extractZeebeAddress "$variables")
 export ZEEBE_ADDRESS
 
-NAMESPACE=$(echo "$variables" | jq -r '.authenticationDetails.audience' | cut -d'.' -f 1)-zeebe
+NAMESPACE=$(extractTargetNamespace "$variables")
 export NAMESPACE
 
 ################################################################################
 
-kubens $NAMESPACE &>> "$logFile" || (echo "{\"testResult\":\"FAILED\"}" && exit 1)
+kubens "$NAMESPACE" &>> "$logFile" || (echo "{\"testResult\":\"FAILED\"}" && exit 1)
 kubectl get pods &>> "$logFile"
 
 ################################################################################
