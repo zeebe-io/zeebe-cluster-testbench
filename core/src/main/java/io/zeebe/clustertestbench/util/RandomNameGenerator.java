@@ -1,4 +1,4 @@
-package io.zeebe.clustertestbench.handler;
+package io.zeebe.clustertestbench.util;
 
 import java.util.Random;
 

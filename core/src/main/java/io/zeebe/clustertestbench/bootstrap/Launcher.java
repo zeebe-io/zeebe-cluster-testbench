@@ -23,7 +23,7 @@ import io.zeebe.clustertestbench.handler.CreateGenerationInCamundaCloudHandler;
 import io.zeebe.clustertestbench.handler.DeleteClusterInCamundaCloudHandler;
 import io.zeebe.clustertestbench.handler.DeleteGenerationInCamundaCloudHandler;
 import io.zeebe.clustertestbench.handler.GatherInformationAboutClusterInCamundaCloudHandler;
-import io.zeebe.clustertestbench.handler.MapNamesToUUIDsWorker;
+import io.zeebe.clustertestbench.handler.MapNamesToUUIDsHandler;
 import io.zeebe.clustertestbench.handler.NotifyEngineersHandler;
 import io.zeebe.clustertestbench.handler.QueryClusterStateInCamundaCloudHandler;
 import io.zeebe.clustertestbench.handler.RecordTestResultHandler;
@@ -251,7 +251,7 @@ public class Launcher {
     registerWorker(
         client,
         "map-names-to-uuids-job",
-        new MapNamesToUUIDsWorker(cloudApiClient),
+        new MapNamesToUUIDsHandler(cloudApiClient),
         Duration.ofSeconds(10));
     registerWorker(
         client,
