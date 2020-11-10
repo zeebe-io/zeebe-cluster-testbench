@@ -3,11 +3,12 @@ set -oxu pipefail
 
 
 # import util methods
-. ioHandlerUtil.sh
+# shellcheck source=handlerUtil.sh
+. handlerUtil.sh
 
 # called by worker to execute chaos experiments
 # variables can be read from standard in
-logFile="output-$(date +%Y%m%d).log"
+logFile=$(generateLogFileName)
 touch "$logFile"
 
 ################################################################################
@@ -46,22 +47,15 @@ kubectl get pods &>> "$logFile"
 
 cd "zeebe-chaos/chaos-experiments/camunda-cloud/" || exit 1
 
-# Get latest state of the repo
-git pull origin master &>> "$logFile"
-
 # add scripts to path
 PATH="$PATH:$(pwd)/scripts/"
 export PATH
 
-# run all experiments for cluster plan
-for experiment in "$clusterPlan"/*/experiment.json
-do
-  chaos run "$experiment" &>> "$logFile"
-done
+# Get latest state of the repo
+git pull origin master &>> "$logFile"
 
-################################################################################
-# OUTPUT #######################################################################
-################################################################################
-# standard output will be consumed by worker to complete job
+chaosRunner() {
+  chaos run "$1"
+}
 
-echo "{\"testResult\": \"PASSED\"}"
+runChaosExperiments chaosRunner "$clusterPlan"/*/experiment.json

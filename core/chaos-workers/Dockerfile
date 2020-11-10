@@ -8,7 +8,7 @@ ENV ZEEBE_VERSION=0.24.3 \
 WORKDIR ${CHAOS_HOME}
 COPY handleJob.sh .
 COPY runWorker.sh .
-COPY ioHandlerUtil.sh .
+COPY handlerUtil.sh .
 COPY installDependencies.sh .
 
 ENV PATH "${CHAOS_HOME}:${PATH}"
