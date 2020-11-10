@@ -8,10 +8,9 @@
   [ "$result" == "HELLO" ]
 }
 
-
-ZEEBE_ADDRESS='33c00aed-cf34-4c8a-867d-161ee9c8943d.zeebe.ultrawombat.com:443'
-ZEEBE_CLIENT_ID='-M-bpgPX7bkW8ssgeuuQof5obhNQgr.O'
-ZEEBE_CLIENT_SECRET='~EfHvmjQFd4vIViilACpHSOz7IiJrMr~QgoNtDxlvhXbhlvkKut80.joW3On1zb4'
+ZEEBE_ADDRESS='address.zeebe.ultrawombat.com:443'
+ZEEBE_CLIENT_ID='ID_CLIENT'
+ZEEBE_CLIENT_SECRET='SECRET_CLIENT'
 ZEEBE_AUTHORIZATION_SERVER_URL='https://login.cloud.ultrawombat.com/oauth/token'
 variables=$(jq -n \
              --arg clientId "$ZEEBE_CLIENT_ID" \
@@ -30,13 +29,13 @@ variables=$(jq -n \
 @test "extract client id" {
   result=$(extractClientId "$variables")
   echo "$result"
-  [ "$result" == "-M-bpgPX7bkW8ssgeuuQof5obhNQgr.O" ]
+  [ "$result" == "ID_CLIENT" ]
 }
 
 @test "extract client secret" {
   result=$(extractClientSecret "$variables")
   echo "$result"
-  [ "$result" == "~EfHvmjQFd4vIViilACpHSOz7IiJrMr~QgoNtDxlvhXbhlvkKut80.joW3On1zb4" ]
+  [ "$result" == "SECRET_CLIENT" ]
 }
 
 @test "extract authorization server url" {
@@ -48,14 +47,13 @@ variables=$(jq -n \
 @test "extract zeebe address" {
   result=$(extractZeebeAddress "$variables")
   echo "$result"
-  [ "$result" == "33c00aed-cf34-4c8a-867d-161ee9c8943d.zeebe.ultrawombat.com:443" ]
+  [ "$result" == "address.zeebe.ultrawombat.com:443" ]
 }
-
 
 @test "extract target namespace" {
   result=$(extractTargetNamespace "$variables")
   echo "$result"
-  [ "$result" == "33c00aed-cf34-4c8a-867d-161ee9c8943d-zeebe" ]
+  [ "$result" == "address-zeebe" ]
 }
 
 noop() { :;}
