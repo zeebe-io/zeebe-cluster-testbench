@@ -68,10 +68,17 @@ extractTargetNamespace() {
 #}
 
 createFailureMessage() {
-  result=FAILED
+  # Input is expected to be an array of values.
+  # Possible inputs are for example: ("Namespace not found" "Other Error")
+  # In order to convert them to an json array we join them first together as one string, with comma as separator.
+  # Result would be: "Namespace not found, Other Error". This makes it possible to use the jq split function,
+  # which converts the string to a correct json array: [ "Namespace not found", "Other Error" ].
+  # Previous we just split them on whitespaces, but this lead to problems on inputs with whitespaces.
+  # Because they then have be converted to: [ "Namespace", "not", "found", "Other", "Error" ].
   args=( "$@" ) # get arguments as array
   printf -v joined '%s,' "${args[@]}"
 
+  result=FAILED
   # generate json result
   jq -n \
      --arg result "$result" \
