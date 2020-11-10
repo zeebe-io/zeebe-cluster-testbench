@@ -1,6 +1,7 @@
 #!/usr/bin/env bats
 
-. ioHandlerUtil.sh
+# shellcheck source=handlerUtil.sh
+. handlerUtil.sh
 
 @test "read standard in" {
   result=$(echo "HELLO" | readStandardIn)
@@ -60,4 +61,44 @@ variables="{
   [ "$result" == "33c00aed-cf34-4c8a-867d-161ee9c8943d-zeebe" ]
 }
 
+noop() { :;}
 
+@test "run experiment with noop runner and empty arry - return PASSED" {
+  array=()
+  result=$(runChaosExperiments noop "${array[@]}")
+  echo "$result"
+  [ "$result" == "{\"testResult\":\"PASSED\"}" ]
+}
+
+@test "run experiment with noop runner and values in array - return PASSED" {
+  array=(1 2)
+  result=$(runChaosExperiments noop "${array[@]}")
+  echo "$result"
+  [ "$result" == "{\"testResult\":\"PASSED\"}" ]
+}
+
+failFunction() {
+  return 1
+}
+
+@test "run experiment with failing runner and values in array - return FAILED" {
+  array=(1 2)
+
+  if runChaosExperiments failFunction "${array[@]}";
+  then
+    exit 1 # unexpected
+  fi
+
+  echo "expected"
+}
+
+@test "run experiment with failing runner and empty array - return PASSED" {
+  array=(1 2)
+
+  if runChaosExperiments failFunction "${array[@]}";
+  then
+    exit 1 # unexpected
+  fi
+
+  echo "expected"
+}
