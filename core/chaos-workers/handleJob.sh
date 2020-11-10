@@ -34,8 +34,8 @@ NAMESPACE=$(extractTargetNamespace "$variables")
 export NAMESPACE
 
 ################################################################################
-
-kubens "$NAMESPACE" &>> "$logFile" || (echo "{\"testResult\":\"FAILED\"}" && exit 1)
+kubens "$NAMESPACE" &>> "$logFile" \
+  || (createFailureMessage "Namespace '$NAMESPACE' doesn't exist" && exit 0)
 kubectl get pods &>> "$logFile"
 
 ################################################################################
