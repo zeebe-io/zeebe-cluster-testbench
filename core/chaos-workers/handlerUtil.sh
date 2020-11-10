@@ -70,12 +70,13 @@ extractTargetNamespace() {
 createFailureMessage() {
   result=FAILED
   args=( "$@" ) # get arguments as array
+  printf -v joined '%s,' "${args[@]}"
 
   # generate json result
   jq -n \
      --arg result "$result" \
-     --arg failures "${args[*]}" \
-     '{testResult: $result, failureMessages: $failures | split(" "), failureCount: 1, metaData: {}}'
+     --arg failures "${joined%,}" \
+     '{testResult: $result, failureMessages: $failures | split(","), failureCount: 1, metaData: {}}'
 }
 
 ################################################################################
@@ -95,7 +96,7 @@ runChaosExperiments() {
     then
       resultMsg=$(createFailureMessage "$experiment failed")
       echo "$resultMsg"
-      return 1
+      return 0 # if we return an error code the job worker would fail the job
     fi
   done
 

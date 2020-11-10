@@ -82,25 +82,31 @@ failFunction() {
 }
 
 @test "run experiment with failing runner and values in array - return FAILED" {
+  # given
   array=(1 2)
+  expected="$(jq -n '{testResult: "FAILED", failureMessages: ["1 failed"], failureCount: 1, metaData: {}}')"
 
-  if runChaosExperiments failFunction "${array[@]}";
-  then
-    exit 1 # unexpected
-  fi
+  # when
+  result=$(runChaosExperiments failFunction "${array[@]}")
 
-  echo "expected"
+  # then
+  echo "actual: $result"
+  echo "expected: $expected"
+  [ "$result" == "$expected" ]
 }
 
 @test "run experiment with failing runner and empty array - return PASSED" {
-  array=(1 2)
+  # given
+  array=()
+  expected="$(jq -nc '{testResult: "PASSED"}')"
 
-  if runChaosExperiments failFunction "${array[@]}";
-  then
-    exit 1 # unexpected
-  fi
+  # when
+  result=$(runChaosExperiments failFunction "${array[@]}")
 
-  echo "expected"
+  # then
+  echo "actual: $result"
+  echo "expected: $expected"
+  [ "$result" == "$expected" ]
 }
 
 @test "create failure message without args" {
