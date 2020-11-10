@@ -1,10 +1,6 @@
 #!/bin/bash
 set -euox pipefail
 
-# verify whether kube was correctly configured
-ls -la ~/.kube
-cat ~/.kube/config
-
 # DEBUG: PRINTS TOPOLOGY
 zbctl status
 
