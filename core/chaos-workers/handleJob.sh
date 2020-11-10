@@ -1,7 +1,6 @@
 #!/bin/bash
 set -oxu pipefail
 
-
 # import util methods
 # shellcheck source=handlerUtil.sh
 . handlerUtil.sh
@@ -15,7 +14,7 @@ touch "$logFile"
 # EXTRACT INPUT ################################################################
 ################################################################################
 
-variables=$(readStandardInput)
+variables=$(readStandardIn)
 
 clusterPlan=$(extractClusterPlan "$variables")
 
