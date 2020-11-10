@@ -84,6 +84,20 @@ pipeline {
       }
     }
 
+    stage('Verify scripts') {
+      steps {
+          container('maven') {
+              dir('core/chaos-workers') {
+                  println("Check all chaos script`s with shellcheck (linter).")
+                  sh 'shellcheck -x *.sh'
+                  println("Scripts are fine.")
+                  println("Run bash tests via bats.")
+                  sh './*Test.sh'
+              }
+          }
+      }
+    }
+
     stage('Upload') {
       when {
       	not { expression { params.RELEASE } }
