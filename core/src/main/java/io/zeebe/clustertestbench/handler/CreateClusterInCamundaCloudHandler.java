@@ -12,6 +12,7 @@ import io.zeebe.clustertestbench.cloud.response.CreateZeebeClientResponse;
 import io.zeebe.clustertestbench.cloud.response.ZeebeClientConnectiontInfo;
 import io.zeebe.clustertestbench.testdriver.api.CamundaCloudAuthenticationDetails;
 import io.zeebe.clustertestbench.testdriver.impl.CamundaCLoudAuthenticationDetailsImpl;
+import io.zeebe.clustertestbench.util.RandomNameGenerator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

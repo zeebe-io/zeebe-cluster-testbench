@@ -1,5 +1,6 @@
 package io.zeebe.clustertestbench.handler;
 
+import io.vavr.control.Either;
 import io.zeebe.client.api.response.ActivatedJob;
 import io.zeebe.client.api.worker.JobClient;
 import io.zeebe.client.api.worker.JobHandler;
@@ -8,10 +9,10 @@ import io.zeebe.clustertestbench.cloud.response.GenerationInfo;
 import io.zeebe.clustertestbench.internal.cloud.InternalCloudAPIClient;
 import io.zeebe.clustertestbench.internal.cloud.request.CreateGenerationRequest;
 import io.zeebe.clustertestbench.internal.cloud.request.UpdateChannelRequest;
+import io.zeebe.clustertestbench.util.StringLookup;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -58,13 +59,10 @@ public class CreateGenerationInCamundaCloudHandler implements JobHandler {
 
     internalApiClient.createGeneration(createGenerationRequest);
 
-    final var optNewlyCreatedGeneration = findGenerationInfoByName(generation);
-
-    if (optNewlyCreatedGeneration.isEmpty()) {
-      throw new RuntimeException("Creation of generation unsuccessful: " + generation);
-    }
-
-    return optNewlyCreatedGeneration.get().getUuid();
+    return findGenerationInfoByName(generation)
+        .getOrElseThrow(
+            msg -> new RuntimeException("Creation of generation unsuccessful: " + generation))
+        .getUuid();
   }
 
   private void addGenerationToChannel(final ChannelInfo channelInfo, final String generationUUID) {
@@ -89,34 +87,28 @@ public class CreateGenerationInCamundaCloudHandler implements JobHandler {
   }
 
   private GenerationInfo lookupTemplate(final String generationTemplate) {
-    final var optTemplateGenerationInfo = findGenerationInfoByName(generationTemplate);
+    final var eitherTemplateGenerationInfo = findGenerationInfoByName(generationTemplate);
 
-    if (optTemplateGenerationInfo.isEmpty()) {
-      throw new RuntimeException("Unable to find generation: " + generationTemplate);
-    }
-    return optTemplateGenerationInfo.get();
+    return eitherTemplateGenerationInfo.getOrElseThrow(msg -> new IllegalArgumentException(msg));
   }
 
-  private Optional<GenerationInfo> findGenerationInfoByName(final String name) {
+  private Either<String, GenerationInfo> findGenerationInfoByName(final String name) {
     final var generationInfos = internalApiClient.listGenerationInfos();
 
-    return generationInfos.stream().filter(gi -> name.equals(gi.getName())).findAny();
+    final var generationLookup =
+        new StringLookup<GenerationInfo>(
+            "generation", name, generationInfos, GenerationInfo::getName, true);
+
+    return generationLookup.lookup();
   }
 
   private ChannelInfo lookupChannel(final String channel) throws Exception {
-    final var optChannelInfo = findChannelByName(channel);
-
-    if (optChannelInfo.isEmpty()) {
-      throw new RuntimeException("Unable to find channel: " + channel);
-    }
-
-    return optChannelInfo.get();
-  }
-
-  private Optional<ChannelInfo> findChannelByName(final String name) throws Exception {
     final var channelInfos = internalApiClient.listChannelInfos();
 
-    return channelInfos.stream().filter(ci -> name.equals(ci.getName())).findAny();
+    final var channelLookup =
+        new StringLookup<ChannelInfo>("channel", channel, channelInfos, ChannelInfo::getName, true);
+
+    return channelLookup.lookup().getOrElseThrow(msg -> new IllegalArgumentException(msg));
   }
 
   protected static final class Input {

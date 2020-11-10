@@ -9,18 +9,17 @@ import io.zeebe.clustertestbench.cloud.response.ClusterPlanTypeInfo;
 import io.zeebe.clustertestbench.cloud.response.GenerationInfo;
 import io.zeebe.clustertestbench.cloud.response.ParametersResponse;
 import io.zeebe.clustertestbench.cloud.response.RegionInfo;
-import java.util.Optional;
-import java.util.function.Predicate;
+import io.zeebe.clustertestbench.util.StringLookup;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class MapNamesToUUIDsWorker implements JobHandler {
+public class MapNamesToUUIDsHandler implements JobHandler {
 
-  private static final Logger logger = LoggerFactory.getLogger(MapNamesToUUIDsWorker.class);
+  private static final Logger logger = LoggerFactory.getLogger(MapNamesToUUIDsHandler.class);
 
   private final CloudAPIClient cloudClient;
 
-  public MapNamesToUUIDsWorker(final CloudAPIClient cloudAPIClient) {
+  public MapNamesToUUIDsHandler(final CloudAPIClient cloudAPIClient) {
     this.cloudClient = cloudAPIClient;
   }
 
@@ -51,26 +50,26 @@ public class MapNamesToUUIDsWorker implements JobHandler {
       throw new IllegalArgumentException("Neither 'generation' nor 'generationUUID' are provided");
     }
 
-    final String notFoundMessage;
-    final Predicate<ChannelInfo> channelFilter;
-
+    final StringLookup<ChannelInfo> channelLookup;
     if (inputOutput.getChannelUUID() == null) {
-      notFoundMessage = "Unable to find channel with name " + inputOutput.getChannel();
-      channelFilter = (item) -> inputOutput.getChannel().equalsIgnoreCase(item.getName());
+      channelLookup =
+          new StringLookup<>(
+              "channel",
+              inputOutput.getChannel(),
+              parameters.getChannels(),
+              ChannelInfo::getName,
+              true);
     } else {
-      notFoundMessage = "Unable to find channel with UUID " + inputOutput.getChannelUUID();
-      channelFilter = (item) -> inputOutput.getChannelUUID().equals(item.getUuid());
+      channelLookup =
+          new StringLookup<>(
+              "channel",
+              inputOutput.getChannelUUID(),
+              parameters.getChannels(),
+              ChannelInfo::getUuid,
+              false);
     }
 
-    Optional<ChannelInfo> optChannelInfo =
-        parameters.getChannels().stream().filter(channelFilter).findFirst();
-
-    if (optChannelInfo.isEmpty()) {
-      throw new IllegalArgumentException(
-          notFoundMessage + ". " + parameters.getChannels().toString());
-    }
-
-    channelInfo = optChannelInfo.get();
+    channelInfo = channelLookup.lookup().getOrElseThrow(msg -> new IllegalArgumentException(msg));
 
     inputOutput.setChannel(channelInfo.getName());
     inputOutput.setChannelUUID(channelInfo.getUuid());
@@ -83,26 +82,28 @@ public class MapNamesToUUIDsWorker implements JobHandler {
     if ((inputOutput.getGenerationUUID() == null) && (inputOutput.getGeneration() == null)) {
       generationInfo = channelInfo.getDefaultGeneration();
     } else {
-      final String notFoundMessage;
-      final Predicate<GenerationInfo> generationFilter;
 
+      final StringLookup<GenerationInfo> generationLoookup;
       if (inputOutput.getGenerationUUID() == null) {
-        notFoundMessage = "Unable to find generation with name " + inputOutput.getGeneration();
-        generationFilter = (item) -> inputOutput.getGeneration().equalsIgnoreCase(item.getName());
+        generationLoookup =
+            new StringLookup<>(
+                "generation",
+                inputOutput.getGeneration(),
+                channelInfo.getAllowedGenerations(),
+                GenerationInfo::getName,
+                true);
       } else {
-        notFoundMessage = "Unable to find generation with UUID " + inputOutput.getGenerationUUID();
-        generationFilter = (item) -> inputOutput.getGenerationUUID().equals(item.getUuid());
+        generationLoookup =
+            new StringLookup<>(
+                "generation",
+                inputOutput.getGenerationUUID(),
+                channelInfo.getAllowedGenerations(),
+                GenerationInfo::getUuid,
+                false);
       }
 
-      Optional<GenerationInfo> optGenerationInfo =
-          channelInfo.getAllowedGenerations().stream().filter(generationFilter).findFirst();
-
-      if (optGenerationInfo.isEmpty()) {
-        throw new IllegalArgumentException(
-            notFoundMessage + ". " + channelInfo.getAllowedGenerations());
-      }
-
-      generationInfo = optGenerationInfo.get();
+      generationInfo =
+          generationLoookup.lookup().getOrElseThrow(msg -> new IllegalArgumentException(msg));
     }
 
     inputOutput.setGeneration(generationInfo.getName());
@@ -117,26 +118,27 @@ public class MapNamesToUUIDsWorker implements JobHandler {
           "Neither 'clusterPlan' nor 'clusterPlanUUID' are provided");
     }
 
-    final String notFoundMessage;
-    final Predicate<ClusterPlanTypeInfo> clusterPlanFilter;
-
+    final StringLookup<ClusterPlanTypeInfo> clusterPlanLookup;
     if (inputOutput.getClusterPlanUUID() == null) {
-      notFoundMessage = "Unable to find clusterPlan with name " + inputOutput.getClusterPlan();
-      clusterPlanFilter = (item) -> inputOutput.getClusterPlan().equalsIgnoreCase(item.getName());
+      clusterPlanLookup =
+          new StringLookup<>(
+              "clusterPlan",
+              inputOutput.getClusterPlan(),
+              parameters.getClusterPlanTypes(),
+              ClusterPlanTypeInfo::getName,
+              true);
     } else {
-      notFoundMessage = "Unable to find clusterPlan with UUID " + inputOutput.getClusterPlanUUID();
-      clusterPlanFilter = (item) -> inputOutput.getClusterPlanUUID().equals(item.getUuid());
+      clusterPlanLookup =
+          new StringLookup<>(
+              "clusterPlan",
+              inputOutput.getClusterPlanUUID(),
+              parameters.getClusterPlanTypes(),
+              ClusterPlanTypeInfo::getUuid,
+              false);
     }
 
-    Optional<ClusterPlanTypeInfo> optClusterPlanInfo =
-        parameters.getClusterPlanTypes().stream().filter(clusterPlanFilter).findFirst();
-
-    if (optClusterPlanInfo.isEmpty()) {
-      throw new IllegalArgumentException(
-          notFoundMessage + ". " + parameters.getClusterPlanTypes().toString());
-    }
-
-    clusterPlanInfo = optClusterPlanInfo.get();
+    clusterPlanInfo =
+        clusterPlanLookup.lookup().getOrElseThrow(msg -> new IllegalArgumentException(msg));
 
     inputOutput.setClusterPlan(clusterPlanInfo.getName());
     inputOutput.setClusterPlanUUID(clusterPlanInfo.getUuid());
@@ -149,26 +151,26 @@ public class MapNamesToUUIDsWorker implements JobHandler {
       throw new IllegalArgumentException("Neither 'region' nor 'regionUUID' are provided");
     }
 
-    final String notFoundMessage;
-    final Predicate<RegionInfo> regionFilter;
-
+    final StringLookup<RegionInfo> regionLookup;
     if (inputOutput.getRegionUUID() == null) {
-      notFoundMessage = "Unable to find region with name " + inputOutput.getRegion();
-      regionFilter = (item) -> inputOutput.getRegion().equalsIgnoreCase(item.getName());
+      regionLookup =
+          new StringLookup<>(
+              "region",
+              inputOutput.getRegion(),
+              parameters.getRegions(),
+              RegionInfo::getName,
+              true);
     } else {
-      notFoundMessage = "Unable to find region with UUID " + inputOutput.getRegionUUID();
-      regionFilter = (item) -> inputOutput.getRegionUUID().equals(item.getUuid());
+      regionLookup =
+          new StringLookup<>(
+              "region",
+              inputOutput.getRegionUUID(),
+              parameters.getRegions(),
+              RegionInfo::getUuid,
+              false);
     }
 
-    Optional<RegionInfo> optRegionInfo =
-        parameters.getRegions().stream().filter(regionFilter).findFirst();
-
-    if (optRegionInfo.isEmpty()) {
-      throw new IllegalArgumentException(
-          notFoundMessage + ". " + parameters.getRegions().toString());
-    }
-
-    regionInfo = optRegionInfo.get();
+    regionInfo = regionLookup.lookup().getOrElseThrow(msg -> new IllegalArgumentException(msg));
 
     inputOutput.setRegion(regionInfo.getName());
     inputOutput.setRegionUUID(regionInfo.getUuid());

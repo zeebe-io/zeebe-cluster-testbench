@@ -91,7 +91,7 @@ class CreateGenerationInCamundaCloudHandlerTest {
 
       // when + then
       assertThatThrownBy(() -> sutCreateGenerationHandler.handle(mockJobClient, mockActivatedJob))
-          .isExactlyInstanceOf(RuntimeException.class)
+          .isExactlyInstanceOf(IllegalArgumentException.class)
           .hasMessageContaining("Unable to find generation")
           .hasMessageContaining("unknown-generation");
     }
@@ -107,7 +107,7 @@ class CreateGenerationInCamundaCloudHandlerTest {
 
       // when + then
       assertThatThrownBy(() -> sutCreateGenerationHandler.handle(mockJobClient, mockActivatedJob))
-          .isExactlyInstanceOf(RuntimeException.class)
+          .isExactlyInstanceOf(IllegalArgumentException.class)
           .hasMessageContaining("Unable to find channel")
           .hasMessageContaining("unknown-channel");
     }

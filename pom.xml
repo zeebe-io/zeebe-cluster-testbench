@@ -56,6 +56,8 @@
 		<version.jackson>2.11.3</version.jackson>
 		<version.mockito>3.6.0</version.mockito>
 		<version.resteasy>4.5.8.Final</version.resteasy>
+		<version.vavr>0.10.3</version.vavr>		
+		<version.commons-text>1.9</version.commons-text>
 
 		<plugin.version.surefire>3.0.0-M5</plugin.version.surefire>
 		<plugin.version.javadoc>3.2.0</plugin.version.javadoc>
@@ -166,6 +168,20 @@
 				<artifactId>resteasy-jackson2-provider</artifactId>
 				<version>${version.resteasy}</version>
 			</dependency>
+
+			<dependency>
+				<groupId>io.vavr</groupId>
+				<artifactId>vavr</artifactId>
+				<version>${version.vavr}</version>
+			</dependency>
+
+			<!-- https://mvnrepository.com/artifact/org.apache.commons/commons-text -->
+			<dependency>
+				<groupId>org.apache.commons</groupId>
+				<artifactId>commons-text</artifactId>
+				<version>${version.commons-text}</version>
+			</dependency>
+
 
 			<dependency>
 				<groupId>org.junit</groupId>
