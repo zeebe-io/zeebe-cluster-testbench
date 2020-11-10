@@ -1,2 +1,3 @@
 createAndRunImage.sh
 output-*.log
+debugWorker.sh
