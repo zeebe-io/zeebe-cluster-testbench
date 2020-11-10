@@ -102,3 +102,57 @@ failFunction() {
 
   echo "expected"
 }
+
+@test "create failure message without args" {
+  # given
+  expected="$(jq -n '{testResult: "FAILED", failureMessages: [], failureCount: 1, metaData: {}}')"
+
+  # when
+  failureMsg=$(createFailureMessage)
+
+  # then
+  echo "$failureMsg"
+  echo "expected: $expected"
+  [ "$failureMsg" == "$expected" ]
+}
+
+@test "create failure message with number as one arg" {
+  # given
+  expected="$(jq -n '{testResult: "FAILED", failureMessages: ["2"], failureCount: 1, metaData: {}}')"
+
+  # when
+  failureMsg=$(createFailureMessage 2)
+
+  # then
+  echo "$failureMsg"
+  echo "expected: $expected"
+  [ "$failureMsg" == "$expected" ]
+}
+
+@test "create failure message with string as one arg" {
+  # given
+  expected="$(jq -n '{testResult: "FAILED", failureMessages: ["2"], failureCount: 1, metaData: {}}')"
+
+  # when
+  failureMsg=$(createFailureMessage "2")
+
+  # then
+  echo "$failureMsg"
+  echo "expected: $expected"
+  [ "$failureMsg" == "$expected" ]
+}
+
+
+@test "create failure message with multiple fail messages" {
+  # given
+  expected="$(jq -n '{testResult: "FAILED", failureMessages: ["2", "hallo"], failureCount: 1, metaData: {}}')"
+
+  # when
+  failureMsg=$(createFailureMessage 2 "hallo")
+
+  # then 
+  echo "actual: $failureMsg"
+  echo "expected: $expected"
+  [ "$failureMsg" == "$expected" ]
+}
+
