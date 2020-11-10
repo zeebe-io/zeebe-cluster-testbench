@@ -9,20 +9,17 @@
 }
 
 
-variables="{
-  \"authenticationDetails\":{
-    \"audience\":\"33c00aed-cf34-4c8a-867d-161ee9c8943d.zeebe.ultrawombat.com\",
-    \"authorizationURL\":\"https://login.cloud.ultrawombat.com/oauth/token\",
-    \"clientId\":\"-M-bpgPX7bkW8ssgeuuQof5obhNQgr.O\",
-    \"clientSecret\":\"~EfHvmjQFd4vIViilACpHSOz7IiJrMr~QgoNtDxlvhXbhlvkKut80.joW3On1zb4\",
-    \"contactPoint\":\"33c00aed-cf34-4c8a-867d-161ee9c8943d.zeebe.ultrawombat.com:443\"
-  },
-\"clusterPlan\":\"Production - M\",
-\"testResult\":\"PASSED\",
-\"testParams\":{},
-\"clusterId\":\"33c00aed-cf34-4c8a-867d-161ee9c8943d\"
-}"
-
+ZEEBE_ADDRESS='33c00aed-cf34-4c8a-867d-161ee9c8943d.zeebe.ultrawombat.com:443'
+ZEEBE_CLIENT_ID='-M-bpgPX7bkW8ssgeuuQof5obhNQgr.O'
+ZEEBE_CLIENT_SECRET='~EfHvmjQFd4vIViilACpHSOz7IiJrMr~QgoNtDxlvhXbhlvkKut80.joW3On1zb4'
+ZEEBE_AUTHORIZATION_SERVER_URL='https://login.cloud.ultrawombat.com/oauth/token'
+variables=$(jq -n \
+             --arg clientId "$ZEEBE_CLIENT_ID" \
+             --arg clientSecret "$ZEEBE_CLIENT_SECRET" \
+             --arg contactPoint "$ZEEBE_ADDRESS" \
+             --arg authorizationURL "$ZEEBE_AUTHORIZATION_SERVER_URL" \
+             --arg clusterId "${ZEEBE_ADDRESS%.zeebe.*}" \
+             '{authenticationDetails: {authorizationURL: $authorizationURL, contactPoint: $contactPoint, clientId: $clientId, clientSecret: $clientSecret}, clusterPlan: "Production - M", clusterId: $clusterId}')
 
 @test "extract cluster plan" {
   result=$(extractClusterPlan "$variables")
