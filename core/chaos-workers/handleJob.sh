@@ -1,7 +1,6 @@
 #!/bin/bash
 set -oxu pipefail
 
-
 # import util methods
 # shellcheck source=handlerUtil.sh
 . handlerUtil.sh
@@ -15,7 +14,7 @@ touch "$logFile"
 # EXTRACT INPUT ################################################################
 ################################################################################
 
-variables=$(readStandardInput)
+variables=$(readStandardIn)
 
 clusterPlan=$(extractClusterPlan "$variables")
 
@@ -35,8 +34,8 @@ NAMESPACE=$(extractTargetNamespace "$variables")
 export NAMESPACE
 
 ################################################################################
-
-kubens "$NAMESPACE" &>> "$logFile" || (echo "{\"testResult\":\"FAILED\"}" && exit 1)
+kubens "$NAMESPACE" &>> "$logFile" \
+  || (createFailureMessage "Namespace '$NAMESPACE' doesn't exist" && exit 0)
 kubectl get pods &>> "$logFile"
 
 ################################################################################

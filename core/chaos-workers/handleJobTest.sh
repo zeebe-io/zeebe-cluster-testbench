@@ -8,21 +8,17 @@
   [ "$result" == "HELLO" ]
 }
 
-
-variables="{
-  \"authenticationDetails\":{
-    \"audience\":\"33c00aed-cf34-4c8a-867d-161ee9c8943d.zeebe.ultrawombat.com\",
-    \"authorizationURL\":\"https://login.cloud.ultrawombat.com/oauth/token\",
-    \"clientId\":\"-M-bpgPX7bkW8ssgeuuQof5obhNQgr.O\",
-    \"clientSecret\":\"~EfHvmjQFd4vIViilACpHSOz7IiJrMr~QgoNtDxlvhXbhlvkKut80.joW3On1zb4\",
-    \"contactPoint\":\"33c00aed-cf34-4c8a-867d-161ee9c8943d.zeebe.ultrawombat.com:443\"
-  },
-\"clusterPlan\":\"Production - M\",
-\"testResult\":\"PASSED\",
-\"testParams\":{},
-\"clusterId\":\"33c00aed-cf34-4c8a-867d-161ee9c8943d\"
-}"
-
+ZEEBE_ADDRESS='address.zeebe.ultrawombat.com:443'
+ZEEBE_CLIENT_ID='ID_CLIENT'
+ZEEBE_CLIENT_SECRET='SECRET_CLIENT'
+ZEEBE_AUTHORIZATION_SERVER_URL='https://login.cloud.ultrawombat.com/oauth/token'
+variables=$(jq -n \
+             --arg clientId "$ZEEBE_CLIENT_ID" \
+             --arg clientSecret "$ZEEBE_CLIENT_SECRET" \
+             --arg contactPoint "$ZEEBE_ADDRESS" \
+             --arg authorizationURL "$ZEEBE_AUTHORIZATION_SERVER_URL" \
+             --arg clusterId "${ZEEBE_ADDRESS%.zeebe.*}" \
+             '{authenticationDetails: {authorizationURL: $authorizationURL, contactPoint: $contactPoint, clientId: $clientId, clientSecret: $clientSecret}, clusterPlan: "Production - M", clusterId: $clusterId}')
 
 @test "extract cluster plan" {
   result=$(extractClusterPlan "$variables")
@@ -33,13 +29,13 @@ variables="{
 @test "extract client id" {
   result=$(extractClientId "$variables")
   echo "$result"
-  [ "$result" == "-M-bpgPX7bkW8ssgeuuQof5obhNQgr.O" ]
+  [ "$result" == "ID_CLIENT" ]
 }
 
 @test "extract client secret" {
   result=$(extractClientSecret "$variables")
   echo "$result"
-  [ "$result" == "~EfHvmjQFd4vIViilACpHSOz7IiJrMr~QgoNtDxlvhXbhlvkKut80.joW3On1zb4" ]
+  [ "$result" == "SECRET_CLIENT" ]
 }
 
 @test "extract authorization server url" {
@@ -51,14 +47,13 @@ variables="{
 @test "extract zeebe address" {
   result=$(extractZeebeAddress "$variables")
   echo "$result"
-  [ "$result" == "33c00aed-cf34-4c8a-867d-161ee9c8943d.zeebe.ultrawombat.com:443" ]
+  [ "$result" == "address.zeebe.ultrawombat.com:443" ]
 }
-
 
 @test "extract target namespace" {
   result=$(extractTargetNamespace "$variables")
   echo "$result"
-  [ "$result" == "33c00aed-cf34-4c8a-867d-161ee9c8943d-zeebe" ]
+  [ "$result" == "address-zeebe" ]
 }
 
 noop() { :;}
@@ -82,25 +77,31 @@ failFunction() {
 }
 
 @test "run experiment with failing runner and values in array - return FAILED" {
+  # given
   array=(1 2)
+  expected="$(jq -n '{testResult: "FAILED", failureMessages: ["1 failed"], failureCount: 1, metaData: {}}')"
 
-  if runChaosExperiments failFunction "${array[@]}";
-  then
-    exit 1 # unexpected
-  fi
+  # when
+  result=$(runChaosExperiments failFunction "${array[@]}")
 
-  echo "expected"
+  # then
+  echo "actual: $result"
+  echo "expected: $expected"
+  [ "$result" == "$expected" ]
 }
 
 @test "run experiment with failing runner and empty array - return PASSED" {
-  array=(1 2)
+  # given
+  array=()
+  expected="$(jq -nc '{testResult: "PASSED"}')"
 
-  if runChaosExperiments failFunction "${array[@]}";
-  then
-    exit 1 # unexpected
-  fi
+  # when
+  result=$(runChaosExperiments failFunction "${array[@]}")
 
-  echo "expected"
+  # then
+  echo "actual: $result"
+  echo "expected: $expected"
+  [ "$result" == "$expected" ]
 }
 
 @test "create failure message without args" {
