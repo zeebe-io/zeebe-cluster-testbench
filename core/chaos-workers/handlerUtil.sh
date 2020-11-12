@@ -86,6 +86,34 @@ createFailureMessage() {
      '{testResult: $result, testReport: {testResult: $result, failureMessages: $failures | split(","), failureCount: 1, metaData: {}}}'
 }
 
+createSuccessMessage() {
+  # Input is expected to be an array of values.
+  # Possible inputs are for example: ("Namespace not found" "Other Error")
+  # In order to convert them to an json array we join them first together as one string, with comma as separator.
+  # Result would be: "Namespace not found, Other Error". This makes it possible to use the jq split function,
+  # which converts the string to a correct json array: [ "Namespace not found", "Other Error" ].
+  # Previous we just split them on whitespaces, but this lead to problems on inputs with whitespaces.
+  # Because they then have be converted to: [ "Namespace", "not", "found", "Other", "Error" ].
+  args=( "$@" ) # get arguments as array
+  printf -v joined '%s,' "${args[@]}"
+
+  result=PASSED
+  # generate json result
+  jq -n \
+     --arg result "$result" \
+     --arg results "${joined%,}" \
+     '{testResult: $result, testReport: { testResult: $result, failureMessages: [], failureCount: 0, metaData: { results: $results | split(",") } } }'
+}
+
+
+createSkippedMessage() {
+  result=SKIPPED
+  # generate json result
+  jq -n \
+     --arg result "$result" \
+     '{testResult: $result, testReport: { testResult: $result, failureMessages: [], failureCount: 0, metaData: { results: [ "Skipped test. There were no experiments to run" ] } } }'
+}
+
 ################################################################################
 # RUN EXPERIMENTS ##############################################################
 ################################################################################
@@ -102,18 +130,40 @@ chaosRunner() {
 }
 
 runChaosExperiments() {
+  # The runner function which will be executed; useful for testing
   runner=$1
+
+  # expects as second argument an array of experiments to run
+  # uses $@ to get all arguments and creates a sublist from index 2
+  #
+  # 0 is the name of the function
+  # 1 is the runner function
+  # 2+ are the names of the experiments to run
+  experiments=( "${@:2}" )
+
+  metadata=()
+
   # run all experiments for cluster plan
-  for experiment in $2
+  for experiment in "${experiments[@]}"
   do
     if ! $runner "$experiment" &>> "$(generateLogFileName)";
     then
       resultMsg=$(createFailureMessage "$experiment failed")
       echo "$resultMsg"
       return 0 # if we return an error code the job worker would fail the job
+    else
+      metadata+=( "$experiment run successfully" )
     fi
   done
 
   # standard output will be consumed by worker to complete job
-  echo "{\"testResult\":\"PASSED\"}"
+  if [ ${#metadata[@]} -eq 0 ] # if metadata is empty we haven't executed any experiments
+  then
+    resultMsg=$(createSkippedMessage)
+    echo "$resultMsg"
+  else
+    resultMsg=$(createSuccessMessage "${metadata[@]}")
+    echo "$resultMsg"
+  fi
+
 }

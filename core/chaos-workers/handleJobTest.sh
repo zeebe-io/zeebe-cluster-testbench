@@ -58,18 +58,32 @@ variables=$(jq -n \
 
 noop() { :;}
 
-@test "run experiment with noop runner and empty arry - return PASSED" {
+@test "run experiment with noop runner and empty array - return SKIPPED" {
+  # given
   array=()
+  expected="$(jq -n '{testResult: "SKIPPED", testReport: { testResult: "SKIPPED", failureMessages: [], failureCount: 0, metaData: {results: [ "Skipped test. There were no experiments to run" ]}}}')"
+
+  # when
   result=$(runChaosExperiments noop "${array[@]}")
-  echo "$result"
-  [ "$result" == "{\"testResult\":\"PASSED\"}" ]
+
+  # then
+  echo "actual: $result"
+  echo "expected: $expected"
+  [ "$result" == "$expected" ]
 }
 
 @test "run experiment with noop runner and values in array - return PASSED" {
+  # given
   array=(1 2)
+  expected="$(jq -n '{testResult: "PASSED", testReport: { testResult: "PASSED", failureMessages: [], failureCount: 0, metaData: {results: [ "1 run successfully", "2 run successfully" ]}}}')"
+
+  # when
   result=$(runChaosExperiments noop "${array[@]}")
-  echo "$result"
-  [ "$result" == "{\"testResult\":\"PASSED\"}" ]
+
+  # then
+  echo "actual: $result"
+  echo "expected: $expected"
+  [ "$result" == "$expected" ]
 }
 
 failFunction() {
@@ -93,7 +107,7 @@ failFunction() {
 @test "run experiment with failing runner and empty array - return PASSED" {
   # given
   array=()
-  expected="$(jq -nc '{testResult: "PASSED"}')"
+  expected="$(jq -n '{testResult: "SKIPPED", testReport: { testResult: "SKIPPED", failureMessages: [], failureCount: 0, metaData: {results: [ "Skipped test. There were no experiments to run" ]}}}')"
 
   # when
   result=$(runChaosExperiments failFunction "${array[@]}")
@@ -170,3 +184,16 @@ failFunction() {
   [ "$failureMsg" == "$expected" ]
 }
 
+
+@test "create success message with multiple fail messages" {
+  # given
+  expected="$(jq -n '{ testResult: "PASSED", testReport: { testResult: "PASSED", failureMessages: [], failureCount: 0, metaData: {results: ["Run 1", "Run 2"]}}}')"
+
+  # when
+  failureMsg=$(createSuccessMessage "Run 1" "Run 2")
+
+  # then
+  echo "actual: $failureMsg"
+  echo "expected: $expected"
+  [ "$failureMsg" == "$expected" ]
+}
