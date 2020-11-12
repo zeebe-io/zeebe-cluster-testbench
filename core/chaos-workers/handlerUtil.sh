@@ -94,6 +94,13 @@ generateLogFileName() {
   echo "output-$(date +%Y%m%d).log"
 }
 
+chaosRunner() {
+  if [ -f "$1" ]
+  then
+    chaos run "$1"
+  fi
+}
+
 runChaosExperiments() {
   runner=$1
   # run all experiments for cluster plan

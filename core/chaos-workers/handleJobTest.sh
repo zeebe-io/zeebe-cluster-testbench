@@ -104,6 +104,20 @@ failFunction() {
   [ "$result" == "$expected" ]
 }
 
+@test "chaos runner should not fail if no files exist" {
+  # given
+  array=()
+  expected="$(jq -nc '{testResult: "PASSED"}')"
+
+  # when
+  result=$(runChaosExperiments chaosRunner "/tmp/*/files")
+
+  # then
+  echo "actual: $result"
+  echo "expected: $expected"
+  [ "$result" == "$expected" ]
+}
+
 @test "create failure message without args" {
   # given
   expected="$(jq -n '{testResult: "FAILED", failureMessages: [], failureCount: 1, metaData: {}}')"
@@ -142,7 +156,6 @@ failFunction() {
   echo "expected: $expected"
   [ "$failureMsg" == "$expected" ]
 }
-
 
 @test "create failure message with multiple fail messages" {
   # given
