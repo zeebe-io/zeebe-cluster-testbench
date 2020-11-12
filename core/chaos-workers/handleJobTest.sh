@@ -79,7 +79,7 @@ failFunction() {
 @test "run experiment with failing runner and values in array - return FAILED" {
   # given
   array=(1 2)
-  expected="$(jq -n '{testResult: "FAILED", failureMessages: ["1 failed"], failureCount: 1, metaData: {}}')"
+  expected="$(jq -n '{testResult: "FAILED", testReport: {testResult: "FAILED", failureMessages: ["1 failed"], failureCount: 1, metaData: {}}}')"
 
   # when
   result=$(runChaosExperiments failFunction "${array[@]}")
@@ -106,7 +106,7 @@ failFunction() {
 
 @test "create failure message without args" {
   # given
-  expected="$(jq -n '{testResult: "FAILED", failureMessages: [], failureCount: 1, metaData: {}}')"
+  expected="$(jq -n '{testResult: "FAILED", testReport: {testResult: "FAILED", failureMessages: [], failureCount: 1, metaData: {}}}')"
 
   # when
   failureMsg=$(createFailureMessage)
@@ -119,7 +119,7 @@ failFunction() {
 
 @test "create failure message with number as one arg" {
   # given
-  expected="$(jq -n '{testResult: "FAILED", failureMessages: ["2"], failureCount: 1, metaData: {}}')"
+  expected="$(jq -n '{testResult: "FAILED", testReport: {testResult: "FAILED", failureMessages: ["2"], failureCount: 1, metaData: {}}}')"
 
   # when
   failureMsg=$(createFailureMessage 2)
@@ -132,7 +132,7 @@ failFunction() {
 
 @test "create failure message with string as one arg" {
   # given
-  expected="$(jq -n '{testResult: "FAILED", failureMessages: ["2"], failureCount: 1, metaData: {}}')"
+  expected="$(jq -n '{testResult: "FAILED", testReport: {testResult: "FAILED", failureMessages: ["2"], failureCount: 1, metaData: {}}}')"
 
   # when
   failureMsg=$(createFailureMessage "2")
@@ -146,7 +146,7 @@ failFunction() {
 
 @test "create failure message with multiple fail messages" {
   # given
-  expected="$(jq -n '{testResult: "FAILED", failureMessages: ["2", "hallo"], failureCount: 1, metaData: {}}')"
+  expected="$(jq -n '{testResult: "FAILED", testReport: {testResult: "FAILED", failureMessages: ["2", "hallo"], failureCount: 1, metaData: {}}}')"
 
   # when
   failureMsg=$(createFailureMessage 2 "hallo")
