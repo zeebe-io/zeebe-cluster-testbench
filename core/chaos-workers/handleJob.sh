@@ -46,6 +46,11 @@ kubectl get pods &>> "$logFile"
 
 cd "zeebe-chaos/chaos-experiments/camunda-cloud/" || exit 1
 
+# deploy workers which are needed in some of our chaos experiments
+# Be aware that we are not delete them here, since if the experiments fails we might want to check
+# the logs of the workers AND they are deleted if we delete the namespace anyway.
+kubectl apply -f worker.yaml &>> "$logFile"
+
 # add scripts to path
 PATH="$PATH:$(pwd)/scripts/"
 export PATH
