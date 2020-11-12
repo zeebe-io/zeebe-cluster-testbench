@@ -53,8 +53,4 @@ export PATH
 # Get latest state of the repo
 git pull origin master &>> "$logFile"
 
-chaosRunner() {
-  chaos run "$1"
-}
-
 runChaosExperiments chaosRunner "$clusterPlan"/*/experiment.json
