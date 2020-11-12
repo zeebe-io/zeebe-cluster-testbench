@@ -83,7 +83,7 @@ createFailureMessage() {
   jq -n \
      --arg result "$result" \
      --arg failures "${joined%,}" \
-     '{testResult: $result, failureMessages: $failures | split(","), failureCount: 1, metaData: {}}'
+     '{testResult: $result, testReport: {testResult: $result, failureMessages: $failures | split(","), failureCount: 1, metaData: {}}}'
 }
 
 ################################################################################
