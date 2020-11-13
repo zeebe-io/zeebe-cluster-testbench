@@ -97,6 +97,7 @@ pipeline {
                 }
                 dir('scripts') {
                     println("Check general script`s with shellcheck (linter).")
+                    sh 'touch credentials'
                     sh 'shellcheck -x *.sh'
                     println("Scripts are fine.")
                 }
