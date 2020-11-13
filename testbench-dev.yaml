@@ -1,0 +1,89 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: testbench
+  labels:
+    app: testbench
+spec:
+  selector:
+    matchLabels:
+      app: testbench
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: testbench
+    spec:
+      containers:
+        - name: testbench
+          image: gcr.io/zeebe-io/zeebe-cluster-testbench:dev
+          imagePullPolicy: Always
+          env:
+            - name: ZCTB_AUTHENTICATION_SERVER_URL
+              value: "https://login.cloud.dev.ultrawombat.com/oauth/token"
+            - name: ZCTB_CLIENT_ID
+              value: "cOf2ryfrDoCaHqXFwrQm7y7n9yEP4Imp"
+            - name: ZCTB_CLIENT_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: testbench-secrets
+                  key: clientSecret
+            - name: ZCTB_CONTACT_POINT
+              valueFrom:
+                secretKeyRef:
+                  name: testbench-secrets
+                  key: contactPoint
+            - name: ZCTB_CLOUD_API_URL
+              value: "https://console.cloud.dev.ultrawombat.com/customer-api/"
+            - name: ZCTB_CLOUD_AUDIENCE
+              value: "api.cloud.dev.ultrawombat.com"
+            - name: ZCTB_CLOUD_AUTHENTICATION_SERVER_URL
+              value: "https://login.cloud.dev.ultrawombat.com/oauth/token"
+            - name: ZCTB_CLOUD_CLIENT_ID
+              value: "VfebeBObQjDo~uPN"
+            - name: ZCTB_CLOUD_CLIENT_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: testbench-secrets
+                  key: cloudClientSecret
+            - name: ZCTB_INTERNAL_CLOUD_AUTHENTICATION_SERVER_URL
+              value: "https://weblogin.cloud.dev.ultrawombat.com/oauth/token"
+            - name: ZCTB_INTERNAL_CLOUD_API_URL
+              value: "https://console.cloud.dev.ultrawombat.com/"
+            - name: ZCTB_INTERNAL_CLOUD_AUDIENCE
+              value: "cloud.dev.ultrawombat.com"
+            - name: ZCTB_INTERNAL_CLOUD_CLIENT_ID
+              value: "JwL6DqOVmmROA3DGXXqyDyU1BJ5FCfM5"
+            - name: ZCTB_INTERNAL_CLOUD_CLIENT_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: testbench-secrets
+                  key: internalCloudClientSecret
+            - name: ZCTB_INTERNAL_CLOUD_USERNAME
+              value: "zeebe@camunda.com"
+            - name: ZCTB_INTERNAL_CLOUD_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: testbench-secrets
+                  key: internalCloudPassword
+            - name: ZCTB_SHEETS_API_KEYFILE_CONTENT
+              valueFrom:
+                secretKeyRef:
+                  name: testbench-secrets
+                  key: sheetsApiKeyfileContent
+            - name: ZCTB_REPORT_SHEET_ID
+              value: "1l3ofIIHKHWTjRs1IpZYl1ULMfqkyGpL7JRarkR0of94"
+            - name: ZCTB_SLACK_TOKEN
+              valueFrom:
+                secretKeyRef:
+                  name: testbench-secrets
+                  key: slackToken
+            - name: ZCTB_SLACK_CHANNEL
+              value: "#slack-bot-dev"
+          resources:
+            limits:
+              cpu: 4
+              memory: 256Mi
+            requests:
+              cpu: 2
+              memory: 100Mi
