@@ -18,7 +18,7 @@ elif [ "${tag}" = "dev" ]; then
   echo "Deploying :dev to 'dev' stage / 'testbench-dev' namespace"  
   suffix="-dev"
 else 
-  echo "Unknown tag '${tag}'"
+  echo "Unknown tag '${tag}'. Please provide the tag 'dev' or 'latest'"
   exit 1
 fi  
 
