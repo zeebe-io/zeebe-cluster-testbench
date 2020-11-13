@@ -22,9 +22,9 @@ pipeline {
     }
 
     environment {
-        NEXUS = credentials("camunda-nexus")
-        DOCKER_GCR = credentials("zeebe-gcr-serviceaccount-json")
-        SA_CREDENTIALS = credentials("zeebe-jenkins-deploy-serviceaccount-json")
+        NEXUS = credentials('camunda-nexus')
+        DOCKER_GCR = credentials('zeebe-gcr-serviceaccount-json')
+        SA_CREDENTIALS = credentials('zeebe-jenkins-deploy-serviceaccount-json')
     }
 
     parameters {
@@ -39,13 +39,13 @@ pipeline {
         steps {
             script {
                 commit_summary = sh([returnStdout: true, script: 'git show -s --format=%s']).trim()
-                displayNameFull = "#" + BUILD_NUMBER + ': ' + commit_summary
+                displayNameFull = '#' + BUILD_NUMBER + ': ' + commit_summary
 
                 if (displayNameFull.length() <= 45) {
                     currentBuild.displayName = displayNameFull
                 } else {
                     displayStringHardTruncate = displayNameFull.take(45)
-                    currentBuild.displayName = displayStringHardTruncate.take(displayStringHardTruncate.lastIndexOf(" "))
+                    currentBuild.displayName = displayStringHardTruncate.take(displayStringHardTruncate.lastIndexOf(' '))
                 }
             }
             container('maven') {
@@ -67,8 +67,8 @@ pipeline {
 
         post {
             always {
-                junit testResults: "**/*/surefire-reports/TEST-*.xml", keepLongStdio: true
-                // junit testResults: "**/*/failsafe-reports/TEST-*.xml", keepLongStdio: true
+                junit testResults: '**/*/surefire-reports/TEST-*.xml', keepLongStdio: true
+                // junit testResults: '**/*/failsafe-reports/TEST-*.xml', keepLongStdio: true
 
                 jacoco(
                     execPattern: '**/*.exec',
@@ -76,11 +76,11 @@ pipeline {
                     sourcePattern: '**/src/main/java',
                     runAlways: true
                 )
-                zip zipFile: 'test-coverage-reports.zip', archive: true, glob: "**/target/site/jacoco/**"
+                zip zipFile: 'test-coverage-reports.zip', archive: true, glob: '**/target/site/jacoco/**'
             }
             failure {
-                zip zipFile: 'test-reports.zip', archive: true, glob: "**/*/surefire-reports/**"
-                archive "**/hs_err_*.log"
+                zip zipFile: 'test-reports.zip', archive: true, glob: '**/*/surefire-reports/**'
+                archive '**/hs_err_*.log'
             }
         }
         }
@@ -132,8 +132,8 @@ pipeline {
                     */
                     sh 'set +x ; echo ${DOCKER_GCR} | docker login -u _json_key --password-stdin https://gcr.io ; set -x'
 
-                    sh "docker build -t gcr.io/zeebe-io/zeebe-cluster-testbench:${env.TAG} ."
-                    sh "docker push gcr.io/zeebe-io/zeebe-cluster-testbench:${env.TAG}"
+                    sh 'docker build -t gcr.io/zeebe-io/zeebe-cluster-testbench:${TAG} .'
+                    sh 'docker push gcr.io/zeebe-io/zeebe-cluster-testbench:${TAG}'
                     withVault([vaultSecrets: [
                             [path: 'secret/common/ci-zeebe/zeebe-chaos-service-account', secretValues: [
                                     [vaultKey: 'token'],
@@ -141,8 +141,8 @@ pipeline {
                     ]]) {
 
                         dir('core/chaos-workers/') {
-                            sh "docker build . -t gcr.io/zeebe-io/zeebe-cluster-testbench-chaos:${env.TAG} --build-arg TOKEN=${env.token}"
-                            sh "docker push gcr.io/zeebe-io/zeebe-cluster-testbench-chaos:${env.TAG}"
+                            sh 'docker build . -t gcr.io/zeebe-io/zeebe-cluster-testbench-chaos:${TAG} --build-arg TOKEN=${token}'
+                            sh 'docker push gcr.io/zeebe-io/zeebe-cluster-testbench-chaos:${TAG}'
                         }
                     }
                 }
@@ -150,7 +150,7 @@ pipeline {
 
                 container('gcloud') {
                     sh '.ci/scripts/prepare-deploy.sh'
-                    sh ".ci/scripts/deploy.sh ${env.TAG}"
+                    sh '.ci/scripts/deploy.sh ${TAG}'
                 }
             }
         }
@@ -192,7 +192,7 @@ pipeline {
             script {
                 if (agentDisconnected()) {
                     currentBuild.result = 'ABORTED'
-                    currentBuild.description = "Aborted due to connection error"
+                    currentBuild.description = 'Aborted due to connection error'
                     build job: currentBuild.projectName, propagate: false, quietPeriod: 20, wait: false
                 }
             }
@@ -205,7 +205,7 @@ pipeline {
                 }
 
                 slackSend(
-                    channel: "#zeebe-testbench-ci",
+                    channel: '#zeebe-testbench-ci',
                     message: "Zeebe Cluster Testbench failed on ${env.BRANCH_NAME} for build ${currentBuild.absoluteUrl}"
             )
             }
@@ -214,5 +214,5 @@ pipeline {
 }
 
 def getTag() {
-    return params.DEPLOY_TO_DEV ? "dev" : "latest"
+    return params.DEPLOY_TO_DEV ? 'dev' : 'latest'
 }
