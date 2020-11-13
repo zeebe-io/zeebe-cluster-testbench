@@ -31,7 +31,7 @@ pipeline {
     booleanParam(name: 'DEPLOY_TO_DEV', defaultValue: false, description: 'Should this version be deployed to dev stage (by default master will deploy to int stage; other branches do not deploy at all)');
     booleanParam(name: 'RELEASE', defaultValue: false, description: 'Build a release from current commit?')
     string(name: 'RELEASE_VERSION', defaultValue: '0.X.0', description: 'Which version to release?')
-    string(name: 'DEVELOPMENT_VERSION', defaultValue: '0.Y.0-SNAPSHOT', description: 'Next development version?')    
+    string(name: 'DEVELOPMENT_VERSION', defaultValue: '0.Y.0-SNAPSHOT', description: 'Next development version?')
   }
 
   stages {
@@ -114,15 +114,15 @@ pipeline {
     }
 
     stage('Deploy') {
-    	when { 
+    	when {
     	   anyOf {
     	       branch 'master'
     	       expression { params.DEPLOY_TO_DEV }
-    	   } 
+    	   }
     	}
-    	
+
         environment {
-            TAG = getTag()            
+            TAG = getTag()
         }
 
     	steps {
@@ -194,21 +194,21 @@ pipeline {
                     currentBuild.result = 'ABORTED'
                     currentBuild.description = "Aborted due to connection error"
                   build job: currentBuild.projectName, propagate: false, quietPeriod: 20, wait: false
-              }                     
+              }
           }
       }
-      
+
     failure {
         script {
             if (env.BRANCH_NAME != 'master' || agentDisconnected()) {
                 return
             }
-           
-            slackSend( 
+
+            slackSend(
                 channel: "#zeebe-testbench-ci",
                 message: "Zeebe Cluster Testbench failed on ${env.BRANCH_NAME} for build ${currentBuild.absoluteUrl}"
-           )    
-        }       
+           )
+        }
       }
   }
 }
