@@ -201,7 +201,7 @@ failFunction() {
 }
 
 
-@test "create success message with multiple fail messages" {
+@test "create success message with multiple result messages" {
   # given
   expected="$(jq -n '{ testResult: "PASSED", testReport: { testResult: "PASSED", failureMessages: [], failureCount: 0, metaData: {results: ["Run 1", "Run 2"]}}}')"
 
