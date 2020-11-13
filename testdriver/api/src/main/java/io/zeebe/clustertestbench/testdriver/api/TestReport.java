@@ -7,7 +7,8 @@ public interface TestReport {
 
   public enum TestResult {
     PASSED,
-    FAILED
+    FAILED,
+    SKIPPED // currently used by the chaos experiments
   }
 
   TestResult getTestResult();

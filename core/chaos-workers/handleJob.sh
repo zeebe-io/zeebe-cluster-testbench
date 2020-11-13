@@ -58,4 +58,15 @@ export PATH
 # Get latest state of the repo
 git pull origin master &>> "$logFile"
 
+
+# We using a glob to get all experiments for a clusterplan, but if no files exist
+# the glob is replaced with itself. To avoid that we use nullglob, which will replace it with null.
+#
+# Shell expansion:  https://tldp.org/LDP/Bash-Beginners-Guide/html/sect_03_04.html
+# Bash loop over a list of (non-existing) files https://www.endpoint.com/blog/2016/12/12/bash-loop-wildcards-nullglob-failglob
+# Shopts: https://www.gnu.org/software/bash/manual/html_node/The-Shopt-Builtin.html
+#
+# This makes the implementation easier, since we get an empty array as parameter, which means we skip the execution and mark the job as skipped. 
+shopt -s nullglob
 runChaosExperiments chaosRunner "$clusterPlan"/*/experiment.json
+shopt -u nullglob
