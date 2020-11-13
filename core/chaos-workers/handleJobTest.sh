@@ -118,10 +118,26 @@ failFunction() {
   [ "$result" == "$expected" ]
 }
 
-@test "chaos runner should not fail if no files exist" {
+@test "run experiments should skip if glob is null" {
   # given
   array=()
-  expected="$(jq -nc '{testResult: "PASSED"}')"
+  expected="$(jq -n '{testResult: "SKIPPED", testReport: { testResult: "SKIPPED", failureMessages: [], failureCount: 0, metaData: {results: [ "Skipped test. There were no experiments to run" ]}}}')"
+
+  # when
+  shopt -s nullglob
+  result=$(runChaosExperiments chaosRunner /tmp/*/files)
+  shopt -u nullglob
+
+  # then
+  echo "actual: $result"
+  echo "expected: $expected"
+  [ "$result" == "$expected" ]
+}
+
+@test "chaos runner should not fail if file not exist" {
+  # given
+  array=()
+  expected="$(jq -n '{testResult: "PASSED", testReport: { testResult: "PASSED", failureMessages: [], failureCount: 0, metaData: {results: [ "/tmp/*/files run successfully" ]}}}')"
 
   # when
   result=$(runChaosExperiments chaosRunner "/tmp/*/files")
