@@ -223,7 +223,7 @@ runChaosExperiments() {
       firstFailedTime=$(nowMs)
       break
     else
-      metadata+=( "$experiment run successfully" )
+      metadata+=( "$experiment completed successfully" )
     fi
   done
 

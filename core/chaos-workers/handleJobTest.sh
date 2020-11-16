@@ -83,8 +83,8 @@ noop() { :;}
   echo "actual: $result"
 
   [[ "$result" == *"PASSED"* ]]
-  [[ "$result" == *"1 run successfully"* ]]
-  [[ "$result" == *"2 run successfully"* ]]
+  [[ "$result" == *"1 completed successfully"* ]]
+  [[ "$result" == *"2 completed successfully"* ]]
 }
 
 failFunction() {
@@ -145,7 +145,7 @@ failFunction() {
   echo "actual: $result"
 
   [[ "$result" == *"PASSED"* ]]
-  [[ "$result" == *"/tmp/*/files run successfully"* ]]
+  [[ "$result" == *"/tmp/*/files completed successfully"* ]]
 }
 
 @test "create failure message with no meta data" {
