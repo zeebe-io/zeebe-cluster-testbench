@@ -30,6 +30,48 @@ This test will fail, if any of the following conditions occur:
 
 In case of backpressure the iteration will be repeated. The time spent making requests that return backpressure responses and repeating those requests is included in the overall execution time, which must be smaller than _maxTimeForCompleteTest_ for the test to pass.
 
+### Sequential Test Workflow
+This workflow runs the sequential test in a given cluster in Camunda Cloud:
+
+![sequential-test](docs/assets/sequential-test.png "Sequential Test workflow")
+
+**Workflow ID:** `sequential-test`
+
+| Inputs | Description | Type |
+| ------ | ----------- | ---- |
+| `testParams` | Settings to parameterize the sequential test | `SequentialTestParameters` |
+| `authenticationDetails` | Credentials to authenticate against the cluster | `CamundaCloudAutenticationDetails` |
+
+| Outputs | Description | Type |
+| ------- | ----------- | ---- |
+| `testReport` | test report | `TestReport` |
+| `testResult` | test result | `TestResult` |
+
+## Chaos Test
+This test runs a repertoire of [chaos experiments](https://github.com/zeebe-io/zeebe-chaos) against a given cluster. Different experiments run in sequence.
+
+The set of experiemnts to run depends on the cluster plan.
+
+See [inventoriy](https://github.com/zeebe-io/zeebe-chaos/blob/master/inventory.md) for more information on the available tests.
+
+### Chaos Test Workflow
+This workflow runs the chaos test in a given cluster in Camunda Cloud:
+
+![chaos-test](docs/assets/chaos-test.png "Chaos Test workflow")
+
+**Workflow ID:** `chaos-test`
+
+| Inputs | Description | Type |
+| ------ | ----------- | ---- |
+| `clusterPlan` | name of the cluster plan for the cluster; used to differentiate the chaos experiments | `String` |
+| `testParams` | Settings to parameterize the chaos test | tbd |
+| `authenticationDetails` | Credentials to authenticate against the cluster | `CamundaCloudAutenticationDetails` |
+
+| Outputs | Description | Type |
+| ------- | ----------- | ---- |
+| `testReport` | test report | `TestReport` |
+| `testResult` | test result | `TestResult` |
+
 ### Test Workflows
 The testbench deploys several workflows to orchestrate the test execution. The work flows reference each other - a higher level workflow will call a lower level workflow.
 However, lower level workflows can also be called directly if only a certain test execution is wanted.
@@ -123,41 +165,6 @@ The cluster parameters shall be given as name and UUID. The UUIDs are used to cr
 | `testReport` | test report | `TestReport` |
 | `testResult` | test result | `TestResult` |
 
-
-##### Sequential Test
-This workflow runs the sequential test in a fresh cluster in Camunda Cloud:
-
-![sequential-test](docs/assets/sequential-test.png "Sequential Test workflow")
-
-**Workflow ID:** `sequential-test`
-
-| Inputs | Description | Type |
-| ------ | ----------- | ---- |
-| `testParams` | Settings to parameterize the sequential test | `SequentialTestParameters` |
-| `authenticationDetails` | Credentials to authenticate against the cluster | `CamundaCloudAutenticationDetails` |
-
-| Outputs | Description | Type |
-| ------- | ----------- | ---- |
-| `testReport` | test report | `TestReport` |
-| `testResult` | test result | `TestResult` |
-
-##### Chaos Test
-This workflow runs the chaos test in a fresh cluster in Camunda Cloud:
-
-![chaos-test](docs/assets/chaos-test.png "Chaos Test workflow")
-
-**Workflow ID:** `chaos-test`
-
-| Inputs | Description | Type |
-| ------ | ----------- | ---- |
-| `clusterPlan` | name of the cluster plan for the cluster; used to differentiate the chaos experiments | `String` |
-| `testParams` | Settings to parameterize the chaos test | tbd |
-| `authenticationDetails` | Credentials to authenticate against the cluster | `CamundaCloudAutenticationDetails` |
-
-| Outputs | Description | Type |
-| ------- | ----------- | ---- |
-| `testReport` | test report | `TestReport` |
-| `testResult` | test result | `TestResult` |
 
 ### Test Protocols
 #### Daily Test
