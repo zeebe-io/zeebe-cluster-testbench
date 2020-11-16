@@ -1,3 +1,16 @@
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: chaos-data-claim
+  labels:
+    app: chaos-data
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 20Gi
+---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -40,3 +53,10 @@ spec:
           requests:
             cpu: 2
             memory: 100Mi
+        volumeMounts:
+        - name: data
+          mountPath: /home/chaos/data
+      volumes:
+      - name: data
+        persistentVolumeClaim:
+          claimName: chaos-data-claim

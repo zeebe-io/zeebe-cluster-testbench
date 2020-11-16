@@ -179,7 +179,7 @@ nowMs() {
 ################################################################################
 
 generateLogFileName() {
-  echo "output-$(date +%Y%m%d).log"
+  echo "/home/chaos/data/output-$(date +%Y%m%d).log"
 }
 
 chaosRunner() {
