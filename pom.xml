@@ -51,7 +51,7 @@
 		<version.junit>5.7.0</version.junit>
 		<version.slf4j>1.7.30</version.slf4j>
 		<version.log4j>2.13.3</version.log4j>
-		<version.assertj>3.18.0</version.assertj>
+		<version.assertj>3.18.1</version.assertj>
 		<version.workflowgenerator>1.0.1</version.workflowgenerator>
 		<version.jackson>2.11.3</version.jackson>
 		<version.mockito>3.6.0</version.mockito>
