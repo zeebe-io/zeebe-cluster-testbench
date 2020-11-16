@@ -46,6 +46,8 @@ spec:
               secretKeyRef:
                 name: testbench-secrets
                 key: contactPoint
+          - name: CHAOS_LOG_HOME
+            value: "/home/chaos/data"
         resources:
           limits:
             cpu: 4
