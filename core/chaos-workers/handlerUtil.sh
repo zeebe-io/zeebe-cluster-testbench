@@ -4,7 +4,7 @@
 
 # reads complete standard input
 readStandardIn() {
-  cat - 
+  cat -
 }
 
 ################################################################################
@@ -68,6 +68,10 @@ extractTargetNamespace() {
 #}
 
 createFailureMessage() {
+  failureMsg="$1"
+  startTime="$2"
+  endTime="$3"
+  failTime="$4"
   # Input is expected to be an array of values.
   # Possible inputs are for example: ("Namespace not found" "Other Error")
   # In order to convert them to an json array we join them first together as one string, with comma as separator.
@@ -75,18 +79,36 @@ createFailureMessage() {
   # which converts the string to a correct json array: [ "Namespace not found", "Other Error" ].
   # Previous we just split them on whitespaces, but this lead to problems on inputs with whitespaces.
   # Because they then have be converted to: [ "Namespace", "not", "found", "Other", "Error" ].
-  args=( "$@" ) # get arguments as array
+  args=( "${@:5}" ) # get arguments as array
   printf -v joined '%s,' "${args[@]}"
 
   result=FAILED
   # generate json result
   jq -n \
      --arg result "$result" \
-     --arg failures "${joined%,}" \
-     '{testResult: $result, testReport: {testResult: $result, failureMessages: $failures | split(","), failureCount: 1, metaData: {}}}'
+     --arg failures "$failureMsg" \
+     --arg startTime "$startTime" \
+     --arg endTime "$endTime" \
+     --arg failTime "$failTime" \
+     --arg meta "${joined%,}" \
+     '{testResult: $result,
+       testReport: {
+         testResult: $result,
+         failureMessages: $failures | split(","),
+         failureCount: 1,
+         metaData: {
+             results: $meta | split(",")
+         },
+           startTime: $startTime | tonumber,
+           endTime: $endTime | tonumber,
+           timeOfFirstFailure: $failTime | tonumber
+       }
+      }'
 }
 
 createSuccessMessage() {
+  startTime="$1"
+  endTime="$2"
   # Input is expected to be an array of values.
   # Possible inputs are for example: ("Namespace not found" "Other Error")
   # In order to convert them to an json array we join them first together as one string, with comma as separator.
@@ -94,24 +116,62 @@ createSuccessMessage() {
   # which converts the string to a correct json array: [ "Namespace not found", "Other Error" ].
   # Previous we just split them on whitespaces, but this lead to problems on inputs with whitespaces.
   # Because they then have be converted to: [ "Namespace", "not", "found", "Other", "Error" ].
-  args=( "$@" ) # get arguments as array
+  args=( "${@:3}" ) # get arguments as array
   printf -v joined '%s,' "${args[@]}"
 
   result=PASSED
   # generate json result
   jq -n \
      --arg result "$result" \
+     --arg startTime "$startTime" \
+     --arg endTime "$endTime" \
      --arg results "${joined%,}" \
-     '{testResult: $result, testReport: { testResult: $result, failureMessages: [], failureCount: 0, metaData: { results: $results | split(",") } } }'
+     '{testResult: $result,
+         testReport: {
+           testResult: $result,
+           failureMessages: [],
+           failureCount: 0,
+           metaData: {
+             results: $results | split(",")
+           },
+           startTime: $startTime | tonumber,
+           endTime: $endTime | tonumber,
+           timeOfFirstFailure: 0
+         }
+      }'
 }
 
 
 createSkippedMessage() {
   result=SKIPPED
+  time="$1"
+
   # generate json result
   jq -n \
      --arg result "$result" \
-     '{testResult: $result, testReport: { testResult: $result, failureMessages: [], failureCount: 0, metaData: { results: [ "Skipped test. There were no experiments to run" ] } } }'
+     --arg time "$time" \
+     '{
+       testResult: $result,
+       testReport: {
+         testResult: $result,
+         failureMessages: [],
+         failureCount: 0,
+         metaData: {
+           results: [ "Skipped test. There were no experiments to run" ]
+         },
+         startTime: $time | tonumber,
+         endTime: $time | tonumber,
+         timeOfFirstFailure: 0
+       }
+      }'
+}
+
+# https://serverfault.com/questions/151109/how-do-i-get-the-current-unix-time-in-milliseconds-in-bash
+nowMs() {
+  # %s gives the seconds since begin of epoch
+  # %N gives nanoseconds since begin of epoch
+  # 3 before N trims it to 3 most significant digits (which are ms)
+  date +%s%3N
 }
 
 ################################################################################
@@ -141,29 +201,42 @@ runChaosExperiments() {
   # 2+ are the names of the experiments to run
   experiments=( "${@:2}" )
 
+  if [ ${#experiments[@]} -eq 0 ] # if experiments is empty we skip execution
+  then
+    time=$(nowMs)
+    resultMsg=$(createSkippedMessage "$time")
+    echo "$resultMsg"
+    return 0
+  fi
+
   metadata=()
+  startTime=$(nowMs)
+  firstFailedTime=0
+  result="PASSED"
 
   # run all experiments for cluster plan
   for experiment in "${experiments[@]}"
   do
     if ! $runner "$experiment" &>> "$(generateLogFileName)";
     then
-      resultMsg=$(createFailureMessage "$experiment failed")
-      echo "$resultMsg"
-      return 0 # if we return an error code the job worker would fail the job
+      result="$experiment failed"
+      firstFailedTime=$(nowMs)
+      break
     else
       metadata+=( "$experiment run successfully" )
     fi
   done
 
-  # standard output will be consumed by worker to complete job
-  if [ ${#metadata[@]} -eq 0 ] # if metadata is empty we haven't executed any experiments
+  endTime=$(nowMs)
+  resultMsg=""
+
+  if [ "$result" == "PASSED" ]
   then
-    resultMsg=$(createSkippedMessage)
-    echo "$resultMsg"
+    resultMsg=$(createSuccessMessage "$startTime" "$endTime" "${metadata[@]}")
   else
-    resultMsg=$(createSuccessMessage "${metadata[@]}")
-    echo "$resultMsg"
+    resultMsg=$(createFailureMessage "$result" "$startTime" "$endTime" "$firstFailedTime" "${metadata[@]}")
   fi
 
+  # standard output will be consumed by worker to complete job
+  echo "$resultMsg"
 }
