@@ -21,7 +21,7 @@
 
 	<properties>
 		<version.jaxrs>3.0.12.Final</version.jaxrs>
-		<version.google-api>1.30.11</version.google-api>
+		<version.google-api>1.31.0</version.google-api>
 		<version.google-sheets-api>v4-rev20200922-1.30.10</version.google-sheets-api>
 		<version.slack-api>1.2.1</version.slack-api>
 		<version.google-http-client>1.38.0</version.google-http-client>
