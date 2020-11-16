@@ -11,45 +11,30 @@
       <bpmn:incoming>Flow_1xkg9is</bpmn:incoming>
       <bpmn:outgoing>Flow_0bsewxi</bpmn:outgoing>
     </bpmn:serviceTask>
-    <bpmn:serviceTask id="Activity_1lxc9qm" name="Record Test Result">
-      <bpmn:extensionElements>
-        <zeebe:taskDefinition type="record-test-result-job" />
-      </bpmn:extensionElements>
-      <bpmn:incoming>Flow_0bsewxi</bpmn:incoming>
-      <bpmn:outgoing>Flow_1nfc906</bpmn:outgoing>
-    </bpmn:serviceTask>
-    <bpmn:sequenceFlow id="Flow_0bsewxi" sourceRef="Activity_0s99tvu" targetRef="Activity_1lxc9qm" />
+    <bpmn:sequenceFlow id="Flow_0bsewxi" sourceRef="Activity_0s99tvu" targetRef="Event_1yy8y2c" />
     <bpmn:sequenceFlow id="Flow_1xkg9is" sourceRef="StartEvent_1" targetRef="Activity_0s99tvu" />
     <bpmn:endEvent id="Event_1yy8y2c">
-      <bpmn:incoming>Flow_1nfc906</bpmn:incoming>
+      <bpmn:incoming>Flow_0bsewxi</bpmn:incoming>
     </bpmn:endEvent>
-    <bpmn:sequenceFlow id="Flow_1nfc906" sourceRef="Activity_1lxc9qm" targetRef="Event_1yy8y2c" />
   </bpmn:process>
   <bpmndi:BPMNDiagram id="BPMNDiagram_1">
     <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="sequential-test">
-      <bpmndi:BPMNEdge id="Flow_0bsewxi_di" bpmnElement="Flow_0bsewxi">
-        <di:waypoint x="350" y="117" />
-        <di:waypoint x="390" y="117" />
-      </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_1xkg9is_di" bpmnElement="Flow_1xkg9is">
         <di:waypoint x="215" y="117" />
-        <di:waypoint x="250" y="117" />
+        <di:waypoint x="260" y="117" />
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_1nfc906_di" bpmnElement="Flow_1nfc906">
-        <di:waypoint x="490" y="117" />
-        <di:waypoint x="532" y="117" />
+      <bpmndi:BPMNEdge id="Flow_0bsewxi_di" bpmnElement="Flow_0bsewxi">
+        <di:waypoint x="360" y="117" />
+        <di:waypoint x="412" y="117" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNShape id="_BPMNShape_StartEvent_2" bpmnElement="StartEvent_1">
         <dc:Bounds x="179" y="99" width="36" height="36" />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_1lxc9qm_di" bpmnElement="Activity_1lxc9qm">
-        <dc:Bounds x="390" y="77" width="100" height="80" />
+      <bpmndi:BPMNShape id="Activity_0s99tvu_di" bpmnElement="Activity_0s99tvu">
+        <dc:Bounds x="260" y="77" width="100" height="80" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Event_1yy8y2c_di" bpmnElement="Event_1yy8y2c">
-        <dc:Bounds x="532" y="99" width="36" height="36" />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_0s99tvu_di" bpmnElement="Activity_0s99tvu">
-        <dc:Bounds x="250" y="77" width="100" height="80" />
+        <dc:Bounds x="412" y="99" width="36" height="36" />
       </bpmndi:BPMNShape>
     </bpmndi:BPMNPlane>
   </bpmndi:BPMNDiagram>

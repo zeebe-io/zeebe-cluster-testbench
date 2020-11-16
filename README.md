@@ -134,20 +134,13 @@ This workflow runs the sequential test in a fresh cluster in Camunda Cloud:
  
 | Inputs | Description | Type |
 | ------ | ----------- | ---- |
-| `generation` | name of the generation for the cluster | `String` |
-| `clusterPlan` | name of the cluster plan for the cluster | `String` |
-| `channel` | name of the channel for the cluster | `String` |
-| `region` | name of the region for the cluster | `String` |
 | `testParams` | Settings to parameterize the sequential test | `SequentialTestParameters` |
-
-The cluster parameters shall be given as name. The names are used for the recording of test results
 
 | Runtime Variables | Description | Type |
 | ----------------- | ----------- | ---- |
 | `clusterId` | ID of the cluster in which Zeebe is tested | `String` |
 | `clusterName` | Name of the cluster in which Zeebe is tested | `String` |
 | `authenticationDetails` | Credentials to authenticate against the cluster | `CamundaCloudAutenticationDetails` |
-| `operateURL` | URL to Operate web interface | `String` |
 
 | Outputs | Description | Type |
 | ------- | ----------- | ---- |
@@ -163,20 +156,14 @@ This workflow runs the chaos test in a fresh cluster in Camunda Cloud:
  
 | Inputs | Description | Type |
 | ------ | ----------- | ---- |
-| `generation` | name of the generation for the cluster | `String` |
-| `clusterPlan` | name of the cluster plan for the cluster | `String` |
-| `channel` | name of the channel for the cluster | `String` |
-| `region` | name of the region for the cluster | `String` |
+| `clusterPlan` | name of the cluster plan for the cluster; used to differentiate the chaos experiments | `String` |
 | `testParams` | Settings to parameterize the chaos test | tbd |
-
-The cluster parameters shall be given as name. The names are used for the recording of test results
 
 | Runtime Variables | Description | Type |
 | ----------------- | ----------- | ---- |
 | `clusterId` | ID of the cluster in which Zeebe is tested | `String` |
 | `clusterName` | Name of the cluster in which Zeebe is tested | `String` |
 | `authenticationDetails` | Credentials to authenticate against the cluster | `CamundaCloudAutenticationDetails` |
-| `operateURL` | URL to Operate web interface | `String` |
 
 | Outputs | Description | Type |
 | ------- | ----------- | ---- |

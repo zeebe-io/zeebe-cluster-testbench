@@ -61,29 +61,30 @@ noop() { :;}
 @test "run experiment with noop runner and empty array - return SKIPPED" {
   # given
   array=()
-  expected="$(jq -n '{testResult: "SKIPPED", testReport: { testResult: "SKIPPED", failureMessages: [], failureCount: 0, metaData: {results: [ "Skipped test. There were no experiments to run" ]}}}')"
 
   # when
   result=$(runChaosExperiments noop "${array[@]}")
 
   # then
   echo "actual: $result"
-  echo "expected: $expected"
-  [ "$result" == "$expected" ]
+
+  [[ "$result" == *"SKIPPED"* ]]
+  [[ "$result" == *"Skipped test. There were no experiments to run"* ]]
 }
 
 @test "run experiment with noop runner and values in array - return PASSED" {
   # given
   array=(1 2)
-  expected="$(jq -n '{testResult: "PASSED", testReport: { testResult: "PASSED", failureMessages: [], failureCount: 0, metaData: {results: [ "1 run successfully", "2 run successfully" ]}}}')"
 
   # when
   result=$(runChaosExperiments noop "${array[@]}")
 
   # then
   echo "actual: $result"
-  echo "expected: $expected"
-  [ "$result" == "$expected" ]
+
+  [[ "$result" == *"PASSED"* ]]
+  [[ "$result" == *"1 completed successfully"* ]]
+  [[ "$result" == *"2 completed successfully"* ]]
 }
 
 failFunction() {
@@ -93,35 +94,34 @@ failFunction() {
 @test "run experiment with failing runner and values in array - return FAILED" {
   # given
   array=(1 2)
-  expected="$(jq -n '{testResult: "FAILED", testReport: {testResult: "FAILED", failureMessages: ["1 failed"], failureCount: 1, metaData: {}}}')"
 
   # when
   result=$(runChaosExperiments failFunction "${array[@]}")
 
   # then
   echo "actual: $result"
-  echo "expected: $expected"
-  [ "$result" == "$expected" ]
+
+  [[ "$result" == *"FAILED"* ]]
+  [[ "$result" == *"1 failed"* ]]
 }
 
-@test "run experiment with failing runner and empty array - return PASSED" {
+@test "run experiment with failing runner and empty array - return SKIPPED" {
   # given
   array=()
-  expected="$(jq -n '{testResult: "SKIPPED", testReport: { testResult: "SKIPPED", failureMessages: [], failureCount: 0, metaData: {results: [ "Skipped test. There were no experiments to run" ]}}}')"
 
   # when
   result=$(runChaosExperiments failFunction "${array[@]}")
 
   # then
   echo "actual: $result"
-  echo "expected: $expected"
-  [ "$result" == "$expected" ]
+
+  [[ "$result" == *"SKIPPED"* ]]
+  [[ "$result" == *"Skipped test. There were no experiments to run"* ]]
 }
 
 @test "run experiments should skip if glob is null" {
   # given
   array=()
-  expected="$(jq -n '{testResult: "SKIPPED", testReport: { testResult: "SKIPPED", failureMessages: [], failureCount: 0, metaData: {results: [ "Skipped test. There were no experiments to run" ]}}}')"
 
   # when
   shopt -s nullglob
@@ -130,71 +130,67 @@ failFunction() {
 
   # then
   echo "actual: $result"
-  echo "expected: $expected"
-  [ "$result" == "$expected" ]
+  [[ "$result" == *"SKIPPED"* ]]
+  [[ "$result" == *"Skipped test. There were no experiments to run"* ]]
 }
 
 @test "chaos runner should not fail if file not exist" {
   # given
   array=()
-  expected="$(jq -n '{testResult: "PASSED", testReport: { testResult: "PASSED", failureMessages: [], failureCount: 0, metaData: {results: [ "/tmp/*/files run successfully" ]}}}')"
 
   # when
   result=$(runChaosExperiments chaosRunner "/tmp/*/files")
 
   # then
   echo "actual: $result"
-  echo "expected: $expected"
-  [ "$result" == "$expected" ]
+
+  [[ "$result" == *"PASSED"* ]]
+  [[ "$result" == *"/tmp/*/files completed successfully"* ]]
 }
 
-@test "create failure message without args" {
+@test "create failure message with no meta data" {
   # given
-  expected="$(jq -n '{testResult: "FAILED", testReport: {testResult: "FAILED", failureMessages: [], failureCount: 1, metaData: {}}}')"
+  expected="$(jq -n '{
+    testResult: "FAILED",
+    testReport: {
+      testResult: "FAILED",
+      failureMessages: ["failure message"],
+      failureCount: 1,
+      metaData: {results: []},
+      startTime: 123,
+      endTime: 456,
+      timeOfFirstFailure: 333
+    }
+  }')"
 
   # when
-  failureMsg=$(createFailureMessage)
+  failureMsg=$(createFailureMessage "failure message" 123 456 333 "")
 
   # then
-  echo "$failureMsg"
+  echo "actual: $failureMsg"
   echo "expected: $expected"
   [ "$failureMsg" == "$expected" ]
 }
 
-@test "create failure message with number as one arg" {
+@test "create failure message with meta data" {
   # given
-  expected="$(jq -n '{testResult: "FAILED", testReport: {testResult: "FAILED", failureMessages: ["2"], failureCount: 1, metaData: {}}}')"
+  expected="$(jq -n '{
+    testResult: "FAILED",
+    testReport: {
+      testResult: "FAILED",
+      failureMessages: ["failure message"],
+      failureCount: 1,
+      metaData: {results: ["first", "second"]},
+      startTime: 123,
+      endTime: 456,
+      timeOfFirstFailure: 333
+    }
+  }')"
 
   # when
-  failureMsg=$(createFailureMessage 2)
+  failureMsg=$(createFailureMessage "failure message" 123 456 333 "first" "second")
 
   # then
-  echo "$failureMsg"
-  echo "expected: $expected"
-  [ "$failureMsg" == "$expected" ]
-}
-
-@test "create failure message with string as one arg" {
-  # given
-  expected="$(jq -n '{testResult: "FAILED", testReport: {testResult: "FAILED", failureMessages: ["2"], failureCount: 1, metaData: {}}}')"
-
-  # when
-  failureMsg=$(createFailureMessage "2")
-
-  # then
-  echo "$failureMsg"
-  echo "expected: $expected"
-  [ "$failureMsg" == "$expected" ]
-}
-
-@test "create failure message with multiple fail messages" {
-  # given
-  expected="$(jq -n '{testResult: "FAILED", testReport: {testResult: "FAILED", failureMessages: ["2", "hallo"], failureCount: 1, metaData: {}}}')"
-
-  # when
-  failureMsg=$(createFailureMessage 2 "hallo")
-
-  # then 
   echo "actual: $failureMsg"
   echo "expected: $expected"
   [ "$failureMsg" == "$expected" ]
@@ -203,13 +199,53 @@ failFunction() {
 
 @test "create success message with multiple result messages" {
   # given
-  expected="$(jq -n '{ testResult: "PASSED", testReport: { testResult: "PASSED", failureMessages: [], failureCount: 0, metaData: {results: ["Run 1", "Run 2"]}}}')"
+  expected="$(jq -n '{
+    testResult: "PASSED",
+    testReport: {
+      testResult: "PASSED",
+      failureMessages: [],
+      failureCount: 0,
+      metaData: {
+        results: ["Run 1", "Run 2"]
+      },
+      startTime: 123,
+      endTime: 456,
+      timeOfFirstFailure: 0
+     }
+   }')"
 
   # when
-  failureMsg=$(createSuccessMessage "Run 1" "Run 2")
+  msg=$(createSuccessMessage 123 456 "Run 1" "Run 2")
 
   # then
-  echo "actual: $failureMsg"
+  echo "actual: $msg"
   echo "expected: $expected"
-  [ "$failureMsg" == "$expected" ]
+  [ "$msg" == "$expected" ]
+}
+
+
+@test "create skipped message" {
+  # given
+  expected="$(jq -n '{
+    testResult: "SKIPPED",
+    testReport: {
+      testResult: "SKIPPED",
+      failureMessages: [],
+      failureCount: 0,
+      metaData: {
+        results: ["Skipped test. There were no experiments to run"]
+      },
+      startTime: 123,
+      endTime: 123,
+      timeOfFirstFailure: 0
+     }
+   }')"
+
+  # when
+  msg=$(createSkippedMessage 123)
+
+  # then
+  echo "actual: $msg"
+  echo "expected: $expected"
+  [ "$msg" == "$expected" ]
 }
