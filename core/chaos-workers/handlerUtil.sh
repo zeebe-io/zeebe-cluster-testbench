@@ -186,7 +186,8 @@ generateLogFileName() {
 chaosRunner() {
   if [ -f "$1" ]
   then
-    chaos run "$1"
+    logHome=${CHAOS_LOG_HOME:-"."}
+    chaos --log-file "$logHome/chaostoolkit.log" run "$1"
   fi
 }
 
