@@ -1,0 +1,14 @@
+#!/bin/bash
+
+set -eo pipefail
+
+if [ -z "$1" ]
+then
+  echo "Please provide as first argument the id of the daily test you want to trigger.
+Example execution $0 'id'"
+ exit 1
+fi
+
+source credentials
+
+zbctl publish message "Run Test" --correlationKey "$1"
