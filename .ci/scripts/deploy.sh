@@ -12,15 +12,15 @@ fi
 tag=$1
 
 if [ "${tag}" = "latest" ]; then
-  echo "Deploying :latest to 'int' stage / 'testbench' namespace"  
+  echo "Deploying :latest to 'int' stage / 'testbench' namespace"
   suffix=""
 elif [ "${tag}" = "dev" ]; then
-  echo "Deploying :dev to 'dev' stage / 'testbench-dev' namespace"  
+  echo "Deploying :dev to 'dev' stage / 'testbench-dev' namespace"
   suffix="-dev"
-else 
+else
   echo "Unknown tag '${tag}'. Please provide the tag 'dev' or 'latest'"
   exit 1
-fi  
+fi
 
 echo "suffix: ${suffix}"
 
@@ -35,7 +35,7 @@ set +x; echo "${SA_CREDENTIALS}" > sa-credentials.json; set -x
 
 gcloud auth activate-service-account jenkins-ci-cd@zeebe-io.iam.gserviceaccount.com --key-file=sa-credentials.json
 
-rm sa-credentials.json 
+rm sa-credentials.json
 
 gcloud container clusters get-credentials zeebe-cluster
 
@@ -43,9 +43,10 @@ gcloud container clusters get-credentials zeebe-cluster
 kubectl apply --namespace="${namespace}" -f "testbench${suffix}.yaml"
 
 # apply changes to chaosWorker.yaml, if any
-kubectl apply --namespace="${namespace}" -f "core/chaos-workers/chaosWorker${suffix}.yaml"
+kubectl apply --namespace="${namespace}" -f "core/chaos-workers/deployment/chaosWorker${suffix}.yaml"
+kubectl apply --namespace="${namespace}" -f "core/chaos-workers/deployment/chaos-data-claim.yaml"
 
-# trigger restart to load newest version of the image 
+# trigger restart to load newest version of the image
 kubectl rollout restart deployment testbench --namespace="${namespace}"
 kubectl rollout restart deployment chaos-worker --namespace="${namespace}"
 
