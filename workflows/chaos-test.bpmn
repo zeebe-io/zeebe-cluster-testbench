@@ -9,12 +9,12 @@
       </bpmn:extensionElements>
       <bpmn:outgoing>Flow_0kvm9t2</bpmn:outgoing>
     </bpmn:startEvent>
-    <bpmn:sequenceFlow id="Flow_0kvm9t2" sourceRef="StartEvent_1" targetRef="chaos-experiments" />
+    <bpmn:sequenceFlow id="Flow_0kvm9t2" sourceRef="StartEvent_1" targetRef="run-chaos-experiments" />
     <bpmn:endEvent id="Event_0qcb69m">
       <bpmn:incoming>Flow_1txltr5</bpmn:incoming>
     </bpmn:endEvent>
-    <bpmn:sequenceFlow id="Flow_1txltr5" sourceRef="chaos-experiments" targetRef="Event_0qcb69m" />
-    <bpmn:serviceTask id="chaos-experiments" name="Chaos Experiment">
+    <bpmn:sequenceFlow id="Flow_1txltr5" sourceRef="run-chaos-experiments" targetRef="Event_0qcb69m" />
+    <bpmn:serviceTask id="run-chaos-experiments" name="Run Chaos Experiments">
       <bpmn:extensionElements>
         <zeebe:taskDefinition type="chaos-experiments" />
       </bpmn:extensionElements>
@@ -24,22 +24,22 @@
   </bpmn:process>
   <bpmndi:BPMNDiagram id="BPMNDiagram_1">
     <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="chaos-test">
-      <bpmndi:BPMNEdge id="Flow_0kvm9t2_di" bpmnElement="Flow_0kvm9t2">
-        <di:waypoint x="215" y="97" />
-        <di:waypoint x="260" y="97" />
-      </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_1txltr5_di" bpmnElement="Flow_1txltr5">
         <di:waypoint x="360" y="97" />
         <di:waypoint x="392" y="97" />
       </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0kvm9t2_di" bpmnElement="Flow_0kvm9t2">
+        <di:waypoint x="215" y="97" />
+        <di:waypoint x="260" y="97" />
+      </bpmndi:BPMNEdge>
       <bpmndi:BPMNShape id="_BPMNShape_StartEvent_2" bpmnElement="StartEvent_1">
         <dc:Bounds x="179" y="79" width="36" height="36" />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_0kqp6ns_di" bpmnElement="chaos-experiments">
-        <dc:Bounds x="260" y="57" width="100" height="80" />
-      </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Event_0qcb69m_di" bpmnElement="Event_0qcb69m">
         <dc:Bounds x="392" y="79" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0kqp6ns_di" bpmnElement="run-chaos-experiments">
+        <dc:Bounds x="260" y="57" width="100" height="80" />
       </bpmndi:BPMNShape>
     </bpmndi:BPMNPlane>
   </bpmndi:BPMNDiagram>

@@ -41,7 +41,7 @@
       <bpmn:incoming>Flow_0kpt015</bpmn:incoming>
       <bpmn:outgoing>Flow_0u2p594</bpmn:outgoing>
     </bpmn:parallelGateway>
-    <bpmn:callActivity id="run-chaos-tests-in-camunda-cloud" name="Run chaos tests in Camunda Cloud">
+    <bpmn:callActivity id="run-chaos-experiments-in-camunda-cloud" name="Run chaos experiments in Camunda Cloud">
       <bpmn:extensionElements>
         <zeebe:calledElement processId="run-test-in-camunda-cloud" />
         <zeebe:ioMapping>
@@ -53,8 +53,8 @@
       <bpmn:incoming>Flow_1gg7n91</bpmn:incoming>
       <bpmn:outgoing>Flow_0kpt015</bpmn:outgoing>
     </bpmn:callActivity>
-    <bpmn:sequenceFlow id="Flow_1gg7n91" sourceRef="Gateway_0zd28en" targetRef="run-chaos-tests-in-camunda-cloud" />
-    <bpmn:sequenceFlow id="Flow_0kpt015" sourceRef="run-chaos-tests-in-camunda-cloud" targetRef="Gateway_1969sei" />
+    <bpmn:sequenceFlow id="Flow_1gg7n91" sourceRef="Gateway_0zd28en" targetRef="run-chaos-experiments-in-camunda-cloud" />
+    <bpmn:sequenceFlow id="Flow_0kpt015" sourceRef="run-chaos-experiments-in-camunda-cloud" targetRef="Gateway_1969sei" />
   </bpmn:process>
   <bpmndi:BPMNDiagram id="BPMNDiagram_1">
     <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="run-all-tests-in-camunda-cloud">
@@ -112,7 +112,7 @@
       <bpmndi:BPMNShape id="Gateway_13vmtgg_di" bpmnElement="Gateway_1969sei">
         <dc:Bounds x="705" y="95" width="50" height="50" />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_0e7oghh_di" bpmnElement="run-chaos-tests-in-camunda-cloud">
+      <bpmndi:BPMNShape id="Activity_0e7oghh_di" bpmnElement="run-chaos-experiments-in-camunda-cloud">
         <dc:Bounds x="540" y="210" width="100" height="80" />
       </bpmndi:BPMNShape>
     </bpmndi:BPMNPlane>
