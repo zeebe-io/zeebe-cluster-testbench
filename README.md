@@ -260,6 +260,7 @@ This workflow creates a Zeebe cluster in Camnuda cloud and waits until the clust
 | Destroy Zeebe Cluster in Camunda CLoud | `destroy-zeebe-cluster-in-camunda-cloud` / `destroy-zeebe-cluster-in-camunda-cloud-job` | `clusterId` |
 | Create Generation in Camunda Cloud | `create-generation-in-camunda-cloud` / `create-generation-in-camunda-cloud-job` | `zeebeImage`, `generationTemplate`, `channel` | `generation`, `generationUUID` | |
 | Delete Generation in Camunda Cloud | `delete-generation-in-camunda-cloud` / `delete-generation-in-camunda-cloud-job` | `generationUUID` | | |
+| Run Chaos Experiments | `run-chaos-experiments` / `chaos-experiments` | `authenticationDetails`, `clusterPlan` | `testResult`, `testReport` |
 
 ### Messages
 | Message | Message Name  | Correlation Key  |
