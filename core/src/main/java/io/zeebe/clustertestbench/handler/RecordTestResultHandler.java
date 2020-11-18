@@ -39,7 +39,7 @@ public class RecordTestResultHandler implements JobHandler {
       "Zeebe Cluster Testbench - Publish Test Results Worker";
   private static final List<String> SCOPES = Collections.singletonList(SheetsScopes.SPREADSHEETS);
 
-  private static final String RANGE = "Sheet1!A1:N";
+  private static final String RANGE = "Sheet1!A1:O";
 
   private final String spreadSheetId;
 
@@ -89,6 +89,8 @@ public class RecordTestResultHandler implements JobHandler {
     result.add(input.getClusterPlan());
     result.add(input.getGeneration());
 
+    result.add(input.getTestWorkflowId());
+
     result.add(input.getClusterName());
     result.add(input.getClusterId());
     result.add(input.getOperateURL());
@@ -124,6 +126,8 @@ public class RecordTestResultHandler implements JobHandler {
     private String region;
     private String clusterPlan;
     private String channel;
+
+    private String testWorkflowId;
 
     private String clusterId;
     private String clusterName;
@@ -195,6 +199,14 @@ public class RecordTestResultHandler implements JobHandler {
     @JsonProperty(TestDriver.VARIABLE_KEY_TEST_REPORT)
     public void setTestReport(TestReportDTO testReport) {
       this.testReport = testReport;
+    }
+
+    String getTestWorkflowId() {
+      return testWorkflowId;
+    }
+
+    void setTestWorkflowId(String testWorkflowId) {
+      this.testWorkflowId = testWorkflowId;
     }
   }
 }
