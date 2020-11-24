@@ -204,16 +204,17 @@ pipeline {
             }
         }
 
-        failure {
+        changed {
             script {
                 if (env.BRANCH_NAME != 'master' || agentDisconnected()) {
                     return
                 }
-
-                slackSend(
-                    channel: '#zeebe-testbench-ci',
-                    message: "Zeebe Cluster Testbench failed on ${env.BRANCH_NAME} for build ${currentBuild.absoluteUrl}"
-            )
+                if (hasBuildResultChanged()) {
+                    slackSend(
+                        channel: '#zeebe-testbench-ci',
+                        message: "Zeebe Cluster Testbench on _${env.BRANCH_NAME}_ changed status to _${currentBuild.currentResult}_ for build ${currentBuild.absoluteUrl}"
+                    )
+                }
             }
         }
     }
