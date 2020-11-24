@@ -39,6 +39,18 @@ rm sa-credentials.json
 
 gcloud container clusters get-credentials zeebe-cluster
 
+# deploy secrets
+kubectl delete secret testbench-secrets --namespace="${namespace}"
+
+kubectl create secret generic testbench-secrets --namespace="${namespace}" \
+  --from-literal=contactPoint="${CONTACT_POINT}" \
+  --from-literal=clientSecret="${CLIENT_SECRET}" \
+  --from-literal=cloudClientSecret="${CLOUD_CLIENT_SECRET}" \
+  --from-literal=internalCloudClientSecret="${INTERNAL_CLOUD_CLIENT_SECRET}" \
+  --from-literal=internalCloudPassword="${INTERNAL_CLOUD_PASSWORD}" \
+  --from-literal=slackToken="${SLACK_TOKEN}" \
+  --from-literal=sheetsApiKeyfileContent="${SHEETS_API_KEYFILE_CONTENT}"
+
 # apply changes to testbench.yaml, if any
 kubectl apply --namespace="${namespace}" -f "testbench${suffix}.yaml"
 

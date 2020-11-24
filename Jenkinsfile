@@ -129,6 +129,7 @@ pipeline {
 
             environment {
                 TAG = getTag()
+                SECRET_STORE = getSecretStore()
             }
 
             steps {
@@ -156,7 +157,25 @@ pipeline {
 
                 container('gcloud') {
                     sh '.ci/scripts/prepare-deploy.sh'
-                    sh '.ci/scripts/deploy.sh ${TAG}'
+                    withVault(
+                        [ vaultSecrets:
+                            [
+                            [ path: "${SECRET_STORE}",
+                                secretValues: [
+                                    [envVar: 'CLIENT_SECRET', vaultKey: 'clientSecret'],
+                                    [envVar: 'CLOUD_CLIENT_SECRET', vaultKey: 'cloudClientSecret'],
+                                    [envVar: 'CONTACT_POINT', vaultKey: 'contactPoint'],
+                                    [envVar: 'INTERNAL_CLOUD_CLIENT_SECRET', vaultKey: 'internalCloudClientSecret'],
+                                    [envVar: 'INTERNAL_CLOUD_PASSWORD', vaultKey: 'internalCloudPassword'],
+                                    [envVar: 'SHEETS_API_KEYFILE_CONTENT', vaultKey: 'sheetsApiKeyfileContent'],
+                                    [envVar: 'SLACK_TOKEN', vaultKey: 'slackToken'],
+                                ]
+                            ],
+                            ]
+                        ]
+                    ) {
+                            sh '.ci/scripts/deploy.sh ${TAG}'
+                    }
                 }
             }
         }
@@ -222,4 +241,8 @@ pipeline {
 
 def getTag() {
     return params.DEPLOY_TO_DEV ? 'dev' : 'latest'
+}
+
+def getSecretStore() {
+    return params.DEPLOY_TO_DEV ? 'secret/common/ci-zeebe/testbench-secrets-dev' : 'secret/common/ci-zeebe/testbench-secrets-int'
 }
