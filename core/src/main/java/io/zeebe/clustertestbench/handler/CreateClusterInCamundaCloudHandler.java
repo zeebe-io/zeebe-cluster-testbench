@@ -57,7 +57,7 @@ public class CreateClusterInCamundaCloudHandler implements JobHandler {
 
       client
           .newCompleteCommand(job.getKey())
-          .variables(new Output(connectionInfo, name, clusterId))
+          .variables(new Output(createZeebeClientResponse, connectionInfo, name, clusterId))
           .send();
     } catch (Exception e) {
       cloudApiClient.deleteCluster(clusterId);
@@ -114,14 +114,18 @@ public class CreateClusterInCamundaCloudHandler implements JobHandler {
     private String clusterId;
     private String clusterName;
 
-    public Output(ZeebeClientConnectiontInfo connectionInfo, String clusterName, String clusterId) {
+    public Output(
+        CreateZeebeClientResponse createZeebeClientResponse,
+        ZeebeClientConnectiontInfo connectionInfo,
+        String clusterName,
+        String clusterId) {
       this.authenticationDetails =
           new CamundaCLoudAuthenticationDetailsImpl(
               connectionInfo.getZeebeAuthorizationServerUrl(),
               connectionInfo.getZeebeAudience(),
               connectionInfo.getZeebeAddress(),
-              connectionInfo.getZeebeClientId(),
-              connectionInfo.getZeebeClientSecret());
+              createZeebeClientResponse.getClientId(),
+              createZeebeClientResponse.getClientSecret());
       this.clusterName = clusterName;
       this.clusterId = clusterId;
     }

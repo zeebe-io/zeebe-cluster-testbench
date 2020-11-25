@@ -14,9 +14,6 @@ public class ZeebeClientConnectiontInfo {
   @JsonAlias("ZEEBE_CLIENT_ID")
   private String zeebeClientId;
 
-  @JsonAlias("ZEEBE_CLIENT_SECRET")
-  private String zeebeClientSecret;
-
   @JsonAlias("ZEEBE_AUTHORIZATION_SERVER_URL")
   private String zeebeAuthorizationServerUrl;
 
@@ -44,14 +41,6 @@ public class ZeebeClientConnectiontInfo {
     this.zeebeClientId = zeebeClientId;
   }
 
-  public String getZeebeClientSecret() {
-    return zeebeClientSecret;
-  }
-
-  public void setZeebeClientSecret(String zeebeClientSecret) {
-    this.zeebeClientSecret = zeebeClientSecret;
-  }
-
   public String getZeebeAuthorizationServerUrl() {
     return zeebeAuthorizationServerUrl;
   }
@@ -72,8 +61,6 @@ public class ZeebeClientConnectiontInfo {
         + zeebeAddress
         + ", zeebeClientId="
         + zeebeClientId
-        + ", zeebeClientSecret="
-        + zeebeClientSecret
         + ", zeebeAuthorizationServerUrl="
         + zeebeAuthorizationServerUrl
         + "]";

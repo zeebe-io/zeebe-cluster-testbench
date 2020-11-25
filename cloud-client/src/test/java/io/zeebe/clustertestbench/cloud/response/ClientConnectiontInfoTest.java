@@ -14,7 +14,7 @@ class ClientConnectiontInfoTest {
   void testDeserialization() throws JsonMappingException, JsonProcessingException {
     // given
     String jsonString =
-        "{\"ZEEBE_ADDRESS\": \"<zeebeAddress>\",\"ZEEBE_CLIENT_ID\": \"<zeebeClientId>\",\"ZEEBE_CLIENT_SECRET\": \"<zeebeClientSecret>\",\"ZEEBE_AUTHORIZATION_SERVER_URL\": \"<authorizationURL>\"}";
+        "{\"ZEEBE_ADDRESS\": \"<zeebeAddress>\",\"ZEEBE_CLIENT_ID\": \"<zeebeClientId>\",\"ZEEBE_AUTHORIZATION_SERVER_URL\": \"<authorizationURL>\"}";
 
     // when
     ZeebeClientConnectiontInfo actual =
@@ -23,7 +23,6 @@ class ClientConnectiontInfoTest {
     // then
     Assertions.assertThat(actual.getZeebeAddress()).isEqualTo("<zeebeAddress>");
     Assertions.assertThat(actual.getZeebeClientId()).isEqualTo("<zeebeClientId>");
-    Assertions.assertThat(actual.getZeebeClientSecret()).isEqualTo("<zeebeClientSecret>");
     Assertions.assertThat(actual.getZeebeAuthorizationServerUrl()).isEqualTo("<authorizationURL>");
   }
 }
