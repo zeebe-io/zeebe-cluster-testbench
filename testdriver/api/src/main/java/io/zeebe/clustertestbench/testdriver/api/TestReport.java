@@ -26,6 +26,16 @@ public interface TestReport {
   public enum TestResult {
     PASSED,
     FAILED,
-    SKIPPED // currently used by the chaos experiments
+    SKIPPED; // currently used by the chaos experiments
+
+    public static TestResult aggregate(TestResult input1, TestResult input2) {
+      if ((input1 == FAILED) || (input2 == FAILED)) {
+        return FAILED;
+      } else if ((input1 == PASSED) || (input2 == PASSED)) {
+        return PASSED;
+      } else {
+        return SKIPPED;
+      }
+    }
   }
 }
