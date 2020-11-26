@@ -13,8 +13,8 @@ import io.zeebe.clustertestbench.util.StringLookup;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
-import java.util.UUID;
 import java.util.stream.Collectors;
+import org.apache.commons.lang3.RandomStringUtils;
 
 public class CreateGenerationInCamundaCloudHandler implements JobHandler {
 
@@ -30,7 +30,7 @@ public class CreateGenerationInCamundaCloudHandler implements JobHandler {
 
     final var zeebeImage = input.getZeebeImage();
 
-    final var generation = createGenerationName(zeebeImage);
+    final var generation = createGenerationName();
     final var templateGeneration = lookupTemplate(input.getGenerationTemplate());
     final var channelInfo = lookupChannel(input.getChannel());
 
@@ -82,8 +82,8 @@ public class CreateGenerationInCamundaCloudHandler implements JobHandler {
     internalApiClient.updateChannel(channelInfo.getUuid(), updateChannelRequest);
   }
 
-  protected static String createGenerationName(String zeebeImage) {
-    return "temp_" + zeebeImage + "_" + UUID.randomUUID().toString();
+  protected static String createGenerationName() {
+    return "temp_" + RandomStringUtils.randomAlphanumeric(10);
   }
 
   private GenerationInfo lookupTemplate(final String generationTemplate) {

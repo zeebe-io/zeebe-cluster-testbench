@@ -125,7 +125,6 @@ class CreateGenerationInCamundaCloudHandlerTest {
       verify(spyInternalApiClient).createGeneration(argumentCapture.capture());
       final var request = argumentCapture.getValue();
 
-      assertThat(request.getName()).contains(ZEEBE_IMAGE);
       assertThat(request.getVersions())
           .containsOnly(
               entry(KEY_ZEEBE_IMAGE, ZEEBE_IMAGE),
@@ -145,8 +144,7 @@ class CreateGenerationInCamundaCloudHandlerTest {
       // when + then
       assertThatThrownBy(() -> sutLocal.handle(mockJobClient, mockActivatedJob))
           .isExactlyInstanceOf(RuntimeException.class)
-          .hasMessageContaining("Creation of generation unsuccessful")
-          .hasMessageContaining(ZEEBE_IMAGE);
+          .hasMessageContaining("Creation of generation unsuccessful");
     }
 
     @Test
@@ -264,18 +262,9 @@ class CreateGenerationInCamundaCloudHandlerTest {
   class GenerationNameTest {
 
     @Test
-    void shouldContainZeebeImage() {
-      // when
-      var actual = CreateGenerationInCamundaCloudHandler.createGenerationName(ZEEBE_IMAGE);
-
-      // then
-      assertThat(actual).contains(ZEEBE_IMAGE);
-    }
-
-    @Test
     void shouldStartWithTemp() {
       // when
-      var actual = CreateGenerationInCamundaCloudHandler.createGenerationName(ZEEBE_IMAGE);
+      var actual = CreateGenerationInCamundaCloudHandler.createGenerationName();
 
       // then
       assertThat(actual).startsWith("temp");
@@ -284,8 +273,8 @@ class CreateGenerationInCamundaCloudHandlerTest {
     @Test
     void shouldGenerateDifferentNamesWhenCalledMultipletimes() {
       // when
-      var actual1 = CreateGenerationInCamundaCloudHandler.createGenerationName(ZEEBE_IMAGE);
-      var actual2 = CreateGenerationInCamundaCloudHandler.createGenerationName(ZEEBE_IMAGE);
+      var actual1 = CreateGenerationInCamundaCloudHandler.createGenerationName();
+      var actual2 = CreateGenerationInCamundaCloudHandler.createGenerationName();
 
       // then
       assertThat(actual1).isNotEqualTo(actual2);
