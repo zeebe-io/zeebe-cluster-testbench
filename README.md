@@ -144,7 +144,7 @@ This workflow runs all tests in a fresh cluster in Camunda Cloud:
 
 ![run-all-tests-in-camunda-cloud workflow](docs/assets/run-all-tests-in-camunda-cloud.png "Run all Tests in Camunda Cloud workflow")
 
-Currently, it only has steps for the _sequential test_, but this could be extended in the future.
+Depending of the region of the new created cluster chaos experiments are executed plus the normal sequential tests.
 
 **Workflow ID:** `run-all-tests-in-camunda-cloud`
 
