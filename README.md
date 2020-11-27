@@ -142,6 +142,10 @@ This workflow runs all tests in a fresh cluster in Camunda Cloud in different re
 | `regions`              | names of the regions for the clusters        | `List<String>`             |
 | `sequentialTestParams` | Settings to parameterize the sequential test | `SequentialTestParameters` |
 
+| Outputs                | Description                                      | Type         |
+| ---------------------- | ------------------------------------------------ | ------------ |
+| `aggregatedTestResult` | Aggregated test result for all tests/experiments | `TestResult` |
+
 #### Run All Tests in Camunda Cloud
 
 This workflow runs all tests in a fresh cluster in Camunda Cloud:
