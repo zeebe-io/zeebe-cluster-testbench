@@ -122,6 +122,10 @@ This workflow runs all tests in a fresh cluster in Camunda Cloud in different cl
 | `region`               | name of the region for the cluster           | `String`                   |
 | `sequentialTestParams` | Settings to parameterize the sequential test | `SequentialTestParameters` |
 
+| Outputs                | Description                                      | Type         |
+| ---------------------- | ------------------------------------------------ | ------------ |
+| `aggregatedTestResult` | Aggregated test result for all tests/experiments | `TestResult` |
+
 #### Run All Tests in Camunda Cloud per Region
 
 This workflow runs all tests in a fresh cluster in Camunda Cloud in different regions:
@@ -131,12 +135,12 @@ This workflow runs all tests in a fresh cluster in Camunda Cloud in different re
 **Workflow ID:** `run-all-tests-in-camunda-cloud-per-region`
 
 | Inputs                 | Description                                  | Type                       |
-| ---------------------- | -------------------------------------------- | -------------------------- | ---- |
+| ---------------------- | -------------------------------------------- | -------------------------- |
 | `generation`           | name of the generation for the cluster       | `String`                   |
 | `clusterPlan`          | name of the cluster plan for the cluster     | `String`                   |
 | `channel`              | name of the channel for the cluster          | `String`                   |
 | `regions`              | names of the regions for the clusters        | `List<String>`             |
-| `sequentialTestParams` | Settings to parameterize the sequential test | `SequentialTestParameters` | adad |
+| `sequentialTestParams` | Settings to parameterize the sequential test | `SequentialTestParameters` |
 
 #### Run All Tests in Camunda Cloud
 
