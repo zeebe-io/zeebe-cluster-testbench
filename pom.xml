@@ -1,409 +1,413 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 
-<project xmlns="http://maven.apache.org/POM/4.0.0"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-	<modelVersion>4.0.0</modelVersion>
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns="http://maven.apache.org/POM/4.0.0"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <artifactId>zeebe-cluster-testbench</artifactId>
 
-	<groupId>io.zeebe</groupId>
-	<artifactId>zeebe-cluster-testbench</artifactId>
-	<version>2.0.0-SNAPSHOT</version>
-	<packaging>pom</packaging>
+  <build>
+    <pluginManagement>
+      <plugins>
+        <!-- Google code format plugin -->
+        <plugin>
+          <artifactId>fmt-maven-plugin</artifactId>
+          <executions>
+            <execution>
+              <goals>
+                <goal>format</goal>
+              </goals>
+            </execution>
+          </executions>
+          <groupId>com.coveo</groupId>
+          <version>${plugin.version.fmt}</version>
+        </plugin>
+      </plugins>
+    </pluginManagement>
+    <plugins>
+      <!-- temporarily disabled <plugin> <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-enforcer-plugin</artifactId> <version>1.4.1</version> <configuration>
+        <rules> <dependencyConvergence /> </rules> </configuration> <executions>
+        <execution> <phase>verify</phase> <goals> <goal>enforce</goal> </goals> </execution>
+        </executions> </plugin> -->
 
-	<name>Zeebe Cluster Testbench</name>
+      <plugin>
+        <artifactId>maven-javadoc-plugin</artifactId>
+        <groupId>org.apache.maven.plugins</groupId>
+        <version>${plugin.version.javadoc}</version>
+      </plugin>
 
-	<!-- When changing the artifact or name, also make sure to change the SCM
-		location below and in .ci/scripts/github-release.sh -->
+      <!-- JaCoCo Plugin -->
+      <plugin>
+        <artifactId>jacoco-maven-plugin</artifactId>
+        <executions>
+          <execution>
+            <goals>
+              <goal>prepare-agent</goal>
+            </goals>
+            <id>coverage-initialize</id>
+          </execution>
+          <execution>
+            <goals>
+              <goal>report</goal>
+            </goals>
+            <id>coverage-report</id>
+            <phase>post-integration-test</phase>
+          </execution>
+          <!-- Threshold -->
+        </executions>
+        <groupId>org.jacoco</groupId>
+        <version>${plugin.version.jacoco}</version>
+      </plugin>
+      <!-- Surefire plugin -->
+      <plugin>
+        <artifactId>maven-surefire-plugin</artifactId>
+        <groupId>org.apache.maven.plugins</groupId>
+        <version>${plugin.version.surefire}</version>
+      </plugin>
 
-	<scm>
-		<url>https://github.com/zeebe-io/zeebe-cluster-testbench</url>
-		<connection>scm:git:git@github.com:zeebe-io/zeebe-cluster-testbench.git</connection>
-		<developerConnection>scm:git:git@github.com:zeebe-io/zeebe-cluster-testbench.git</developerConnection>
-		<tag>HEAD</tag>
-	</scm>
+      <!-- flaky test extractor plugin -->
+      <plugin>
+        <artifactId>flaky-test-extractor-maven-plugin</artifactId>
+        <executions>
+          <execution>
+            <goals>
+              <goal>extract-flaky-tests</goal>
+            </goals>
+            <phase>post-integration-test</phase>
+          </execution>
+        </executions>
+        <groupId>io.zeebe</groupId>
+        <version>${plugin.version.flakytestextractor}</version>
+      </plugin>
 
-	<parent>
-		<groupId>org.camunda</groupId>
-		<artifactId>camunda-release-parent</artifactId>
-		<version>3.7</version>
-		<!-- do not remove empty tag - http://jira.codehaus.org/browse/MNG-4687 -->
-		<relativePath />
-	</parent>
+      <plugin>
+        <artifactId>maven-dependency-plugin</artifactId>
+        <groupId>org.apache.maven.plugins</groupId>
+        <version>${plugin.version.dependency}</version>
+      </plugin>
 
-	<modules>
-		<module>core</module>
-		<module>cloud-client</module>
-		<module>internal-cloud-client</module>
-		<module>testdriver/api</module>
-		<module>testdriver/sequential</module>
-		<module>integration-tests</module>
-	</modules>
-
-	<properties>
-		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<version.java>11</version.java>
-		<zeebe.version>0.25.1</zeebe.version>
-
-		<nexus.snapshot.repository>https://app.camunda.com/nexus/content/repositories/zeebe-io-snapshots/</nexus.snapshot.repository>
-		<nexus.release.repository>https://app.camunda.com/nexus/content/repositories/zeebe-io/</nexus.release.repository>
-
-		<version.junit>5.7.0</version.junit>
-		<version.slf4j>1.7.30</version.slf4j>
-		<version.log4j>2.14.0</version.log4j>
-		<version.assertj>3.18.1</version.assertj>
-		<version.workflowgenerator>1.0.1</version.workflowgenerator>
-		<version.jackson>2.11.3</version.jackson>
-		<version.mockito>3.6.0</version.mockito>
-		<version.resteasy>4.5.8.Final</version.resteasy>
-		<version.vavr>0.10.3</version.vavr>
-		<version.commons-text>1.9</version.commons-text>
-
-		<plugin.version.surefire>3.0.0-M5</plugin.version.surefire>
-		<plugin.version.javadoc>3.2.0</plugin.version.javadoc>
-		<plugin.version.jacoco>0.8.6</plugin.version.jacoco>
-		<plugin.version.flakytestextractor>2.0.2</plugin.version.flakytestextractor>
-		<plugin.version.dependency>3.1.2</plugin.version.dependency>
-		<plugin.version.build-helper>3.2.0</plugin.version.build-helper>
-		<plugin.version.fmt>2.10</plugin.version.fmt>
-    <plugin.version.checkstyle>3.1.1</plugin.version.checkstyle>
-	</properties>
-
-	<dependencyManagement>
-		<dependencies>
-			<dependency>
-				<groupId>io.zeebe</groupId>
-				<artifactId>zeebe-cluster-testbench-core</artifactId>
-				<version>${project.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>io.zeebe</groupId>
-				<artifactId>zeebe-cluster-testbench-cloud-client</artifactId>
-				<version>${project.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>io.zeebe</groupId>
-				<artifactId>zeebe-cluster-testbench-internal-cloud-client</artifactId>
-				<version>${project.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>io.zeebe</groupId>
-				<artifactId>zeebe-cluster-testbench-internal-cloud-client</artifactId>
-				<type>test-jar</type>
-				<version>${project.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>io.zeebe</groupId>
-				<artifactId>zeebe-cluster-testbench-testdriver-sequential</artifactId>
-				<version>${project.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>io.zeebe</groupId>
-				<artifactId>zeebe-cluster-testbench-testdriver-api</artifactId>
-				<version>${project.version}</version>
-			</dependency>
-
-			<dependency>
-				<groupId>io.zeebe</groupId>
-				<artifactId>zeebe-client-java</artifactId>
-				<version>${zeebe.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>io.zeebe</groupId>
-				<artifactId>zeebe-workflow-generator</artifactId>
-				<version>${version.workflowgenerator}</version>
-			</dependency>
-
-			<dependency>
-				<groupId>org.assertj</groupId>
-				<artifactId>assertj-core</artifactId>
-				<version>${version.assertj}</version>
-			</dependency>
-			<dependency>
-				<groupId>org.slf4j</groupId>
-				<artifactId>slf4j-api</artifactId>
-				<version>${version.slf4j}</version>
-			</dependency>
-			<dependency>
-				<groupId>org.apache.logging.log4j</groupId>
-				<artifactId>log4j-api</artifactId>
-				<version>${version.log4j}</version>
-			</dependency>
-
-			<dependency>
-				<groupId>org.apache.logging.log4j</groupId>
-				<artifactId>log4j-slf4j-impl</artifactId>
-				<version>${version.log4j}</version>
-			</dependency>
-
-			<dependency>
-				<groupId>org.apache.logging.log4j</groupId>
-				<artifactId>log4j-core</artifactId>
-				<version>${version.log4j}</version>
-			</dependency>
-
-			<dependency>
-				<groupId>com.fasterxml.jackson.core</groupId>
-				<artifactId>jackson-core</artifactId>
-				<version>${version.jackson}</version>
-			</dependency>
-			<dependency>
-				<groupId>com.fasterxml.jackson.core</groupId>
-				<artifactId>jackson-annotations</artifactId>
-				<version>${version.jackson}</version>
-			</dependency>
-			<dependency>
-				<groupId>com.fasterxml.jackson.core</groupId>
-				<artifactId>jackson-databind</artifactId>
-				<version>${version.jackson}</version>
-			</dependency>
-
-			<dependency>
-				<groupId>org.jboss.resteasy</groupId>
-				<artifactId>resteasy-client</artifactId>
-				<version>${version.resteasy}</version>
-			</dependency>
-
-			<dependency>
-				<groupId>org.jboss.resteasy</groupId>
-				<artifactId>resteasy-jackson2-provider</artifactId>
-				<version>${version.resteasy}</version>
-			</dependency>
-
-			<dependency>
-				<groupId>io.vavr</groupId>
-				<artifactId>vavr</artifactId>
-				<version>${version.vavr}</version>
-			</dependency>
-
-			<!-- https://mvnrepository.com/artifact/org.apache.commons/commons-text -->
-			<dependency>
-				<groupId>org.apache.commons</groupId>
-				<artifactId>commons-text</artifactId>
-				<version>${version.commons-text}</version>
-			</dependency>
-
-
-			<dependency>
-				<groupId>org.junit</groupId>
-				<artifactId>junit-bom</artifactId>
-				<version>${version.junit}</version>
-				<type>pom</type>
-				<scope>import</scope>
-			</dependency>
-			<dependency>
-				<groupId>org.junit.jupiter</groupId>
-				<artifactId>junit-jupiter-api</artifactId>
-				<version>${version.junit}</version>
-			</dependency>
-
-			<dependency>
-				<groupId>org.mockito</groupId>
-				<artifactId>mockito-junit-jupiter</artifactId>
-				<version>${version.mockito}</version>
-			</dependency>
-		</dependencies>
-	</dependencyManagement>
-
-	<dependencies>
-		<dependency>
-			<groupId>org.slf4j</groupId>
-			<artifactId>slf4j-api</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.apache.logging.log4j</groupId>
-			<artifactId>log4j-api</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.apache.logging.log4j</groupId>
-			<artifactId>log4j-slf4j-impl</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.apache.logging.log4j</groupId>
-			<artifactId>log4j-core</artifactId>
-		</dependency>
-	</dependencies>
-
-	<build>
-		<pluginManagement>
-			<plugins>
-				<!-- Google code format plugin -->
-				<plugin>
-					<groupId>com.coveo</groupId>
-					<artifactId>fmt-maven-plugin</artifactId>
-					<version>${plugin.version.fmt}</version>
-					<executions>
-						<execution>
-							<goals>
-								<goal>format</goal>
-							</goals>
-						</execution>
-					</executions>
-				</plugin>
-			</plugins>
-		</pluginManagement>
-		<plugins>
-			<!-- temporarily disabled <plugin> <groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-enforcer-plugin</artifactId> <version>1.4.1</version> <configuration>
-				<rules> <dependencyConvergence /> </rules> </configuration> <executions>
-				<execution> <phase>verify</phase> <goals> <goal>enforce</goal> </goals> </execution>
-				</executions> </plugin> -->
-
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-javadoc-plugin</artifactId>
-				<version>${plugin.version.javadoc}</version>
-			</plugin>
-
-			<!-- JaCoCo Plugin -->
-			<plugin>
-				<groupId>org.jacoco</groupId>
-				<artifactId>jacoco-maven-plugin</artifactId>
-				<version>${plugin.version.jacoco}</version>
-				<executions>
-					<execution>
-						<id>coverage-initialize</id>
-						<goals>
-							<goal>prepare-agent</goal>
-						</goals>
-					</execution>
-					<execution>
-						<id>coverage-report</id>
-						<phase>post-integration-test</phase>
-						<goals>
-							<goal>report</goal>
-						</goals>
-					</execution>
-					<!-- Threshold -->
-				</executions>
-			</plugin>
-			<!-- Surefire plugin -->
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-surefire-plugin</artifactId>
-				<version>${plugin.version.surefire}</version>
-			</plugin>
-
-			<!-- flaky test extractor plugin -->
-			<plugin>
-				<groupId>io.zeebe</groupId>
-				<artifactId>flaky-test-extractor-maven-plugin</artifactId>
-				<version>${plugin.version.flakytestextractor}</version>
-				<executions>
-					<execution>
-						<phase>post-integration-test</phase>
-						<goals>
-							<goal>extract-flaky-tests</goal>
-						</goals>
-					</execution>
-				</executions>
-			</plugin>
-
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-dependency-plugin</artifactId>
-				<version>${plugin.version.dependency}</version>
-			</plugin>
-
-			<plugin>
-				<groupId>com.coveo</groupId>
-				<artifactId>fmt-maven-plugin</artifactId>
-			</plugin>
+      <plugin>
+        <artifactId>fmt-maven-plugin</artifactId>
+        <groupId>com.coveo</groupId>
+      </plugin>
 
 
       <!-- CHECKSTYLE -->
       <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-checkstyle-plugin</artifactId>
-        <version>${plugin.version.checkstyle}</version>
-        <!-- dependency on build tool to reference the checkstyle cfg -->
-        <dependencies>
-          <dependency>
-            <groupId>io.zeebe</groupId>
-            <artifactId>zeebe-build-tools</artifactId>
-            <version>${zeebe.version}</version>
-          </dependency>
-        </dependencies>
         <configuration>
           <configLocation>check/.checkstyle.xml</configLocation>
-          <includeTestSourceDirectory>true</includeTestSourceDirectory>
           <encoding>UTF-8</encoding>
           <failOnViolation>true</failOnViolation>
+          <includeTestSourceDirectory>true</includeTestSourceDirectory>
           <sourceDirectories>
             <sourceDirectory>${project.build.sourceDirectory}</sourceDirectory>
             <sourceDirectory>${project.build.testSourceDirectory}</sourceDirectory>
           </sourceDirectories>
         </configuration>
+        <dependencies>
+          <dependency>
+            <artifactId>zeebe-build-tools</artifactId>
+            <groupId>io.zeebe</groupId>
+            <version>${zeebe.version}</version>
+          </dependency>
+        </dependencies>
+        <!-- dependency on build tool to reference the checkstyle cfg -->
         <executions>
           <execution>
-            <id>validate-java</id>
-            <phase>validate</phase>
+            <configuration>
+            </configuration>
             <goals>
               <goal>check</goal>
             </goals>
-            <configuration>
-            </configuration>
+            <id>validate-java</id>
+            <phase>validate</phase>
           </execution>
         </executions>
+        <groupId>org.apache.maven.plugins</groupId>
+        <version>${plugin.version.checkstyle}</version>
       </plugin>
 
-		</plugins>
-	</build>
+    </plugins>
+  </build>
+  <dependencies>
+    <dependency>
+      <artifactId>slf4j-api</artifactId>
+      <groupId>org.slf4j</groupId>
+    </dependency>
+    <dependency>
+      <artifactId>log4j-api</artifactId>
+      <groupId>org.apache.logging.log4j</groupId>
+    </dependency>
+    <dependency>
+      <artifactId>log4j-slf4j-impl</artifactId>
+      <groupId>org.apache.logging.log4j</groupId>
+    </dependency>
+    <dependency>
+      <artifactId>log4j-core</artifactId>
+      <groupId>org.apache.logging.log4j</groupId>
+    </dependency>
+  </dependencies>
+  <dependencyManagement>
+    <dependencies>
+      <dependency>
+        <artifactId>zeebe-cluster-testbench-core</artifactId>
+        <groupId>io.zeebe</groupId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <artifactId>zeebe-cluster-testbench-cloud-client</artifactId>
+        <groupId>io.zeebe</groupId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <artifactId>zeebe-cluster-testbench-internal-cloud-client</artifactId>
+        <groupId>io.zeebe</groupId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <artifactId>zeebe-cluster-testbench-internal-cloud-client</artifactId>
+        <groupId>io.zeebe</groupId>
+        <type>test-jar</type>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <artifactId>zeebe-cluster-testbench-testdriver-sequential</artifactId>
+        <groupId>io.zeebe</groupId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <artifactId>zeebe-cluster-testbench-testdriver-api</artifactId>
+        <groupId>io.zeebe</groupId>
+        <version>${project.version}</version>
+      </dependency>
 
-	<repositories>
-		<repository>
-			<id>zeebe</id>
-			<name>Zeebe Repository</name>
-			<url>https://app.camunda.com/nexus/content/repositories/zeebe-io/</url>
-			<releases>
-				<enabled>true</enabled>
-			</releases>
-			<snapshots>
-				<enabled>false</enabled>
-			</snapshots>
-		</repository>
+      <dependency>
+        <artifactId>zeebe-client-java</artifactId>
+        <groupId>io.zeebe</groupId>
+        <version>${zeebe.version}</version>
+      </dependency>
+      <dependency>
+        <artifactId>zeebe-workflow-generator</artifactId>
+        <groupId>io.zeebe</groupId>
+        <version>${version.workflowgenerator}</version>
+      </dependency>
 
-		<repository>
-			<id>zeebe-snapshots</id>
-			<name>Zeebe Snapshot Repository</name>
-			<url>https://app.camunda.com/nexus/content/repositories/zeebe-io-snapshots/</url>
-			<releases>
-				<enabled>false</enabled>
-			</releases>
-			<snapshots>
-				<enabled>true</enabled>
-			</snapshots>
-		</repository>
-	</repositories>
+      <dependency>
+        <artifactId>assertj-core</artifactId>
+        <groupId>org.assertj</groupId>
+        <version>${version.assertj}</version>
+      </dependency>
+      <dependency>
+        <artifactId>slf4j-api</artifactId>
+        <groupId>org.slf4j</groupId>
+        <version>${version.slf4j}</version>
+      </dependency>
+      <dependency>
+        <artifactId>log4j-api</artifactId>
+        <groupId>org.apache.logging.log4j</groupId>
+        <version>${version.log4j}</version>
+      </dependency>
 
-	<profiles>
-		<profile>
-			<id>release</id>
-			<properties>
-				<plugin.version.gpg>1.6</plugin.version.gpg>
-				<gpg.passphrase>${env.GPG_PASS}</gpg.passphrase>
-				<resume>false</resume>
-				<tag>${env.RELEASE_VERSION}</tag>
-				<releaseVersion>${env.RELEASE_VERSION}</releaseVersion>
-				<developmentVersion>${env.DEVELOPMENT_VERSION}</developmentVersion>
-				<arguments>-DskipTests</arguments>
-			</properties>
-			<build>
-				<pluginManagement>
-					<plugins>
-						<plugin>
-							<groupId>org.apache.maven.plugins</groupId>
-							<artifactId>maven-gpg-plugin</artifactId>
-							<configuration>
-								<gpgArguments>
-									<arg>--pinentry-mode</arg>
-									<arg>loopback</arg>
-								</gpgArguments>
-							</configuration>
-						</plugin>
-					</plugins>
-				</pluginManagement>
-			</build>
-		</profile>
-	</profiles>
+      <dependency>
+        <artifactId>log4j-slf4j-impl</artifactId>
+        <groupId>org.apache.logging.log4j</groupId>
+        <version>${version.log4j}</version>
+      </dependency>
+
+      <dependency>
+        <artifactId>log4j-core</artifactId>
+        <groupId>org.apache.logging.log4j</groupId>
+        <version>${version.log4j}</version>
+      </dependency>
+
+      <dependency>
+        <artifactId>jackson-core</artifactId>
+        <groupId>com.fasterxml.jackson.core</groupId>
+        <version>${version.jackson}</version>
+      </dependency>
+      <dependency>
+        <artifactId>jackson-annotations</artifactId>
+        <groupId>com.fasterxml.jackson.core</groupId>
+        <version>${version.jackson}</version>
+      </dependency>
+      <dependency>
+        <artifactId>jackson-databind</artifactId>
+        <groupId>com.fasterxml.jackson.core</groupId>
+        <version>${version.jackson}</version>
+      </dependency>
+
+      <dependency>
+        <artifactId>resteasy-client</artifactId>
+        <groupId>org.jboss.resteasy</groupId>
+        <version>${version.resteasy}</version>
+      </dependency>
+
+      <dependency>
+        <artifactId>resteasy-jackson2-provider</artifactId>
+        <groupId>org.jboss.resteasy</groupId>
+        <version>${version.resteasy}</version>
+      </dependency>
+
+      <dependency>
+        <artifactId>vavr</artifactId>
+        <groupId>io.vavr</groupId>
+        <version>${version.vavr}</version>
+      </dependency>
+
+      <!-- https://mvnrepository.com/artifact/org.apache.commons/commons-text -->
+      <dependency>
+        <artifactId>commons-text</artifactId>
+        <groupId>org.apache.commons</groupId>
+        <version>${version.commons-text}</version>
+      </dependency>
+
+
+      <dependency>
+        <artifactId>junit-bom</artifactId>
+        <groupId>org.junit</groupId>
+        <scope>import</scope>
+        <type>pom</type>
+        <version>${version.junit}</version>
+      </dependency>
+      <dependency>
+        <artifactId>junit-jupiter-api</artifactId>
+        <groupId>org.junit.jupiter</groupId>
+        <version>${version.junit}</version>
+      </dependency>
+
+      <dependency>
+        <artifactId>mockito-junit-jupiter</artifactId>
+        <groupId>org.mockito</groupId>
+        <version>${version.mockito}</version>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
+  <groupId>io.zeebe</groupId>
+
+  <modelVersion>4.0.0</modelVersion>
+
+  <!-- When changing the artifact or name, also make sure to change the SCM
+    location below and in .ci/scripts/github-release.sh -->
+
+  <modules>
+    <module>core</module>
+    <module>cloud-client</module>
+    <module>internal-cloud-client</module>
+    <module>testdriver/api</module>
+    <module>testdriver/sequential</module>
+    <module>integration-tests</module>
+  </modules>
+
+  <name>Zeebe Cluster Testbench</name>
+
+  <packaging>pom</packaging>
+
+  <parent>
+    <artifactId>camunda-release-parent</artifactId>
+    <groupId>org.camunda</groupId>
+    <relativePath/>
+    <!-- do not remove empty tag - http://jira.codehaus.org/browse/MNG-4687 -->
+    <version>3.7</version>
+  </parent>
+
+  <profiles>
+    <profile>
+      <build>
+        <pluginManagement>
+          <plugins>
+            <plugin>
+              <artifactId>maven-gpg-plugin</artifactId>
+              <configuration>
+                <gpgArguments>
+                  <arg>--pinentry-mode</arg>
+                  <arg>loopback</arg>
+                </gpgArguments>
+              </configuration>
+              <groupId>org.apache.maven.plugins</groupId>
+            </plugin>
+          </plugins>
+        </pluginManagement>
+      </build>
+      <id>release</id>
+      <properties>
+        <arguments>-DskipTests</arguments>
+        <developmentVersion>${env.DEVELOPMENT_VERSION}</developmentVersion>
+        <gpg.passphrase>${env.GPG_PASS}</gpg.passphrase>
+        <plugin.version.gpg>1.6</plugin.version.gpg>
+        <releaseVersion>${env.RELEASE_VERSION}</releaseVersion>
+        <resume>false</resume>
+        <tag>${env.RELEASE_VERSION}</tag>
+      </properties>
+    </profile>
+  </profiles>
+
+  <properties>
+    <nexus.release.repository>https://app.camunda.com/nexus/content/repositories/zeebe-io/
+    </nexus.release.repository>
+    <nexus.snapshot.repository>
+      https://app.camunda.com/nexus/content/repositories/zeebe-io-snapshots/
+    </nexus.snapshot.repository>
+    <plugin.version.build-helper>3.2.0</plugin.version.build-helper>
+
+    <plugin.version.checkstyle>3.1.1</plugin.version.checkstyle>
+    <plugin.version.dependency>3.1.2</plugin.version.dependency>
+
+    <plugin.version.flakytestextractor>2.0.2</plugin.version.flakytestextractor>
+    <plugin.version.fmt>2.10</plugin.version.fmt>
+    <plugin.version.jacoco>0.8.6</plugin.version.jacoco>
+    <plugin.version.javadoc>3.2.0</plugin.version.javadoc>
+    <plugin.version.surefire>3.0.0-M5</plugin.version.surefire>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <version.assertj>3.18.1</version.assertj>
+    <version.commons-text>1.9</version.commons-text>
+    <version.jackson>2.11.3</version.jackson>
+    <version.java>11</version.java>
+
+    <version.junit>5.7.0</version.junit>
+    <version.log4j>2.14.0</version.log4j>
+    <version.mockito>3.6.0</version.mockito>
+    <version.resteasy>4.5.8.Final</version.resteasy>
+    <version.slf4j>1.7.30</version.slf4j>
+    <version.vavr>0.10.3</version.vavr>
+    <version.workflowgenerator>1.0.1</version.workflowgenerator>
+    <zeebe.version>0.25.1</zeebe.version>
+  </properties>
+
+  <repositories>
+    <repository>
+      <id>zeebe</id>
+      <name>Zeebe Repository</name>
+      <releases>
+        <enabled>true</enabled>
+      </releases>
+      <snapshots>
+        <enabled>false</enabled>
+      </snapshots>
+      <url>https://app.camunda.com/nexus/content/repositories/zeebe-io/</url>
+    </repository>
+
+    <repository>
+      <id>zeebe-snapshots</id>
+      <name>Zeebe Snapshot Repository</name>
+      <releases>
+        <enabled>false</enabled>
+      </releases>
+      <snapshots>
+        <enabled>true</enabled>
+      </snapshots>
+      <url>https://app.camunda.com/nexus/content/repositories/zeebe-io-snapshots/</url>
+    </repository>
+  </repositories>
+
+  <scm>
+    <connection>scm:git:git@github.com:zeebe-io/zeebe-cluster-testbench.git</connection>
+    <developerConnection>scm:git:git@github.com:zeebe-io/zeebe-cluster-testbench.git
+    </developerConnection>
+    <tag>HEAD</tag>
+    <url>https://github.com/zeebe-io/zeebe-cluster-testbench</url>
+  </scm>
+
+  <version>2.0.0-SNAPSHOT</version>
 </project>

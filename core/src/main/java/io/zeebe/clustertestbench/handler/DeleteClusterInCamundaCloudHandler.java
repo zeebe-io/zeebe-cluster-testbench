@@ -9,12 +9,12 @@ public class DeleteClusterInCamundaCloudHandler implements JobHandler {
 
   private final CloudAPIClient cloudApiClient;
 
-  public DeleteClusterInCamundaCloudHandler(CloudAPIClient cloudApiClient) {
+  public DeleteClusterInCamundaCloudHandler(final CloudAPIClient cloudApiClient) {
     this.cloudApiClient = cloudApiClient;
   }
 
   @Override
-  public void handle(JobClient client, ActivatedJob job) throws Exception {
+  public void handle(final JobClient client, final ActivatedJob job) throws Exception {
     final Input input = job.getVariablesAsType(Input.class);
 
     cloudApiClient.deleteCluster(input.getClusterId());
@@ -29,7 +29,7 @@ public class DeleteClusterInCamundaCloudHandler implements JobHandler {
       return clusterId;
     }
 
-    public void setClusterId(String clusterId) {
+    public void setClusterId(final String clusterId) {
       this.clusterId = clusterId;
     }
   }

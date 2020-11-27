@@ -21,7 +21,7 @@ public class ZeebeClientConnectiontInfo {
     return name;
   }
 
-  public void setName(String name) {
+  public void setName(final String name) {
     this.name = name;
   }
 
@@ -29,7 +29,7 @@ public class ZeebeClientConnectiontInfo {
     return zeebeAddress;
   }
 
-  public void setZeebeAddress(String zeebeAddress) {
+  public void setZeebeAddress(final String zeebeAddress) {
     this.zeebeAddress = zeebeAddress;
   }
 
@@ -37,7 +37,7 @@ public class ZeebeClientConnectiontInfo {
     return zeebeClientId;
   }
 
-  public void setZeebeClientId(String zeebeClientId) {
+  public void setZeebeClientId(final String zeebeClientId) {
     this.zeebeClientId = zeebeClientId;
   }
 
@@ -45,7 +45,7 @@ public class ZeebeClientConnectiontInfo {
     return zeebeAuthorizationServerUrl;
   }
 
-  public void setZeebeAuthorizationServerUrl(String zeebeAuthorizationServerUrl) {
+  public void setZeebeAuthorizationServerUrl(final String zeebeAuthorizationServerUrl) {
     this.zeebeAuthorizationServerUrl = zeebeAuthorizationServerUrl;
   }
 

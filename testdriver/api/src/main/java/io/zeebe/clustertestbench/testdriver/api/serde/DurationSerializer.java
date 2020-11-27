@@ -14,12 +14,13 @@ public class DurationSerializer extends StdSerializer<Duration> {
     this(null);
   }
 
-  public DurationSerializer(Class<Duration> t) {
+  public DurationSerializer(final Class<Duration> t) {
     super(t);
   }
 
   @Override
-  public void serialize(Duration value, JsonGenerator gen, SerializerProvider provider)
+  public void serialize(
+      final Duration value, final JsonGenerator gen, final SerializerProvider provider)
       throws IOException {
     gen.writeString(value.toString());
   }

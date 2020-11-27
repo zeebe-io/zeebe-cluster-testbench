@@ -45,14 +45,14 @@ import org.slf4j.LoggerFactory;
 
 public class Launcher {
 
-  private static final Logger logger = LoggerFactory.getLogger(Launcher.class);
+  private static final Logger LOGGER = LoggerFactory.getLogger(Launcher.class);
 
   private final Map<String, JobWorker> registeredJobWorkers = new HashMap<>();
 
   private final String testOrchestrationContactPoint;
   private final OAuthServiceAccountAuthenticationDetails testOrchestrationAuthenticatonDetails;
 
-  private String sheetsApiKeyFileContent;
+  private final String sheetsApiKeyFileContent;
   private final String reportSheetID;
 
   private final String slackToken;
@@ -62,16 +62,16 @@ public class Launcher {
   private final InternalCloudAPIClient internalCloudApiClient;
 
   public Launcher(
-      String testOrchestrationContactPoint,
-      OAuthServiceAccountAuthenticationDetails testOrchestrationAuthenticatonDetails,
-      String cloudApiUrl,
-      OAuthServiceAccountAuthenticationDetails cloudApiAuthenticationDetails,
-      String internalCloudApiUrl,
-      OAuthUserAccountAuthenticationDetails internalCloudApiAuthenticationDetails,
-      String sheetsApiKeyfileContent,
-      String reportSheetID,
-      String slackToken,
-      String slackChannel) {
+      final String testOrchestrationContactPoint,
+      final OAuthServiceAccountAuthenticationDetails testOrchestrationAuthenticatonDetails,
+      final String cloudApiUrl,
+      final OAuthServiceAccountAuthenticationDetails cloudApiAuthenticationDetails,
+      final String internalCloudApiUrl,
+      final OAuthUserAccountAuthenticationDetails internalCloudApiAuthenticationDetails,
+      final String sheetsApiKeyfileContent,
+      final String reportSheetID,
+      final String slackToken,
+      final String slackChannel) {
     this.testOrchestrationContactPoint = testOrchestrationContactPoint;
     this.testOrchestrationAuthenticatonDetails = testOrchestrationAuthenticatonDetails;
     this.sheetsApiKeyFileContent = sheetsApiKeyfileContent;
@@ -97,14 +97,14 @@ public class Launcher {
             .build(); ) {
 
       try {
-        boolean success =
+        final boolean success =
             new WorkflowDeployer(client).deployWorkflowsInClasspathFolder("workflows");
 
         if (!success) {
-          logger.warn("Deployment failed");
+          LOGGER.warn("Deployment failed");
         }
-      } catch (IOException e) {
-        logger.error("Error while deploying workflow: " + e.getMessage(), e);
+      } catch (final IOException e) {
+        LOGGER.error("Error while deploying workflow: " + e.getMessage(), e);
       }
 
       registerWorkers(client);
@@ -114,7 +114,7 @@ public class Launcher {
               new Thread("Close thread") {
                 @Override
                 public void run() {
-                  logger.info("Received shutdown signal");
+                  LOGGER.info("Received shutdown signal");
 
                   registeredJobWorkers.values().forEach(JobWorker::close);
                 }
@@ -122,7 +122,7 @@ public class Launcher {
 
       waitForInterruption();
 
-      logger.info("About to complete normally");
+      LOGGER.info("About to complete normally");
     }
   }
 
@@ -145,9 +145,9 @@ public class Launcher {
             .build(); ) {
       client.newTopologyRequest().send().join();
 
-      logger.info("Selftest - Successfully established connection to test orchestration cluster");
-    } catch (Exception e) {
-      logger.error("Selftest - Unable to establish connection to test orchestration cluster", e);
+      LOGGER.info("Selftest - Successfully established connection to test orchestration cluster");
+    } catch (final Exception e) {
+      LOGGER.error("Selftest - Unable to establish connection to test orchestration cluster", e);
     }
   }
 
@@ -155,9 +155,9 @@ public class Launcher {
     try {
       cloudApiClient.getParameters();
 
-      logger.info("Selftest - Successfully established connection to cloud API");
-    } catch (Exception e) {
-      logger.error("Selftest - Unable to establish connection to cloud API", e);
+      LOGGER.info("Selftest - Successfully established connection to cloud API");
+    } catch (final Exception e) {
+      LOGGER.error("Selftest - Unable to establish connection to cloud API", e);
     }
   }
 
@@ -165,9 +165,9 @@ public class Launcher {
     try {
       internalCloudApiClient.listGenerationInfos();
 
-      logger.info("Selftest - Successfully established connection to internal cloud API");
-    } catch (Exception e) {
-      logger.error("Selftest - Unable to establish connection to internal cloud API", e);
+      LOGGER.info("Selftest - Successfully established connection to internal cloud API");
+    } catch (final Exception e) {
+      LOGGER.error("Selftest - Unable to establish connection to internal cloud API", e);
     }
   }
 
@@ -206,44 +206,45 @@ public class Launcher {
   }
 
   private void testConnectionToSlack() {
-    Slack slack = Slack.getInstance();
+    final Slack slack = Slack.getInstance();
 
-    MethodsClient slackClient = slack.methods(slackToken);
+    final MethodsClient slackClient = slack.methods(slackToken);
 
     try {
-      ApiTestResponse response = slackClient.apiTest(ApiTestRequest.builder().foo("test").build());
+      final ApiTestResponse response =
+          slackClient.apiTest(ApiTestRequest.builder().foo("test").build());
 
-      String returnedFoo = response.getArgs().getFoo();
+      final String returnedFoo = response.getArgs().getFoo();
 
       if ("test".equalsIgnoreCase(returnedFoo)) {
-        logger.info("Selftest - Successfully established connection to Slack");
+        LOGGER.info("Selftest - Successfully established connection to Slack");
       } else {
-        logger.error(
+        LOGGER.error(
             "Selftest - Wrong respponse when establishing connection to Slack: " + returnedFoo);
       }
-    } catch (Exception e) {
-      logger.error("Selftest - Unable to establish connection to Slack", e);
+    } catch (final Exception e) {
+      LOGGER.error("Selftest - Unable to establish connection to Slack", e);
     }
   }
 
   private void testConnectionToGoogleSheets() {
-    try (var inputStream = new StringBufferInputStream(sheetsApiKeyFileContent)) {
-      GoogleCredential credential =
+    try (final var inputStream = new StringBufferInputStream(sheetsApiKeyFileContent)) {
+      final GoogleCredential credential =
           GoogleCredential.fromStream(inputStream)
               .createScoped(Collections.singleton(SheetsScopes.SPREADSHEETS));
 
-      Sheets service =
+      final Sheets service =
           new Sheets.Builder(newTrustedTransport(), getDefaultInstance(), credential)
               .setApplicationName("Zeebe Cluster Testbench - Publish Test Results Worker")
               .build();
 
-      Sheets.Spreadsheets.Values.Get request =
+      final Sheets.Spreadsheets.Values.Get request =
           service.spreadsheets().values().get(reportSheetID, "Sheet1!A1:B1");
 
       request.execute();
-      logger.info("Selftest - Successfully established connection to Google Sheets");
-    } catch (Exception e) {
-      logger.error("Selftest - Unable to establish connection to Google Sheets", e);
+      LOGGER.info("Selftest - Successfully established connection to Google Sheets");
+    } catch (final Exception e) {
+      LOGGER.error("Selftest - Unable to establish connection to Google Sheets", e);
     }
   }
 
@@ -280,8 +281,8 @@ public class Launcher {
           "record-test-result-job",
           new RecordTestResultHandler(sheetsApiKeyFileContent, reportSheetID),
           Duration.ofSeconds(10));
-    } catch (IOException | GeneralSecurityException e) {
-      logger.error(
+    } catch (final IOException | GeneralSecurityException e) {
+      LOGGER.error(
           "Exception while creating and registering worker for 'record-test-result-job'", e);
     }
 
@@ -310,8 +311,11 @@ public class Launcher {
   }
 
   private void registerWorker(
-      ZeebeClient client, String jobType, JobHandler jobHandler, Duration timeout) {
-    logger.info(
+      final ZeebeClient client,
+      final String jobType,
+      final JobHandler jobHandler,
+      final Duration timeout) {
+    LOGGER.info(
         "Registering job worker " + jobHandler.getClass().getSimpleName() + " for: " + jobType);
 
     final JobWorker workerRegistration =
@@ -319,7 +323,7 @@ public class Launcher {
 
     registeredJobWorkers.put(jobType, workerRegistration);
 
-    logger.info("Job worker opened and receiving jobs.");
+    LOGGER.info("Job worker opened and receiving jobs.");
   }
 
   private OAuthCredentialsProvider buildCredentialsProvider() {
@@ -344,11 +348,11 @@ public class Launcher {
   }
 
   private static void waitForInterruption() {
-    CountDownLatch countDownLatch = new CountDownLatch(1);
+    final CountDownLatch countDownLatch = new CountDownLatch(1);
     try {
       countDownLatch.await();
-    } catch (InterruptedException e) {
-      logger.info(e.getMessage(), e);
+    } catch (final InterruptedException e) {
+      LOGGER.info(e.getMessage(), e);
     }
   }
 }

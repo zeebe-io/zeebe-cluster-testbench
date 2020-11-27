@@ -1,64 +1,66 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-	<modelVersion>4.0.0</modelVersion>
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns="http://maven.apache.org/POM/4.0.0"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <artifactId>zeebe-cluster-testbench-integration-tests</artifactId>
 
-	<parent>
-		<groupId>io.zeebe</groupId>
-		<artifactId>zeebe-cluster-testbench</artifactId>
-		<version>2.0.0-SNAPSHOT</version>
-		<!-- do not remove empty tag - http://jira.codehaus.org/browse/MNG-4687 -->
-		<relativePath>..</relativePath>
-	</parent>
+  <build>
+    <plugins>
+      <plugin>
+        <artifactId>maven-failsafe-plugin</artifactId>
+        <executions>
+          <execution>
+            <goals>
+              <goal>integration-test</goal>
+              <goal>verify</goal>
+            </goals>
+          </execution>
+        </executions>
+        <version>${plugin.version.failsafe}</version>
+      </plugin>
+    </plugins>
+  </build>
 
-	<artifactId>zeebe-cluster-testbench-integration-tests</artifactId>
-	<packaging>jar</packaging>
+  <dependencies>
+    <dependency>
+      <artifactId>zeebe-cluster-testbench-core</artifactId>
+      <groupId>io.zeebe</groupId>
+    </dependency>
 
-	<name>Zeebe Cluster Testbench - Integration Tests</name>
-	
-	<properties>
-		<plugin.version.failsafe>3.0.0-M5</plugin.version.failsafe>
-	</properties>
+    <dependency>
+      <artifactId>assertj-core</artifactId>
+      <groupId>org.assertj</groupId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <artifactId>junit-jupiter-api</artifactId>
+      <groupId>org.junit.jupiter</groupId>
+      <scope>test</scope>
+    </dependency>
 
-	<dependencies>
-		<dependency>
-			<groupId>io.zeebe</groupId>
-			<artifactId>zeebe-cluster-testbench-core</artifactId>
-		</dependency>
+    <dependency>
+      <artifactId>mockito-junit-jupiter</artifactId>
+      <groupId>org.mockito</groupId>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
+  <modelVersion>4.0.0</modelVersion>
 
-		<dependency>
-			<groupId>org.assertj</groupId>
-			<artifactId>assertj-core</artifactId>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.junit.jupiter</groupId>
-			<artifactId>junit-jupiter-api</artifactId>
-			<scope>test</scope>
-		</dependency>
+  <name>Zeebe Cluster Testbench - Integration Tests</name>
 
-		<dependency>
-			<groupId>org.mockito</groupId>
-			<artifactId>mockito-junit-jupiter</artifactId>
-			<scope>test</scope>
-		</dependency>
-	</dependencies>
+  <packaging>jar</packaging>
 
-	<build>
-		<plugins>
-			<plugin>
-				<artifactId>maven-failsafe-plugin</artifactId>
-				<version>${plugin.version.failsafe}</version>
-				<executions>
-					<execution>
-						<goals>
-							<goal>integration-test</goal>
-							<goal>verify</goal>
-						</goals>
-					</execution>
-				</executions>
-			</plugin>
-		</plugins>
-	</build>
+  <parent>
+    <artifactId>zeebe-cluster-testbench</artifactId>
+    <groupId>io.zeebe</groupId>
+    <relativePath>..</relativePath>
+    <!-- do not remove empty tag - http://jira.codehaus.org/browse/MNG-4687 -->
+    <version>2.0.0-SNAPSHOT</version>
+  </parent>
+
+  <properties>
+    <plugin.version.failsafe>3.0.0-M5</plugin.version.failsafe>
+  </properties>
 </project>

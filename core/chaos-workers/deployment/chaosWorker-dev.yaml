@@ -19,37 +19,37 @@ spec:
         app: chaos-worker
     spec:
       containers:
-      - name: chaos-worker
-        image: gcr.io/zeebe-io/zeebe-cluster-testbench-chaos:dev
-        imagePullPolicy: Always
-        env:
-          - name: ZEEBE_AUTHORIZATION_SERVER_URL
-            value: "https://login.cloud.dev.ultrawombat.com/oauth/token"
-          - name: ZEEBE_CLIENT_ID
-            value: "cOf2ryfrDoCaHqXFwrQm7y7n9yEP4Imp"
-          - name: ZEEBE_CLIENT_SECRET
-            valueFrom:
-              secretKeyRef:
-                name: testbench-secrets
-                key: clientSecret
-          - name: ZEEBE_ADDRESS
-            valueFrom:
-              secretKeyRef:
-                name: testbench-secrets
-                key: contactPoint
-          - name: CHAOS_LOG_HOME
-            value: "/home/chaos/data"
-        resources:
-          limits:
-            cpu: 4
-            memory: 256Mi
-          requests:
-            cpu: 2
-            memory: 100Mi
-        volumeMounts:
-        - name: data
-          mountPath: /home/chaos/data
+        - name: chaos-worker
+          image: gcr.io/zeebe-io/zeebe-cluster-testbench-chaos:dev
+          imagePullPolicy: Always
+          env:
+            - name: ZEEBE_AUTHORIZATION_SERVER_URL
+              value: "https://login.cloud.dev.ultrawombat.com/oauth/token"
+            - name: ZEEBE_CLIENT_ID
+              value: "cOf2ryfrDoCaHqXFwrQm7y7n9yEP4Imp"
+            - name: ZEEBE_CLIENT_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: testbench-secrets
+                  key: clientSecret
+            - name: ZEEBE_ADDRESS
+              valueFrom:
+                secretKeyRef:
+                  name: testbench-secrets
+                  key: contactPoint
+            - name: CHAOS_LOG_HOME
+              value: "/home/chaos/data"
+          resources:
+            limits:
+              cpu: 4
+              memory: 256Mi
+            requests:
+              cpu: 2
+              memory: 100Mi
+          volumeMounts:
+            - name: data
+              mountPath: /home/chaos/data
       volumes:
-      - name: data
-        persistentVolumeClaim:
-          claimName: chaos-data-claim
+        - name: data
+          persistentVolumeClaim:
+            claimName: chaos-data-claim

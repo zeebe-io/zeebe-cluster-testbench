@@ -21,7 +21,7 @@ public class SequentialTestParameters {
     return steps;
   }
 
-  public void setSteps(int steps) {
+  public void setSteps(final int steps) {
     this.steps = steps;
   }
 
@@ -29,7 +29,7 @@ public class SequentialTestParameters {
     return iterations;
   }
 
-  public void setIterations(int iterations) {
+  public void setIterations(final int iterations) {
     this.iterations = iterations;
   }
 
@@ -39,7 +39,7 @@ public class SequentialTestParameters {
   }
 
   @JsonDeserialize(using = DurationDeserializer.class)
-  public void setMaxTimeForIteration(Duration maxTimeForIteration) {
+  public void setMaxTimeForIteration(final Duration maxTimeForIteration) {
     this.maxTimeForIteration = maxTimeForIteration;
   }
 
@@ -49,7 +49,7 @@ public class SequentialTestParameters {
   }
 
   @JsonDeserialize(using = DurationDeserializer.class)
-  public void setMaxTimeForCompleteTest(Duration maxTimeForCompleteTest) {
+  public void setMaxTimeForCompleteTest(final Duration maxTimeForCompleteTest) {
     this.maxTimeForCompleteTest = maxTimeForCompleteTest;
   }
 
@@ -59,7 +59,7 @@ public class SequentialTestParameters {
   }
 
   public static SequentialTestParameters defaultParams() {
-    SequentialTestParameters result = new SequentialTestParameters();
+    final SequentialTestParameters result = new SequentialTestParameters();
 
     result.setSteps(3);
 

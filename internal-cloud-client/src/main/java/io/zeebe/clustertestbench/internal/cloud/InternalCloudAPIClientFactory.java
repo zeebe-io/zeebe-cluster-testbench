@@ -10,25 +10,25 @@ import org.jboss.resteasy.client.jaxrs.ResteasyWebTarget;
 public class InternalCloudAPIClientFactory {
 
   public InternalCloudAPIClient createCloudAPIClient(
-      String cloudApiUrl,
-      String authenticationServerURL,
-      String audience,
-      String clientId,
-      String clientSecret,
-      String username,
-      String password) {
+      final String cloudApiUrl,
+      final String authenticationServerURL,
+      final String audience,
+      final String clientId,
+      final String clientSecret,
+      final String username,
+      final String password) {
 
-    OAuthInterceptor oauthInterceptor =
+    final OAuthInterceptor oauthInterceptor =
         OAuthInterceptor.forUserAccountAuthorization(
             authenticationServerURL, audience, clientId, clientSecret, username, password);
 
-    Client client =
+    final Client client =
         ClientBuilder.newBuilder()
             .register(oauthInterceptor)
             .register(BadRequestResponseFilter.class)
             .build();
-    WebTarget target = client.target(cloudApiUrl);
-    ResteasyWebTarget rtarget = (ResteasyWebTarget) target;
+    final WebTarget target = client.target(cloudApiUrl);
+    final ResteasyWebTarget rtarget = (ResteasyWebTarget) target;
     return rtarget.proxy(InternalCloudAPIClient.class);
   }
 }

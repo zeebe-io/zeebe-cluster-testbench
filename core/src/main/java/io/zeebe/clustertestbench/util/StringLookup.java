@@ -25,15 +25,11 @@ public class StringLookup<T> {
       LevenshteinDistance.getDefaultInstance();
   private static final Collector<CharSequence, ?, String> STRING_JOINING_COLLECTOR =
       Collectors.joining("', '", "['", "']");
-
+  final Predicate<T> predicate;
   private final String entityToFind;
   private final String searchTerm;
-
   private final List<T> candidates;
-
   private final Function<T, String> extractor;
-
-  final Predicate<T> predicate;
 
   /**
    * @param entityToFind what kind of entity shall be found (e.g. channel, cluster plan, region);
@@ -44,11 +40,11 @@ public class StringLookup<T> {
    * @param ignoreCase flag whether the search should respect or ignore case
    */
   public StringLookup(
-      String entityToFind,
-      String searchTerm,
-      List<T> candidates,
-      Function<T, String> extractor,
-      boolean ignoreCase) {
+      final String entityToFind,
+      final String searchTerm,
+      final List<T> candidates,
+      final Function<T, String> extractor,
+      final boolean ignoreCase) {
     this.entityToFind = entityToFind;
     this.searchTerm = searchTerm;
     this.candidates = candidates;

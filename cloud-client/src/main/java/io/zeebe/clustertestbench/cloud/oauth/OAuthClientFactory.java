@@ -8,11 +8,12 @@ import org.jboss.resteasy.client.jaxrs.ResteasyWebTarget;
 
 public class OAuthClientFactory {
 
-  public OAuthClient createOAuthClient(String authenticationURL) {
-    Client client = ClientBuilder.newBuilder().register(BadRequestResponseFilter.class).build();
+  public OAuthClient createOAuthClient(final String authenticationURL) {
+    final Client client =
+        ClientBuilder.newBuilder().register(BadRequestResponseFilter.class).build();
 
-    WebTarget target = client.target(authenticationURL);
-    ResteasyWebTarget rtarget = (ResteasyWebTarget) target;
+    final WebTarget target = client.target(authenticationURL);
+    final ResteasyWebTarget rtarget = (ResteasyWebTarget) target;
     return rtarget.proxy(OAuthClient.class);
   }
 }

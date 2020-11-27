@@ -14,7 +14,7 @@ public class ZeebeClientInfo {
     return clientId;
   }
 
-  public void setClientId(String clientId) {
+  public void setClientId(final String clientId) {
     this.clientId = clientId;
   }
 
@@ -22,7 +22,7 @@ public class ZeebeClientInfo {
     return clientSecret;
   }
 
-  public void setClientSecret(String clientSecret) {
+  public void setClientSecret(final String clientSecret) {
     this.clientSecret = clientSecret;
   }
 
@@ -30,7 +30,7 @@ public class ZeebeClientInfo {
     return name;
   }
 
-  public void setName(String name) {
+  public void setName(final String name) {
     this.name = name;
   }
 
@@ -38,7 +38,7 @@ public class ZeebeClientInfo {
     return uuid;
   }
 
-  public void setUuid(String uuid) {
+  public void setUuid(final String uuid) {
     this.uuid = uuid;
   }
 

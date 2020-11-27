@@ -9,7 +9,11 @@ public class CreateClusterRequest {
   private final String regionId;
 
   public CreateClusterRequest(
-      String name, String planTypeId, String channelId, String generationId, String regionId) {
+      final String name,
+      final String planTypeId,
+      final String channelId,
+      final String generationId,
+      final String regionId) {
     this.name = name;
     this.planTypeId = planTypeId;
     this.channelId = channelId;

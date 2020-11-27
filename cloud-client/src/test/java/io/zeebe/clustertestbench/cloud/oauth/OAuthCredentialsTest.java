@@ -17,7 +17,7 @@ class OAuthCredentialsTest {
   @Test
   void testDeserialization() throws JsonMappingException, JsonProcessingException {
     // given
-    String exampleResponse =
+    final String exampleResponse =
         "{\r\n"
             + "    \"access_token\": \"lorem ipsum\",\r\n"
             + "    \"expires_in\": 86400,\r\n"
@@ -25,7 +25,8 @@ class OAuthCredentialsTest {
             + "}";
 
     // when
-    OAuthCredentials actual = OBJECT_MAPPER.readValue(exampleResponse, OAuthCredentials.class);
+    final OAuthCredentials actual =
+        OBJECT_MAPPER.readValue(exampleResponse, OAuthCredentials.class);
 
     // then
     assertThat(actual.getTokenType()).isEqualTo("Bearer");

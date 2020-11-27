@@ -8,7 +8,10 @@ public class OAuthServiceAccountAuthenticationDetails {
   private final String clientSecret;
 
   public OAuthServiceAccountAuthenticationDetails(
-      String serverURL, String audience, String clientId, String clientSecret) {
+      final String serverURL,
+      final String audience,
+      final String clientId,
+      final String clientSecret) {
     this.serverURL = serverURL;
     this.audience = audience;
     this.clientId = clientId;

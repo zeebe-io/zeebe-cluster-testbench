@@ -1,72 +1,74 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-	<modelVersion>4.0.0</modelVersion>
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns="http://maven.apache.org/POM/4.0.0"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <artifactId>zeebe-cluster-testbench-testdriver-sequential</artifactId>
 
-	<parent>
-		<groupId>io.zeebe</groupId>
-		<artifactId>zeebe-cluster-testbench</artifactId>
-		<version>2.0.0-SNAPSHOT</version>
-		<!-- do not remove empty tag - http://jira.codehaus.org/browse/MNG-4687 -->
-		<relativePath>../..</relativePath>
-	</parent>
+  <dependencies>
+    <dependency>
+      <artifactId>zeebe-cluster-testbench-testdriver-api</artifactId>
+      <groupId>io.zeebe</groupId>
+    </dependency>
+    <dependency>
+      <artifactId>zeebe-client-java</artifactId>
+      <groupId>io.zeebe</groupId>
+    </dependency>
+    <dependency>
+      <artifactId>zeebe-workflow-generator</artifactId>
+      <groupId>io.zeebe</groupId>
+    </dependency>
+    <dependency>
+      <artifactId>jackson-databind</artifactId>
+      <groupId>com.fasterxml.jackson.core</groupId>
+    </dependency>
+    <dependency>
+      <artifactId>zeebe-bpmn-model</artifactId>
+      <groupId>io.zeebe</groupId>
+      <version>${zeebe.version}</version>
+    </dependency>
 
-	<artifactId>zeebe-cluster-testbench-testdriver-sequential</artifactId>
-	<packaging>jar</packaging>
+    <dependency>
+      <artifactId>grpc-api</artifactId>
+      <groupId>io.grpc</groupId>
+      <version>${version.grpc-api}</version>
+    </dependency>
 
-	<name>Zeebe Cluster Testbench - Sequential Testdriver</name>
+    <dependency>
+      <artifactId>assertj-core</artifactId>
+      <groupId>org.assertj</groupId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <artifactId>junit-jupiter-api</artifactId>
+      <groupId>org.junit.jupiter</groupId>
+      <scope>test</scope>
+    </dependency>
 
-	<properties>
-		<version.grpc-api>1.33.1</version.grpc-api>
-	</properties>
+    <dependency>
+      <artifactId>junit-jupiter-params</artifactId>
+      <groupId>org.junit.jupiter</groupId>
+      <scope>test</scope>
+    </dependency>
 
-	<dependencies>
-		<dependency>
-			<groupId>io.zeebe</groupId>
-			<artifactId>zeebe-cluster-testbench-testdriver-api</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>io.zeebe</groupId>
-			<artifactId>zeebe-client-java</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>io.zeebe</groupId>
-			<artifactId>zeebe-workflow-generator</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>com.fasterxml.jackson.core</groupId>
-			<artifactId>jackson-databind</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>io.zeebe</groupId>
-			<artifactId>zeebe-bpmn-model</artifactId>
-			<version>${zeebe.version}</version>
-		</dependency>
+  </dependencies>
 
-		<dependency>
-			<groupId>io.grpc</groupId>
-			<artifactId>grpc-api</artifactId>
-			<version>${version.grpc-api}</version>
-		</dependency>
+  <modelVersion>4.0.0</modelVersion>
+  <name>Zeebe Cluster Testbench - Sequential Testdriver</name>
 
-		<dependency>
-			<groupId>org.assertj</groupId>
-			<artifactId>assertj-core</artifactId>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.junit.jupiter</groupId>
-			<artifactId>junit-jupiter-api</artifactId>
-			<scope>test</scope>
-		</dependency>
+  <packaging>jar</packaging>
 
-		<dependency>
-			<groupId>org.junit.jupiter</groupId>
-			<artifactId>junit-jupiter-params</artifactId>
-			<scope>test</scope>
-		</dependency>
+  <parent>
+    <artifactId>zeebe-cluster-testbench</artifactId>
+    <groupId>io.zeebe</groupId>
+    <relativePath>../..</relativePath>
+    <!-- do not remove empty tag - http://jira.codehaus.org/browse/MNG-4687 -->
+    <version>2.0.0-SNAPSHOT</version>
+  </parent>
 
-	</dependencies>
+  <properties>
+    <version.grpc-api>1.33.1</version.grpc-api>
+  </properties>
 
 </project>

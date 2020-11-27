@@ -9,15 +9,15 @@ public class GatherInformationAboutClusterInCamundaCloudHandler implements JobHa
 
   private final CloudAPIClient cloudApiClient;
 
-  public GatherInformationAboutClusterInCamundaCloudHandler(CloudAPIClient cloudApiClient) {
+  public GatherInformationAboutClusterInCamundaCloudHandler(final CloudAPIClient cloudApiClient) {
     this.cloudApiClient = cloudApiClient;
   }
 
   @Override
-  public void handle(JobClient client, ActivatedJob job) throws Exception {
+  public void handle(final JobClient client, final ActivatedJob job) throws Exception {
     final Input input = job.getVariablesAsType(Input.class);
 
-    String operateURL =
+    final String operateURL =
         cloudApiClient.getClusterInfo(input.getClusterId()).getStatus().getOperateUrl();
 
     client.newCompleteCommand(job.getKey()).variables(new Output(operateURL)).send();
@@ -30,7 +30,7 @@ public class GatherInformationAboutClusterInCamundaCloudHandler implements JobHa
       return clusterId;
     }
 
-    public void setClusterId(String clusterId) {
+    public void setClusterId(final String clusterId) {
       this.clusterId = clusterId;
     }
   }
@@ -39,7 +39,7 @@ public class GatherInformationAboutClusterInCamundaCloudHandler implements JobHa
 
     private final String operateURL;
 
-    public Output(String operateURL) {
+    public Output(final String operateURL) {
       this.operateURL = operateURL;
     }
 

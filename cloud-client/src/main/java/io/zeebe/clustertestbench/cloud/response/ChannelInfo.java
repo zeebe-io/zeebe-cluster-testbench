@@ -22,7 +22,7 @@ public class ChannelInfo {
     return allowedGenerations;
   }
 
-  public void setAllowedGenerations(List<GenerationInfo> allowedGenerations) {
+  public void setAllowedGenerations(final List<GenerationInfo> allowedGenerations) {
     this.allowedGenerations = allowedGenerations;
   }
 
@@ -30,7 +30,7 @@ public class ChannelInfo {
     return defaultGeneration;
   }
 
-  public void setDefaultGeneration(GenerationInfo defaultGeneration) {
+  public void setDefaultGeneration(final GenerationInfo defaultGeneration) {
     this.defaultGeneration = defaultGeneration;
   }
 
@@ -39,7 +39,7 @@ public class ChannelInfo {
   }
 
   @JsonAlias("isDefault")
-  public void setDefault(boolean isDefault) {
+  public void setDefault(final boolean isDefault) {
     this.isDefault = isDefault;
   }
 
@@ -47,7 +47,7 @@ public class ChannelInfo {
     return name;
   }
 
-  public void setName(String name) {
+  public void setName(final String name) {
     this.name = name;
   }
 
@@ -55,7 +55,7 @@ public class ChannelInfo {
     return uuid;
   }
 
-  public void setUuid(String uuid) {
+  public void setUuid(final String uuid) {
     this.uuid = uuid;
   }
 

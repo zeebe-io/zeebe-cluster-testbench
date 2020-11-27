@@ -27,7 +27,7 @@ public class ClusterInfo {
     return planType;
   }
 
-  public void setPlanType(ClusterPlanTypeInfo planType) {
+  public void setPlanType(final ClusterPlanTypeInfo planType) {
     this.planType = planType;
   }
 
@@ -35,7 +35,7 @@ public class ClusterInfo {
     return k8sContext;
   }
 
-  public void setK8sContext(K8sContextInfo k8sContext) {
+  public void setK8sContext(final K8sContextInfo k8sContext) {
     this.k8sContext = k8sContext;
   }
 
@@ -43,7 +43,7 @@ public class ClusterInfo {
     return uuid;
   }
 
-  public void setUuid(String uuid) {
+  public void setUuid(final String uuid) {
     this.uuid = uuid;
   }
 
@@ -51,7 +51,7 @@ public class ClusterInfo {
     return ownerId;
   }
 
-  public void setOwnerId(String ownerId) {
+  public void setOwnerId(final String ownerId) {
     this.ownerId = ownerId;
   }
 
@@ -59,7 +59,7 @@ public class ClusterInfo {
     return name;
   }
 
-  public void setName(String name) {
+  public void setName(final String name) {
     this.name = name;
   }
 
@@ -67,7 +67,7 @@ public class ClusterInfo {
     return internal;
   }
 
-  public void setInternal(boolean internal) {
+  public void setInternal(final boolean internal) {
     this.internal = internal;
   }
 
@@ -75,7 +75,7 @@ public class ClusterInfo {
     return generation;
   }
 
-  public void setGeneration(GenerationInfo generation) {
+  public void setGeneration(final GenerationInfo generation) {
     this.generation = generation;
   }
 
@@ -83,7 +83,7 @@ public class ClusterInfo {
     return channel;
   }
 
-  public void setChannel(ChannelInfo channel) {
+  public void setChannel(final ChannelInfo channel) {
     this.channel = channel;
   }
 
@@ -91,7 +91,7 @@ public class ClusterInfo {
     return status;
   }
 
-  public void setStatus(ClusterStatus status) {
+  public void setStatus(final ClusterStatus status) {
     this.status = status;
   }
 
@@ -99,7 +99,7 @@ public class ClusterInfo {
     return metadata;
   }
 
-  public void setMetadata(ClusterMetadata metadata) {
+  public void setMetadata(final ClusterMetadata metadata) {
     this.metadata = metadata;
   }
 

@@ -13,11 +13,11 @@ class ClientConnectiontInfoTest {
   @Test
   void testDeserialization() throws JsonMappingException, JsonProcessingException {
     // given
-    String jsonString =
+    final String jsonString =
         "{\"ZEEBE_ADDRESS\": \"<zeebeAddress>\",\"ZEEBE_CLIENT_ID\": \"<zeebeClientId>\",\"ZEEBE_AUTHORIZATION_SERVER_URL\": \"<authorizationURL>\"}";
 
     // when
-    ZeebeClientConnectiontInfo actual =
+    final ZeebeClientConnectiontInfo actual =
         OBJECT_MAPPER.readValue(jsonString, ZeebeClientConnectiontInfo.class);
 
     // then

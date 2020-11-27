@@ -14,12 +14,12 @@ public class NotifyEngineersHandler implements JobHandler {
 
   private final NotificationService notificationService;
 
-  public NotifyEngineersHandler(NotificationService notificationService) {
+  public NotifyEngineersHandler(final NotificationService notificationService) {
     this.notificationService = notificationService;
   }
 
   @Override
-  public void handle(JobClient client, ActivatedJob job) throws Exception {
+  public void handle(final JobClient client, final ActivatedJob job) throws Exception {
     final Input input = job.getVariablesAsType(Input.class);
     final var message = composeMessage(input);
 
@@ -27,8 +27,8 @@ public class NotifyEngineersHandler implements JobHandler {
     client.newCompleteCommand(job.getKey()).send();
   }
 
-  protected String composeMessage(Input input) {
-    StringBuilder resultBuilder = new StringBuilder();
+  protected String composeMessage(final Input input) {
+    final StringBuilder resultBuilder = new StringBuilder();
 
     // icon
     resultBuilder.append(":bpmn-error-throw-event:");
@@ -89,7 +89,7 @@ public class NotifyEngineersHandler implements JobHandler {
       return generation;
     }
 
-    public void setGeneration(String generation) {
+    public void setGeneration(final String generation) {
       this.generation = generation;
     }
 
@@ -97,7 +97,7 @@ public class NotifyEngineersHandler implements JobHandler {
       return clusterPlan;
     }
 
-    public void setClusterPlan(String clusterPlan) {
+    public void setClusterPlan(final String clusterPlan) {
       this.clusterPlan = clusterPlan;
     }
 
@@ -105,7 +105,7 @@ public class NotifyEngineersHandler implements JobHandler {
       return clusterName;
     }
 
-    public void setClusterName(String clusterName) {
+    public void setClusterName(final String clusterName) {
       this.clusterName = clusterName;
     }
 
@@ -115,7 +115,7 @@ public class NotifyEngineersHandler implements JobHandler {
     }
 
     @JsonProperty(TestDriver.VARIABLE_KEY_TEST_REPORT)
-    public void setTestReport(TestReportDTO testReport) {
+    public void setTestReport(final TestReportDTO testReport) {
       this.testReport = testReport;
     }
 
@@ -123,7 +123,7 @@ public class NotifyEngineersHandler implements JobHandler {
       return operateURL;
     }
 
-    public void setOperateURL(String operateURL) {
+    public void setOperateURL(final String operateURL) {
       this.operateURL = operateURL;
     }
 

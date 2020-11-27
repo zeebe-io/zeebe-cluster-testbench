@@ -22,15 +22,16 @@ public class TestTimingContext implements AutoCloseable {
 
   private final Map<String, Object> metaData = new HashMap<>();
 
-  public TestTimingContext(Duration maxTime, String errorMessage, Consumer<String> errorCollector) {
+  public TestTimingContext(
+      final Duration maxTime, final String errorMessage, final Consumer<String> errorCollector) {
     this(System::currentTimeMillis, maxTime, errorMessage, errorCollector);
   }
 
   protected TestTimingContext(
-      Supplier<Long> timeSupplier,
-      Duration maxDuration,
-      String errorMessage,
-      Consumer<String> errorCollector) {
+      final Supplier<Long> timeSupplier,
+      final Duration maxDuration,
+      final String errorMessage,
+      final Consumer<String> errorCollector) {
     super();
     this.timeSupplier = timeSupplier;
     this.startTime = timeSupplier.get();
@@ -44,7 +45,7 @@ public class TestTimingContext implements AutoCloseable {
   }
 
   protected String composeErrorMessage() {
-    StringBuilder errorMessageBuilder = new StringBuilder();
+    final StringBuilder errorMessageBuilder = new StringBuilder();
 
     errorMessageBuilder.append(errorMessage);
 
@@ -57,7 +58,7 @@ public class TestTimingContext implements AutoCloseable {
     return errorMessageBuilder.toString();
   }
 
-  public void putMetaData(String key, Object value) {
+  public void putMetaData(final String key, final Object value) {
     metaData.put(key, value);
   }
 

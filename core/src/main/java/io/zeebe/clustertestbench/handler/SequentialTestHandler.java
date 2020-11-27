@@ -18,14 +18,14 @@ public class SequentialTestHandler implements JobHandler {
   public void handle(final JobClient client, final ActivatedJob job) throws Exception {
     final Input input = job.getVariablesAsType(Input.class);
 
-    Thread testDiverThread =
+    final Thread testDiverThread =
         new Thread(
             () -> {
-              SequentialTestDriver sequentialTestDriver =
+              final SequentialTestDriver sequentialTestDriver =
                   new SequentialTestDriver(
                       input.getAuthenticationDetails(), input.getTestParameters());
 
-              TestReport testReport = sequentialTestDriver.runTest();
+              final TestReport testReport = sequentialTestDriver.runTest();
 
               client.newCompleteCommand(job.getKey()).variables(new Output(testReport)).send();
             });
@@ -44,7 +44,7 @@ public class SequentialTestHandler implements JobHandler {
 
     @JsonProperty(CamundaCloudAuthenticationDetails.VARIABLE_KEY)
     public void setAuthenticationDetails(
-        CamundaCLoudAuthenticationDetailsImpl authenticationDetails) {
+        final CamundaCLoudAuthenticationDetailsImpl authenticationDetails) {
       this.authenticationDetails = authenticationDetails;
     }
 
@@ -54,7 +54,7 @@ public class SequentialTestHandler implements JobHandler {
     }
 
     @JsonProperty(TestDriver.VARIABLE_KEY_TEST_PARAMETERS)
-    public void setTestParameters(SequentialTestParameters testParameters) {
+    public void setTestParameters(final SequentialTestParameters testParameters) {
       this.testParameters = testParameters;
     }
   }
@@ -63,7 +63,7 @@ public class SequentialTestHandler implements JobHandler {
 
     private final TestReport testReport;
 
-    public Output(TestReport testReport) {
+    public Output(final TestReport testReport) {
       super();
       this.testReport = testReport;
     }

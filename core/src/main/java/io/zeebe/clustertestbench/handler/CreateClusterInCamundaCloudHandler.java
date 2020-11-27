@@ -18,7 +18,7 @@ import org.slf4j.LoggerFactory;
 
 public class CreateClusterInCamundaCloudHandler implements JobHandler {
 
-  private static final Logger logger =
+  private static final Logger LOGGER =
       LoggerFactory.getLogger(CreateClusterInCamundaCloudHandler.class);
 
   private static final RandomNameGenerator NAME_GENRATOR = new RandomNameGenerator();
@@ -30,13 +30,13 @@ public class CreateClusterInCamundaCloudHandler implements JobHandler {
   }
 
   @Override
-  public void handle(JobClient client, ActivatedJob job) throws Exception {
+  public void handle(final JobClient client, final ActivatedJob job) throws Exception {
     final Input input = job.getVariablesAsType(Input.class);
 
-    String name = NAME_GENRATOR.next();
+    final String name = NAME_GENRATOR.next();
 
-    logger.info("Creating cluster" + name);
-    CreateClusterResponse createClusterRepoonse =
+    LOGGER.info("Creating cluster {}", name);
+    final CreateClusterResponse createClusterRepoonse =
         cloudApiClient.createCluster(
             new CreateClusterRequest(
                 name,
@@ -45,21 +45,21 @@ public class CreateClusterInCamundaCloudHandler implements JobHandler {
                 input.getGenerationUUID(),
                 input.getRegionUUID()));
 
-    String clusterId = createClusterRepoonse.getClusterId();
+    final String clusterId = createClusterRepoonse.getClusterId();
 
     try {
-      CreateZeebeClientResponse createZeebeClientResponse =
+      final CreateZeebeClientResponse createZeebeClientResponse =
           cloudApiClient.createZeebeClient(
               clusterId, new CreateZeebeClientRequest(name + "_client"));
 
-      ZeebeClientConnectiontInfo connectionInfo =
+      final ZeebeClientConnectiontInfo connectionInfo =
           cloudApiClient.getZeebeClientInfo(clusterId, createZeebeClientResponse.getClientId());
 
       client
           .newCompleteCommand(job.getKey())
           .variables(new Output(createZeebeClientResponse, connectionInfo, name, clusterId))
           .send();
-    } catch (Exception e) {
+    } catch (final Exception e) {
       cloudApiClient.deleteCluster(clusterId);
 
       client
@@ -79,7 +79,7 @@ public class CreateClusterInCamundaCloudHandler implements JobHandler {
       return generationUUID;
     }
 
-    public void setGenerationUUID(String generationUUID) {
+    public void setGenerationUUID(final String generationUUID) {
       this.generationUUID = generationUUID;
     }
 
@@ -87,7 +87,7 @@ public class CreateClusterInCamundaCloudHandler implements JobHandler {
       return regionUUID;
     }
 
-    public void setRegionUUID(String regionUUID) {
+    public void setRegionUUID(final String regionUUID) {
       this.regionUUID = regionUUID;
     }
 
@@ -95,7 +95,7 @@ public class CreateClusterInCamundaCloudHandler implements JobHandler {
       return clusterPlanUUID;
     }
 
-    public void setClusterPlanUUID(String clusterPlanUUID) {
+    public void setClusterPlanUUID(final String clusterPlanUUID) {
       this.clusterPlanUUID = clusterPlanUUID;
     }
 
@@ -103,7 +103,7 @@ public class CreateClusterInCamundaCloudHandler implements JobHandler {
       return channelUUID;
     }
 
-    public void setChannelUUID(String channelUUID) {
+    public void setChannelUUID(final String channelUUID) {
       this.channelUUID = channelUUID;
     }
   }
@@ -111,14 +111,14 @@ public class CreateClusterInCamundaCloudHandler implements JobHandler {
   private static final class Output {
 
     private CamundaCLoudAuthenticationDetailsImpl authenticationDetails;
-    private String clusterId;
-    private String clusterName;
+    private final String clusterId;
+    private final String clusterName;
 
     public Output(
-        CreateZeebeClientResponse createZeebeClientResponse,
-        ZeebeClientConnectiontInfo connectionInfo,
-        String clusterName,
-        String clusterId) {
+        final CreateZeebeClientResponse createZeebeClientResponse,
+        final ZeebeClientConnectiontInfo connectionInfo,
+        final String clusterName,
+        final String clusterId) {
       this.authenticationDetails =
           new CamundaCLoudAuthenticationDetailsImpl(
               connectionInfo.getZeebeAuthorizationServerUrl(),
@@ -137,7 +137,7 @@ public class CreateClusterInCamundaCloudHandler implements JobHandler {
 
     @JsonProperty(CamundaCloudAuthenticationDetails.VARIABLE_KEY)
     public void setAuthenticationDetails(
-        CamundaCLoudAuthenticationDetailsImpl authenticationDetails) {
+        final CamundaCLoudAuthenticationDetailsImpl authenticationDetails) {
       this.authenticationDetails = authenticationDetails;
     }
 

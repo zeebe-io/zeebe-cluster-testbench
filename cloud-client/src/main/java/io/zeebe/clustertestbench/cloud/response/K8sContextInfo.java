@@ -14,7 +14,7 @@ public class K8sContextInfo {
     return uuid;
   }
 
-  public void setUuid(String uuid) {
+  public void setUuid(final String uuid) {
     this.uuid = uuid;
   }
 
@@ -22,7 +22,7 @@ public class K8sContextInfo {
     return name;
   }
 
-  public void setName(String name) {
+  public void setName(final String name) {
     this.name = name;
   }
 
@@ -30,7 +30,7 @@ public class K8sContextInfo {
     return region;
   }
 
-  public void setRegion(String region) {
+  public void setRegion(final String region) {
     this.region = region;
   }
 
@@ -38,7 +38,7 @@ public class K8sContextInfo {
     return zone;
   }
 
-  public void setZone(String zone) {
+  public void setZone(final String zone) {
     this.zone = zone;
   }
 

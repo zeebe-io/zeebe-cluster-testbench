@@ -7,17 +7,17 @@ import org.junit.jupiter.api.Test;
 
 class OAuthTokenRequestTest {
 
-  private final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
+  private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
 
   @Test
   void testSerialization() throws JsonProcessingException {
     // given
-    OAuthServiceAccountTokenRequest request =
+    final OAuthServiceAccountTokenRequest request =
         new OAuthServiceAccountTokenRequest(
             "<audience>", "clientId>", "<clientSecret>", "<grantType>");
 
     // when
-    String actual = OBJECT_MAPPER.writeValueAsString(request);
+    final String actual = OBJECT_MAPPER.writeValueAsString(request);
 
     // then
     Assertions.assertThat(actual)

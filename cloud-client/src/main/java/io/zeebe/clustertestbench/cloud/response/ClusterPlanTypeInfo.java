@@ -14,7 +14,7 @@ public class ClusterPlanTypeInfo {
     return description;
   }
 
-  public void setDescription(String description) {
+  public void setDescription(final String description) {
     this.description = description;
   }
 
@@ -22,7 +22,7 @@ public class ClusterPlanTypeInfo {
     return internal;
   }
 
-  public void setInternal(boolean internal) {
+  public void setInternal(final boolean internal) {
     this.internal = internal;
   }
 
@@ -30,7 +30,7 @@ public class ClusterPlanTypeInfo {
     return name;
   }
 
-  public void setName(String name) {
+  public void setName(final String name) {
     this.name = name;
   }
 
@@ -38,7 +38,7 @@ public class ClusterPlanTypeInfo {
     return uuid;
   }
 
-  public void setUuid(String uuid) {
+  public void setUuid(final String uuid) {
     this.uuid = uuid;
   }
 

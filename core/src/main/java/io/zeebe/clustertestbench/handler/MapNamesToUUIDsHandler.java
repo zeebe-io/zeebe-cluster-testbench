@@ -15,7 +15,7 @@ import org.slf4j.LoggerFactory;
 
 public class MapNamesToUUIDsHandler implements JobHandler {
 
-  private static final Logger logger = LoggerFactory.getLogger(MapNamesToUUIDsHandler.class);
+  private static final Logger LOGGER = LoggerFactory.getLogger(MapNamesToUUIDsHandler.class);
 
   private final CloudAPIClient cloudClient;
 
@@ -24,13 +24,13 @@ public class MapNamesToUUIDsHandler implements JobHandler {
   }
 
   @Override
-  public void handle(JobClient client, ActivatedJob job) throws Exception {
-    logger.info("Mapping names to UUIDs and vice versa");
+  public void handle(final JobClient client, final ActivatedJob job) throws Exception {
+    LOGGER.info("Mapping names to UUIDs and vice versa");
     final InputOutput inputOutput = job.getVariablesAsType(InputOutput.class);
 
-    logger.info("Input: " + inputOutput);
+    LOGGER.info("Input: " + inputOutput);
 
-    ParametersResponse parameters = cloudClient.getParameters();
+    final ParametersResponse parameters = cloudClient.getParameters();
 
     final ChannelInfo channelInfo = mapChannel(inputOutput, parameters);
 
@@ -39,11 +39,12 @@ public class MapNamesToUUIDsHandler implements JobHandler {
     mapClusterPlan(inputOutput, parameters);
     mapRegion(inputOutput, parameters);
 
-    logger.info("Output: " + inputOutput);
+    LOGGER.info("Output: " + inputOutput);
     client.newCompleteCommand(job.getKey()).variables(inputOutput).send();
   }
 
-  private ChannelInfo mapChannel(InputOutput inputOutput, ParametersResponse parameters) {
+  private ChannelInfo mapChannel(
+      final InputOutput inputOutput, final ParametersResponse parameters) {
     final ChannelInfo channelInfo;
 
     if ((inputOutput.getChannelUUID() == null) && (inputOutput.getChannel() == null)) {
@@ -77,7 +78,7 @@ public class MapNamesToUUIDsHandler implements JobHandler {
     return channelInfo;
   }
 
-  private void mapGeneration(InputOutput inputOutput, ChannelInfo channelInfo) {
+  private void mapGeneration(final InputOutput inputOutput, final ChannelInfo channelInfo) {
     final GenerationInfo generationInfo;
     if ((inputOutput.getGenerationUUID() == null) && (inputOutput.getGeneration() == null)) {
       generationInfo = channelInfo.getDefaultGeneration();
@@ -110,7 +111,7 @@ public class MapNamesToUUIDsHandler implements JobHandler {
     inputOutput.setGenerationUUID(generationInfo.getUuid());
   }
 
-  private void mapClusterPlan(InputOutput inputOutput, ParametersResponse parameters) {
+  private void mapClusterPlan(final InputOutput inputOutput, final ParametersResponse parameters) {
     final ClusterPlanTypeInfo clusterPlanInfo;
 
     if ((inputOutput.getClusterPlanUUID() == null) && (inputOutput.getClusterPlan() == null)) {
@@ -144,7 +145,7 @@ public class MapNamesToUUIDsHandler implements JobHandler {
     inputOutput.setClusterPlanUUID(clusterPlanInfo.getUuid());
   }
 
-  private void mapRegion(InputOutput inputOutput, ParametersResponse parameters) {
+  private void mapRegion(final InputOutput inputOutput, final ParametersResponse parameters) {
     final RegionInfo regionInfo;
 
     if ((inputOutput.getRegionUUID() == null) && (inputOutput.getRegion() == null)) {
@@ -193,7 +194,7 @@ public class MapNamesToUUIDsHandler implements JobHandler {
       return generation;
     }
 
-    public void setGeneration(String generation) {
+    public void setGeneration(final String generation) {
       this.generation = generation;
     }
 
@@ -201,7 +202,7 @@ public class MapNamesToUUIDsHandler implements JobHandler {
       return generationUUID;
     }
 
-    public void setGenerationUUID(String generationUUID) {
+    public void setGenerationUUID(final String generationUUID) {
       this.generationUUID = generationUUID;
     }
 
@@ -209,7 +210,7 @@ public class MapNamesToUUIDsHandler implements JobHandler {
       return region;
     }
 
-    public void setRegion(String region) {
+    public void setRegion(final String region) {
       this.region = region;
     }
 
@@ -217,7 +218,7 @@ public class MapNamesToUUIDsHandler implements JobHandler {
       return regionUUID;
     }
 
-    public void setRegionUUID(String regionUUID) {
+    public void setRegionUUID(final String regionUUID) {
       this.regionUUID = regionUUID;
     }
 
@@ -225,7 +226,7 @@ public class MapNamesToUUIDsHandler implements JobHandler {
       return clusterPlan;
     }
 
-    public void setClusterPlan(String clusterPlan) {
+    public void setClusterPlan(final String clusterPlan) {
       this.clusterPlan = clusterPlan;
     }
 
@@ -233,7 +234,7 @@ public class MapNamesToUUIDsHandler implements JobHandler {
       return clusterPlanUUID;
     }
 
-    public void setClusterPlanUUID(String clusterPlanUUID) {
+    public void setClusterPlanUUID(final String clusterPlanUUID) {
       this.clusterPlanUUID = clusterPlanUUID;
     }
 
@@ -241,7 +242,7 @@ public class MapNamesToUUIDsHandler implements JobHandler {
       return channel;
     }
 
-    public void setChannel(String channel) {
+    public void setChannel(final String channel) {
       this.channel = channel;
     }
 
@@ -249,7 +250,7 @@ public class MapNamesToUUIDsHandler implements JobHandler {
       return channelUUID;
     }
 
-    public void setChannelUUID(String channelUUID) {
+    public void setChannelUUID(final String channelUUID) {
       this.channelUUID = channelUUID;
     }
 

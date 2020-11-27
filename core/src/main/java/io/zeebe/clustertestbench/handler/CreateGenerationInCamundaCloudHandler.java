@@ -20,12 +20,12 @@ public class CreateGenerationInCamundaCloudHandler implements JobHandler {
 
   private final InternalCloudAPIClient internalApiClient;
 
-  public CreateGenerationInCamundaCloudHandler(InternalCloudAPIClient internalApiClient) {
+  public CreateGenerationInCamundaCloudHandler(final InternalCloudAPIClient internalApiClient) {
     this.internalApiClient = internalApiClient;
   }
 
   @Override
-  public void handle(JobClient client, ActivatedJob job) throws Exception {
+  public void handle(final JobClient client, final ActivatedJob job) throws Exception {
     final var input = job.getVariablesAsType(Input.class);
 
     final var zeebeImage = input.getZeebeImage();
@@ -42,7 +42,7 @@ public class CreateGenerationInCamundaCloudHandler implements JobHandler {
       final var output = new Output(generation, generationUUID);
 
       client.newCompleteCommand(job.getKey()).variables(output).send().join();
-    } catch (Exception e) {
+    } catch (final Exception e) {
       internalApiClient.deleteGeneration(generationUUID);
       throw e;
     }
@@ -66,13 +66,13 @@ public class CreateGenerationInCamundaCloudHandler implements JobHandler {
   }
 
   private void addGenerationToChannel(final ChannelInfo channelInfo, final String generationUUID) {
-    List<String> allowedGenerationIds =
+    final List<String> allowedGenerationIds =
         channelInfo.getAllowedGenerations().stream()
             .map(GenerationInfo::getUuid)
             .collect(Collectors.toList());
     allowedGenerationIds.add(generationUUID);
 
-    var updateChannelRequest =
+    final var updateChannelRequest =
         new UpdateChannelRequest(
             channelInfo.getName(),
             channelInfo.isDefault(),
@@ -121,7 +121,7 @@ public class CreateGenerationInCamundaCloudHandler implements JobHandler {
       return generationTemplate;
     }
 
-    public void setGenerationTemplate(String generationTemplate) {
+    public void setGenerationTemplate(final String generationTemplate) {
       this.generationTemplate = generationTemplate;
     }
 
@@ -129,7 +129,7 @@ public class CreateGenerationInCamundaCloudHandler implements JobHandler {
       return zeebeImage;
     }
 
-    public void setZeebeImage(String zeebeImage) {
+    public void setZeebeImage(final String zeebeImage) {
       this.zeebeImage = zeebeImage;
     }
 
@@ -137,7 +137,7 @@ public class CreateGenerationInCamundaCloudHandler implements JobHandler {
       return channel;
     }
 
-    public void setChannel(String channel) {
+    public void setChannel(final String channel) {
       this.channel = channel;
     }
 
@@ -157,7 +157,7 @@ public class CreateGenerationInCamundaCloudHandler implements JobHandler {
     private final String generation;
     private final String generationUUID;
 
-    public Output(String generation, String generationUUID) {
+    public Output(final String generation, final String generationUUID) {
       this.generation = generation;
       this.generationUUID = generationUUID;
     }

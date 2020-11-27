@@ -49,31 +49,31 @@ public class TestReportDTO implements TestReport {
     return timeOfFirstFailure;
   }
 
-  public void setTestResult(TestResult testResult) {
-    this.testResult = testResult;
+  public void setTimeOfFirstFailure(final long timeOfFirstFailure) {
+    this.timeOfFirstFailure = timeOfFirstFailure;
   }
 
-  public void setFailureMessages(List<String> failureMessages) {
-    this.failureMessages = failureMessages;
-  }
-
-  public void setFailureCount(int failureCount) {
-    this.failureCount = failureCount;
-  }
-
-  public void setMetaData(Map<String, Object> metaData) {
-    this.metaData = metaData;
-  }
-
-  public void setStartTime(long startTime) {
-    this.startTime = startTime;
-  }
-
-  public void setEndTime(long endTime) {
+  public void setEndTime(final long endTime) {
     this.endTime = endTime;
   }
 
-  public void setTimeOfFirstFailure(long timeOfFirstFailure) {
-    this.timeOfFirstFailure = timeOfFirstFailure;
+  public void setStartTime(final long startTime) {
+    this.startTime = startTime;
+  }
+
+  public void setMetaData(final Map<String, Object> metaData) {
+    this.metaData = metaData;
+  }
+
+  public void setFailureCount(final int failureCount) {
+    this.failureCount = failureCount;
+  }
+
+  public void setFailureMessages(final List<String> failureMessages) {
+    this.failureMessages = failureMessages;
+  }
+
+  public void setTestResult(final TestResult testResult) {
+    this.testResult = testResult;
   }
 }

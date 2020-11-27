@@ -50,7 +50,7 @@ class CreateGenerationInCamundaCloudHandlerTest {
   @DisplayName("Handle Job")
   class HandleJobTest {
 
-    InternalCloudAPIClient stubInternalApiClient = new StubInternalCloudAPIClient(false);
+    final InternalCloudAPIClient stubInternalApiClient = new StubInternalCloudAPIClient(false);
 
     InternalCloudAPIClient spyInternalApiClient;
 
@@ -193,7 +193,7 @@ class CreateGenerationInCamundaCloudHandlerTest {
     @Test
     void shouldCompleteTheRightJob() throws Exception {
       // given
-      var jobKey = 42L;
+      final var jobKey = 42L;
       when(mockActivatedJob.getKey()).thenReturn(jobKey);
       mockJobCompletChain();
 
@@ -264,7 +264,7 @@ class CreateGenerationInCamundaCloudHandlerTest {
     @Test
     void shouldStartWithTemp() {
       // when
-      var actual = CreateGenerationInCamundaCloudHandler.createGenerationName();
+      final var actual = CreateGenerationInCamundaCloudHandler.createGenerationName();
 
       // then
       assertThat(actual).startsWith("temp");
@@ -273,8 +273,8 @@ class CreateGenerationInCamundaCloudHandlerTest {
     @Test
     void shouldGenerateDifferentNamesWhenCalledMultipletimes() {
       // when
-      var actual1 = CreateGenerationInCamundaCloudHandler.createGenerationName();
-      var actual2 = CreateGenerationInCamundaCloudHandler.createGenerationName();
+      final var actual1 = CreateGenerationInCamundaCloudHandler.createGenerationName();
+      final var actual2 = CreateGenerationInCamundaCloudHandler.createGenerationName();
 
       // then
       assertThat(actual1).isNotEqualTo(actual2);

@@ -11,12 +11,13 @@ import org.apache.commons.io.IOUtils;
 public class BadRequestResponseFilter implements ClientResponseFilter {
 
   @Override
-  public void filter(ClientRequestContext requestContext, ClientResponseContext responseContext)
+  public void filter(
+      final ClientRequestContext requestContext, final ClientResponseContext responseContext)
       throws IOException {
 
     if (responseContext.getStatus() == 400) {
-      String requestBody = new ObjectMapper().writeValueAsString(requestContext.getEntity());
-      String responseBody =
+      final String requestBody = new ObjectMapper().writeValueAsString(requestContext.getEntity());
+      final String responseBody =
           IOUtils.toString(responseContext.getEntityStream(), StandardCharsets.UTF_8);
 
       throw new IOException(

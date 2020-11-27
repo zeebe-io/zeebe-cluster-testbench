@@ -4,7 +4,7 @@ import java.util.Random;
 
 public class RandomNameGenerator {
 
-  private static final String[] event =
+  private static final String[] EVENT =
       new String[] {
         "none",
         "message",
@@ -21,19 +21,19 @@ public class RandomNameGenerator {
         "multiple_parallel"
       };
 
-  private static final String[] gateway =
+  private static final String[] GATEWAY =
       new String[] {"exclusive", "inclusive", "parallel", "event"};
 
-  private static final String[] activity =
+  private static final String[] ACTIVITY =
       new String[] {"task", "subprocess", "call_activity", "event_subprocess", "transaction"};
 
   private static final Random RNG = new Random();
 
   public String next() {
-    return getRandomEntry(event) + "-" + getRandomEntry(gateway) + "-" + getRandomEntry(activity);
+    return getRandomEntry(EVENT) + "-" + getRandomEntry(GATEWAY) + "-" + getRandomEntry(ACTIVITY);
   }
 
-  private String getRandomEntry(String[] options) {
+  private String getRandomEntry(final String[] options) {
     return options[RNG.nextInt(options.length)];
   }
 }

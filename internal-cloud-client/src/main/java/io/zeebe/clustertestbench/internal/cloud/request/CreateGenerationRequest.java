@@ -10,7 +10,7 @@ public class CreateGenerationRequest {
   private final List<String> upgradeableFrom;
 
   public CreateGenerationRequest(
-      String name, Map<String, String> versions, List<String> upgradeableFrom) {
+      final String name, final Map<String, String> versions, final List<String> upgradeableFrom) {
     this.name = name;
     this.versions = versions;
     this.upgradeableFrom = upgradeableFrom;

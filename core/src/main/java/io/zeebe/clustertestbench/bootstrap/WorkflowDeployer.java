@@ -10,28 +10,28 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class WorkflowDeployer {
-  private static final Logger logger = LoggerFactory.getLogger(WorkflowDeployer.class);
+  private static final Logger LOGGER = LoggerFactory.getLogger(WorkflowDeployer.class);
 
   private final ZeebeClient zeebeClient;
 
-  public WorkflowDeployer(ZeebeClient zeebeClient) {
+  public WorkflowDeployer(final ZeebeClient zeebeClient) {
     this.zeebeClient = Objects.requireNonNull(zeebeClient);
   }
 
-  protected boolean deployWorkflowsInClasspathFolder(String folderName) throws IOException {
+  protected boolean deployWorkflowsInClasspathFolder(final String folderName) throws IOException {
     boolean success = true;
-    List<File> workflowsToDeploy = getWorkflows(folderName);
+    final List<File> workflowsToDeploy = getWorkflows(folderName);
 
-    logger.info("Found workflows to deploy:" + workflowsToDeploy);
+    LOGGER.info("Found workflows to deploy: {}", workflowsToDeploy);
 
-    for (File workflow : workflowsToDeploy) {
+    for (final File workflow : workflowsToDeploy) {
       try {
-        String workflowName = workflow.getName();
+        final String workflowName = workflow.getName();
 
-        logger.info("Deploying " + workflowName);
+        LOGGER.info("Deploying {}", workflowName);
         zeebeClient.newDeployCommand().addResourceFile(workflow.getAbsolutePath()).send().join();
-      } catch (Exception e) {
-        logger.error(e.getMessage(), e);
+      } catch (final Exception e) {
+        LOGGER.error(e.getMessage(), e);
         success = false;
       }
     }
@@ -39,12 +39,12 @@ public class WorkflowDeployer {
     return success;
   }
 
-  protected List<File> getWorkflows(String path) throws IOException {
+  protected List<File> getWorkflows(final String path) throws IOException {
 
-    File folder = new File(path);
+    final File folder = new File(path);
 
     if (!folder.exists()) {
-      logger.error("Folder '" + path + "' does not exist");
+      LOGGER.error("Folder '{}' does not exist", path);
     }
 
     return Arrays.asList(folder.listFiles(file -> file.getName().endsWith(".bpmn")));
