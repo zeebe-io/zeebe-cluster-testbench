@@ -311,7 +311,7 @@ public class Launcher {
         Duration.ofSeconds(10));
     registerWorker(
         client,
-        "aggregate-test-result-job",
+        "aggregate-test-results-job",
         new AggregateTestResultHandler(),
         Duration.ofSeconds(10));
   }
