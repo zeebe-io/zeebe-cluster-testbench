@@ -131,12 +131,12 @@ This workflow runs all tests in a fresh cluster in Camunda Cloud in different re
 **Workflow ID:** `run-all-tests-in-camunda-cloud-per-region`
 
 | Inputs                 | Description                                  | Type                       |
-| ---------------------- | -------------------------------------------- | -------------------------- |
+| ---------------------- | -------------------------------------------- | -------------------------- | ---- |
 | `generation`           | name of the generation for the cluster       | `String`                   |
 | `clusterPlan`          | name of the cluster plan for the cluster     | `String`                   |
 | `channel`              | name of the channel for the cluster          | `String`                   |
 | `regions`              | names of the regions for the clusters        | `List<String>`             |
-| `sequentialTestParams` | Settings to parameterize the sequential test | `SequentialTestParameters` |
+| `sequentialTestParams` | Settings to parameterize the sequential test | `SequentialTestParameters` | adad |
 
 #### Run All Tests in Camunda Cloud
 
@@ -158,9 +158,9 @@ Depending of the region of the new created cluster chaos experiments are execute
 
 The cluster parameters can either be specified using human-friendly names or machine-friendly UUIDs. Both are possible and the counterpart will be found as part of the process. The generation can be omitted. In that case the channel's default generation will be used.
 
-| Outputs                | Description                     | Type               |
-| ---------------------- | ------------------------------- | ------------------ |
-| `sequentialTestResult` | Test result for sequential test | `List<TestResult>` |
+| Outputs                | Description                                      | Type         |
+| ---------------------- | ------------------------------------------------ | ------------ |
+| `aggregatedTestResult` | Aggregated test result for all tests/experiments | `TestResult` |
 
 ##### Run Test in Camunda Cloud
 
@@ -195,7 +195,6 @@ The cluster parameters shall be given as name and UUID. The UUIDs are used to cr
 | Outputs      | Description | Type         |
 | ------------ | ----------- | ------------ |
 | `testReport` | test report | `TestReport` |
-| `testResult` | test result | `TestResult` |
 
 ### Test Protocols
 
