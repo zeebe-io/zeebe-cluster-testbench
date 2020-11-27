@@ -13,7 +13,7 @@
 
 	<name>Zeebe Cluster Testbench</name>
 
-	<!-- When changing the artifact or name, also make sure to change the SCM 
+	<!-- When changing the artifact or name, also make sure to change the SCM
 		location below and in .ci/scripts/github-release.sh -->
 
 	<scm>
@@ -56,7 +56,7 @@
 		<version.jackson>2.11.3</version.jackson>
 		<version.mockito>3.6.0</version.mockito>
 		<version.resteasy>4.5.8.Final</version.resteasy>
-		<version.vavr>0.10.3</version.vavr>		
+		<version.vavr>0.10.3</version.vavr>
 		<version.commons-text>1.9</version.commons-text>
 
 		<plugin.version.surefire>3.0.0-M5</plugin.version.surefire>
@@ -66,6 +66,7 @@
 		<plugin.version.dependency>3.1.2</plugin.version.dependency>
 		<plugin.version.build-helper>3.2.0</plugin.version.build-helper>
 		<plugin.version.fmt>2.10</plugin.version.fmt>
+    <plugin.version.checkstyle>3.1.1</plugin.version.checkstyle>
 	</properties>
 
 	<dependencyManagement>
@@ -242,10 +243,10 @@
 			</plugins>
 		</pluginManagement>
 		<plugins>
-			<!-- temporarily disabled <plugin> <groupId>org.apache.maven.plugins</groupId> 
-				<artifactId>maven-enforcer-plugin</artifactId> <version>1.4.1</version> <configuration> 
-				<rules> <dependencyConvergence /> </rules> </configuration> <executions> 
-				<execution> <phase>verify</phase> <goals> <goal>enforce</goal> </goals> </execution> 
+			<!-- temporarily disabled <plugin> <groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-enforcer-plugin</artifactId> <version>1.4.1</version> <configuration>
+				<rules> <dependencyConvergence /> </rules> </configuration> <executions>
+				<execution> <phase>verify</phase> <goals> <goal>enforce</goal> </goals> </execution>
 				</executions> </plugin> -->
 
 			<plugin>
@@ -308,6 +309,44 @@
 				<groupId>com.coveo</groupId>
 				<artifactId>fmt-maven-plugin</artifactId>
 			</plugin>
+
+
+      <!-- CHECKSTYLE -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-checkstyle-plugin</artifactId>
+        <version>${plugin.version.checkstyle}</version>
+        <!-- dependency on build tool to reference the checkstyle cfg -->
+        <dependencies>
+          <dependency>
+            <groupId>io.zeebe</groupId>
+            <artifactId>zeebe-build-tools</artifactId>
+            <version>${zeebe.version}</version>
+          </dependency>
+        </dependencies>
+        <configuration>
+          <configLocation>check/.checkstyle.xml</configLocation>
+          <includeTestSourceDirectory>true</includeTestSourceDirectory>
+          <encoding>UTF-8</encoding>
+          <failOnViolation>true</failOnViolation>
+          <sourceDirectories>
+            <sourceDirectory>${project.build.sourceDirectory}</sourceDirectory>
+            <sourceDirectory>${project.build.testSourceDirectory}</sourceDirectory>
+          </sourceDirectories>
+        </configuration>
+        <executions>
+          <execution>
+            <id>validate-java</id>
+            <phase>validate</phase>
+            <goals>
+              <goal>check</goal>
+            </goals>
+            <configuration>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+
 		</plugins>
 	</build>
 
