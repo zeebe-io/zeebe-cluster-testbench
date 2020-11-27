@@ -10,12 +10,12 @@ public class OAuthUserAccountAuthenticationDetails {
   private final String password;
 
   public OAuthUserAccountAuthenticationDetails(
-      String serverURL,
-      String audience,
-      String clientId,
-      String clientSecret,
-      String username,
-      String password) {
+      final String serverURL,
+      final String audience,
+      final String clientId,
+      final String clientSecret,
+      final String username,
+      final String password) {
     this.serverURL = serverURL;
     this.audience = audience;
     this.clientId = clientId;

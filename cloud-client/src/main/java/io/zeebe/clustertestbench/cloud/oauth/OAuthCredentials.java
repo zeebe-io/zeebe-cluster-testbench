@@ -65,20 +65,38 @@ public class OAuthCredentials {
   }
 
   @Override
-  public boolean equals(Object obj) {
-    if (this == obj) return true;
-    if (obj == null) return false;
-    if (getClass() != obj.getClass()) return false;
-    OAuthCredentials other = (OAuthCredentials) obj;
+  public boolean equals(final Object obj) {
+    if (this == obj) {
+      return true;
+    }
+    if (obj == null) {
+      return false;
+    }
+    if (getClass() != obj.getClass()) {
+      return false;
+    }
+    final OAuthCredentials other = (OAuthCredentials) obj;
     if (accessToken == null) {
-      if (other.accessToken != null) return false;
-    } else if (!accessToken.equals(other.accessToken)) return false;
+      if (other.accessToken != null) {
+        return false;
+      }
+    } else if (!accessToken.equals(other.accessToken)) {
+      return false;
+    }
     if (expiry == null) {
-      if (other.expiry != null) return false;
-    } else if (!expiry.equals(other.expiry)) return false;
+      if (other.expiry != null) {
+        return false;
+      }
+    } else if (!expiry.equals(other.expiry)) {
+      return false;
+    }
     if (tokenType == null) {
-      if (other.tokenType != null) return false;
-    } else if (!tokenType.equals(other.tokenType)) return false;
+      if (other.tokenType != null) {
+        return false;
+      }
+    } else if (!tokenType.equals(other.tokenType)) {
+      return false;
+    }
     return true;
   }
 

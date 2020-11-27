@@ -47,14 +47,15 @@ public class RecordTestResultHandler implements JobHandler {
 
   private final Sheets service;
 
-  public RecordTestResultHandler(String sheetsApiKeyfileContent, String spreadSheetId)
+  public RecordTestResultHandler(final String sheetsApiKeyfileContent, final String spreadSheetId)
       throws IOException, GeneralSecurityException {
     super();
     this.sheetsApiKeyFileContent = sheetsApiKeyfileContent;
     this.spreadSheetId = spreadSheetId;
 
-    try (var inputStream = new StringBufferInputStream(sheetsApiKeyFileContent)) {
-      GoogleCredential credential = GoogleCredential.fromStream(inputStream).createScoped(SCOPES);
+    try (final var inputStream = new StringBufferInputStream(sheetsApiKeyFileContent)) {
+      final GoogleCredential credential =
+          GoogleCredential.fromStream(inputStream).createScoped(SCOPES);
 
       service =
           new Sheets.Builder(
@@ -65,12 +66,12 @@ public class RecordTestResultHandler implements JobHandler {
   }
 
   @Override
-  public void handle(JobClient client, ActivatedJob job) throws Exception {
+  public void handle(final JobClient client, final ActivatedJob job) throws Exception {
     final Input input = job.getVariablesAsType(Input.class);
 
-    List<Object> rowData = buildRowDataForSheet(input);
+    final List<Object> rowData = buildRowDataForSheet(input);
 
-    ValueRange body = new ValueRange().setValues(Collections.singletonList(rowData));
+    final ValueRange body = new ValueRange().setValues(Collections.singletonList(rowData));
     service
         .spreadsheets()
         .values()
@@ -81,8 +82,8 @@ public class RecordTestResultHandler implements JobHandler {
     client.newCompleteCommand(job.getKey()).send();
   }
 
-  private static List<Object> buildRowDataForSheet(Input input) {
-    List<Object> result = new ArrayList<>();
+  private static List<Object> buildRowDataForSheet(final Input input) {
+    final List<Object> result = new ArrayList<>();
 
     result.add(input.getRegion());
     result.add(input.getChannel());
@@ -95,7 +96,7 @@ public class RecordTestResultHandler implements JobHandler {
     result.add(input.getClusterId());
     result.add(input.getOperateURL());
 
-    TestReport testReport = input.getTestReport();
+    final TestReport testReport = input.getTestReport();
     result.add(testReport.getTestResult().name());
     result.add(testReport.getFailureCount());
     result.add(
@@ -111,12 +112,12 @@ public class RecordTestResultHandler implements JobHandler {
     return result;
   }
 
-  private static String returnValueIfApplicable(TestReport testReport, Object value) {
+  private static String returnValueIfApplicable(final TestReport testReport, final Object value) {
     return testReport.getTestResult() == TestResult.PASSED ? "n/a" : value.toString();
   }
 
-  private static String convertMillisToString(long millis) {
-    Instant instant = Instant.ofEpochMilli(millis);
+  private static String convertMillisToString(final long millis) {
+    final Instant instant = Instant.ofEpochMilli(millis);
 
     return INSTANT_FORMATTER.format(instant);
   }
@@ -139,7 +140,7 @@ public class RecordTestResultHandler implements JobHandler {
       return generation;
     }
 
-    public void setGeneration(String generation) {
+    public void setGeneration(final String generation) {
       this.generation = generation;
     }
 
@@ -147,7 +148,7 @@ public class RecordTestResultHandler implements JobHandler {
       return region;
     }
 
-    public void setRegion(String region) {
+    public void setRegion(final String region) {
       this.region = region;
     }
 
@@ -155,7 +156,7 @@ public class RecordTestResultHandler implements JobHandler {
       return clusterPlan;
     }
 
-    public void setClusterPlan(String clusterPlan) {
+    public void setClusterPlan(final String clusterPlan) {
       this.clusterPlan = clusterPlan;
     }
 
@@ -163,7 +164,7 @@ public class RecordTestResultHandler implements JobHandler {
       return channel;
     }
 
-    public void setChannel(String channel) {
+    public void setChannel(final String channel) {
       this.channel = channel;
     }
 
@@ -171,7 +172,7 @@ public class RecordTestResultHandler implements JobHandler {
       return clusterId;
     }
 
-    public void setClusterId(String clusterId) {
+    public void setClusterId(final String clusterId) {
       this.clusterId = clusterId;
     }
 
@@ -179,7 +180,7 @@ public class RecordTestResultHandler implements JobHandler {
       return clusterName;
     }
 
-    public void setClusterName(String clusterName) {
+    public void setClusterName(final String clusterName) {
       this.clusterName = clusterName;
     }
 
@@ -187,7 +188,7 @@ public class RecordTestResultHandler implements JobHandler {
       return operateURL;
     }
 
-    public void setOperateURL(String operateURL) {
+    public void setOperateURL(final String operateURL) {
       this.operateURL = operateURL;
     }
 
@@ -197,7 +198,7 @@ public class RecordTestResultHandler implements JobHandler {
     }
 
     @JsonProperty(TestDriver.VARIABLE_KEY_TEST_REPORT)
-    public void setTestReport(TestReportDTO testReport) {
+    public void setTestReport(final TestReportDTO testReport) {
       this.testReport = testReport;
     }
 
@@ -205,7 +206,7 @@ public class RecordTestResultHandler implements JobHandler {
       return testWorkflowId;
     }
 
-    void setTestWorkflowId(String testWorkflowId) {
+    void setTestWorkflowId(final String testWorkflowId) {
       this.testWorkflowId = testWorkflowId;
     }
   }

@@ -17,14 +17,14 @@ import org.slf4j.LoggerFactory;
 
 public class WarmUpClusterHandler implements JobHandler {
 
-  private static final Logger logger = LoggerFactory.getLogger(WarmUpClusterHandler.class);
+  private static final Logger LOGGER = LoggerFactory.getLogger(WarmUpClusterHandler.class);
 
   private static final String WORKFLOW_RESOURCE = "warmup.bpmn";
   private static final String WORKFLOW_ID = "warmup";
   private static final String JOB_TYPE = "task-job";
 
   @Override
-  public void handle(JobClient client, ActivatedJob job) throws Exception {
+  public void handle(final JobClient client, final ActivatedJob job) throws Exception {
     final Input input = job.getVariablesAsType(Input.class);
 
     final CamundaCloudAuthenticationDetails authenticationDetails =
@@ -38,7 +38,7 @@ public class WarmUpClusterHandler implements JobHandler {
             .credentialsProvider(cred)
             .build()) {
 
-      logger.info("Deploying test workflow:" + WORKFLOW_ID);
+      LOGGER.info("Deploying test workflow:" + WORKFLOW_ID);
       zeebeClient.newDeployCommand().addResourceFromClasspath(WORKFLOW_RESOURCE).send().join();
       zeebeClient
           .newWorker()
@@ -58,7 +58,7 @@ public class WarmUpClusterHandler implements JobHandler {
               .requestTimeout(Duration.ofSeconds(15))
               .send()
               .join();
-        } catch (Exception e) {
+        } catch (final Exception e) {
           // repeat iteration
           i--;
         }
@@ -69,7 +69,7 @@ public class WarmUpClusterHandler implements JobHandler {
   }
 
   private OAuthCredentialsProvider buildCredentialsProvider(
-      CamundaCloudAuthenticationDetails authenticationDetails) {
+      final CamundaCloudAuthenticationDetails authenticationDetails) {
     if (authenticationDetails.getAuthorizationURL() == null) {
       return new OAuthCredentialsProviderBuilder()
           .audience(authenticationDetails.getAudience())
@@ -89,7 +89,7 @@ public class WarmUpClusterHandler implements JobHandler {
   private static class MoveAlongJobHandler implements JobHandler {
     @Override
     public void handle(final JobClient client, final ActivatedJob job) {
-      logger.info(job.toString());
+      LOGGER.info(job.toString());
       client.newCompleteCommand(job.getKey()).send().join();
     }
   }
@@ -104,7 +104,7 @@ public class WarmUpClusterHandler implements JobHandler {
 
     @JsonProperty(CamundaCloudAuthenticationDetails.VARIABLE_KEY)
     public void setAuthenticationDetails(
-        CamundaCLoudAuthenticationDetailsImpl authenticationDetails) {
+        final CamundaCLoudAuthenticationDetailsImpl authenticationDetails) {
       this.authenticationDetails = authenticationDetails;
     }
   }

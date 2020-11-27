@@ -12,7 +12,7 @@ public class CreateZeebeClientResponse {
     return clientId;
   }
 
-  public void setClientId(String clientId) {
+  public void setClientId(final String clientId) {
     this.clientId = clientId;
   }
 
@@ -20,7 +20,7 @@ public class CreateZeebeClientResponse {
     return clientSecret;
   }
 
-  public void setClientSecret(String clientSecret) {
+  public void setClientSecret(final String clientSecret) {
     this.clientSecret = clientSecret;
   }
 

@@ -10,7 +10,7 @@ public class CreateClusterResponse {
     return clusterId;
   }
 
-  public void setClusterId(String clusterId) {
+  public void setClusterId(final String clusterId) {
     this.clusterId = clusterId;
   }
 

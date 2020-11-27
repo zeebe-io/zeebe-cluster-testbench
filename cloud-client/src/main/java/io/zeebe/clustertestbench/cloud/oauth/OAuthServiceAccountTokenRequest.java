@@ -10,7 +10,10 @@ public class OAuthServiceAccountTokenRequest {
   private final String grantType;
 
   public OAuthServiceAccountTokenRequest(
-      String audience, String clientId, String clientSecret, String grantType) {
+      final String audience,
+      final String clientId,
+      final String clientSecret,
+      final String grantType) {
     this.audience = audience;
     this.clientId = clientId;
     this.clientSecret = clientSecret;
@@ -48,23 +51,45 @@ public class OAuthServiceAccountTokenRequest {
   }
 
   @Override
-  public boolean equals(Object obj) {
-    if (this == obj) return true;
-    if (obj == null) return false;
-    if (getClass() != obj.getClass()) return false;
-    OAuthServiceAccountTokenRequest other = (OAuthServiceAccountTokenRequest) obj;
+  public boolean equals(final Object obj) {
+    if (this == obj) {
+      return true;
+    }
+    if (obj == null) {
+      return false;
+    }
+    if (getClass() != obj.getClass()) {
+      return false;
+    }
+    final OAuthServiceAccountTokenRequest other = (OAuthServiceAccountTokenRequest) obj;
     if (audience == null) {
-      if (other.audience != null) return false;
-    } else if (!audience.equals(other.audience)) return false;
+      if (other.audience != null) {
+        return false;
+      }
+    } else if (!audience.equals(other.audience)) {
+      return false;
+    }
     if (clientId == null) {
-      if (other.clientId != null) return false;
-    } else if (!clientId.equals(other.clientId)) return false;
+      if (other.clientId != null) {
+        return false;
+      }
+    } else if (!clientId.equals(other.clientId)) {
+      return false;
+    }
     if (clientSecret == null) {
-      if (other.clientSecret != null) return false;
-    } else if (!clientSecret.equals(other.clientSecret)) return false;
+      if (other.clientSecret != null) {
+        return false;
+      }
+    } else if (!clientSecret.equals(other.clientSecret)) {
+      return false;
+    }
     if (grantType == null) {
-      if (other.grantType != null) return false;
-    } else if (!grantType.equals(other.grantType)) return false;
+      if (other.grantType != null) {
+        return false;
+      }
+    } else if (!grantType.equals(other.grantType)) {
+      return false;
+    }
     return true;
   }
 }

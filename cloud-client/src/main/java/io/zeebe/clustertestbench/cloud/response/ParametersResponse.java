@@ -16,7 +16,7 @@ public class ParametersResponse {
     return channels;
   }
 
-  public void setChannels(List<ChannelInfo> channels) {
+  public void setChannels(final List<ChannelInfo> channels) {
     this.channels = channels;
   }
 
@@ -24,7 +24,7 @@ public class ParametersResponse {
     return clusterPlanTypes;
   }
 
-  public void setClusterPlanTypes(List<ClusterPlanTypeInfo> clusterPlanTypes) {
+  public void setClusterPlanTypes(final List<ClusterPlanTypeInfo> clusterPlanTypes) {
     this.clusterPlanTypes = clusterPlanTypes;
   }
 
@@ -32,7 +32,7 @@ public class ParametersResponse {
     return regions;
   }
 
-  public void setRegions(List<RegionInfo> regions) {
+  public void setRegions(final List<RegionInfo> regions) {
     this.regions = regions;
   }
 

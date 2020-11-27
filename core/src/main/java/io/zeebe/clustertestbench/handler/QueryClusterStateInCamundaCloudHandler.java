@@ -12,26 +12,26 @@ import org.slf4j.LoggerFactory;
 
 public class QueryClusterStateInCamundaCloudHandler implements JobHandler {
 
-  private static final Logger logger =
+  private static final Logger LOGGER =
       LoggerFactory.getLogger(QueryClusterStateInCamundaCloudHandler.class);
 
   private final CloudAPIClient cloudApiClient;
 
-  public QueryClusterStateInCamundaCloudHandler(CloudAPIClient cloudApiClient) {
+  public QueryClusterStateInCamundaCloudHandler(final CloudAPIClient cloudApiClient) {
     this.cloudApiClient = cloudApiClient;
   }
 
   @Override
-  public void handle(JobClient client, ActivatedJob job) throws Exception {
+  public void handle(final JobClient client, final ActivatedJob job) throws Exception {
     final Input input = job.getVariablesAsType(Input.class);
 
-    String clusterStatus =
+    final String clusterStatus =
         Optional.ofNullable(cloudApiClient.getClusterInfo(input.getClusterId()))
             .map(ClusterInfo::getStatus)
             .map(ClusterStatus::getReady)
             .orElse("Unknown");
 
-    logger.info("Status of cluster " + input.getClusterName() + " " + clusterStatus);
+    LOGGER.info("Status of cluster " + input.getClusterName() + " " + clusterStatus);
 
     client.newCompleteCommand(job.getKey()).variables(new Output(clusterStatus)).send();
   }
@@ -44,7 +44,7 @@ public class QueryClusterStateInCamundaCloudHandler implements JobHandler {
       return clusterId;
     }
 
-    public void setClusterId(String clusterId) {
+    public void setClusterId(final String clusterId) {
       this.clusterId = clusterId;
     }
 
@@ -52,7 +52,7 @@ public class QueryClusterStateInCamundaCloudHandler implements JobHandler {
       return clusterName;
     }
 
-    public void setClusterName(String clusterName) {
+    public void setClusterName(final String clusterName) {
       this.clusterName = clusterName;
     }
   }
@@ -61,7 +61,7 @@ public class QueryClusterStateInCamundaCloudHandler implements JobHandler {
 
     private final String clusterStatus;
 
-    public Output(String clusterStatus) {
+    public Output(final String clusterStatus) {
       this.clusterStatus = clusterStatus;
     }
 

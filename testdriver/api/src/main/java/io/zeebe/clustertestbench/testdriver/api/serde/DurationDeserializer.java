@@ -14,12 +14,12 @@ public class DurationDeserializer extends StdDeserializer<Duration> {
     this(null);
   }
 
-  public DurationDeserializer(Class<?> vc) {
+  public DurationDeserializer(final Class<?> vc) {
     super(vc);
   }
 
   @Override
-  public Duration deserialize(JsonParser p, DeserializationContext ctxt)
+  public Duration deserialize(final JsonParser p, final DeserializationContext ctxt)
       throws IOException, JsonProcessingException {
     return Duration.parse(p.getText());
   }

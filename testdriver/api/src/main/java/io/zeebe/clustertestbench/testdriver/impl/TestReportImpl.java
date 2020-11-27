@@ -18,11 +18,11 @@ public class TestReportImpl implements TestReport, AutoCloseable {
 
   private int failureCount = 0;
 
-  private List<String> failureMessages = new ArrayList<>();
+  private final List<String> failureMessages = new ArrayList<>();
 
   private final Map<String, Object> metaData;
 
-  public TestReportImpl(Map<String, Object> metaData) {
+  public TestReportImpl(final Map<String, Object> metaData) {
     startTime = System.currentTimeMillis();
     this.metaData = new HashMap<>(metaData);
   }
@@ -32,7 +32,7 @@ public class TestReportImpl implements TestReport, AutoCloseable {
     endTime = System.currentTimeMillis();
   }
 
-  public synchronized void addFailure(String failureMessage) {
+  public synchronized void addFailure(final String failureMessage) {
     testResult = TestResult.FAILED;
     if (failureCount == 0) {
       timeOfFirstFailure = System.currentTimeMillis();

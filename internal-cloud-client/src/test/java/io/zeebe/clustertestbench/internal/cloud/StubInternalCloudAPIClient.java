@@ -35,14 +35,14 @@ public class StubInternalCloudAPIClient implements InternalCloudAPIClient {
 
   private final boolean broken;
 
-  public StubInternalCloudAPIClient(boolean broken) {
+  public StubInternalCloudAPIClient(final boolean broken) {
     this.broken = broken;
 
-    GenerationInfo generationInfo = new GenerationInfo();
+    final GenerationInfo generationInfo = new GenerationInfo();
     generationInfo.setName(DEFAULT_GENERATION_NAME);
     generationInfo.setUuid(DEFAULT_GENERATION_UUID);
 
-    Map<String, String> versions = new HashMap<>();
+    final Map<String, String> versions = new HashMap<>();
 
     versions.put(KEY_ZEEBE_IMAGE, DEFAULT_ZEEBE_IMAGE);
     versions.put(KEY_OPERATE_IMAGE, DEFAULT_OPERATE_IMAGE);
@@ -53,7 +53,7 @@ public class StubInternalCloudAPIClient implements InternalCloudAPIClient {
 
     generationInfos.add(generationInfo);
 
-    ChannelInfo channelInfo = new ChannelInfo();
+    final ChannelInfo channelInfo = new ChannelInfo();
     channelInfo.setName(DEFAULT_CHANNEL_NAME);
     channelInfo.setUuid(DEFAULT_CHANNEL_UUID);
     channelInfo.setDefaultGeneration(generationInfo);
@@ -68,9 +68,9 @@ public class StubInternalCloudAPIClient implements InternalCloudAPIClient {
   }
 
   @Override
-  public void createGeneration(CreateGenerationRequest request) {
+  public void createGeneration(final CreateGenerationRequest request) {
     if (!broken) {
-      GenerationInfo generationInfo = new GenerationInfo();
+      final GenerationInfo generationInfo = new GenerationInfo();
       generationInfo.setName(request.getName());
       generationInfo.setVersions(request.getVersions());
       generationInfo.setUuid(UUID.randomUUID().toString());
@@ -80,7 +80,7 @@ public class StubInternalCloudAPIClient implements InternalCloudAPIClient {
   }
 
   @Override
-  public void deleteGeneration(String generationUUID) {
+  public void deleteGeneration(final String generationUUID) {
     if (!broken) {
       generationInfos.removeIf(gi -> generationUUID.equals(gi.getUuid()));
     }
@@ -92,5 +92,5 @@ public class StubInternalCloudAPIClient implements InternalCloudAPIClient {
   }
 
   @Override
-  public void updateChannel(String channelUUID, UpdateChannelRequest request) {}
+  public void updateChannel(final String channelUUID, final UpdateChannelRequest request) {}
 }

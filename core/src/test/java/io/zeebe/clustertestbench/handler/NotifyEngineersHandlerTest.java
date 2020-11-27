@@ -65,16 +65,6 @@ public class NotifyEngineersHandlerTest {
     verify(jobClientMock, never()).newCompleteCommand(anyLong());
   }
 
-  private static final class SimpleNotificationService implements NotificationService {
-
-    private String lastMessage;
-
-    @Override
-    public void sendNotification(final String message) throws Exception {
-      lastMessage = message;
-    }
-  }
-
   private ActivatedJob createJobMock() {
     final var jobMock = mock(ActivatedJob.class);
     when(jobMock.getCustomHeaders()).thenReturn(Map.of("channel", "CHANNEL_A"));
@@ -90,5 +80,15 @@ public class NotifyEngineersHandlerTest {
     when(jobMock.getVariablesAsType(Input.class)).thenReturn(input);
     when(jobMock.getKey()).thenReturn(0xCAFEL);
     return jobMock;
+  }
+
+  private static final class SimpleNotificationService implements NotificationService {
+
+    private String lastMessage;
+
+    @Override
+    public void sendNotification(final String message) throws Exception {
+      lastMessage = message;
+    }
   }
 }

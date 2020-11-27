@@ -32,7 +32,7 @@ import org.slf4j.LoggerFactory;
 
 public class SequentialTestDriver implements TestDriver {
 
-  private static final Logger logger = LoggerFactory.getLogger(SequentialTestDriver.class);
+  private static final Logger LOGGER = LoggerFactory.getLogger(SequentialTestDriver.class);
 
   private static final DateTimeFormatter INSTANT_FORMATTER =
       DateTimeFormatter.ofLocalizedDateTime(FormatStyle.SHORT)
@@ -50,9 +50,9 @@ public class SequentialTestDriver implements TestDriver {
   private final SequentialTestParameters testParameters;
 
   public SequentialTestDriver(
-      CamundaCLoudAuthenticationDetailsImpl authenticationDetails,
-      SequentialTestParameters testParameters) {
-    logger.info("Creating Sequential Test Driver");
+      final CamundaCLoudAuthenticationDetailsImpl authenticationDetails,
+      final SequentialTestParameters testParameters) {
+    LOGGER.info("Creating Sequential Test Driver");
     final OAuthCredentialsProvider cred =
         buildCredentialsProvider(requireNonNull(authenticationDetails));
 
@@ -68,27 +68,27 @@ public class SequentialTestDriver implements TestDriver {
   }
 
   private void createAndDeploySequentialWorkflow() {
-    SequenceWorkflowBuilder builder =
+    final SequenceWorkflowBuilder builder =
         new SequenceWorkflowBuilder(Optional.of(testParameters.getSteps()), Optional.of(JOB_TYPE));
 
-    BpmnModelInstance workflow = builder.buildWorkflow(WORKFLOW_ID);
+    final BpmnModelInstance workflow = builder.buildWorkflow(WORKFLOW_ID);
 
-    logger.info("Deploying test workflow:" + WORKFLOW_ID);
+    LOGGER.info("Deploying test workflow:" + WORKFLOW_ID);
     client.newDeployCommand().addWorkflowModel(workflow, WORKFLOW_ID + ".bpmn").send().join();
   }
 
   public TestReport runTest() {
-    logger.info("Starting Sequential Test ");
+    LOGGER.info("Starting Sequential Test ");
 
-    try (TestReportImpl testReport = new TestReportImpl(buildTestReportMetaData());
-        TestTimingContext overallTimingContext =
+    try (final TestReportImpl testReport = new TestReportImpl(buildTestReportMetaData());
+        final TestTimingContext overallTimingContext =
             new TestTimingContext(
                 testParameters.getMaxTimeForCompleteTest(),
                 "Test exceeded maximum time of " + testParameters.getMaxTimeForCompleteTest(),
                 testReport::addFailure); ) {
-      Duration timeForIteration = testParameters.getMaxTimeForIteration();
+      final Duration timeForIteration = testParameters.getMaxTimeForIteration();
 
-      JobWorker workerRegistration =
+      final JobWorker workerRegistration =
           client
               .newWorker()
               .jobType(JOB_TYPE)
@@ -97,18 +97,18 @@ public class SequentialTestDriver implements TestDriver {
               .open();
 
       for (int i = 0; i < testParameters.getIterations(); i++) {
-        try (TestTimingContext iterationTimingContxt =
+        try (final TestTimingContext iterationTimingContxt =
             new TestTimingContext(
                 timeForIteration,
                 "Iteration " + i + " exceeded maximum time of " + timeForIteration,
                 testReport::addFailure)) {
 
-          var variables = new HashMap<String, Object>();
+          final var variables = new HashMap<String, Object>();
           variables.put(
               KEY_START_TIME, convertMillisToString(iterationTimingContxt.getStartTime()));
           variables.put(KEY_ITERATION, i);
 
-          var result =
+          final var result =
               client
                   .newCreateInstanceCommand()
                   .bpmnProcessId(WORKFLOW_ID)
@@ -121,8 +121,8 @@ public class SequentialTestDriver implements TestDriver {
 
           iterationTimingContxt.putMetaData(KEY_WORKFLOW_INSTANCE, result.getWorkflowInstanceKey());
 
-        } catch (Exception e) {
-          var exceptionFilter =
+        } catch (final Exception e) {
+          final var exceptionFilter =
               new ExceptionFilterBuilder() //
                   .ignoreRessourceExhaustedExceptions() //
                   // can occur because deployment needs to be distributed to other partitions
@@ -155,7 +155,7 @@ public class SequentialTestDriver implements TestDriver {
   }
 
   private OAuthCredentialsProvider buildCredentialsProvider(
-      CamundaCloudAuthenticationDetails authenticationDetails) {
+      final CamundaCloudAuthenticationDetails authenticationDetails) {
     if (authenticationDetails.getAuthorizationURL() == null) {
       return new OAuthCredentialsProviderBuilder()
           .audience(authenticationDetails.getAudience())
@@ -172,8 +172,8 @@ public class SequentialTestDriver implements TestDriver {
     }
   }
 
-  private static String convertMillisToString(long millis) {
-    Instant instant = Instant.ofEpochMilli(millis);
+  private static String convertMillisToString(final long millis) {
+    final Instant instant = Instant.ofEpochMilli(millis);
 
     return INSTANT_FORMATTER.format(instant);
   }
@@ -185,7 +185,7 @@ public class SequentialTestDriver implements TestDriver {
   private static class MoveAlongJobHandler implements JobHandler {
     @Override
     public void handle(final JobClient client, final ActivatedJob job) {
-      logger.info(job.toString());
+      LOGGER.info(job.toString());
       client.newCompleteCommand(job.getKey()).send().join();
     }
   }

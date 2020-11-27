@@ -5,12 +5,6 @@ import java.util.Map;
 
 public interface TestReport {
 
-  public enum TestResult {
-    PASSED,
-    FAILED,
-    SKIPPED // currently used by the chaos experiments
-  }
-
   TestResult getTestResult();
 
   List<String> getFailureMessages();
@@ -28,4 +22,10 @@ public interface TestReport {
   }
 
   long getTimeOfFirstFailure();
+
+  public enum TestResult {
+    PASSED,
+    FAILED,
+    SKIPPED // currently used by the chaos experiments
+  }
 }

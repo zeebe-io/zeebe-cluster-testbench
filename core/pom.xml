@@ -1,146 +1,146 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 
-<project xmlns="http://maven.apache.org/POM/4.0.0"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-	<modelVersion>4.0.0</modelVersion>
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns="http://maven.apache.org/POM/4.0.0"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <artifactId>zeebe-cluster-testbench-core</artifactId>
 
-	<parent>
-		<groupId>io.zeebe</groupId>
-		<artifactId>zeebe-cluster-testbench</artifactId>
-		<version>2.0.0-SNAPSHOT</version>
-		<!-- do not remove empty tag - http://jira.codehaus.org/browse/MNG-4687 -->
-		<relativePath>..</relativePath>
-	</parent>
+  <build>
+    <plugins>
+      <plugin>
+        <artifactId>maven-assembly-plugin</artifactId>
+        <configuration>
+          <archive>
+            <manifest>
+              <mainClass>io.zeebe.clustertestbench.bootstrap.BootstrapFromEnvVars</mainClass>
+            </manifest>
+          </archive>
+          <descriptors>
+            <descriptor>assembly.xml</descriptor>
+          </descriptors>
+          <finalName>zeebe-cluster-testbench-uber</finalName>
+        </configuration>
+        <executions>
+          <execution>
+            <goals>
+              <goal>single</goal>
+            </goals> <!-- this is used for inheritance merges -->
+            <id>make-assembly</id> <!-- bind to the packaging phase -->
+            <phase>package</phase>
+          </execution>
+        </executions>
+        <version>${plugin.version.assembly}</version>
+      </plugin>
+    </plugins>
+  </build>
 
-	<artifactId>zeebe-cluster-testbench-core</artifactId>
-	<packaging>jar</packaging>
+  <dependencies>
+    <dependency>
+      <artifactId>zeebe-cluster-testbench-cloud-client</artifactId>
+      <groupId>io.zeebe</groupId>
+    </dependency>
+    <dependency>
+      <artifactId>zeebe-cluster-testbench-internal-cloud-client</artifactId>
+      <groupId>io.zeebe</groupId>
+    </dependency>
+    <dependency>
+      <artifactId>zeebe-cluster-testbench-internal-cloud-client</artifactId>
+      <groupId>io.zeebe</groupId>
+      <scope>test</scope>
+      <type>test-jar</type>
+    </dependency>
+    <dependency>
+      <artifactId>zeebe-cluster-testbench-testdriver-api</artifactId>
+      <groupId>io.zeebe</groupId>
+    </dependency>
+    <dependency>
+      <artifactId>zeebe-cluster-testbench-testdriver-sequential</artifactId>
+      <groupId>io.zeebe</groupId>
+    </dependency>
+    <dependency>
+      <artifactId>zeebe-client-java</artifactId>
+      <groupId>io.zeebe</groupId>
+    </dependency>
+    <dependency>
+      <artifactId>google-api-client</artifactId>
+      <groupId>com.google.api-client</groupId>
+      <version>${version.google-api}</version>
+    </dependency>
+    <dependency>
+      <artifactId>google-api-services-sheets</artifactId>
+      <groupId>com.google.apis</groupId>
+      <version>${version.google-sheets-api}</version>
+    </dependency>
+    <dependency>
+      <artifactId>slack-api-client</artifactId>
+      <groupId>com.slack.api</groupId>
+      <version>${version.slack-api}</version>
+    </dependency>
+    <dependency>
+      <artifactId>jackson-annotations</artifactId>
+      <groupId>com.fasterxml.jackson.core</groupId>
+    </dependency>
+    <dependency>
+      <artifactId>slf4j-api</artifactId>
+      <groupId>org.slf4j</groupId>
+    </dependency>
 
-	<name>Zeebe Cluster Testbench - Core</name>
+    <dependency>
+      <artifactId>google-http-client-jackson2</artifactId>
+      <groupId>com.google.http-client</groupId>
+      <version>${version.google-http-client}</version>
+    </dependency>
 
-	<properties>
-		<version.jaxrs>3.0.12.Final</version.jaxrs>
-		<version.google-api>1.31.1</version.google-api>
-		<version.google-sheets-api>v4-rev20201102-1.30.10</version.google-sheets-api>
-		<version.slack-api>1.3.2</version.slack-api>
-		<version.google-http-client>1.38.0</version.google-http-client>
+    <dependency>
+      <artifactId>vavr</artifactId>
+      <groupId>io.vavr</groupId>
+    </dependency>
 
-		<plugin.version.assembly>3.3.0</plugin.version.assembly>
-	</properties>
+    <dependency>
+      <artifactId>commons-text</artifactId>
+      <groupId>org.apache.commons</groupId>
+    </dependency>
 
-	<dependencies>
-		<dependency>
-			<groupId>io.zeebe</groupId>
-			<artifactId>zeebe-cluster-testbench-cloud-client</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>io.zeebe</groupId>
-			<artifactId>zeebe-cluster-testbench-internal-cloud-client</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>io.zeebe</groupId>
-			<artifactId>zeebe-cluster-testbench-internal-cloud-client</artifactId>
-			<type>test-jar</type>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>io.zeebe</groupId>
-			<artifactId>zeebe-cluster-testbench-testdriver-api</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>io.zeebe</groupId>
-			<artifactId>zeebe-cluster-testbench-testdriver-sequential</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>io.zeebe</groupId>
-			<artifactId>zeebe-client-java</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>com.google.api-client</groupId>
-			<artifactId>google-api-client</artifactId>
-			<version>${version.google-api}</version>
-		</dependency>
-		<dependency>
-			<groupId>com.google.apis</groupId>
-			<artifactId>google-api-services-sheets</artifactId>
-			<version>${version.google-sheets-api}</version>
-		</dependency>
-		<dependency>
-			<groupId>com.slack.api</groupId>
-			<artifactId>slack-api-client</artifactId>
-			<version>${version.slack-api}</version>
-		</dependency>
-		<dependency>
-			<groupId>com.fasterxml.jackson.core</groupId>
-			<artifactId>jackson-annotations</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.slf4j</groupId>
-			<artifactId>slf4j-api</artifactId>
-		</dependency>
+    <dependency>
+      <artifactId>assertj-core</artifactId>
+      <groupId>org.assertj</groupId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <artifactId>junit-jupiter-api</artifactId>
+      <groupId>org.junit.jupiter</groupId>
+      <scope>test</scope>
+    </dependency>
 
-		<dependency>
-			<groupId>com.google.http-client</groupId>
-			<artifactId>google-http-client-jackson2</artifactId>
-			<version>${version.google-http-client}</version>
-		</dependency>
+    <dependency>
+      <artifactId>mockito-junit-jupiter</artifactId>
+      <groupId>org.mockito</groupId>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
+  <modelVersion>4.0.0</modelVersion>
 
-		<dependency>
-			<groupId>io.vavr</groupId>
-			<artifactId>vavr</artifactId>
-		</dependency>
+  <name>Zeebe Cluster Testbench - Core</name>
 
-		<dependency>
-			<groupId>org.apache.commons</groupId>
-			<artifactId>commons-text</artifactId>
-		</dependency>
+  <packaging>jar</packaging>
 
-		<dependency>
-			<groupId>org.assertj</groupId>
-			<artifactId>assertj-core</artifactId>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.junit.jupiter</groupId>
-			<artifactId>junit-jupiter-api</artifactId>
-			<scope>test</scope>
-		</dependency>
+  <parent>
+    <artifactId>zeebe-cluster-testbench</artifactId>
+    <groupId>io.zeebe</groupId>
+    <relativePath>..</relativePath>
+    <!-- do not remove empty tag - http://jira.codehaus.org/browse/MNG-4687 -->
+    <version>2.0.0-SNAPSHOT</version>
+  </parent>
 
-		<dependency>
-			<groupId>org.mockito</groupId>
-			<artifactId>mockito-junit-jupiter</artifactId>
-			<scope>test</scope>
-		</dependency>
-	</dependencies>
+  <properties>
+    <plugin.version.assembly>3.3.0</plugin.version.assembly>
+    <version.google-api>1.31.1</version.google-api>
+    <version.google-http-client>1.38.0</version.google-http-client>
+    <version.google-sheets-api>v4-rev20201102-1.30.10</version.google-sheets-api>
+    <version.jaxrs>3.0.12.Final</version.jaxrs>
 
-	<build>
-		<plugins>
-			<plugin>
-				<artifactId>maven-assembly-plugin</artifactId>
-				<version>${plugin.version.assembly}</version>
-				<configuration>
-					<archive>
-						<manifest>
-							<mainClass>io.zeebe.clustertestbench.bootstrap.BootstrapFromEnvVars</mainClass>
-						</manifest>
-					</archive>
-					<descriptors>
-						<descriptor>assembly.xml</descriptor>
-					</descriptors>
-					<finalName>zeebe-cluster-testbench-uber</finalName>
-				</configuration>
-				<executions>
-					<execution>
-						<id>make-assembly</id> <!-- this is used for inheritance merges -->
-						<phase>package</phase> <!-- bind to the packaging phase -->
-						<goals>
-							<goal>single</goal>
-						</goals>
-					</execution>
-				</executions>
-			</plugin>
-		</plugins>
-	</build>
+    <version.slack-api>1.3.2</version.slack-api>
+  </properties>
 
 </project>

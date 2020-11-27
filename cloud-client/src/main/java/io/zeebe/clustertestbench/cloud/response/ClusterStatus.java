@@ -15,7 +15,7 @@ public class ClusterStatus {
     return operateStatus;
   }
 
-  public void setOperateStatus(String operateStatus) {
+  public void setOperateStatus(final String operateStatus) {
     this.operateStatus = operateStatus;
   }
 
@@ -23,7 +23,7 @@ public class ClusterStatus {
     return operateUrl;
   }
 
-  public void setOperateUrl(String operateUrl) {
+  public void setOperateUrl(final String operateUrl) {
     this.operateUrl = operateUrl;
   }
 
@@ -31,7 +31,7 @@ public class ClusterStatus {
     return ready;
   }
 
-  public void setReady(String ready) {
+  public void setReady(final String ready) {
     this.ready = ready;
   }
 
@@ -39,7 +39,7 @@ public class ClusterStatus {
     return zeebeStatus;
   }
 
-  public void setZeebeStatus(String zeebeStatus) {
+  public void setZeebeStatus(final String zeebeStatus) {
     this.zeebeStatus = zeebeStatus;
   }
 
@@ -47,7 +47,7 @@ public class ClusterStatus {
     return zeebeUrl;
   }
 
-  public void setZeebeUrl(String zeebeUrl) {
+  public void setZeebeUrl(final String zeebeUrl) {
     this.zeebeUrl = zeebeUrl;
   }
 

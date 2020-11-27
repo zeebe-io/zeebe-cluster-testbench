@@ -13,7 +13,20 @@ class StringLookupTest {
   private static final Item CANDIDATE_C = new Item("something else");
   private static final Item CANDIDATE_D = new Item("lorem ipsum");
 
-  private List<Item> testCandidates = List.of(CANDIDATE_A, CANDIDATE_B, CANDIDATE_C, CANDIDATE_D);
+  private final List<Item> testCandidates =
+      List.of(CANDIDATE_A, CANDIDATE_B, CANDIDATE_C, CANDIDATE_D);
+
+  private static final class Item {
+    private final String name;
+
+    Item(final String name) {
+      this.name = name;
+    }
+
+    String getName() {
+      return name;
+    }
+  }
 
   @Nested
   class CaseSensitive {
@@ -21,11 +34,12 @@ class StringLookupTest {
     @Test
     void shouldFindItem() {
       // given
-      var sutLookup = new StringLookup<>("item", "name", testCandidates, Item::getName, false);
-      var expected = CANDIDATE_A;
+      final var sutLookup =
+          new StringLookup<>("item", "name", testCandidates, Item::getName, false);
+      final var expected = CANDIDATE_A;
 
       // when
-      var actual = sutLookup.lookup();
+      final var actual = sutLookup.lookup();
 
       assertThat(actual.isRight()).isTrue();
       assertThat(actual.get()).isSameAs(expected);
@@ -34,10 +48,11 @@ class StringLookupTest {
     @Test
     void shouldNotFindItemWrongCase() {
       // given
-      var sutLookup = new StringLookup<>("item", "Name", testCandidates, Item::getName, false);
+      final var sutLookup =
+          new StringLookup<>("item", "Name", testCandidates, Item::getName, false);
 
       // when
-      var actual = sutLookup.lookup();
+      final var actual = sutLookup.lookup();
 
       assertThat(actual.isLeft()).isTrue();
     }
@@ -45,11 +60,11 @@ class StringLookupTest {
     @Test
     void shouldNotFindItemNoMatch() {
       // given
-      var sutLookup =
+      final var sutLookup =
           new StringLookup<>("item", "non existing name", testCandidates, Item::getName, false);
 
       // when
-      var actual = sutLookup.lookup();
+      final var actual = sutLookup.lookup();
 
       assertThat(actual.isLeft()).isTrue();
     }
@@ -57,13 +72,13 @@ class StringLookupTest {
     @Test
     void shouldProduceErrorMessageWhenItemNotFound() {
       // given
-      var sutLookup =
+      final var sutLookup =
           new StringLookup<>("item", "Another Name", testCandidates, Item::getName, false);
-      var expected =
+      final var expected =
           "Unable to find item 'Another Name'; closest candidates: ['anotherName', 'name', 'something else']; available candidates: ['name', 'anotherName', 'something else', 'lorem ipsum']";
 
       // when
-      var actual = sutLookup.lookup();
+      final var actual = sutLookup.lookup();
 
       assertThat(actual.isLeft()).isTrue();
       assertThat(actual.getLeft()).isEqualTo(expected);
@@ -76,11 +91,11 @@ class StringLookupTest {
     @Test
     void shouldFindItem() {
       // given
-      var sutLookup = new StringLookup<>("item", "name", testCandidates, Item::getName, true);
-      var expected = CANDIDATE_A;
+      final var sutLookup = new StringLookup<>("item", "name", testCandidates, Item::getName, true);
+      final var expected = CANDIDATE_A;
 
       // when
-      var actual = sutLookup.lookup();
+      final var actual = sutLookup.lookup();
 
       assertThat(actual.isRight()).isTrue();
       assertThat(actual.get()).isSameAs(expected);
@@ -89,11 +104,11 @@ class StringLookupTest {
     @Test
     void shouldFindItemWithDifferentCase() {
       // given
-      var sutLookup = new StringLookup<>("item", "Name", testCandidates, Item::getName, true);
-      var expected = CANDIDATE_A;
+      final var sutLookup = new StringLookup<>("item", "Name", testCandidates, Item::getName, true);
+      final var expected = CANDIDATE_A;
 
       // when
-      var actual = sutLookup.lookup();
+      final var actual = sutLookup.lookup();
 
       assertThat(actual.isRight()).isTrue();
       assertThat(actual.get()).isSameAs(expected);
@@ -102,11 +117,11 @@ class StringLookupTest {
     @Test
     void shouldNotFindItemNoMatch() {
       // given
-      var sutLookup =
+      final var sutLookup =
           new StringLookup<>("item", "non existing name", testCandidates, Item::getName, true);
 
       // when
-      var actual = sutLookup.lookup();
+      final var actual = sutLookup.lookup();
 
       assertThat(actual.isLeft()).isTrue();
     }
@@ -114,28 +129,16 @@ class StringLookupTest {
     @Test
     void shouldProduceErrorMessageWhenItemNotFound() {
       // given
-      var sutLookup =
+      final var sutLookup =
           new StringLookup<>("item", "Another Name", testCandidates, Item::getName, true);
-      var expected =
+      final var expected =
           "Unable to find item 'Another Name'; closest candidates: ['anotherName', 'name', 'something else']; available candidates: ['name', 'anotherName', 'something else', 'lorem ipsum']";
 
       // when
-      var actual = sutLookup.lookup();
+      final var actual = sutLookup.lookup();
 
       assertThat(actual.isLeft()).isTrue();
       assertThat(actual.getLeft()).isEqualTo(expected);
-    }
-  }
-
-  private static final class Item {
-    private String name;
-
-    Item(String name) {
-      this.name = name;
-    }
-
-    String getName() {
-      return name;
     }
   }
 }

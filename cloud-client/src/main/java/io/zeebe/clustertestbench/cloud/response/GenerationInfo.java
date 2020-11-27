@@ -14,7 +14,7 @@ public class GenerationInfo {
     return name;
   }
 
-  public void setName(String name) {
+  public void setName(final String name) {
     this.name = name;
   }
 
@@ -22,7 +22,7 @@ public class GenerationInfo {
     return uuid;
   }
 
-  public void setUuid(String uuid) {
+  public void setUuid(final String uuid) {
     this.uuid = uuid;
   }
 
@@ -30,7 +30,7 @@ public class GenerationInfo {
     return versions;
   }
 
-  public void setVersions(Map<String, String> versions) {
+  public void setVersions(final Map<String, String> versions) {
     this.versions = versions;
   }
 

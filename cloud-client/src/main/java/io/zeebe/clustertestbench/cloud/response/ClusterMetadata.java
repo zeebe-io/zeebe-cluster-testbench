@@ -16,7 +16,7 @@ public class ClusterMetadata {
     return creationTimestamp;
   }
 
-  public void setCreationTimestamp(String creationTimestamp) {
+  public void setCreationTimestamp(final String creationTimestamp) {
     this.creationTimestamp = creationTimestamp;
   }
 
@@ -24,7 +24,7 @@ public class ClusterMetadata {
     return generation;
   }
 
-  public void setGeneration(int generation) {
+  public void setGeneration(final int generation) {
     this.generation = generation;
   }
 
@@ -32,7 +32,7 @@ public class ClusterMetadata {
     return name;
   }
 
-  public void setName(String name) {
+  public void setName(final String name) {
     this.name = name;
   }
 
@@ -40,7 +40,7 @@ public class ClusterMetadata {
     return resourceVersion;
   }
 
-  public void setResourceVersion(String resourceVersion) {
+  public void setResourceVersion(final String resourceVersion) {
     this.resourceVersion = resourceVersion;
   }
 
@@ -48,7 +48,7 @@ public class ClusterMetadata {
     return selfLink;
   }
 
-  public void setSelfLink(String selfLink) {
+  public void setSelfLink(final String selfLink) {
     this.selfLink = selfLink;
   }
 
@@ -56,7 +56,7 @@ public class ClusterMetadata {
     return uid;
   }
 
-  public void setUid(String uid) {
+  public void setUid(final String uid) {
     this.uid = uid;
   }
 

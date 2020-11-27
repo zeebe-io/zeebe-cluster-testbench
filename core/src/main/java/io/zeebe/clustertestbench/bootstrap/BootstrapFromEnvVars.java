@@ -7,12 +7,12 @@ import org.slf4j.LoggerFactory;
 /** Bootstrapper that reads its values from environment variables */
 public class BootstrapFromEnvVars {
 
-  private static final Logger logger = LoggerFactory.getLogger(BootstrapFromEnvVars.class);
+  private static final Logger LOGGER = LoggerFactory.getLogger(BootstrapFromEnvVars.class);
 
   private static final String PREFIX = "ZCTB_"; // "Zeebe Cluster Test Bench"
 
-  public static void main(String[] args) {
-    logger.info("Bootstrapper starting");
+  public static void main(final String[] args) {
+    LOGGER.info("Bootstrapper starting");
 
     try {
       final String authenticationServerUrl =
@@ -93,16 +93,16 @@ public class BootstrapFromEnvVars {
               slackToken,
               slackChannel)
           .launch();
-    } catch (Exception e) {
-      logger.error(e.getMessage(), e);
+    } catch (final Exception e) {
+      LOGGER.error(e.getMessage(), e);
       System.exit(-1);
     }
   }
 
-  private static String getEnvironmentvariable(String suffix, boolean optional) {
-    Map<String, String> envVars = System.getenv();
+  private static String getEnvironmentvariable(final String suffix, final boolean optional) {
+    final Map<String, String> envVars = System.getenv();
 
-    String key = PREFIX + suffix;
+    final String key = PREFIX + suffix;
 
     if (!optional && !envVars.containsKey(key)) {
       throw new RuntimeException("Unable to find mandatory environment variable " + key);

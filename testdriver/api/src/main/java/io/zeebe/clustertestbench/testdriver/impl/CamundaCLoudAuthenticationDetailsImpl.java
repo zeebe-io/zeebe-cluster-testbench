@@ -14,11 +14,11 @@ public class CamundaCLoudAuthenticationDetailsImpl implements CamundaCloudAuthen
   public CamundaCLoudAuthenticationDetailsImpl() {}
 
   public CamundaCLoudAuthenticationDetailsImpl(
-      String authorizationURL,
-      String audience,
-      String contactPoint,
-      String clientId,
-      String clientSecret) {
+      final String authorizationURL,
+      final String audience,
+      final String contactPoint,
+      final String clientId,
+      final String clientSecret) {
     this.audience = audience;
     this.authorizationURL = authorizationURL;
     this.clientId = clientId;
@@ -31,7 +31,7 @@ public class CamundaCLoudAuthenticationDetailsImpl implements CamundaCloudAuthen
     return audience;
   }
 
-  public void setAudience(String audience) {
+  public void setAudience(final String audience) {
     this.audience = audience;
   }
 
@@ -40,7 +40,7 @@ public class CamundaCLoudAuthenticationDetailsImpl implements CamundaCloudAuthen
     return authorizationURL;
   }
 
-  public void setAuthorizationURL(String authorizationURL) {
+  public void setAuthorizationURL(final String authorizationURL) {
     this.authorizationURL = authorizationURL;
   }
 
@@ -49,7 +49,7 @@ public class CamundaCLoudAuthenticationDetailsImpl implements CamundaCloudAuthen
     return clientId;
   }
 
-  public void setClientId(String clientId) {
+  public void setClientId(final String clientId) {
     this.clientId = clientId;
   }
 
@@ -58,7 +58,7 @@ public class CamundaCLoudAuthenticationDetailsImpl implements CamundaCloudAuthen
     return clientSecret;
   }
 
-  public void setClientSecret(String clientSecret) {
+  public void setClientSecret(final String clientSecret) {
     this.clientSecret = clientSecret;
   }
 
@@ -67,7 +67,7 @@ public class CamundaCLoudAuthenticationDetailsImpl implements CamundaCloudAuthen
     return contactPoint;
   }
 
-  public void setContactPoint(String contactPoint) {
+  public void setContactPoint(final String contactPoint) {
     this.contactPoint = contactPoint;
   }
 

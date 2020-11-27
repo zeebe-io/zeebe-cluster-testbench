@@ -45,7 +45,7 @@ class DeleteGenerationInCamundaCloudHandlerTest {
         .thenReturn(mockCompleteJobCommandStep1);
     when(mockCompleteJobCommandStep1.send()).thenReturn(mockZeebeFuture);
 
-    var input = new Input();
+    final var input = new Input();
     input.setGenerationUUID(TEST_GENERATION_UUID);
 
     when(mockActivatedJob.getVariablesAsType(Input.class)).thenReturn(input);
@@ -92,7 +92,7 @@ class DeleteGenerationInCamundaCloudHandlerTest {
     sutDeleteGenerationhandler.handle(mockJobClient, mockActivatedJob);
 
     // then
-    var inOrder = inOrder(mockInternalApiClient, mockJobClient);
+    final var inOrder = inOrder(mockInternalApiClient, mockJobClient);
 
     inOrder.verify(mockInternalApiClient).deleteGeneration(Mockito.any());
     inOrder.verify(mockJobClient).newCompleteCommand(Mockito.anyLong());
@@ -104,7 +104,7 @@ class DeleteGenerationInCamundaCloudHandlerTest {
   @Test
   void shouldCompleteTheRightJob() throws Exception {
     // given
-    var jobKey = 42L;
+    final var jobKey = 42L;
     when(mockActivatedJob.getKey()).thenReturn(jobKey);
 
     // when

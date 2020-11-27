@@ -9,13 +9,13 @@ public final class DeleteGenerationInCamundaCloudHandler implements JobHandler {
 
   private final InternalCloudAPIClient internalApiClient;
 
-  public DeleteGenerationInCamundaCloudHandler(InternalCloudAPIClient internalApiClient) {
+  public DeleteGenerationInCamundaCloudHandler(final InternalCloudAPIClient internalApiClient) {
     this.internalApiClient = internalApiClient;
   }
 
   @Override
-  public void handle(JobClient client, ActivatedJob job) throws Exception {
-    Input input = job.getVariablesAsType(Input.class);
+  public void handle(final JobClient client, final ActivatedJob job) throws Exception {
+    final Input input = job.getVariablesAsType(Input.class);
 
     internalApiClient.deleteGeneration(input.getGenerationUUID());
 
@@ -29,7 +29,7 @@ public final class DeleteGenerationInCamundaCloudHandler implements JobHandler {
       return generationUUID;
     }
 
-    public void setGenerationUUID(String generationUUID) {
+    public void setGenerationUUID(final String generationUUID) {
       this.generationUUID = generationUUID;
     }
   }

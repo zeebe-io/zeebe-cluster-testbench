@@ -10,16 +10,16 @@ class SequentialTestParametersTest {
   @Test
   void testSerializeAndDeserialize() {
     // given
-    SequentialTestParameters original = new SequentialTestParameters();
+    final SequentialTestParameters original = new SequentialTestParameters();
     original.setIterations(42);
     original.setSteps(3);
     original.setMaxTimeForCompleteTest(Duration.ofMinutes(2));
     original.setMaxTimeForIteration(Duration.ofSeconds(28));
 
     // when
-    String jsonString = new ZeebeObjectMapper().toJson(original);
+    final String jsonString = new ZeebeObjectMapper().toJson(original);
 
-    SequentialTestParameters actual =
+    final SequentialTestParameters actual =
         new ZeebeObjectMapper().fromJson(jsonString, SequentialTestParameters.class);
 
     Assertions.assertThat(actual).isEqualToComparingFieldByField(original);

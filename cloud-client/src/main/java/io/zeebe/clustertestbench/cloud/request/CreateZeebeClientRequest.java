@@ -8,7 +8,7 @@ public class CreateZeebeClientRequest {
   private static final List<String> PERMISSIONS = Collections.singletonList("zeebe");
   private final String clientName;
 
-  public CreateZeebeClientRequest(String clientName) {
+  public CreateZeebeClientRequest(final String clientName) {
     this.clientName = clientName;
   }
 

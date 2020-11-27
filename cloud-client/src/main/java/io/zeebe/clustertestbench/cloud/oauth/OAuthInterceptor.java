@@ -10,7 +10,7 @@ import javax.ws.rs.client.ClientResponseFilter;
 import javax.ws.rs.core.MultivaluedMap;
 import org.apache.http.HttpStatus;
 
-public class OAuthInterceptor implements ClientRequestFilter, ClientResponseFilter {
+public final class OAuthInterceptor implements ClientRequestFilter, ClientResponseFilter {
   private static final String HEADER_AUTH_KEY = "Authorization";
   private static final String GRANT_TYPE_CLIENT_CREDENTIALS = "client_credentials";
   private static final String GRANT_TYPE_PASWORD = "password";
@@ -23,7 +23,7 @@ public class OAuthInterceptor implements ClientRequestFilter, ClientResponseFilt
   }
 
   @Override
-  public void filter(ClientRequestContext requestContext) throws IOException {
+  public void filter(final ClientRequestContext requestContext) throws IOException {
     synchronized (this) {
       if (credentials == null) {
         credentials = credentialSupplier.get();
@@ -38,7 +38,7 @@ public class OAuthInterceptor implements ClientRequestFilter, ClientResponseFilt
 
     type = Character.toUpperCase(type.charAt(0)) + type.substring(1);
 
-    MultivaluedMap<String, Object> headers = requestContext.getHeaders();
+    final MultivaluedMap<String, Object> headers = requestContext.getHeaders();
 
     headers.put(
         HEADER_AUTH_KEY,
@@ -46,7 +46,8 @@ public class OAuthInterceptor implements ClientRequestFilter, ClientResponseFilt
   }
 
   @Override
-  public void filter(ClientRequestContext requestContext, ClientResponseContext responseContext)
+  public void filter(
+      final ClientRequestContext requestContext, final ClientResponseContext responseContext)
       throws IOException {
     if (responseContext.getStatus() == HttpStatus.SC_UNAUTHORIZED) {
       synchronized (this) {
@@ -56,7 +57,10 @@ public class OAuthInterceptor implements ClientRequestFilter, ClientResponseFilt
   }
 
   public static OAuthInterceptor forServiceAccountAuthorization(
-      String authenticationServerURL, String audience, String clientId, String clientSecret) {
+      final String authenticationServerURL,
+      final String audience,
+      final String clientId,
+      final String clientSecret) {
     final OAuthClient oauthClient =
         new OAuthClientFactory().createOAuthClient(authenticationServerURL);
 
@@ -71,12 +75,12 @@ public class OAuthInterceptor implements ClientRequestFilter, ClientResponseFilt
   }
 
   public static OAuthInterceptor forUserAccountAuthorization(
-      String authenticationServerURL,
-      String audience,
-      String clientId,
-      String clientSecret,
-      String username,
-      String password) {
+      final String authenticationServerURL,
+      final String audience,
+      final String clientId,
+      final String clientSecret,
+      final String username,
+      final String password) {
     final OAuthClient oauthClient =
         new OAuthClientFactory().createOAuthClient(authenticationServerURL);
 
