@@ -65,9 +65,9 @@ public class SequentialTestParameters {
 
     result.setIterations(10);
 
-    result.setMaxTimeForIteration(Duration.ofSeconds(10));
+    result.setMaxTimeForIteration(Duration.ofSeconds(20));
 
-    result.setMaxTimeForCompleteTest(Duration.ofSeconds(120));
+    result.setMaxTimeForCompleteTest(Duration.ofSeconds(240));
 
     return result;
   }
