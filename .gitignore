@@ -17,3 +17,4 @@ buildNumber.properties
 config.properties
 /secrets.yaml
 /secrets-dev.yaml
+**/.checkstyle
