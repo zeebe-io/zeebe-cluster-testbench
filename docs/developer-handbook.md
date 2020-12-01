@@ -23,6 +23,13 @@
 - K8S namespace = `gke_zeebe-io_europe-west1-b_zeebe-cluster/testbench`
 - Secrets `secret/common/ci-zeebe/testbench-secrets-int`
 
+## Permutation Testing
+```
+mvn eu.stamp-project:pitmp-maven-plugin:run
+```
+
+The permutation testing reports appear under `.[module]/target/pit-reports/[timestamp]/index.html`.
+
 ## Conventions
 
 | Convention | Rationale |
