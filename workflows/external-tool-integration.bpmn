@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:zeebe="http://camunda.org/schema/zeebe/1.0" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" id="Definitions_0b1jbb5" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Zeebe Modeler" exporterVersion="0.10.0">
+  <bpmn:process id="external-tool-integration" name="External Tool Integration" isExecutable="true">
+    <bpmn:startEvent id="StartEvent_1">
+      <bpmn:outgoing>Flow_15uwe9t</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:sequenceFlow id="Flow_15uwe9t" sourceRef="StartEvent_1" targetRef="Activity_0gxslr9" />
+    <bpmn:sequenceFlow id="Flow_148ojn3" sourceRef="Activity_0gxslr9" targetRef="fetch-result-job" />
+    <bpmn:endEvent id="Event_1m39n9l">
+      <bpmn:incoming>Flow_16e5cin</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="Flow_16e5cin" sourceRef="fetch-result-job" targetRef="Event_1m39n9l" />
+    <bpmn:callActivity id="Activity_0gxslr9" name="Call Process">
+      <bpmn:extensionElements>
+        <zeebe:calledElement processId="=processId" />
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_15uwe9t</bpmn:incoming>
+      <bpmn:outgoing>Flow_148ojn3</bpmn:outgoing>
+    </bpmn:callActivity>
+    <bpmn:serviceTask id="fetch-result-job" name="Fetch Result">
+      <bpmn:extensionElements>
+        <zeebe:taskDefinition type="=businessKey" />
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_148ojn3</bpmn:incoming>
+      <bpmn:outgoing>Flow_16e5cin</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:textAnnotation id="TextAnnotation_0sdpa5l">
+      <bpmn:text>Input:
+processId - process to call
+businessKey - key used as job type to fetch the result</bpmn:text>
+    </bpmn:textAnnotation>
+    <bpmn:association id="Association_1mm0jby" sourceRef="StartEvent_1" targetRef="TextAnnotation_0sdpa5l" />
+    <bpmn:textAnnotation id="TextAnnotation_04hdt7c">
+      <bpmn:text>job type = businessKey</bpmn:text>
+    </bpmn:textAnnotation>
+    <bpmn:association id="Association_1noehb5" sourceRef="fetch-result-job" targetRef="TextAnnotation_04hdt7c" />
+  </bpmn:process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="external-tool-integration">
+      <bpmndi:BPMNShape id="TextAnnotation_0sdpa5l_di" bpmnElement="TextAnnotation_0sdpa5l">
+        <dc:Bounds x="147" y="70" width="323" height="58" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="TextAnnotation_04hdt7c_di" bpmnElement="TextAnnotation_04hdt7c">
+        <dc:Bounds x="440" y="250" width="180" height="30" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Flow_15uwe9t_di" bpmnElement="Flow_15uwe9t">
+        <di:waypoint x="215" y="177" />
+        <di:waypoint x="270" y="177" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_148ojn3_di" bpmnElement="Flow_148ojn3">
+        <di:waypoint x="370" y="177" />
+        <di:waypoint x="430" y="177" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_16e5cin_di" bpmnElement="Flow_16e5cin">
+        <di:waypoint x="530" y="177" />
+        <di:waypoint x="592" y="177" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="_BPMNShape_StartEvent_2" bpmnElement="StartEvent_1">
+        <dc:Bounds x="179" y="159" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_1m39n9l_di" bpmnElement="Event_1m39n9l">
+        <dc:Bounds x="592" y="159" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0henker_di" bpmnElement="Activity_0gxslr9">
+        <dc:Bounds x="270" y="137" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_13w3rk2_di" bpmnElement="fetch-result-job">
+        <dc:Bounds x="430" y="137" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Association_1mm0jby_di" bpmnElement="Association_1mm0jby">
+        <di:waypoint x="197" y="159" />
+        <di:waypoint x="197" y="128" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Association_1noehb5_di" bpmnElement="Association_1noehb5">
+        <di:waypoint x="466" y="217" />
+        <di:waypoint x="455" y="250" />
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>
