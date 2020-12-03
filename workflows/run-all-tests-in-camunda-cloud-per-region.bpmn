@@ -12,25 +12,40 @@
       <bpmn:outgoing>Flow_0hwqcpb</bpmn:outgoing>
       <bpmn:multiInstanceLoopCharacteristics>
         <bpmn:extensionElements>
-          <zeebe:loopCharacteristics inputCollection="=regions" inputElement="region" outputCollection="testResults" outputElement="=testResult" />
+          <zeebe:loopCharacteristics inputCollection="=regions" inputElement="region" outputCollection="testResults" outputElement="=aggregatedTestResult" />
         </bpmn:extensionElements>
       </bpmn:multiInstanceLoopCharacteristics>
     </bpmn:callActivity>
     <bpmn:endEvent id="end" name="End">
-      <bpmn:incoming>Flow_0hwqcpb</bpmn:incoming>
+      <bpmn:incoming>Flow_1sn52oz</bpmn:incoming>
     </bpmn:endEvent>
     <bpmn:sequenceFlow id="Flow_0km5u5r" sourceRef="start" targetRef="run-all-tests-per-region" />
-    <bpmn:sequenceFlow id="Flow_0hwqcpb" sourceRef="run-all-tests-per-region" targetRef="end" />
+    <bpmn:sequenceFlow id="Flow_0hwqcpb" sourceRef="run-all-tests-per-region" targetRef="aggregate-test-results" />
+    <bpmn:sequenceFlow id="Flow_1sn52oz" sourceRef="aggregate-test-results" targetRef="end" />
+    <bpmn:serviceTask id="aggregate-test-results" name="Aggregate Test Results">
+      <bpmn:extensionElements>
+        <zeebe:taskDefinition type="aggregate-test-results-job" retries="3" />
+        <zeebe:taskHeaders>
+          <zeebe:header key="variableNames" value="testResults" />
+        </zeebe:taskHeaders>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_0hwqcpb</bpmn:incoming>
+      <bpmn:outgoing>Flow_1sn52oz</bpmn:outgoing>
+    </bpmn:serviceTask>
   </bpmn:process>
   <bpmndi:BPMNDiagram id="BPMNDiagram_1">
     <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="run-all-tests-in-camunda-cloud-per-region">
       <bpmndi:BPMNEdge id="Flow_0hwqcpb_di" bpmnElement="Flow_0hwqcpb">
         <di:waypoint x="370" y="120" />
-        <di:waypoint x="452" y="120" />
+        <di:waypoint x="450" y="120" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_0km5u5r_di" bpmnElement="Flow_0km5u5r">
         <di:waypoint x="188" y="120" />
         <di:waypoint x="270" y="120" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1sn52oz_di" bpmnElement="Flow_1sn52oz">
+        <di:waypoint x="550" y="120" />
+        <di:waypoint x="612" y="120" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNShape id="Event_0erqg1u_di" bpmnElement="start">
         <dc:Bounds x="152" y="102" width="36" height="36" />
@@ -41,10 +56,13 @@
       <bpmndi:BPMNShape id="Activity_0t1bf0w_di" bpmnElement="run-all-tests-per-region">
         <dc:Bounds x="270" y="80" width="100" height="80" />
       </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_00j2miw_di" bpmnElement="aggregate-test-results">
+        <dc:Bounds x="450" y="80" width="100" height="80" />
+      </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Event_1n82gq3_di" bpmnElement="end">
-        <dc:Bounds x="452" y="102" width="36" height="36" />
+        <dc:Bounds x="612" y="102" width="36" height="36" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="460" y="145" width="20" height="14" />
+          <dc:Bounds x="620" y="145" width="20" height="14" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
     </bpmndi:BPMNPlane>

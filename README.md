@@ -122,6 +122,10 @@ This workflow runs all tests in a fresh cluster in Camunda Cloud in different cl
 | `region`               | name of the region for the cluster           | `String`                   |
 | `sequentialTestParams` | Settings to parameterize the sequential test | `SequentialTestParameters` |
 
+| Outputs                | Description                                      | Type         |
+| ---------------------- | ------------------------------------------------ | ------------ |
+| `aggregatedTestResult` | Aggregated test result for all tests/experiments | `TestResult` |
+
 #### Run All Tests in Camunda Cloud per Region
 
 This workflow runs all tests in a fresh cluster in Camunda Cloud in different regions:
@@ -137,6 +141,10 @@ This workflow runs all tests in a fresh cluster in Camunda Cloud in different re
 | `channel`              | name of the channel for the cluster          | `String`                   |
 | `regions`              | names of the regions for the clusters        | `List<String>`             |
 | `sequentialTestParams` | Settings to parameterize the sequential test | `SequentialTestParameters` |
+
+| Outputs                | Description                                      | Type         |
+| ---------------------- | ------------------------------------------------ | ------------ |
+| `aggregatedTestResult` | Aggregated test result for all tests/experiments | `TestResult` |
 
 #### Run All Tests in Camunda Cloud
 
@@ -158,9 +166,9 @@ Depending of the region of the new created cluster chaos experiments are execute
 
 The cluster parameters can either be specified using human-friendly names or machine-friendly UUIDs. Both are possible and the counterpart will be found as part of the process. The generation can be omitted. In that case the channel's default generation will be used.
 
-| Outputs                | Description                     | Type               |
-| ---------------------- | ------------------------------- | ------------------ |
-| `sequentialTestResult` | Test result for sequential test | `List<TestResult>` |
+| Outputs                | Description                                      | Type         |
+| ---------------------- | ------------------------------------------------ | ------------ |
+| `aggregatedTestResult` | Aggregated test result for all tests/experiments | `TestResult` |
 
 ##### Run Test in Camunda Cloud
 
@@ -195,7 +203,6 @@ The cluster parameters shall be given as name and UUID. The UUIDs are used to cr
 | Outputs      | Description | Type         |
 | ------------ | ----------- | ------------ |
 | `testReport` | test report | `TestReport` |
-| `testResult` | test result | `TestResult` |
 
 ### Test Protocols
 
@@ -229,6 +236,10 @@ The QA protocol runs all tests. Tests are run on demand (e.g. for a PR merge or 
 | `generationTemplate` | Name of an existing generation that will be used as a template for the generation to be created. The template will serve to identify the versions of Operate and Elasticsearch that Zeebe image shall be paired with | `String` |
 | `channel`            | name of the channel for the tests                                                                                                                                                                                    | `String` |
 
+| Outputs                | Description                                      | Type         |
+| ---------------------- | ------------------------------------------------ | ------------ |
+| `aggregatedTestResult` | Aggregated test result for all tests/experiments | `TestResult` |
+
 ### Utility Workflows
 
 Utility workflows are utilized by the test workflows to perform certain technical tasks
@@ -261,20 +272,21 @@ This workflow creates a Zeebe cluster in Camnuda cloud and waits until the clust
 
 ### Service Tasks
 
-| Service Task                                      | ID / Job Type                                                                                                 | Input                                                                                                                      | Output                                                                                                             |
-| ------------------------------------------------- | ------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------ |
-| Map names to UUIDs                                | `map-names-to-uuids` / `map-names-to-uuids-job`                                                               | `channel`, `clusterPlan`, `region`, `generation`, `channelUUID`, `clusterPlanUUID`, `regionUUID`, `generationUUID`         | `channel`, `clusterPlan`, `region`, `generation`, `channelUUID`, `clusterPlanUUID`, `regionUUID`, `generationUUID` |
-| Create Zeebe Cluster in Camunda Cloud             | `creae-zeebe-cluster-in-camunda-cloud` / `create-zeebe-cluster-in-camunda-cloud-job`                          | `channelUUID`, `clusterPlanUUID`, `regionUUID`, `generationUUID`                                                           | `clusterId`, `clusterName`, `authenticationDetails`                                                                |
-| Query Zeebe Cluster State in Camunda Cloud        | `query-zeebe-cluster-state-in-camunda-cloud` / `query-zeebe-cluster-state-in-camunda-cloud-job`               | `clusterId`, `clusterName`                                                                                                 | `clusterStatus`                                                                                                    |
-| Gather Information about Cluster in Camunda Cloud | `gather-information-about-cluster-in-camunda-cloud` / `gather-information-about-cluster-in-camunda-cloud-job` | `clusterId`, `clusterName`                                                                                                 | `operateURL`                                                                                                       |
-| Warm Up Cluster                                   | `warm-up-cluster` / `warm-up-cluster-job`                                                                     | `authenticationDetails`                                                                                                    |                                                                                                                    |
-| Run Sequential Test                               | `run-sequential-test` / `run-sequential-test-job`                                                             | `authenticationDetails`, `testParams`                                                                                      | `testResult`, `testReport`                                                                                         |
-| Record Test Result                                | `record-test-result` / `record-test-result-job`                                                               | `channel`, `clusterPlan`, `region`, `generation`, `clusterId`, `clusterName`, `operateURL`, `testReport`, `testWorkflowId` |                                                                                                                    |
-| Notify Engineers                                  | `notify-engineers` / `notify-engineers-job`                                                                   | `generation`, `clusterPlan`, `clusterName`, `operateURL`, `testReport`                                                     |                                                                                                                    |
-| Destroy Zeebe Cluster in Camunda CLoud            | `destroy-zeebe-cluster-in-camunda-cloud` / `destroy-zeebe-cluster-in-camunda-cloud-job`                       | `clusterId`                                                                                                                |                                                                                                                    |
-| Create Generation in Camunda Cloud                | `create-generation-in-camunda-cloud` / `create-generation-in-camunda-cloud-job`                               | `zeebeImage`, `generationTemplate`, `channel`                                                                              | `generation`, `generationUUID`                                                                                     |
-| Delete Generation in Camunda Cloud                | `delete-generation-in-camunda-cloud` / `delete-generation-in-camunda-cloud-job`                               | `generationUUID`                                                                                                           |                                                                                                                    |
-| Run Chaos Experiments                             | `run-chaos-experiments` / `chaos-experiments`                                                                 | `authenticationDetails`, `clusterPlan`                                                                                     | `testResult`, `testReport`                                                                                         |
+| Service Task                                      | ID / Job Type                                                                                                 | Input                                                                                                                      | Output                                                                                                             | Header                                                           |
+| ------------------------------------------------- | ------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------ | ---------------------------------------------------------------- |
+| Map names to UUIDs                                | `map-names-to-uuids` / `map-names-to-uuids-job`                                                               | `channel`, `clusterPlan`, `region`, `generation`, `channelUUID`, `clusterPlanUUID`, `regionUUID`, `generationUUID`         | `channel`, `clusterPlan`, `region`, `generation`, `channelUUID`, `clusterPlanUUID`, `regionUUID`, `generationUUID` |                                                                  |
+| Create Zeebe Cluster in Camunda Cloud             | `creae-zeebe-cluster-in-camunda-cloud` / `create-zeebe-cluster-in-camunda-cloud-job`                          | `channelUUID`, `clusterPlanUUID`, `regionUUID`, `generationUUID`                                                           | `clusterId`, `clusterName`, `authenticationDetails`                                                                |                                                                  |
+| Query Zeebe Cluster State in Camunda Cloud        | `query-zeebe-cluster-state-in-camunda-cloud` / `query-zeebe-cluster-state-in-camunda-cloud-job`               | `clusterId`, `clusterName`                                                                                                 | `clusterStatus`                                                                                                    |                                                                  |
+| Gather Information about Cluster in Camunda Cloud | `gather-information-about-cluster-in-camunda-cloud` / `gather-information-about-cluster-in-camunda-cloud-job` | `clusterId`, `clusterName`                                                                                                 | `operateURL`                                                                                                       |                                                                  |
+| Warm Up Cluster                                   | `warm-up-cluster` / `warm-up-cluster-job`                                                                     | `authenticationDetails`                                                                                                    |                                                                                                                    |                                                                  |
+| Run Sequential Test                               | `run-sequential-test` / `run-sequential-test-job`                                                             | `authenticationDetails`, `testParams`                                                                                      | `testResult`, `testReport`                                                                                         |                                                                  |
+| Record Test Result                                | `record-test-result` / `record-test-result-job`                                                               | `channel`, `clusterPlan`, `region`, `generation`, `clusterId`, `clusterName`, `operateURL`, `testReport`, `testWorkflowId` |                                                                                                                    |                                                                  |
+| Notify Engineers                                  | `notify-engineers` / `notify-engineers-job`                                                                   | `generation`, `clusterPlan`, `clusterName`, `operateURL`, `testReport`                                                     |                                                                                                                    |                                                                  |
+| Destroy Zeebe Cluster in Camunda CLoud            | `destroy-zeebe-cluster-in-camunda-cloud` / `destroy-zeebe-cluster-in-camunda-cloud-job`                       | `clusterId`                                                                                                                |                                                                                                                    |                                                                  |
+| Create Generation in Camunda Cloud                | `create-generation-in-camunda-cloud` / `create-generation-in-camunda-cloud-job`                               | `zeebeImage`, `generationTemplate`, `channel`                                                                              | `generation`, `generationUUID`                                                                                     |                                                                  |
+| Delete Generation in Camunda Cloud                | `delete-generation-in-camunda-cloud` / `delete-generation-in-camunda-cloud-job`                               | `generationUUID`                                                                                                           |                                                                                                                    |                                                                  |
+| Run Chaos Experiments                             | `run-chaos-experiments` / `chaos-experiments`                                                                 | `authenticationDetails`, `clusterPlan`                                                                                     | `testResult`, `testReport`                                                                                         |                                                                  |
+| Aggregate Test Results                            | `aggregate-test-results` / `aggregate-test-results-job`                                                       | (defined in header field)                                                                                                  | `aggregatedTestResult`                                                                                             | `variableNames` (comma separated list of variables to aggregate) |
 
 ### Messages
 

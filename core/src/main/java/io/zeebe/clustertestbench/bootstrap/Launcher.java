@@ -18,6 +18,7 @@ import io.zeebe.client.impl.oauth.OAuthCredentialsProvider;
 import io.zeebe.client.impl.oauth.OAuthCredentialsProviderBuilder;
 import io.zeebe.clustertestbench.cloud.CloudAPIClient;
 import io.zeebe.clustertestbench.cloud.CloudAPIClientFactory;
+import io.zeebe.clustertestbench.handler.AggregateTestResultHandler;
 import io.zeebe.clustertestbench.handler.CreateClusterInCamundaCloudHandler;
 import io.zeebe.clustertestbench.handler.CreateGenerationInCamundaCloudHandler;
 import io.zeebe.clustertestbench.handler.DeleteClusterInCamundaCloudHandler;
@@ -307,6 +308,11 @@ public class Launcher {
         client,
         "delete-generation-in-camunda-cloud-job",
         new DeleteGenerationInCamundaCloudHandler(internalCloudApiClient),
+        Duration.ofSeconds(10));
+    registerWorker(
+        client,
+        "aggregate-test-results-job",
+        new AggregateTestResultHandler(),
         Duration.ofSeconds(10));
   }
 
