@@ -48,6 +48,22 @@
             <version>${plugin.version.pitest-junit5}</version>
           </dependency>
         </dependencies>
+        <configuration>
+          <mutators>
+            <mutator>STRONGER</mutator>
+            <mutator>INLINE_CONSTS</mutator>
+            <mutator>REMOVE_CONDITIONALS</mutator>
+            <mutator>CONSTRUCTOR_CALLS</mutator>
+            <mutator>NON_VOID_METHOD_CALLS</mutator>
+            <mutator>REMOVE_INCREMENTS</mutator>
+            <mutator>ABS</mutator>
+            <mutator>AOR</mutator>
+            <mutator>AOD</mutator>
+            <mutator>CRCR</mutator>
+            <mutator>OBBN</mutator>
+            <mutator>UOI</mutator>
+          </mutators>
+        </configuration>
       </plugin>
 
       <!-- JaCoCo Plugin -->
@@ -162,7 +178,7 @@
       <groupId>org.apache.logging.log4j</groupId>
     </dependency>
 
-    <!--  needed for Pitest -->
+    <!-- needed for Pitest -->
     <dependency>
       <groupId>org.junit.jupiter</groupId>
       <artifactId>junit-jupiter-engine</artifactId>
@@ -173,7 +189,7 @@
       <artifactId>junit-jupiter-api</artifactId>
       <scope>test</scope>
     </dependency>
-    <!--  needed for Pitest -->
+    <!-- needed for Pitest -->
 
   </dependencies>
   <dependencyManagement>
