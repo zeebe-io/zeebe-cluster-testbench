@@ -29,6 +29,7 @@ import io.zeebe.clustertestbench.handler.NotifyEngineersHandler;
 import io.zeebe.clustertestbench.handler.QueryClusterStateInCamundaCloudHandler;
 import io.zeebe.clustertestbench.handler.RecordTestResultHandler;
 import io.zeebe.clustertestbench.handler.SequentialTestHandler;
+import io.zeebe.clustertestbench.handler.TriggerMessageStartEventHandler;
 import io.zeebe.clustertestbench.handler.WarmUpClusterHandler;
 import io.zeebe.clustertestbench.internal.cloud.InternalCloudAPIClient;
 import io.zeebe.clustertestbench.internal.cloud.InternalCloudAPIClientFactory;
@@ -313,6 +314,11 @@ public class Launcher {
         client,
         "aggregate-test-results-job",
         new AggregateTestResultHandler(),
+        Duration.ofSeconds(10));
+    registerWorker(
+        client,
+        "trigger-message-start-event-job",
+        new TriggerMessageStartEventHandler(client),
         Duration.ofSeconds(10));
   }
 
