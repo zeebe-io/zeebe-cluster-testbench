@@ -63,6 +63,7 @@
             <mutator>OBBN</mutator>
             <mutator>UOI</mutator>
           </mutators>
+          <skippedModules>integration-tests</skippedModules>
         </configuration>
       </plugin>
 
