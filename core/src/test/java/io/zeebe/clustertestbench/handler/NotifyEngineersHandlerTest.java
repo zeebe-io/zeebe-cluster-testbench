@@ -43,7 +43,8 @@ public class NotifyEngineersHandlerTest {
         .contains("GENERATION_C")
         .contains("https://localhost.test")
         .contains("workflowID")
-        .contains("ERROR");
+        .contains("ERROR")
+        .contains("http://jenkins/branch/build");
   }
 
   @Test
@@ -74,6 +75,7 @@ public class NotifyEngineersHandlerTest {
     input.setGeneration("GENERATION_C");
     input.setOperateURL("https://localhost.test");
     input.setTestWorkflowId("workflowID");
+    input.setBusinessKey("http://jenkins/branch/build");
     final var testReport = new TestReportDTO();
     testReport.setFailureMessages(List.of("ERROR"));
     input.setTestReport(testReport);

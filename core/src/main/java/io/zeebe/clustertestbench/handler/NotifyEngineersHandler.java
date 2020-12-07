@@ -7,6 +7,7 @@ import io.zeebe.client.api.worker.JobHandler;
 import io.zeebe.clustertestbench.notification.NotificationService;
 import io.zeebe.clustertestbench.testdriver.api.TestDriver;
 import io.zeebe.clustertestbench.testdriver.impl.TestReportDTO;
+import org.apache.commons.lang3.StringUtils;
 
 public class NotifyEngineersHandler implements JobHandler {
 
@@ -57,6 +58,12 @@ public class NotifyEngineersHandler implements JobHandler {
         .append("Operate") //
         .append(">");
 
+    if (StringUtils.isNotEmpty(input.getBusinessKey())) {
+      resultBuilder.append("\n");
+
+      resultBuilder.append("Business Key:").append(input.getBusinessKey());
+    }
+
     resultBuilder.append("\n");
 
     // number of test failures
@@ -82,6 +89,7 @@ public class NotifyEngineersHandler implements JobHandler {
     private String clusterName;
     private String operateURL;
     private String testWorkflowId;
+    private String businessKey;
 
     private TestReportDTO testReport;
 
@@ -133,6 +141,14 @@ public class NotifyEngineersHandler implements JobHandler {
 
     public void setTestWorkflowId(final String testWorkflowId) {
       this.testWorkflowId = testWorkflowId;
+    }
+
+    public String getBusinessKey() {
+      return businessKey;
+    }
+
+    public void setBusinessKey(String businessKey) {
+      this.businessKey = businessKey;
     }
   }
 }
