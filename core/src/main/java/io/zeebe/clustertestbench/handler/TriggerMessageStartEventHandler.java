@@ -8,6 +8,15 @@ import io.zeebe.client.api.worker.JobClient;
 import io.zeebe.client.api.worker.JobHandler;
 import org.apache.commons.lang3.StringUtils;
 
+/**
+ * This handler is a work around for the missing message throw event element. When called, it will
+ * send a message start event. The message name is configured in the header of the service task. The
+ * content of the message are all variables passed to the service task.
+ *
+ * <p>It is not a full-fledged replacement for the missing message throw event. In particular, it
+ * doesn't set a value for the correlation key. This is sufficient for message start events, but
+ * insufficient for the general case
+ */
 public class TriggerMessageStartEventHandler implements JobHandler {
 
   protected static final String KEY_MESSAGE_NAME = "messageName";

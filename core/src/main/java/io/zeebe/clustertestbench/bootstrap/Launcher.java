@@ -19,6 +19,7 @@ import io.zeebe.client.impl.oauth.OAuthCredentialsProviderBuilder;
 import io.zeebe.clustertestbench.cloud.CloudAPIClient;
 import io.zeebe.clustertestbench.cloud.CloudAPIClientFactory;
 import io.zeebe.clustertestbench.handler.AggregateTestResultHandler;
+import io.zeebe.clustertestbench.handler.CheckGenerationUsageHandler;
 import io.zeebe.clustertestbench.handler.CreateClusterInCamundaCloudHandler;
 import io.zeebe.clustertestbench.handler.CreateGenerationInCamundaCloudHandler;
 import io.zeebe.clustertestbench.handler.DeleteClusterInCamundaCloudHandler;
@@ -319,6 +320,11 @@ public class Launcher {
         client,
         "trigger-message-start-event-job",
         new TriggerMessageStartEventHandler(client),
+        Duration.ofSeconds(10));
+    registerWorker(
+        client,
+        "check-generation-usage-job",
+        new CheckGenerationUsageHandler(cloudApiClient),
         Duration.ofSeconds(10));
   }
 

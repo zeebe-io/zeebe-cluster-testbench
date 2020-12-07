@@ -56,14 +56,11 @@
             <mutator>CONSTRUCTOR_CALLS</mutator>
             <mutator>NON_VOID_METHOD_CALLS</mutator>
             <mutator>REMOVE_INCREMENTS</mutator>
-            <mutator>ABS</mutator>
             <mutator>AOR</mutator>
-            <mutator>AOD</mutator>
-            <mutator>CRCR</mutator>
+            <mutator>AOD</mutator>            
             <mutator>OBBN</mutator>
-            <mutator>UOI</mutator>
           </mutators>
-          <skippedModules>integration-tests</skippedModules>
+          <excludedTestClasses>*IT</excludedTestClasses>
         </configuration>
       </plugin>
 
