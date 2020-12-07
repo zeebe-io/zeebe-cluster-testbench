@@ -55,11 +55,11 @@ spec:
       tty: true
       resources:
         limits:
-          cpu: 2
-          memory: 2Gi
+          cpu: 8
+          memory: 8Gi
         requests:
-          cpu: 1
-          memory: 1Gi
+          cpu: 4
+          memory: 4Gi
       volumeMounts:
         - name: shared-data
           mountPath: /home/shared
@@ -71,11 +71,11 @@ spec:
       tty: true
       resources:
         limits:
-          cpu: 8
-          memory: 8Gi
+          cpu: 2
+          memory: 2Gi
         requests:
-          cpu: 4
-          memory: 4Gi
+          cpu: 1
+          memory: 1Gi
       volumeMounts:
         - name: shared-data
           mountPath: /home/shared
