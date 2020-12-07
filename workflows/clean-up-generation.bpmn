@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:zeebe="http://camunda.org/schema/zeebe/1.0" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" id="Definitions_0bnld8q" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Zeebe Modeler" exporterVersion="0.10.0">
+  <bpmn:process id="clean-up-generation" name="Clean Up generation" isExecutable="true">
+    <bpmn:startEvent id="start-event" name="Clean Up Generation">
+      <bpmn:outgoing>Flow_07eosv0</bpmn:outgoing>
+      <bpmn:messageEventDefinition id="MessageEventDefinition_1uivkt1" messageRef="Message_11sywfw" />
+    </bpmn:startEvent>
+    <bpmn:exclusiveGateway id="Gateway_15szw35">
+      <bpmn:incoming>Flow_07eosv0</bpmn:incoming>
+      <bpmn:incoming>Flow_1jflfn5</bpmn:incoming>
+      <bpmn:outgoing>Flow_0ff5cwf</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:sequenceFlow id="Flow_07eosv0" sourceRef="start-event" targetRef="Gateway_15szw35" />
+    <bpmn:sequenceFlow id="Flow_0ff5cwf" sourceRef="Gateway_15szw35" targetRef="check-generation-usage" />
+    <bpmn:exclusiveGateway id="Gateway_1q2phkb" name="Generation no longer used?" default="Flow_0mqld4c">
+      <bpmn:incoming>Flow_19cclui</bpmn:incoming>
+      <bpmn:outgoing>Flow_0g579td</bpmn:outgoing>
+      <bpmn:outgoing>Flow_0mqld4c</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:sequenceFlow id="Flow_19cclui" sourceRef="check-generation-usage" targetRef="Gateway_1q2phkb" />
+    <bpmn:sequenceFlow id="Flow_0g579td" name="True" sourceRef="Gateway_1q2phkb" targetRef="delete-generation-in-camunda-cloud">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">= generationNotInUse</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:endEvent id="end-event">
+      <bpmn:incoming>Flow_0jopnjj</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="Flow_0jopnjj" sourceRef="delete-generation-in-camunda-cloud" targetRef="end-event" />
+    <bpmn:sequenceFlow id="Flow_0mqld4c" sourceRef="Gateway_1q2phkb" targetRef="Event_11qwfg9" />
+    <bpmn:serviceTask id="delete-generation-in-camunda-cloud" name="Delete Generation In Camunda Cloud">
+      <bpmn:extensionElements>
+        <zeebe:taskDefinition type="delete-generation-in-camunda-cloud-job" />
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_0g579td</bpmn:incoming>
+      <bpmn:outgoing>Flow_0jopnjj</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:sequenceFlow id="Flow_1jflfn5" sourceRef="Event_11qwfg9" targetRef="Gateway_15szw35" />
+    <bpmn:intermediateCatchEvent id="Event_11qwfg9" name="1m">
+      <bpmn:incoming>Flow_0mqld4c</bpmn:incoming>
+      <bpmn:outgoing>Flow_1jflfn5</bpmn:outgoing>
+      <bpmn:timerEventDefinition id="TimerEventDefinition_12g4cld">
+        <bpmn:timeDuration xsi:type="bpmn:tFormalExpression">PT1M</bpmn:timeDuration>
+      </bpmn:timerEventDefinition>
+    </bpmn:intermediateCatchEvent>
+    <bpmn:serviceTask id="check-generation-usage" name="Check Generation Usage">
+      <bpmn:extensionElements>
+        <zeebe:taskDefinition type="check-generation-usage-job" />
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_0ff5cwf</bpmn:incoming>
+      <bpmn:outgoing>Flow_19cclui</bpmn:outgoing>
+    </bpmn:serviceTask>
+  </bpmn:process>
+  <bpmn:message id="Message_11sywfw" name="Clean Up Generation" />
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="clean-up-generation">
+      <bpmndi:BPMNEdge id="Flow_07eosv0_di" bpmnElement="Flow_07eosv0">
+        <di:waypoint x="215" y="177" />
+        <di:waypoint x="265" y="177" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0ff5cwf_di" bpmnElement="Flow_0ff5cwf">
+        <di:waypoint x="315" y="177" />
+        <di:waypoint x="370" y="177" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_19cclui_di" bpmnElement="Flow_19cclui">
+        <di:waypoint x="470" y="177" />
+        <di:waypoint x="525" y="177" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0g579td_di" bpmnElement="Flow_0g579td">
+        <di:waypoint x="575" y="177" />
+        <di:waypoint x="630" y="177" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="592" y="159" width="22" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0jopnjj_di" bpmnElement="Flow_0jopnjj">
+        <di:waypoint x="730" y="177" />
+        <di:waypoint x="792" y="177" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0mqld4c_di" bpmnElement="Flow_0mqld4c">
+        <di:waypoint x="550" y="152" />
+        <di:waypoint x="550" y="90" />
+        <di:waypoint x="438" y="90" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1jflfn5_di" bpmnElement="Flow_1jflfn5">
+        <di:waypoint x="402" y="90" />
+        <di:waypoint x="290" y="90" />
+        <di:waypoint x="290" y="152" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="Event_026opqx_di" bpmnElement="start-event">
+        <dc:Bounds x="179" y="159" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="170" y="202" width="55" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_15szw35_di" bpmnElement="Gateway_15szw35" isMarkerVisible="true">
+        <dc:Bounds x="265" y="152" width="50" height="50" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_1q2phkb_di" bpmnElement="Gateway_1q2phkb" isMarkerVisible="true">
+        <dc:Bounds x="525" y="152" width="50" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="516" y="209" width="70" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_0bv3x1i_di" bpmnElement="end-event">
+        <dc:Bounds x="792" y="159" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_12gqcgu_di" bpmnElement="delete-generation-in-camunda-cloud">
+        <dc:Bounds x="630" y="137" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_1k9x4ya_di" bpmnElement="Event_11qwfg9">
+        <dc:Bounds x="402" y="72" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="413" y="115" width="16" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0v3fl37_di" bpmnElement="check-generation-usage">
+        <dc:Bounds x="370" y="137" width="100" height="80" />
+      </bpmndi:BPMNShape>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>

@@ -211,6 +211,8 @@ The cluster parameters shall be given as name and UUID. The UUIDs are used to cr
 
 ![daily-test-protocol](docs/assets/daily-test-protocol.png "Daily test protocol")
 
+**Workflow ID:** `daily-test-protocol`
+
 The daily test protocol runs all tests in all cluster plans. Tests are repeated every day, until they are stopped by sending a message to a running process instance.
 
 | Inputs       | Description                                                                          | Type     |
@@ -229,7 +231,9 @@ The following defaults are defined in the process description:
 
 ![qa-protocol](docs/assets/qa-protocol.png "QA protocol")
 
-The QA protocol runs all tests. Tests are run on demand (e.g. for a PR merge or to test a release candidate)
+**Workflow ID:** `qa-protocol`
+
+The QA protocol runs all tests. Tests are run on demand (e.g. for a PR merge or to test a release candidate). It will create a temporary generation for the tests to run. This generation will be removed after all tests and all analysis tasks have completed.
 
 | Inputs               | Description                                                                                                                                                                                                          | Type     |
 | -------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------- |
@@ -287,11 +291,26 @@ The expectation is that the external tool will register a worker for the job typ
 | `businessKey`               | Business key. This will be used as job type to fetch the result           | `String` |
 | _variables for the process_ | additional variables that will be forwarded to the process that is called |          |
 
+##### Clean Up Generation
+
+Generations cannot be deleted immediately after a test protocol has completed. Some of the tests might have failed. In this case the clusters are kept alive for further analysis.
+
+This workflow peridically checks how many clusters are still using a generation. Once that value is zero, the generation will be removed.
+
+![clean-up-generation](docs/assets/clean-up-generation.png)
+
+**Workflow ID:** `clean-up-generation`
+
+| Inputs           | Description                      | Type     |
+| ---------------- | -------------------------------- | -------- |
+| `generationUUID` | UUID of the generation to delete | `String` |
+
 ### Messages
 
 These messages are important to control aspects of the test control flow:
 
-| Message            | Message Name         | Correlation Key |
-| ------------------ | -------------------- | --------------- |
-| Analysis Completed | `Analysis Completed` | `clusterId`     |
-| Stop Daily Test    | `Stop Daily Test`    | `id`            |
+| Message             | Message Name          | Correlation Key | Payload          |
+| ------------------- | --------------------- | --------------- | ---------------- |
+| Analysis Completed  | `Analysis Completed`  | `clusterId`     | n/a              |
+| Clean up Generation | `Clean Up Generation` | n/a             | `generationUUID` |
+| Stop Daily Test     | `Stop Daily Test`     | `id`            | n/a              |
