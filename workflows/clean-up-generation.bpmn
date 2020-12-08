@@ -34,11 +34,11 @@
       <bpmn:outgoing>Flow_0jopnjj</bpmn:outgoing>
     </bpmn:serviceTask>
     <bpmn:sequenceFlow id="Flow_1jflfn5" sourceRef="Event_11qwfg9" targetRef="Gateway_15szw35" />
-    <bpmn:intermediateCatchEvent id="Event_11qwfg9" name="1m">
+    <bpmn:intermediateCatchEvent id="Event_11qwfg9" name="15m">
       <bpmn:incoming>Flow_0mqld4c</bpmn:incoming>
       <bpmn:outgoing>Flow_1jflfn5</bpmn:outgoing>
       <bpmn:timerEventDefinition id="TimerEventDefinition_12g4cld">
-        <bpmn:timeDuration xsi:type="bpmn:tFormalExpression">PT1M</bpmn:timeDuration>
+        <bpmn:timeDuration xsi:type="bpmn:tFormalExpression">PT15M</bpmn:timeDuration>
       </bpmn:timerEventDefinition>
     </bpmn:intermediateCatchEvent>
     <bpmn:serviceTask id="check-generation-usage" name="Check Generation Usage">
@@ -52,17 +52,19 @@
   <bpmn:message id="Message_11sywfw" name="Clean Up Generation" />
   <bpmndi:BPMNDiagram id="BPMNDiagram_1">
     <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="clean-up-generation">
-      <bpmndi:BPMNEdge id="Flow_07eosv0_di" bpmnElement="Flow_07eosv0">
-        <di:waypoint x="215" y="177" />
-        <di:waypoint x="265" y="177" />
+      <bpmndi:BPMNEdge id="Flow_1jflfn5_di" bpmnElement="Flow_1jflfn5">
+        <di:waypoint x="402" y="90" />
+        <di:waypoint x="290" y="90" />
+        <di:waypoint x="290" y="152" />
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_0ff5cwf_di" bpmnElement="Flow_0ff5cwf">
-        <di:waypoint x="315" y="177" />
-        <di:waypoint x="370" y="177" />
+      <bpmndi:BPMNEdge id="Flow_0mqld4c_di" bpmnElement="Flow_0mqld4c">
+        <di:waypoint x="550" y="152" />
+        <di:waypoint x="550" y="90" />
+        <di:waypoint x="438" y="90" />
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_19cclui_di" bpmnElement="Flow_19cclui">
-        <di:waypoint x="470" y="177" />
-        <di:waypoint x="525" y="177" />
+      <bpmndi:BPMNEdge id="Flow_0jopnjj_di" bpmnElement="Flow_0jopnjj">
+        <di:waypoint x="730" y="177" />
+        <di:waypoint x="792" y="177" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_0g579td_di" bpmnElement="Flow_0g579td">
         <di:waypoint x="575" y="177" />
@@ -71,19 +73,17 @@
           <dc:Bounds x="592" y="159" width="22" height="14" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_0jopnjj_di" bpmnElement="Flow_0jopnjj">
-        <di:waypoint x="730" y="177" />
-        <di:waypoint x="792" y="177" />
+      <bpmndi:BPMNEdge id="Flow_19cclui_di" bpmnElement="Flow_19cclui">
+        <di:waypoint x="470" y="177" />
+        <di:waypoint x="525" y="177" />
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_0mqld4c_di" bpmnElement="Flow_0mqld4c">
-        <di:waypoint x="550" y="152" />
-        <di:waypoint x="550" y="90" />
-        <di:waypoint x="438" y="90" />
+      <bpmndi:BPMNEdge id="Flow_0ff5cwf_di" bpmnElement="Flow_0ff5cwf">
+        <di:waypoint x="315" y="177" />
+        <di:waypoint x="370" y="177" />
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_1jflfn5_di" bpmnElement="Flow_1jflfn5">
-        <di:waypoint x="402" y="90" />
-        <di:waypoint x="290" y="90" />
-        <di:waypoint x="290" y="152" />
+      <bpmndi:BPMNEdge id="Flow_07eosv0_di" bpmnElement="Flow_07eosv0">
+        <di:waypoint x="215" y="177" />
+        <di:waypoint x="265" y="177" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNShape id="Event_026opqx_di" bpmnElement="start-event">
         <dc:Bounds x="179" y="159" width="36" height="36" />
@@ -109,7 +109,7 @@
       <bpmndi:BPMNShape id="Event_1k9x4ya_di" bpmnElement="Event_11qwfg9">
         <dc:Bounds x="402" y="72" width="36" height="36" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="413" y="115" width="16" height="14" />
+          <dc:Bounds x="410" y="115" width="22" height="14" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Activity_0v3fl37_di" bpmnElement="check-generation-usage">

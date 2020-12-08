@@ -100,8 +100,7 @@ public class TriggerMessageStartEventHandlerIT {
         zeeqsClient.getWorkflowInstanceVariables(secondaryWorkflowInstanceKey);
 
     final Map<String, String> variablesInSecondaryProcessAsMap =
-        variablesInSecondaryProcess
-            .stream()
+        variablesInSecondaryProcess.stream()
             .collect(
                 toMap(
                     dto -> dto.getName(),

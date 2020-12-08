@@ -69,7 +69,7 @@ class CheckGenerationUsageHandlerTest {
   }
 
   @Test
-  void shouldReturnTrueWhenGeenrationIsNotInUse() throws Exception {
+  void shouldReturnFalseWhenGeenrationIsInUse() throws Exception {
     // given
     final var input = new Input();
     input.setGenerationUUID(UUID_A);
@@ -98,7 +98,7 @@ class CheckGenerationUsageHandlerTest {
   }
 
   @Test
-  void shouldReturnFalseWhenGeenrationIsUsed() throws Exception {
+  void shouldReturnTrueWhenGeenrationIsNotUsed() throws Exception {
     // given
     final var input = new Input();
     input.setGenerationUUID("UUID C");
