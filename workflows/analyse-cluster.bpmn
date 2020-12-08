@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:zeebe="http://camunda.org/schema/zeebe/1.0" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" id="Definitions_0xgffe9" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Zeebe Modeler" exporterVersion="0.10.0">
+  <bpmn:process id="analyse-cluster" name="Analyse Cluster" isExecutable="true">
+    <bpmn:startEvent id="start-event" name="Analyse Cluster">
+      <bpmn:outgoing>Flow_0ayob39</bpmn:outgoing>
+      <bpmn:messageEventDefinition id="MessageEventDefinition_0tzkz9p" messageRef="Message_0bh50vk" />
+    </bpmn:startEvent>
+    <bpmn:intermediateCatchEvent id="Event_076oc4t" name="Analysis Completed">
+      <bpmn:incoming>Flow_165xsrs</bpmn:incoming>
+      <bpmn:outgoing>Flow_1b1i9at</bpmn:outgoing>
+      <bpmn:messageEventDefinition id="MessageEventDefinition_0c3gpyu" messageRef="Message_09qqk61" />
+    </bpmn:intermediateCatchEvent>
+    <bpmn:serviceTask id="Activity_0i12fde" name="Notify Engineers">
+      <bpmn:extensionElements>
+        <zeebe:taskDefinition type="notify-engineers-job" />
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_0ayob39</bpmn:incoming>
+      <bpmn:outgoing>Flow_165xsrs</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:serviceTask id="Activity_1dul8ma" name="Destroy Zeebe Cluster in Camunda Cloud">
+      <bpmn:extensionElements>
+        <zeebe:taskDefinition type="destroy-zeebe-cluster-in-camunda-cloud-job" />
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_1b1i9at</bpmn:incoming>
+      <bpmn:outgoing>Flow_1i6ogk0</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:sequenceFlow id="Flow_165xsrs" sourceRef="Activity_0i12fde" targetRef="Event_076oc4t" />
+    <bpmn:sequenceFlow id="Flow_0ayob39" sourceRef="start-event" targetRef="Activity_0i12fde" />
+    <bpmn:sequenceFlow id="Flow_1b1i9at" sourceRef="Event_076oc4t" targetRef="Activity_1dul8ma" />
+    <bpmn:endEvent id="Event_0ii2tr2">
+      <bpmn:incoming>Flow_1i6ogk0</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="Flow_1i6ogk0" sourceRef="Activity_1dul8ma" targetRef="Event_0ii2tr2" />
+    <bpmn:textAnnotation id="TextAnnotation_168bxgi">
+      <bpmn:text>messageName: Analysis Completed
+correlationKey: cluserId</bpmn:text>
+    </bpmn:textAnnotation>
+    <bpmn:association id="Association_1bzefnw" sourceRef="Event_076oc4t" targetRef="TextAnnotation_168bxgi" />
+  </bpmn:process>
+  <bpmn:message id="Message_0bh50vk" name="Analyse Cluster" />
+  <bpmn:message id="Message_09qqk61" name="Analysis Completed">
+    <bpmn:extensionElements>
+      <zeebe:subscription correlationKey="=clusterId" />
+    </bpmn:extensionElements>
+  </bpmn:message>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="analyse-cluster">
+      <bpmndi:BPMNShape id="TextAnnotation_168bxgi_di" bpmnElement="TextAnnotation_168bxgi">
+        <dc:Bounds x="500" y="80" width="222" height="39" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Flow_165xsrs_di" bpmnElement="Flow_165xsrs">
+        <di:waypoint x="390" y="210" />
+        <di:waypoint x="452" y="210" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0ayob39_di" bpmnElement="Flow_0ayob39">
+        <di:waypoint x="208" y="210" />
+        <di:waypoint x="290" y="210" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1b1i9at_di" bpmnElement="Flow_1b1i9at">
+        <di:waypoint x="488" y="210" />
+        <di:waypoint x="560" y="210" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1i6ogk0_di" bpmnElement="Flow_1i6ogk0">
+        <di:waypoint x="660" y="210" />
+        <di:waypoint x="722" y="210" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="Activity_0i12fde_di" bpmnElement="Activity_0i12fde">
+        <dc:Bounds x="290" y="170" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_076oc4t_di" bpmnElement="Event_076oc4t">
+        <dc:Bounds x="452" y="192" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="443" y="235" width="54" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_1vs2ql9_di" bpmnElement="start-event">
+        <dc:Bounds x="172" y="192" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="153" y="235" width="78" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1dul8ma_di" bpmnElement="Activity_1dul8ma">
+        <dc:Bounds x="560" y="170" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_0ii2tr2_di" bpmnElement="Event_0ii2tr2">
+        <dc:Bounds x="722" y="192" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Association_1bzefnw_di" bpmnElement="Association_1bzefnw">
+        <di:waypoint x="480" y="195" />
+        <di:waypoint x="528" y="119" />
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>
