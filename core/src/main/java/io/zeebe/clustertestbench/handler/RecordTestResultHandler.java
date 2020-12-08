@@ -39,7 +39,7 @@ public class RecordTestResultHandler implements JobHandler {
       "Zeebe Cluster Testbench - Publish Test Results Worker";
   private static final List<String> SCOPES = Collections.singletonList(SheetsScopes.SPREADSHEETS);
 
-  private static final String RANGE = "Sheet1!A1:O";
+  private static final String RANGE = "Sheet1!A1:P";
 
   private final String spreadSheetId;
 
@@ -89,6 +89,7 @@ public class RecordTestResultHandler implements JobHandler {
     result.add(input.getChannel());
     result.add(input.getClusterPlan());
     result.add(input.getGeneration());
+    result.add(input.getBusinessKey());
 
     result.add(input.getTestWorkflowId());
 
@@ -127,6 +128,7 @@ public class RecordTestResultHandler implements JobHandler {
     private String region;
     private String clusterPlan;
     private String channel;
+    private String businessKey;
 
     private String testWorkflowId;
 
@@ -166,6 +168,14 @@ public class RecordTestResultHandler implements JobHandler {
 
     public void setChannel(final String channel) {
       this.channel = channel;
+    }
+
+    public String getBusinessKey() {
+      return businessKey;
+    }
+
+    public void setBusinessKey(String businessKey) {
+      this.businessKey = businessKey;
     }
 
     public String getClusterId() {
