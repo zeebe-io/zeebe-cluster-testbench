@@ -59,7 +59,7 @@ public class TriggerMessageStartEventHandlerIT {
    * </ul>
    */
   @Test
-  void shoulTriggerSecondaryProcess() throws InterruptedException {
+  void shoulTriggerSecondaryProcess() {
     // given
     zeebeClient
         .newDeployCommand()
