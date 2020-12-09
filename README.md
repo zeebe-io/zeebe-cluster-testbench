@@ -7,6 +7,7 @@ Test bench to run tests against a Zeebe cluster.
 - [Developer handbook](docs/developer-handbook.md)
 - [Operator handbook](docs/operator-handbook.md)
 - [Technical documentation](docs/technical-documentation.md)
+- [Service Task Reference](docs/service-tasks.md)
 
 ## User Guide
 
@@ -210,6 +211,8 @@ The cluster parameters shall be given as name and UUID. The UUIDs are used to cr
 
 ![daily-test-protocol](docs/assets/daily-test-protocol.png "Daily test protocol")
 
+**Workflow ID:** `daily-test-protocol`
+
 The daily test protocol runs all tests in all cluster plans. Tests are repeated every day, until they are stopped by sending a message to a running process instance.
 
 | Inputs       | Description                                                                          | Type     |
@@ -228,7 +231,9 @@ The following defaults are defined in the process description:
 
 ![qa-protocol](docs/assets/qa-protocol.png "QA protocol")
 
-The QA protocol runs all tests. Tests are run on demand (e.g. for a PR merge or to test a release candidate)
+**Workflow ID:** `qa-protocol`
+
+The QA protocol runs all tests. Tests are run on demand (e.g. for a PR merge or to test a release candidate). It will create a temporary generation for the tests to run. This generation will be removed after all tests and all analysis tasks have completed.
 
 | Inputs               | Description                                                                                                                                                                                                          | Type     |
 | -------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------- |
@@ -286,27 +291,26 @@ The expectation is that the external tool will register a worker for the job typ
 | `businessKey`               | Business key. This will be used as job type to fetch the result           | `String` |
 | _variables for the process_ | additional variables that will be forwarded to the process that is called |          |
 
-### Service Tasks
+##### Clean Up Generation
 
-| Service Task                                      | ID / Job Type                                                                                                 | Input                                                                                                                      | Output                                                                                                             | Header                                                           |
-| ------------------------------------------------- | ------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------ | ---------------------------------------------------------------- |
-| Map names to UUIDs                                | `map-names-to-uuids` / `map-names-to-uuids-job`                                                               | `channel`, `clusterPlan`, `region`, `generation`, `channelUUID`, `clusterPlanUUID`, `regionUUID`, `generationUUID`         | `channel`, `clusterPlan`, `region`, `generation`, `channelUUID`, `clusterPlanUUID`, `regionUUID`, `generationUUID` |                                                                  |
-| Create Zeebe Cluster in Camunda Cloud             | `creae-zeebe-cluster-in-camunda-cloud` / `create-zeebe-cluster-in-camunda-cloud-job`                          | `channelUUID`, `clusterPlanUUID`, `regionUUID`, `generationUUID`                                                           | `clusterId`, `clusterName`, `authenticationDetails`                                                                |                                                                  |
-| Query Zeebe Cluster State in Camunda Cloud        | `query-zeebe-cluster-state-in-camunda-cloud` / `query-zeebe-cluster-state-in-camunda-cloud-job`               | `clusterId`, `clusterName`                                                                                                 | `clusterStatus`                                                                                                    |                                                                  |
-| Gather Information about Cluster in Camunda Cloud | `gather-information-about-cluster-in-camunda-cloud` / `gather-information-about-cluster-in-camunda-cloud-job` | `clusterId`, `clusterName`                                                                                                 | `operateURL`                                                                                                       |                                                                  |
-| Warm Up Cluster                                   | `warm-up-cluster` / `warm-up-cluster-job`                                                                     | `authenticationDetails`                                                                                                    |                                                                                                                    |                                                                  |
-| Run Sequential Test                               | `run-sequential-test` / `run-sequential-test-job`                                                             | `authenticationDetails`, `testParams`                                                                                      | `testResult`, `testReport`                                                                                         |                                                                  |
-| Record Test Result                                | `record-test-result` / `record-test-result-job`                                                               | `channel`, `clusterPlan`, `region`, `generation`, `clusterId`, `clusterName`, `operateURL`, `testReport`, `testWorkflowId` |                                                                                                                    |                                                                  |
-| Notify Engineers                                  | `notify-engineers` / `notify-engineers-job`                                                                   | `generation`, `clusterPlan`, `clusterName`, `operateURL`, `testReport`                                                     |                                                                                                                    |                                                                  |
-| Destroy Zeebe Cluster in Camunda CLoud            | `destroy-zeebe-cluster-in-camunda-cloud` / `destroy-zeebe-cluster-in-camunda-cloud-job`                       | `clusterId`                                                                                                                |                                                                                                                    |                                                                  |
-| Create Generation in Camunda Cloud                | `create-generation-in-camunda-cloud` / `create-generation-in-camunda-cloud-job`                               | `zeebeImage`, `generationTemplate`, `channel`                                                                              | `generation`, `generationUUID`                                                                                     |                                                                  |
-| Delete Generation in Camunda Cloud                | `delete-generation-in-camunda-cloud` / `delete-generation-in-camunda-cloud-job`                               | `generationUUID`                                                                                                           |                                                                                                                    |                                                                  |
-| Run Chaos Experiments                             | `run-chaos-experiments` / `chaos-experiments`                                                                 | `authenticationDetails`, `clusterPlan`                                                                                     | `testResult`, `testReport`                                                                                         |                                                                  |
-| Aggregate Test Results                            | `aggregate-test-results` / `aggregate-test-results-job`                                                       | (defined in header field)                                                                                                  | `aggregatedTestResult`                                                                                             | `variableNames` (comma separated list of variables to aggregate) |
+Generations cannot be deleted immediately after a test protocol has completed. Some of the tests might have failed. In this case the clusters are kept alive for further analysis.
+
+This workflow peridically checks how many clusters are still using a generation. Once that value is zero, the generation will be removed.
+
+![clean-up-generation](docs/assets/clean-up-generation.png)
+
+**Workflow ID:** `clean-up-generation`
+
+| Inputs           | Description                      | Type     |
+| ---------------- | -------------------------------- | -------- |
+| `generationUUID` | UUID of the generation to delete | `String` |
 
 ### Messages
 
-| Message            | Message Name         | Correlation Key |
-| ------------------ | -------------------- | --------------- |
-| Analysis Completed | `Analysis Completed` | `clusterId`     |
-| Stop Daily Test    | `Stop Daily Test`    | `id`            |
+These messages are important to control aspects of the test control flow:
+
+| Message             | Message Name          | Correlation Key | Payload          |
+| ------------------- | --------------------- | --------------- | ---------------- |
+| Analysis Completed  | `Analysis Completed`  | `clusterId`     | n/a              |
+| Clean up Generation | `Clean Up Generation` | n/a             | `generationUUID` |
+| Stop Daily Test     | `Stop Daily Test`     | `id`            | n/a              |

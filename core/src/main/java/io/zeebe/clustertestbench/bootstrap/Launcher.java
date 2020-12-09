@@ -19,6 +19,7 @@ import io.zeebe.client.impl.oauth.OAuthCredentialsProviderBuilder;
 import io.zeebe.clustertestbench.cloud.CloudAPIClient;
 import io.zeebe.clustertestbench.cloud.CloudAPIClientFactory;
 import io.zeebe.clustertestbench.handler.AggregateTestResultHandler;
+import io.zeebe.clustertestbench.handler.CheckGenerationUsageHandler;
 import io.zeebe.clustertestbench.handler.CreateClusterInCamundaCloudHandler;
 import io.zeebe.clustertestbench.handler.CreateGenerationInCamundaCloudHandler;
 import io.zeebe.clustertestbench.handler.DeleteClusterInCamundaCloudHandler;
@@ -29,6 +30,7 @@ import io.zeebe.clustertestbench.handler.NotifyEngineersHandler;
 import io.zeebe.clustertestbench.handler.QueryClusterStateInCamundaCloudHandler;
 import io.zeebe.clustertestbench.handler.RecordTestResultHandler;
 import io.zeebe.clustertestbench.handler.SequentialTestHandler;
+import io.zeebe.clustertestbench.handler.TriggerMessageStartEventHandler;
 import io.zeebe.clustertestbench.handler.WarmUpClusterHandler;
 import io.zeebe.clustertestbench.internal.cloud.InternalCloudAPIClient;
 import io.zeebe.clustertestbench.internal.cloud.InternalCloudAPIClientFactory;
@@ -313,6 +315,16 @@ public class Launcher {
         client,
         "aggregate-test-results-job",
         new AggregateTestResultHandler(),
+        Duration.ofSeconds(10));
+    registerWorker(
+        client,
+        "trigger-message-start-event-job",
+        new TriggerMessageStartEventHandler(client),
+        Duration.ofSeconds(10));
+    registerWorker(
+        client,
+        "check-generation-usage-job",
+        new CheckGenerationUsageHandler(cloudApiClient),
         Duration.ofSeconds(10));
   }
 

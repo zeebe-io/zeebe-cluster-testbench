@@ -6,7 +6,7 @@
     </bpmn:startEvent>
     <bpmn:sequenceFlow id="Flow_0s03s3e" sourceRef="StartEvent_1" targetRef="create-generation-in-camunda-cloud" />
     <bpmn:sequenceFlow id="Flow_0cosuvw" sourceRef="create-generation-in-camunda-cloud" targetRef="run-all-tests-in-camunda-cloud-per-cluster-plan" />
-    <bpmn:sequenceFlow id="Flow_1hq3wl3" sourceRef="run-all-tests-in-camunda-cloud-per-cluster-plan" targetRef="delete-generation-in-camunda-cloud" />
+    <bpmn:sequenceFlow id="Flow_1hq3wl3" sourceRef="run-all-tests-in-camunda-cloud-per-cluster-plan" targetRef="trigger-clean-up-generation" />
     <bpmn:callActivity id="run-all-tests-in-camunda-cloud-per-cluster-plan" name="Run All Tests in Camunda Cloud per Cluster Plan">
       <bpmn:extensionElements>
         <zeebe:calledElement processId="run-all-tests-in-camunda-cloud-per-cluster-plan" />
@@ -24,7 +24,7 @@
     <bpmn:endEvent id="Event_0ttw717">
       <bpmn:incoming>Flow_1qkrt5u</bpmn:incoming>
     </bpmn:endEvent>
-    <bpmn:sequenceFlow id="Flow_1qkrt5u" sourceRef="delete-generation-in-camunda-cloud" targetRef="Event_0ttw717" />
+    <bpmn:sequenceFlow id="Flow_1qkrt5u" sourceRef="trigger-clean-up-generation" targetRef="Event_0ttw717" />
     <bpmn:serviceTask id="create-generation-in-camunda-cloud" name="Create Generation In Camunda Cloud">
       <bpmn:extensionElements>
         <zeebe:taskDefinition type="create-generation-in-camunda-cloud-job" />
@@ -32,9 +32,12 @@
       <bpmn:incoming>Flow_0s03s3e</bpmn:incoming>
       <bpmn:outgoing>Flow_0cosuvw</bpmn:outgoing>
     </bpmn:serviceTask>
-    <bpmn:serviceTask id="delete-generation-in-camunda-cloud" name="Delete Generation In Camunda Cloud">
+    <bpmn:serviceTask id="trigger-clean-up-generation" name="Trigger Clean Up Generaton Workflow">
       <bpmn:extensionElements>
-        <zeebe:taskDefinition type="delete-generation-in-camunda-cloud-job" />
+        <zeebe:taskDefinition type="trigger-message-start-event-job" />
+        <zeebe:taskHeaders>
+          <zeebe:header key="messageName" value="Clean Up Generation" />
+        </zeebe:taskHeaders>
       </bpmn:extensionElements>
       <bpmn:incoming>Flow_1hq3wl3</bpmn:incoming>
       <bpmn:outgoing>Flow_1qkrt5u</bpmn:outgoing>
@@ -52,9 +55,16 @@ generationTemplate: existing genration used as template for the versions of Oper
 channel: channel in which the QA tests shall be run</bpmn:text>
     </bpmn:textAnnotation>
     <bpmn:association id="Association_0x03pf4" sourceRef="StartEvent_1" targetRef="TextAnnotation_0lbo537" />
+    <bpmn:textAnnotation id="TextAnnotation_0yzgtu4">
+      <bpmn:text>Trigger for asynchronous workflow. This way this workflow can terminate immediately, and the generation will be cleaned up as soon as it is no longer used</bpmn:text>
+    </bpmn:textAnnotation>
+    <bpmn:association id="Association_1k5uhsh" sourceRef="trigger-clean-up-generation" targetRef="TextAnnotation_0yzgtu4" />
   </bpmn:process>
   <bpmndi:BPMNDiagram id="BPMNDiagram_1">
     <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="qa-protocol">
+      <bpmndi:BPMNShape id="TextAnnotation_0yzgtu4_di" bpmnElement="TextAnnotation_0yzgtu4">
+        <dc:Bounds x="590" y="240" width="310" height="53" />
+      </bpmndi:BPMNShape>
       <bpmndi:BPMNEdge id="Flow_1qkrt5u_di" bpmnElement="Flow_1qkrt5u">
         <di:waypoint x="690" y="177" />
         <di:waypoint x="752" y="177" />
@@ -83,7 +93,7 @@ channel: channel in which the QA tests shall be run</bpmn:text>
       <bpmndi:BPMNShape id="Activity_1azabwm_di" bpmnElement="create-generation-in-camunda-cloud">
         <dc:Bounds x="270" y="137" width="100" height="80" />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_057v3rl_di" bpmnElement="delete-generation-in-camunda-cloud">
+      <bpmndi:BPMNShape id="Activity_057v3rl_di" bpmnElement="trigger-clean-up-generation">
         <dc:Bounds x="590" y="137" width="100" height="80" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="TextAnnotation_1vy46wr_di" bpmnElement="TextAnnotation_1vy46wr">
@@ -99,6 +109,10 @@ channel: channel in which the QA tests shall be run</bpmn:text>
       <bpmndi:BPMNEdge id="Association_0x03pf4_di" bpmnElement="Association_0x03pf4">
         <di:waypoint x="197" y="159" />
         <di:waypoint x="197" y="88" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Association_1k5uhsh_di" bpmnElement="Association_1k5uhsh">
+        <di:waypoint x="640" y="217" />
+        <di:waypoint x="640" y="240" />
       </bpmndi:BPMNEdge>
     </bpmndi:BPMNPlane>
   </bpmndi:BPMNDiagram>

@@ -48,6 +48,20 @@
             <version>${plugin.version.pitest-junit5}</version>
           </dependency>
         </dependencies>
+        <configuration>
+          <mutators>
+            <mutator>STRONGER</mutator>
+            <mutator>INLINE_CONSTS</mutator>
+            <mutator>REMOVE_CONDITIONALS</mutator>
+            <mutator>CONSTRUCTOR_CALLS</mutator>
+            <mutator>NON_VOID_METHOD_CALLS</mutator>
+            <mutator>REMOVE_INCREMENTS</mutator>
+            <mutator>AOR</mutator>
+            <mutator>AOD</mutator>            
+            <mutator>OBBN</mutator>
+          </mutators>
+          <excludedTestClasses>*IT</excludedTestClasses>
+        </configuration>
       </plugin>
 
       <!-- JaCoCo Plugin -->
@@ -162,7 +176,7 @@
       <groupId>org.apache.logging.log4j</groupId>
     </dependency>
 
-    <!--  needed for Pitest -->
+    <!-- needed for Pitest -->
     <dependency>
       <groupId>org.junit.jupiter</groupId>
       <artifactId>junit-jupiter-engine</artifactId>
@@ -173,7 +187,7 @@
       <artifactId>junit-jupiter-api</artifactId>
       <scope>test</scope>
     </dependency>
-    <!--  needed for Pitest -->
+    <!-- needed for Pitest -->
 
   </dependencies>
   <dependencyManagement>
@@ -309,6 +323,18 @@
         <groupId>org.mockito</groupId>
         <version>${version.mockito}</version>
       </dependency>
+
+      <dependency>
+        <artifactId>zeebe-test-runner</artifactId>
+        <groupId>io.zeebe.bpmn-spec</groupId>
+        <version>${version.zeebe-bpmn-spec}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.awaitility</groupId>
+        <artifactId>awaitility</artifactId>
+        <version>${version.awaitility}</version>
+      </dependency>
     </dependencies>
   </dependencyManagement>
   <groupId>io.zeebe</groupId>
@@ -403,6 +429,8 @@
     <version.vavr>0.10.3</version.vavr>
     <version.workflowgenerator>1.0.1</version.workflowgenerator>
     <zeebe.version>0.25.2</zeebe.version>
+    <version.zeebe-bpmn-spec>1.0.0-alpha2</version.zeebe-bpmn-spec>
+    <version.awaitility>3.0.0</version.awaitility>
   </properties>
 
   <repositories>

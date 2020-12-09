@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" id="Definitions_0pdxlbt" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Zeebe Modeler" exporterVersion="0.10.0">
+  <bpmn:process id="secondary" name="Secondary" isExecutable="true">
+    <bpmn:startEvent id="StartEvent_1" name="trigger">
+      <bpmn:outgoing>Flow_0ota3te</bpmn:outgoing>
+      <bpmn:messageEventDefinition id="MessageEventDefinition_0n0yfou" messageRef="Message_08qd181" />
+    </bpmn:startEvent>
+    <bpmn:endEvent id="Event_1n8rrkj">
+      <bpmn:incoming>Flow_0ota3te</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="Flow_0ota3te" sourceRef="StartEvent_1" targetRef="Event_1n8rrkj" />
+  </bpmn:process>
+  <bpmn:message id="Message_08qd181" name="trigger" />
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="secondary">
+      <bpmndi:BPMNEdge id="Flow_0ota3te_di" bpmnElement="Flow_0ota3te">
+        <di:waypoint x="215" y="97" />
+        <di:waypoint x="272" y="97" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="Event_0w5v27m_di" bpmnElement="StartEvent_1">
+        <dc:Bounds x="179" y="79" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="181" y="122" width="32" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_1n8rrkj_di" bpmnElement="Event_1n8rrkj">
+        <dc:Bounds x="272" y="79" width="36" height="36" />
+      </bpmndi:BPMNShape>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>

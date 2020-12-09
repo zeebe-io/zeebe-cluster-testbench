@@ -45,6 +45,18 @@
       <groupId>org.mockito</groupId>
       <scope>test</scope>
     </dependency>
+
+    <dependency>
+      <artifactId>zeebe-test-runner</artifactId>
+      <groupId>io.zeebe.bpmn-spec</groupId>
+      <scope>test</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.awaitility</groupId>
+      <artifactId>awaitility</artifactId>
+      <scope>test</scope>
+    </dependency>
   </dependencies>
   <modelVersion>4.0.0</modelVersion>
 
