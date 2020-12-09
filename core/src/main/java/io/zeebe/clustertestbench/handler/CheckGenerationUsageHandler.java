@@ -38,11 +38,11 @@ public class CheckGenerationUsageHandler implements JobHandler {
   static class Input {
     private String generationUUID;
 
-    String getGenerationUUID() {
+    public String getGenerationUUID() {
       return generationUUID;
     }
 
-    void setGenerationUUID(String generationUUID) {
+    public void setGenerationUUID(String generationUUID) {
       this.generationUUID = generationUUID;
     }
   }
