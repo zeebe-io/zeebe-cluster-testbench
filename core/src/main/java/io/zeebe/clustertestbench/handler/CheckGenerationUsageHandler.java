@@ -54,7 +54,7 @@ public class CheckGenerationUsageHandler implements JobHandler {
       this.generationNotInUse = generationNotInUse;
     }
 
-    boolean isGenerationNotInUse() {
+    public boolean isGenerationNotInUse() {
       return generationNotInUse;
     }
   }
