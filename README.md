@@ -179,7 +179,8 @@ This workflow runs a test based on the given `testId` in a fresh cluster in Camu
 
 **Notes**
 
-- The _Notify Engineers_ step is a workaround until we have user tasks
+The step _Trigger Analyse Cluster Workflow_ starts a second workflow which keeps the cluster alive for further analysis. The cluster will be deleted after analysis.
+This way, the test process can terminate and report the test result, while the analysis is happening asynchronously.
 
 **Workflow ID:** `run-test-in-camunda-cloud`
 
@@ -291,6 +292,23 @@ The expectation is that the external tool will register a worker for the job typ
 | `businessKey`               | Business key. This will be used as job type to fetch the result           | `String` |
 | _variables for the process_ | additional variables that will be forwarded to the process that is called |          |
 
+##### Analyse Cluster
+
+This process is usually called after a failure occurred. It notifies an engineer and keeps the cluster alive until analysis has completed
+
+![analyse-cluster](docs/assets/analyse-cluster.png)
+
+**Workflow ID:** `analyse-cluster`
+
+| Inputs        | Description                                  | Type         |
+| ------------- | -------------------------------------------- | ------------ |
+| `generation`  | name of the generation for the cluster       | `String`     |
+| `clusterPlan` | name of the cluster plan for the cluster     | `String`     |
+| `clusterId`   | ID of the cluster in which Zeebe is tested   | `String`     |
+| `clusterName` | Name of the cluster in which Zeebe is tested | `String`     |
+| `operateURL`  | URL to Operate web interface                 | `String`     |
+| `testReport`  | test report                                  | `TestReport` |
+
 ##### Clean Up Generation
 
 Generations cannot be deleted immediately after a test protocol has completed. Some of the tests might have failed. In this case the clusters are kept alive for further analysis.
@@ -309,8 +327,9 @@ This workflow peridically checks how many clusters are still using a generation.
 
 These messages are important to control aspects of the test control flow:
 
-| Message             | Message Name          | Correlation Key | Payload          |
-| ------------------- | --------------------- | --------------- | ---------------- |
-| Analysis Completed  | `Analysis Completed`  | `clusterId`     | n/a              |
-| Clean up Generation | `Clean Up Generation` | n/a             | `generationUUID` |
-| Stop Daily Test     | `Stop Daily Test`     | `id`            | n/a              |
+| Message             | Message Name          | Correlation Key | Payload                                                                             |
+| ------------------- | --------------------- | --------------- | ----------------------------------------------------------------------------------- |
+| Analyse Cluster     | `Analyse Cluster`     | n/a             | `generation`, `clusterPlan`, `clusterId`, `clusterName`, `operateURL`, `testReport` |
+| Analysis Completed  | `Analysis Completed`  | `clusterId`     | n/a                                                                                 |
+| Clean up Generation | `Clean Up Generation` | n/a             | `generationUUID`                                                                    |
+| Stop Daily Test     | `Stop Daily Test`     | `id`            | n/a                                                                                 |
