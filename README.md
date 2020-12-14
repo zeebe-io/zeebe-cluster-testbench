@@ -57,7 +57,7 @@ This test will fail, if any of the following conditions occur:
 
 In case of backpressure the iteration will be repeated. The time spent making requests that return backpressure responses and repeating those requests is included in the overall execution time, which must be smaller than _maxTimeForCompleteTest_ for the test to pass.
 
-### Sequential Test Workflow
+#### Sequential Test Workflow
 
 This workflow runs the sequential test in a given cluster in Camunda Cloud:
 
@@ -75,7 +75,7 @@ This workflow runs the sequential test in a given cluster in Camunda Cloud:
 | `testReport` | test report | `TestReport` |
 | `testResult` | test result | `TestResult` |
 
-## Chaos Test
+### Chaos Test
 
 This test runs a repertoire of [chaos experiments](https://github.com/zeebe-io/zeebe-chaos) against a given cluster. Different experiments run in sequence.
 
@@ -83,7 +83,7 @@ The set of experiemnts to run depends on the cluster plan.
 
 See [inventoriy](https://github.com/zeebe-io/zeebe-chaos/blob/master/inventory.md) for more information on the available tests.
 
-### Chaos Test Workflow
+#### Chaos Test Workflow
 
 This workflow runs the chaos test in a given cluster in Camunda Cloud:
 
