@@ -428,7 +428,7 @@
     <version.slf4j>1.7.30</version.slf4j>
     <version.vavr>0.10.3</version.vavr>
     <version.workflowgenerator>1.0.1</version.workflowgenerator>
-    <zeebe.version>0.25.2</zeebe.version>
+    <zeebe.version>0.25.3</zeebe.version>
     <version.zeebe-bpmn-spec>1.0.0-alpha2</version.zeebe-bpmn-spec>
     <version.awaitility>4.0.3</version.awaitility>
   </properties>
