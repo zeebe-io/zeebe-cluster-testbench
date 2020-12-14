@@ -171,7 +171,7 @@ The cluster parameters can either be specified using human-friendly names or mac
 | ---------------------- | ------------------------------------------------ | ------------ |
 | `aggregatedTestResult` | Aggregated test result for all tests/experiments | `TestResult` |
 
-##### Run Test in Camunda Cloud
+#### Run Test in Camunda Cloud
 
 This workflow runs a test based on the given `testId` in a fresh cluster in Camunda Cloud:
 
@@ -250,7 +250,7 @@ The QA protocol runs all tests. Tests are run on demand (e.g. for a PR merge or 
 
 Utility workflows are utilized by the test workflows to perform certain technical tasks
 
-##### Prepare Zeebe Cluster in Camunda Cloud
+#### Prepare Zeebe Cluster in Camunda Cloud
 
 This workflow creates a Zeebe cluster in Camnuda cloud and waits until the cluster is ready:
 
@@ -276,7 +276,7 @@ This workflow creates a Zeebe cluster in Camnuda cloud and waits until the clust
 | `authenticationDetails` | Credentials to authenticate against the cluster | `CamundaCloudAutenticationDetails` |
 | `operateURL`            | URL to Operate web interface                    | `String`                           |
 
-##### External Tool integration
+#### External Tool integration
 
 This workflow supports the integration of external tools (in parrticular Jenkins). The external tool can call this workflow and pass in the process to call and a business key. The business key must be unique and will be used to fetch the result of the process.
 
@@ -292,7 +292,7 @@ The expectation is that the external tool will register a worker for the job typ
 | `businessKey`               | Business key. This will be used as job type to fetch the result           | `String` |
 | _variables for the process_ | additional variables that will be forwarded to the process that is called |          |
 
-##### Analyse Cluster
+#### Analyse Cluster
 
 This process is usually called after a failure occurred. It notifies an engineer and keeps the cluster alive until analysis has completed
 
@@ -309,7 +309,7 @@ This process is usually called after a failure occurred. It notifies an engineer
 | `operateURL`  | URL to Operate web interface                 | `String`     |
 | `testReport`  | test report                                  | `TestReport` |
 
-##### Clean Up Generation
+#### Clean Up Generation
 
 Generations cannot be deleted immediately after a test protocol has completed. Some of the tests might have failed. In this case the clusters are kept alive for further analysis.
 
