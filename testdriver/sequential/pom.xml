@@ -68,7 +68,7 @@
   </parent>
 
   <properties>
-    <version.grpc-api>1.34.0</version.grpc-api>
+    <version.grpc-api>1.34.1</version.grpc-api>
   </properties>
 
 </project>
