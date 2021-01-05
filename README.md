@@ -280,7 +280,9 @@ This workflow creates a Zeebe cluster in Camnuda cloud and waits until the clust
 
 This workflow supports the integration of external tools (in parrticular Jenkins). The external tool can call this workflow and pass in the process to call and a business key. The business key must be unique and will be used to fetch the result of the process.
 
-The expectation is that the external tool will register a worker for the job type `businessKey`. This way, the external tool can poll for the result of one particular workflow instance. Without this mechanism the only option for the external tool to know about the result would be _client.newCreateInstanceCommand().withResult()_ which is not adivsable for long-running processes.
+The expectation is that the external tool will register a worker for the job type `businessKey`. This way, the external tool can poll for the result of one particular workflow instance.
+
+Without this mechanism the only option for the external tool to know about the result would be _client.newCreateInstanceCommand().withResult()_ which is not advisable for long-running processes.
 
 ![external-tool-integration](docs/assets/external-tool-integration.png "External Tool Integration")
 
