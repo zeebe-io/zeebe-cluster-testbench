@@ -51,9 +51,13 @@ The workers are stateless. The only state is kept by Zeebe in the _testbench_ te
 ## Modules
 
 - `core` - contains the launcher and the workers that are orchestrated by the test orchestration cluster
+- `core/chaos-workers` - contains the worker to run chaos experiemnts (implemented in Bash/Python)
 - `cloud-client` - contains a server facade to interact with the Cloud API
+- `internal-cloud-client` - contains a server facade to interact with the internal cloud backend. These services are not part of the official cloud API. They are accessed via a user account, not a service account.
 - `testdriver-api` - contains interfaces and shared classes to be used by several test drivers
 - `testdriver-sequential` - contains the workers for the sequential test
+
+\*) all implemented in Java, unless otherwise indicated
 
 ## Service Task Reference
 
@@ -82,17 +86,19 @@ The _testbench_ cluster is deployed to a high availability cluster.
 
 # Design Decisions
 
-- Keep it simple - all workers are currently part of one deployment. This allows to start/manage all workers with a single deployment. However, it also allows for future scale out when several instances of each worker are needed.
+- Keep it simple - most workers are currently part of one deployment. This allows to start/manage all workers with a single deployment. However, it also allows for future scale out when several instances of each worker are needed.
 - No framework (yet). Mostly to keep the dependencies to a minimum and not to commit on any architectural pattern too soon. (Given that the current implementation is mostly workers, a reactive, non-blocking IO framework would be ideal. However, it is questionable whether the load will ever get so high that the benefits of those frameworks materialize. CDI has been missed while implementing the current solution. So developer convenience might be a stronger driver for architectural commitment then technical criteria)
 - All environment variables that are used by the solution are read out in the bootstrap class. Mostly because it gets opaque when environment variables are sprinkled throughout the code.
 - Environment variables are currently the only way to configure the application
-- Each worker defines its input and output parameters in dedicated classes. this is a little more verbose than necessary, but it also documents their interface.
-- The communication to the _Cloud API_ uses RESTEasy Client API. This was the option with the least dependencies (in comparison to Spring RestTemplate, MicroProfile RestClient, and other )
+- Each Java worker defines its input and output parameters in dedicated classes. this is a little more verbose than necessary, but it also documents their interface.
+- The communication to the _Cloud API_ and _Internal Cloud API_ uses RESTEasy Client API. This was the option with the least dependencies (in comparison to Spring RestTemplate, MicroProfile RestClient, and other)
+- The chaos worker is implemented based on `zbctl`, which allows to forward jobs to bash scripts.
 
 # Risks and Technical Debts
 
 - Currently, there is no orderly shutdown. So far this has not caused any problems. However, it does slow the tests down when the application crashes or is restarted due to redeploys. The delay is due to Zeebe for the jobs to timeout before rescheduling new jobs.
-- All workers share the same thread pool. If this thread pool dies or is blocked, then nothing will move forward.
+- All Java workers share the same thread pool. If this thread pool dies or is blocked, then nothing will move forward.
+- The chaos worker currently has only one instance. This can become a bottleneck when volume increases. Scaling it is not as trivial as just increasing the instance count. First, we need to find a way to correlate chaos experiment failures with the logs they produce.
 - The application has no self monitoring. It relies heavily on Zeebe to restart jobs when things go wrong.
 - The process to create a cluster has a potential infinite loop. If the cluster is created, but never gets ready, then the process will not terminate.
 - The worker `MapNamesToUUIDsWorker` writes to the same variables that it uses as input. Once overwritten, it is no longer possible to look at what the input was. This already confused root cause analysis for a bug.
