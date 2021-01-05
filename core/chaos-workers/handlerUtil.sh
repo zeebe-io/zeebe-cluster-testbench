@@ -91,7 +91,7 @@ createFailureMessage() {
      --arg endTime "$endTime" \
      --arg failTime "$failTime" \
      --arg meta "${joined%,}" \
-     '{testResult: $result,
+     '{
        testReport: {
          testResult: $result,
          failureMessages: $failures | split(","),
@@ -126,7 +126,7 @@ createSuccessMessage() {
      --arg startTime "$startTime" \
      --arg endTime "$endTime" \
      --arg results "${joined%,}" \
-     '{testResult: $result,
+     '{
          testReport: {
            testResult: $result,
            failureMessages: [],
@@ -151,7 +151,6 @@ createSkippedMessage() {
      --arg result "$result" \
      --arg time "$time" \
      '{
-       testResult: $result,
        testReport: {
          testResult: $result,
          failureMessages: [],

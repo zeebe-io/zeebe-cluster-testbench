@@ -151,7 +151,6 @@ failFunction() {
 @test "create failure message with no meta data" {
   # given
   expected="$(jq -n '{
-    testResult: "FAILED",
     testReport: {
       testResult: "FAILED",
       failureMessages: ["failure message"],
@@ -175,7 +174,6 @@ failFunction() {
 @test "create failure message with meta data" {
   # given
   expected="$(jq -n '{
-    testResult: "FAILED",
     testReport: {
       testResult: "FAILED",
       failureMessages: ["failure message"],
@@ -200,7 +198,6 @@ failFunction() {
 @test "create success message with multiple result messages" {
   # given
   expected="$(jq -n '{
-    testResult: "PASSED",
     testReport: {
       testResult: "PASSED",
       failureMessages: [],
@@ -227,7 +224,6 @@ failFunction() {
 @test "create skipped message" {
   # given
   expected="$(jq -n '{
-    testResult: "SKIPPED",
     testReport: {
       testResult: "SKIPPED",
       failureMessages: [],
