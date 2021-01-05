@@ -51,7 +51,7 @@ The workers are stateless. The only state is kept by Zeebe in the _testbench_ te
 ## Modules
 
 - `core` - contains the launcher and the workers that are orchestrated by the test orchestration cluster
-- `core/chaos-workers` - contains the worker to run chaos experiemnts (implemented in Bash/Python)
+- `core/chaos-workers` - contains the worker to run chaos experiemnts (implemented in Bash)
 - `cloud-client` - contains a server facade to interact with the Cloud API
 - `internal-cloud-client` - contains a server facade to interact with the internal cloud backend. These services are not part of the official cloud API. They are accessed via a user account, not a service account.
 - `testdriver-api` - contains interfaces and shared classes to be used by several test drivers
