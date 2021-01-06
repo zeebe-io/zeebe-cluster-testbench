@@ -5,6 +5,7 @@ Test bench to run tests against a Zeebe cluster.
 Available Documentation
 
 - [Developer handbook](docs/developer-handbook.md)
+- [Release Process](docs/release-process.md)
 - [Operator handbook](docs/operator-handbook.md)
 - [Technical documentation](docs/technical-documentation.md)
 - [Service Task Reference](docs/service-tasks.md)

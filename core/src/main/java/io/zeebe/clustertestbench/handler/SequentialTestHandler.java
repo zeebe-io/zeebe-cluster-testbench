@@ -7,7 +7,6 @@ import io.zeebe.client.api.worker.JobHandler;
 import io.zeebe.clustertestbench.testdriver.api.CamundaCloudAuthenticationDetails;
 import io.zeebe.clustertestbench.testdriver.api.TestDriver;
 import io.zeebe.clustertestbench.testdriver.api.TestReport;
-import io.zeebe.clustertestbench.testdriver.api.TestReport.TestResult;
 import io.zeebe.clustertestbench.testdriver.impl.CamundaCLoudAuthenticationDetailsImpl;
 import io.zeebe.clustertestbench.testdriver.sequential.SequentialTestDriver;
 import io.zeebe.clustertestbench.testdriver.sequential.SequentialTestParameters;
@@ -71,11 +70,6 @@ public class SequentialTestHandler implements JobHandler {
     @JsonProperty(TestDriver.VARIABLE_KEY_TEST_REPORT)
     public TestReport getTestReport() {
       return testReport;
-    }
-
-    @JsonProperty(TestDriver.VARIABLE_KEY_TEST_RESULT)
-    public TestResult getTestResult() {
-      return testReport.getTestResult();
     }
   }
 }
