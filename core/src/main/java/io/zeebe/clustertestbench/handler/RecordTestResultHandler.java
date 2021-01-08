@@ -30,6 +30,8 @@ import java.util.Locale;
 
 public class RecordTestResultHandler implements JobHandler {
 
+  private static final String NA = "n/a";
+
   private static final DateTimeFormatter INSTANT_FORMATTER =
       DateTimeFormatter.ofLocalizedDateTime(FormatStyle.SHORT)
           .withLocale(Locale.US)
@@ -82,7 +84,7 @@ public class RecordTestResultHandler implements JobHandler {
     client.newCompleteCommand(job.getKey()).send();
   }
 
-  private static List<Object> buildRowDataForSheet(final Input input) {
+  protected static List<Object> buildRowDataForSheet(final Input input) {
     final List<Object> result = new ArrayList<>();
 
     result.add(input.getRegion());
@@ -110,11 +112,13 @@ public class RecordTestResultHandler implements JobHandler {
     result.add(convertMillisToString(testReport.getEndTime()));
     result.add(new ZeebeObjectMapper().toJson(testReport.getMetaData()));
 
+    result.replaceAll(item -> item == null ? NA : item);
+
     return result;
   }
 
   private static String returnValueIfApplicable(final TestReport testReport, final Object value) {
-    return testReport.getTestResult() == TestResult.PASSED ? "n/a" : value.toString();
+    return testReport.getTestResult() == TestResult.PASSED ? NA : value.toString();
   }
 
   private static String convertMillisToString(final long millis) {
@@ -123,7 +127,7 @@ public class RecordTestResultHandler implements JobHandler {
     return INSTANT_FORMATTER.format(instant);
   }
 
-  private static final class Input {
+  protected static final class Input {
     private String generation;
     private String region;
     private String clusterPlan;
