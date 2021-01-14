@@ -18,12 +18,13 @@ You need:
 
 - Kubernetes cluster
 - Zeebe cluster for test orchestration
-- Camunda Cloud Organizaton account
+- Camunda Cloud Organization account
 - Camunda Cloud API credentials to create test clusters on demand
 - Google Sheet file to receive the test results
-- Servicce account, credentials and permissions to write to that file
-- Slack app and token to send notifications to slack channel
-- Slack channel to recieve notifications
+- Google Sheet service account, token and permissions to write to that file
+- Kubernetes service account, token and permissions to interact with running clusters on Kubernetes level
+- Slack app and token to send notifications to a slack channel
+- Slack channel to receive notifications
 
 Setup and deployment:
 
@@ -94,7 +95,16 @@ Setup and deployment:
 
 #### Chaos Experiments
 
-tbd (GCLOUD TOKEN)
+In order to run our automated chaos experiments against a zeebe cluster, which runs in a different kuebernetes cluster, we need access to that cluster.
+This means our chaos worker, which executes the chaos experiments, needs access to it. This can be done by a service account and a corresponding token which the application (the chaos worker) uses.
+
+To create a service account, you can deploy the resources you find under `/core/chaos-workers/deployment/service-account`.
+
+Then you need to build the chaos worker docker image with the service account token. The serviceaccount token can be received via `kubectl -n zeebe-chaos describe secrets zeebe-chaos-sa-token-*`.
+
+In the dockerfile of the chaos worker the token is used to setup the correct kube context etc. Ideally you store the token in the team vault, where jenkins can access it and build the docker image with the token as argument.
+
+You can find more details on how to setup the service account and how it was previously done [here](https://github.com/zeebe-io/zeebe/issues/4361#issuecomment-681869448).
 
 ### Deployment
 
