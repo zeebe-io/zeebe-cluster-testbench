@@ -74,10 +74,10 @@ public class NotifyEngineersHandler implements JobHandler {
 
     input.getTestReport().getFailureMessages().stream() //
         .limit(TEST_FAILURE_SUMMARY_ITEMS) //
-        .forEachOrdered(msg -> resultBuilder.append(msg).append("\n"));
+        .forEachOrdered(msg -> resultBuilder.append("\n").append(msg));
 
     if (input.getTestReport().getFailureCount() > TEST_FAILURE_SUMMARY_ITEMS) {
-      resultBuilder.append("...\n");
+      resultBuilder.append("\n...\n");
     }
 
     return resultBuilder.toString();

@@ -78,8 +78,7 @@ public class BootstrapFromEnvVars {
           getEnvironmentvariable("SHEETS_API_KEYFILE_CONTENT", false);
       final String reportSheetID = getEnvironmentvariable("REPORT_SHEET_ID", false);
 
-      final String slackToken = getEnvironmentvariable("SLACK_TOKEN", false);
-      final String slackChannel = getEnvironmentvariable("SLACK_CHANNEL", false);
+      final String slackWebhookUrl = getEnvironmentvariable("SLACK_WEBHOOK_URL", false);
 
       new Launcher(
               contactPoint,
@@ -90,8 +89,7 @@ public class BootstrapFromEnvVars {
               internalCloudApiAuthenticationDetails,
               sheetsApiKeyfileContent,
               reportSheetID,
-              slackToken,
-              slackChannel)
+              slackWebhookUrl)
           .launch();
     } catch (final Exception e) {
       LOGGER.error(e.getMessage(), e);
@@ -105,7 +103,7 @@ public class BootstrapFromEnvVars {
     final String key = PREFIX + suffix;
 
     if (!optional && !envVars.containsKey(key)) {
-      throw new RuntimeException("Unable to find mandatory environment variable " + key);
+      throw new IllegalStateException("Unable to find mandatory environment variable " + key);
     }
 
     return envVars.get(key);

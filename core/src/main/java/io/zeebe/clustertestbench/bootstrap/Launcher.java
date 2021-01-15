@@ -8,9 +8,8 @@ import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
 import com.google.api.services.sheets.v4.Sheets;
 import com.google.api.services.sheets.v4.SheetsScopes;
 import com.slack.api.Slack;
-import com.slack.api.methods.MethodsClient;
-import com.slack.api.methods.request.api.ApiTestRequest;
-import com.slack.api.methods.response.api.ApiTestResponse;
+import com.slack.api.webhook.Payload;
+import com.slack.api.webhook.WebhookResponse;
 import io.zeebe.client.ZeebeClient;
 import io.zeebe.client.api.worker.JobHandler;
 import io.zeebe.client.api.worker.JobWorker;
@@ -58,8 +57,7 @@ public class Launcher {
   private final String sheetsApiKeyFileContent;
   private final String reportSheetID;
 
-  private final String slackToken;
-  private final String slackChannel;
+  private final String slackWebhookUrl;
 
   private final CloudAPIClient cloudApiClient;
   private final InternalCloudAPIClient internalCloudApiClient;
@@ -73,14 +71,12 @@ public class Launcher {
       final OAuthUserAccountAuthenticationDetails internalCloudApiAuthenticationDetails,
       final String sheetsApiKeyfileContent,
       final String reportSheetID,
-      final String slackToken,
-      final String slackChannel) {
+      final String slackWebhookUrl) {
     this.testOrchestrationContactPoint = testOrchestrationContactPoint;
     this.testOrchestrationAuthenticatonDetails = testOrchestrationAuthenticatonDetails;
     this.sheetsApiKeyFileContent = sheetsApiKeyfileContent;
     this.reportSheetID = reportSheetID;
-    this.slackToken = slackToken;
-    this.slackChannel = slackChannel;
+    this.slackWebhookUrl = slackWebhookUrl;
 
     cloudApiClient = createCloudApiClient(cloudApiUrl, cloudApiAuthenticationDetails);
     internalCloudApiClient =
@@ -211,19 +207,13 @@ public class Launcher {
   private void testConnectionToSlack() {
     final Slack slack = Slack.getInstance();
 
-    final MethodsClient slackClient = slack.methods(slackToken);
-
     try {
-      final ApiTestResponse response =
-          slackClient.apiTest(ApiTestRequest.builder().foo("test").build());
-
-      final String returnedFoo = response.getArgs().getFoo();
-
-      if ("test".equalsIgnoreCase(returnedFoo)) {
+      final WebhookResponse response = slack.send(slackWebhookUrl, Payload.builder().build());
+      if ("invalid_payload".equals(response.getBody())) {
         LOGGER.info("Selftest - Successfully established connection to Slack");
       } else {
         LOGGER.error(
-            "Selftest - Wrong respponse when establishing connection to Slack: " + returnedFoo);
+            "Selftest - Wrong response when establishing connection to Slack: " + response);
       }
     } catch (final Exception e) {
       LOGGER.error("Selftest - Unable to establish connection to Slack", e);
@@ -289,7 +279,7 @@ public class Launcher {
           "Exception while creating and registering worker for 'record-test-result-job'", e);
     }
 
-    final var slackNotificationService = new SlackNotificationService(slackToken, slackChannel);
+    final var slackNotificationService = new SlackNotificationService(slackWebhookUrl);
     registerWorker(
         client,
         "notify-engineers-job",
