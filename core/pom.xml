@@ -142,7 +142,7 @@
   <properties>
     <plugin.version.assembly>3.3.0</plugin.version.assembly>
     <version.google-api>1.31.1</version.google-api>
-    <version.google-http-client>1.38.0</version.google-http-client>
+    <version.google-http-client>1.38.1</version.google-http-client>
     <version.google-sheets-api>v4-rev20201130-1.31.0</version.google-sheets-api>
     <version.jaxrs>3.0.12.Final</version.jaxrs>
 
