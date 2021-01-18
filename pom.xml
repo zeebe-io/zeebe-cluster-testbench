@@ -424,7 +424,7 @@
     <version.junit>5.7.0</version.junit>
     <version.log4j>2.14.0</version.log4j>
     <version.mockito>3.7.0</version.mockito>
-    <version.resteasy>4.5.8.Final</version.resteasy>
+    <version.resteasy>4.6.0.Final</version.resteasy>
     <version.slf4j>1.7.30</version.slf4j>
     <version.vavr>0.10.3</version.vavr>
     <version.workflowgenerator>1.0.2</version.workflowgenerator>
