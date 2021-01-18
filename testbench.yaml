@@ -73,13 +73,11 @@ spec:
                   key: sheetsApiKeyfileContent
             - name: ZCTB_REPORT_SHEET_ID
               value: "1ruQ1zmOj_Wed-WqDOU69wF79hsBHce5CvUAF5UEbC20"
-            - name: ZCTB_SLACK_TOKEN
+            - name: ZCTB_SLACK_WEBHOOK_URL
               valueFrom:
                 secretKeyRef:
                   name: testbench-secrets
-                  key: slackToken
-            - name: ZCTB_SLACK_CHANNEL
-              value: "#testbench"
+                  key: slackWebhookUrl
           resources:
             limits:
               cpu: 4

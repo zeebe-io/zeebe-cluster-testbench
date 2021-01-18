@@ -1,35 +1,30 @@
 package io.zeebe.clustertestbench.notification;
 
 import com.slack.api.Slack;
-import com.slack.api.methods.MethodsClient;
-import com.slack.api.methods.request.chat.ChatPostMessageRequest;
-import com.slack.api.methods.response.chat.ChatPostMessageResponse;
+import com.slack.api.webhook.Payload;
+import com.slack.api.webhook.WebhookResponse;
+import java.io.IOException;
 
 public class SlackNotificationService implements NotificationService {
 
-  private final MethodsClient slackClient;
-  private final String slackChannel;
+  private final Slack client;
+  private final String webhookUrl;
 
-  public SlackNotificationService(final String token, final String slackChannel) {
-
-    final Slack slack = Slack.getInstance();
-
-    slackClient = slack.methods(token);
-    this.slackChannel = slackChannel;
+  public SlackNotificationService(final String webhookUrl) {
+    client = Slack.getInstance();
+    this.webhookUrl = webhookUrl;
   }
 
   @Override
   public void sendNotification(final String message) throws Exception {
-    final ChatPostMessageRequest request =
-        ChatPostMessageRequest.builder().channel(slackChannel).text(message).build();
+    final Payload payload = Payload.builder().text(message).build();
+    final WebhookResponse response = client.send(webhookUrl, payload);
 
-    final ChatPostMessageResponse response = slackClient.chatPostMessage(request);
-    if (response.getError() != null) {
+    if (response.getCode() >= 400) {
       final var errorMessage =
           String.format(
-              "Expected to send message %s to channel %s, but failed with %s.",
-              message, slackChannel, response.getError());
-      throw new Exception(errorMessage);
+              "Expected to send message %s to Slack, but failed with %s", message, response);
+      throw new IOException(errorMessage);
     }
   }
 }

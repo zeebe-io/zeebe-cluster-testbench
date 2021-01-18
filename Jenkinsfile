@@ -76,7 +76,7 @@ pipeline {
                         sourcePattern: '**/src/main/java',
                         runAlways: true
                     )
-                    zip zipFile: 'test-coverage-reports.zip', archive: true, glob: '**/target/site/jacoco/**'                    
+                    zip zipFile: 'test-coverage-reports.zip', archive: true, glob: '**/target/site/jacoco/**'
                 }
                 failure {
                     zip zipFile: 'test-reports.zip', archive: true, glob: '**/*/surefire-reports/**'
@@ -168,7 +168,7 @@ pipeline {
                                       [envVar: 'INTERNAL_CLOUD_CLIENT_SECRET', vaultKey: 'internalCloudClientSecret'],
                                       [envVar: 'INTERNAL_CLOUD_PASSWORD', vaultKey: 'internalCloudPassword'],
                                       [envVar: 'SHEETS_API_KEYFILE_CONTENT', vaultKey: 'sheetsApiKeyfileContent'],
-                                      [envVar: 'SLACK_TOKEN', vaultKey: 'slackToken'],
+                                      [envVar: 'SLACK_WEBHOOK_URL', vaultKey: 'slackWebhookUrl'],
                                   ]
                                  ],
                              ]

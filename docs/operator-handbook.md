@@ -23,8 +23,8 @@ You need:
 - Google Sheet file to receive the test results
 - Google Sheet service account, token and permissions to write to that file
 - Kubernetes service account, token and permissions to interact with running clusters on Kubernetes level
-- Slack app and token to send notifications to a slack channel
 - Slack channel to receive notifications
+- Slack app and webhook URL to send notifications to a slack channel
 
 Setup and deployment:
 
@@ -80,18 +80,17 @@ Setup and deployment:
 | testbench.yaml | ZCTB_REPORT_SHEET_ID       | ID of the sheet you created (Press share, copy link; take the bit that looks like an ID) |
 | ENV_VARS       | SHEETS_API_KEYFILE_CONTENT | Complete content of downloaded key file                                                  |
 
-#### Slack App and Channel
+#### Slack App and Webhook
 
 1. Create a Slack application (https://api.slack.com/start/overview)
-1. Download token to authenticate the app
-1. Give it permissions to write to channels
+1. Create an incoming webhook for your app (https://api.slack.com/messaging/webhooks)
+1. Add a new webhook to your workspace for the desired channel (you may need approval from your workspace admin)
 1. Invite your app to the channel it should publish to
 1. Fill deployment descriptors as follows:
 
 | File           | Field              | Content                         |
 | -------------- | ------------------ | ------------------------------- |
-| testbench.yaml | ZCTB_SLACK_CHANNEL | The slack channel to publish to |
-| ENV_VARS       | SLACK_TOKEN        | The token for your app          |
+| ENV_VARS       | SLACK_WEBHOOK_URL  | The webhook URL for your app    |
 
 #### Chaos Experiments
 
