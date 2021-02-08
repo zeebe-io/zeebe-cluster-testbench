@@ -416,7 +416,7 @@
     <plugin.version.pitest-junit5>0.12</plugin.version.pitest-junit5>
 
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <version.assertj>3.18.1</version.assertj>
+    <version.assertj>3.19.0</version.assertj>
     <version.commons-text>1.9</version.commons-text>
     <version.jackson>2.12.1</version.jackson>
     <version.java>11</version.java>
