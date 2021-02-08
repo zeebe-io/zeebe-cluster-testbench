@@ -65,7 +65,7 @@ spec:
           mountPath: /home/shared
           mountPropagation: Bidirectional
     - name: gcloud
-      image: google/cloud-sdk:slim
+      image: gcr.io/google.com/cloudsdktool/cloud-sdk:323.0.0-slim
       securityContext:
         privileged: true
       tty: true
