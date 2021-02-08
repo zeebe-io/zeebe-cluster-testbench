@@ -404,7 +404,7 @@
     </nexus.snapshot.repository>
     <plugin.version.build-helper>3.2.0</plugin.version.build-helper>
 
-    <plugin.version.checkstyle>3.1.1</plugin.version.checkstyle>
+    <plugin.version.checkstyle>3.1.2</plugin.version.checkstyle>
     <plugin.version.dependency>3.1.2</plugin.version.dependency>
 
     <plugin.version.flakytestextractor>2.0.2</plugin.version.flakytestextractor>
