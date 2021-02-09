@@ -79,31 +79,6 @@
     </bpmn:exclusiveGateway>
     <bpmn:sequenceFlow id="Flow_1lecns9" sourceRef="Gateway_0zjsm6e" targetRef="Event_1i1rnvk" />
     <bpmn:sequenceFlow id="Flow_0wlh9er" sourceRef="trigger-analyse-cluster-workflow" targetRef="Gateway_0zjsm6e" />
-    <bpmn:serviceTask id="Activity_0xyh64y" name="Trigger Analyse Cluster Workflow">
-      <bpmn:extensionElements>
-        <zeebe:taskDefinition type="trigger-message-start-event-job" />
-        <zeebe:taskHeaders>
-          <zeebe:header key="messageName" value="Analyse Cluster" />
-        </zeebe:taskHeaders>
-        <zeebe:ioMapping>
-          <zeebe:input source="={&#34;testResult&#34;:&#34;FAILED&#34;, &#34;failureMessages&#34;: [&#34;Timeout while waiting for cluster to be created&#34;]}" target="testReport" />
-          <zeebe:output source="=testReport" target="testReport" />
-        </zeebe:ioMapping>
-      </bpmn:extensionElements>
-      <bpmn:incoming>Flow_0bj4uv0</bpmn:incoming>
-      <bpmn:outgoing>Flow_0q550lt</bpmn:outgoing>
-    </bpmn:serviceTask>
-    <bpmn:endEvent id="Event_0ea8smi">
-      <bpmn:incoming>Flow_0q550lt</bpmn:incoming>
-    </bpmn:endEvent>
-    <bpmn:sequenceFlow id="Flow_0q550lt" sourceRef="Activity_0xyh64y" targetRef="Event_0ea8smi" />
-    <bpmn:sequenceFlow id="Flow_0bj4uv0" sourceRef="Event_0n6o7xe" targetRef="Activity_0xyh64y" />
-    <bpmn:boundaryEvent id="Event_0n6o7xe" name="1h" attachedToRef="prepare-zeebe-cluster-in-camunda-cloud">
-      <bpmn:outgoing>Flow_0bj4uv0</bpmn:outgoing>
-      <bpmn:timerEventDefinition id="TimerEventDefinition_13x9f1h">
-        <bpmn:timeDuration xsi:type="bpmn:tFormalExpression">PT1H</bpmn:timeDuration>
-      </bpmn:timerEventDefinition>
-    </bpmn:boundaryEvent>
   </bpmn:process>
   <bpmn:message id="msg-analysis-completed" name="Analysis Completed">
     <bpmn:extensionElements>
@@ -112,24 +87,6 @@
   </bpmn:message>
   <bpmndi:BPMNDiagram id="BPMNDiagram_1">
     <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="run-test-in-camunda-cloud">
-      <bpmndi:BPMNEdge id="Flow_0bj4uv0_di" bpmnElement="Flow_0bj4uv0">
-        <di:waypoint x="320" y="228" />
-        <di:waypoint x="320" y="450" />
-        <di:waypoint x="900" y="450" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_0q550lt_di" bpmnElement="Flow_0q550lt">
-        <di:waypoint x="1000" y="450" />
-        <di:waypoint x="1272" y="450" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_0wlh9er_di" bpmnElement="Flow_0wlh9er">
-        <di:waypoint x="1000" y="300" />
-        <di:waypoint x="1200" y="300" />
-        <di:waypoint x="1200" y="195" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_1lecns9_di" bpmnElement="Flow_1lecns9">
-        <di:waypoint x="1225" y="170" />
-        <di:waypoint x="1272" y="170" />
-      </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_1mgszoj_di" bpmnElement="test_skipped">
         <di:waypoint x="790" y="145" />
         <di:waypoint x="790" y="80" />
@@ -178,6 +135,15 @@
         <di:waypoint x="188" y="170" />
         <di:waypoint x="240" y="170" />
       </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1lecns9_di" bpmnElement="Flow_1lecns9">
+        <di:waypoint x="1225" y="170" />
+        <di:waypoint x="1272" y="170" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0wlh9er_di" bpmnElement="Flow_0wlh9er">
+        <di:waypoint x="1000" y="300" />
+        <di:waypoint x="1200" y="300" />
+        <di:waypoint x="1200" y="195" />
+      </bpmndi:BPMNEdge>
       <bpmndi:BPMNShape id="_BPMNShape_StartEvent_2" bpmnElement="start">
         <dc:Bounds x="152" y="152" width="36" height="36" />
         <bpmndi:BPMNLabel>
@@ -190,18 +156,6 @@
           <dc:Bounds x="713" y="133" width="53" height="14" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_1w6lwgr_di" bpmnElement="trigger-analyse-cluster-workflow">
-        <dc:Bounds x="900" y="260" width="100" height="80" />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Gateway_0n2c5zt_di" bpmnElement="Gateway_0n2c5zt" isMarkerVisible="true">
-        <dc:Bounds x="925" y="145" width="50" height="50" />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_09c5z6r_di" bpmnElement="destroy-zeebe-cluster-in-camunda-cloud">
-        <dc:Bounds x="1030" y="130" width="100" height="80" />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Event_1i1rnvk_di" bpmnElement="Event_1i1rnvk">
-        <dc:Bounds x="1272" y="152" width="36" height="36" />
-      </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Activity_1hh2a2j_di" bpmnElement="prepare-zeebe-cluster-in-camunda-cloud">
         <dc:Bounds x="240" y="130" width="100" height="80" />
       </bpmndi:BPMNShape>
@@ -211,20 +165,20 @@
       <bpmndi:BPMNShape id="Activity_1hxzgjq_di" bpmnElement="Activity_1hxzgjq">
         <dc:Bounds x="560" y="130" width="100" height="80" />
       </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1w6lwgr_di" bpmnElement="trigger-analyse-cluster-workflow">
+        <dc:Bounds x="900" y="260" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_0n2c5zt_di" bpmnElement="Gateway_0n2c5zt" isMarkerVisible="true">
+        <dc:Bounds x="925" y="145" width="50" height="50" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_09c5z6r_di" bpmnElement="destroy-zeebe-cluster-in-camunda-cloud">
+        <dc:Bounds x="1030" y="130" width="100" height="80" />
+      </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Gateway_0zjsm6e_di" bpmnElement="Gateway_0zjsm6e" isMarkerVisible="true">
         <dc:Bounds x="1175" y="145" width="50" height="50" />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_0xyh64y_di" bpmnElement="Activity_0xyh64y">
-        <dc:Bounds x="900" y="410" width="100" height="80" />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Event_0ea8smi_di" bpmnElement="Event_0ea8smi">
-        <dc:Bounds x="1272" y="432" width="36" height="36" />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Event_1cdmhgl_di" bpmnElement="Event_0n6o7xe">
-        <dc:Bounds x="302" y="192" width="36" height="36" />
-        <bpmndi:BPMNLabel>
-          <dc:Bounds x="333" y="235" width="13" height="14" />
-        </bpmndi:BPMNLabel>
+      <bpmndi:BPMNShape id="Event_1i1rnvk_di" bpmnElement="Event_1i1rnvk">
+        <dc:Bounds x="1272" y="152" width="36" height="36" />
       </bpmndi:BPMNShape>
     </bpmndi:BPMNPlane>
   </bpmndi:BPMNDiagram>
