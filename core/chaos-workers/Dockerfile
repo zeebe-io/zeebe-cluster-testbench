@@ -1,7 +1,7 @@
 FROM python:3.8-alpine
 
 ARG TOKEN
-ENV ZEEBE_VERSION=0.24.3 \
+ENV ZEEBE_VERSION=0.26.0 \
     CHAOS_HOME=/home/chaos \
     CONTEXT=gke_camunda-cloud-240911_europe-west1-d_ultrachaos
 
