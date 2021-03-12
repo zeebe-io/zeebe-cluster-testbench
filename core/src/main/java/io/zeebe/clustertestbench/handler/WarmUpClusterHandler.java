@@ -19,8 +19,8 @@ public class WarmUpClusterHandler implements JobHandler {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(WarmUpClusterHandler.class);
 
-  private static final String WORKFLOW_RESOURCE = "warmup.bpmn";
-  private static final String WORKFLOW_ID = "warmup";
+  private static final String PROCESS_RESOURCE = "warmup.bpmn";
+  private static final String PROCESS_ID = "warmup";
   private static final String JOB_TYPE = "task-job";
 
   @Override
@@ -38,8 +38,8 @@ public class WarmUpClusterHandler implements JobHandler {
             .credentialsProvider(cred)
             .build()) {
 
-      LOGGER.info("Deploying test workflow:" + WORKFLOW_ID);
-      zeebeClient.newDeployCommand().addResourceFromClasspath(WORKFLOW_RESOURCE).send().join();
+      LOGGER.info("Deploying test process:" + PROCESS_ID);
+      zeebeClient.newDeployCommand().addResourceFromClasspath(PROCESS_RESOURCE).send().join();
       zeebeClient
           .newWorker()
           .jobType(JOB_TYPE)
@@ -52,7 +52,7 @@ public class WarmUpClusterHandler implements JobHandler {
         try {
           zeebeClient
               .newCreateInstanceCommand()
-              .bpmnProcessId(WORKFLOW_ID)
+              .bpmnProcessId(PROCESS_ID)
               .latestVersion()
               .withResult()
               .requestTimeout(Duration.ofSeconds(15))

@@ -77,7 +77,7 @@ class RecordTestResultHandlerTest {
         Tuple.of("Cluster Plan", 2, Input::setClusterPlan),
         Tuple.of("Generation", 3, Input::setGeneration),
         Tuple.of("Business Key", 4, Input::setBusinessKey),
-        Tuple.of("Test", 5, Input::setTestWorkflowId),
+        Tuple.of("Test", 5, Input::setTestProcessId),
         Tuple.of("Cluster Name", 6, Input::setClusterName),
         Tuple.of("Cluster ID", 7, Input::setClusterId),
         Tuple.of("Operate URL", 8, Input::setOperateURL));

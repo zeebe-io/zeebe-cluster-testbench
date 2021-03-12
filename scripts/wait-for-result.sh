@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# This script demonstrates the use of the external-tool-integration workflow.
+# This script demonstrates the use of the external-tool-integration process.
 # It checks periodically whether any jobs for a certain business key are available.
 # If there are none, it will wait more time. If there are, it reads out the variables
 # and completes the job

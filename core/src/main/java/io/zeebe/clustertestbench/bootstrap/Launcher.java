@@ -97,13 +97,13 @@ public class Launcher {
 
       try {
         final boolean success =
-            new WorkflowDeployer(client).deployWorkflowsInClasspathFolder("workflows");
+            new ProcessDeployer(client).deployProcessesInClasspathFolder("processes");
 
         if (!success) {
           LOGGER.warn("Deployment failed");
         }
       } catch (final IOException e) {
-        LOGGER.error("Error while deploying workflow: " + e.getMessage(), e);
+        LOGGER.error("Error while deploying process: " + e.getMessage(), e);
       }
 
       registerWorkers(client);

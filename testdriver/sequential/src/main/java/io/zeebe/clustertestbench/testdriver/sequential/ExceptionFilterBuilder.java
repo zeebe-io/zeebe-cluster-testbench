@@ -26,11 +26,11 @@ public class ExceptionFilterBuilder {
     return this;
   }
 
-  public ExceptionFilterBuilder ignoreWorkflowNotFoundExceptions(final String workflowId) {
-    final WorkflowNotFoundPredicate workflowNotFoundPredicate =
-        new WorkflowNotFoundPredicate(workflowId);
+  public ExceptionFilterBuilder ignoreProcessNotFoundExceptions(final String processId) {
+    final ProcessNotFoundPredicate processNotFoundPredicate =
+        new ProcessNotFoundPredicate(processId);
 
-    appendAndNotTerm(workflowNotFoundPredicate);
+    appendAndNotTerm(processNotFoundPredicate);
     return this;
   }
 
@@ -48,12 +48,12 @@ public class ExceptionFilterBuilder {
     return exceptionPredicate;
   }
 
-  static final class WorkflowNotFoundPredicate implements Predicate<Exception> {
+  static final class ProcessNotFoundPredicate implements Predicate<Exception> {
 
-    private final String workflowID;
+    private final String processID;
 
-    protected WorkflowNotFoundPredicate(final String workflowId) {
-      this.workflowID = workflowId;
+    protected ProcessNotFoundPredicate(final String processId) {
+      this.processID = processId;
     }
 
     @Override
@@ -63,7 +63,7 @@ public class ExceptionFilterBuilder {
 
         final Status status = sre.getStatus();
 
-        return status.getCode() == Code.NOT_FOUND && status.getDescription().contains(workflowID);
+        return status.getCode() == Code.NOT_FOUND && status.getDescription().contains(processID);
       } else {
         return false;
       }

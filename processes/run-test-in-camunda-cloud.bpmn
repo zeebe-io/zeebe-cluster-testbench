@@ -12,10 +12,10 @@
       <bpmn:outgoing>test_passed</bpmn:outgoing>
       <bpmn:outgoing>test_skipped</bpmn:outgoing>
     </bpmn:exclusiveGateway>
-    <bpmn:sequenceFlow id="test_failed" name="FAILED" sourceRef="check_test_result" targetRef="trigger-analyse-cluster-workflow">
+    <bpmn:sequenceFlow id="test_failed" name="FAILED" sourceRef="check_test_result" targetRef="trigger-analyse-cluster-process">
       <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">=testReport.testResult = "FAILED"</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
-    <bpmn:serviceTask id="trigger-analyse-cluster-workflow" name="Trigger Analyse Cluster Workflow">
+    <bpmn:serviceTask id="trigger-analyse-cluster-process" name="Trigger Analyse Cluster Process">
       <bpmn:extensionElements>
         <zeebe:taskDefinition type="trigger-message-start-event-job" />
         <zeebe:taskHeaders>
@@ -56,7 +56,7 @@
     <bpmn:sequenceFlow id="Flow_13kuq36" sourceRef="Activity_17f0cpn" targetRef="Activity_1hxzgjq" />
     <bpmn:callActivity id="Activity_17f0cpn" name="Run Test">
       <bpmn:extensionElements>
-        <zeebe:calledElement processId="=testWorkflowId" />
+        <zeebe:calledElement processId="=testProcessId" />
       </bpmn:extensionElements>
       <bpmn:incoming>Flow_15k26ho</bpmn:incoming>
       <bpmn:outgoing>Flow_13kuq36</bpmn:outgoing>
@@ -78,7 +78,7 @@
       <bpmn:outgoing>Flow_1lecns9</bpmn:outgoing>
     </bpmn:exclusiveGateway>
     <bpmn:sequenceFlow id="Flow_1lecns9" sourceRef="Gateway_0zjsm6e" targetRef="Event_1i1rnvk" />
-    <bpmn:sequenceFlow id="Flow_0wlh9er" sourceRef="trigger-analyse-cluster-workflow" targetRef="Gateway_0zjsm6e" />
+    <bpmn:sequenceFlow id="Flow_0wlh9er" sourceRef="trigger-analyse-cluster-process" targetRef="Gateway_0zjsm6e" />
   </bpmn:process>
   <bpmn:message id="msg-analysis-completed" name="Analysis Completed">
     <bpmn:extensionElements>
@@ -165,7 +165,7 @@
       <bpmndi:BPMNShape id="Activity_1hxzgjq_di" bpmnElement="Activity_1hxzgjq">
         <dc:Bounds x="560" y="130" width="100" height="80" />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_1w6lwgr_di" bpmnElement="trigger-analyse-cluster-workflow">
+      <bpmndi:BPMNShape id="Activity_1w6lwgr_di" bpmnElement="trigger-analyse-cluster-process">
         <dc:Bounds x="900" y="260" width="100" height="80" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Gateway_0n2c5zt_di" bpmnElement="Gateway_0n2c5zt" isMarkerVisible="true">

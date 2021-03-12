@@ -39,7 +39,7 @@ public class NotifyEngineersHandler implements JobHandler {
     // message
     resultBuilder
         .append("_")
-        .append(input.getTestWorkflowId())
+        .append(input.getTestProcessId())
         .append("_") //
         .append(" on ")
         .append("_" + input.getClusterPlan() + "_") //
@@ -88,7 +88,7 @@ public class NotifyEngineersHandler implements JobHandler {
     private String clusterPlan;
     private String clusterName;
     private String operateURL;
-    private String testWorkflowId;
+    private String testProcessId;
     private String businessKey;
 
     private TestReportDTO testReport;
@@ -135,12 +135,12 @@ public class NotifyEngineersHandler implements JobHandler {
       this.operateURL = operateURL;
     }
 
-    public String getTestWorkflowId() {
-      return testWorkflowId;
+    public String getTestProcessId() {
+      return testProcessId;
     }
 
-    public void setTestWorkflowId(final String testWorkflowId) {
-      this.testWorkflowId = testWorkflowId;
+    public void setTestProcessId(final String testProcessId) {
+      this.testProcessId = testProcessId;
     }
 
     public String getBusinessKey() {

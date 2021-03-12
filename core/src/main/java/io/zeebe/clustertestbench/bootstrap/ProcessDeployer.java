@@ -9,27 +9,27 @@ import java.util.Objects;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class WorkflowDeployer {
-  private static final Logger LOGGER = LoggerFactory.getLogger(WorkflowDeployer.class);
+public class ProcessDeployer {
+  private static final Logger LOGGER = LoggerFactory.getLogger(ProcessDeployer.class);
 
   private final ZeebeClient zeebeClient;
 
-  public WorkflowDeployer(final ZeebeClient zeebeClient) {
+  public ProcessDeployer(final ZeebeClient zeebeClient) {
     this.zeebeClient = Objects.requireNonNull(zeebeClient);
   }
 
-  protected boolean deployWorkflowsInClasspathFolder(final String folderName) throws IOException {
+  protected boolean deployProcessesInClasspathFolder(final String folderName) throws IOException {
     boolean success = true;
-    final List<File> workflowsToDeploy = getWorkflows(folderName);
+    final List<File> processesToDeploy = getProcesses(folderName);
 
-    LOGGER.info("Found workflows to deploy: {}", workflowsToDeploy);
+    LOGGER.info("Found processes to deploy: {}", processesToDeploy);
 
-    for (final File workflow : workflowsToDeploy) {
+    for (final File process : processesToDeploy) {
       try {
-        final String workflowName = workflow.getName();
+        final String processName = process.getName();
 
-        LOGGER.info("Deploying {}", workflowName);
-        zeebeClient.newDeployCommand().addResourceFile(workflow.getAbsolutePath()).send().join();
+        LOGGER.info("Deploying {}", processName);
+        zeebeClient.newDeployCommand().addResourceFile(process.getAbsolutePath()).send().join();
       } catch (final Exception e) {
         LOGGER.error(e.getMessage(), e);
         success = false;
@@ -39,7 +39,7 @@ public class WorkflowDeployer {
     return success;
   }
 
-  protected List<File> getWorkflows(final String path) throws IOException {
+  protected List<File> getProcesses(final String path) throws IOException {
 
     final File folder = new File(path);
 

@@ -15,7 +15,7 @@
           <zeebe:input source="=[&#34;Development&#34;, &#34;Production - S&#34;, &#34;Production - M&#34;, &#34;Production - L&#34;]" target="clusterPlans" />
           <zeebe:input source="={&#34;steps&#34;:3,&#34;iterations&#34;:10,&#34;maxTimeForIteration&#34;:&#34;PT20S&#34;,&#34;maxTimeForCompleteTest&#34;:&#34;PT4M&#34;}" target="sequentialTestParams" />
           <zeebe:input source="={}" target="chaosTestParams" />
-          <zeebe:input source="=&#34;QA Protocol&#34;" target="rootWorkflow" />
+          <zeebe:input source="=&#34;QA Protocol&#34;" target="rootProcess" />
         </zeebe:ioMapping>
       </bpmn:extensionElements>
       <bpmn:incoming>Flow_0cosuvw</bpmn:incoming>
@@ -32,7 +32,7 @@
       <bpmn:incoming>Flow_0s03s3e</bpmn:incoming>
       <bpmn:outgoing>Flow_0cosuvw</bpmn:outgoing>
     </bpmn:serviceTask>
-    <bpmn:serviceTask id="trigger-clean-up-generation" name="Trigger Clean Up Generaton Workflow">
+    <bpmn:serviceTask id="trigger-clean-up-generation" name="Trigger Clean Up Generaton Process">
       <bpmn:extensionElements>
         <zeebe:taskDefinition type="trigger-message-start-event-job" />
         <zeebe:taskHeaders>
@@ -56,7 +56,7 @@ channel: channel in which the QA tests shall be run</bpmn:text>
     </bpmn:textAnnotation>
     <bpmn:association id="Association_0x03pf4" sourceRef="StartEvent_1" targetRef="TextAnnotation_0lbo537" />
     <bpmn:textAnnotation id="TextAnnotation_0yzgtu4">
-      <bpmn:text>Trigger for asynchronous workflow. This way this workflow can terminate immediately, and the generation will be cleaned up as soon as it is no longer used</bpmn:text>
+      <bpmn:text>Trigger for asynchronous process. This way this process can terminate immediately, and the generation will be cleaned up as soon as it is no longer used</bpmn:text>
     </bpmn:textAnnotation>
     <bpmn:association id="Association_1k5uhsh" sourceRef="trigger-clean-up-generation" targetRef="TextAnnotation_0yzgtu4" />
   </bpmn:process>

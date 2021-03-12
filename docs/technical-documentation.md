@@ -38,11 +38,11 @@ The _Zeebe Cluster Testbench_ is a tool to run end to end tests against Zeebe cl
 
 The _Zeebe cluster testbench_ is basically a bunch of workers that request jobs from the _testbench_ test orchestration cluster.
 
-The test orchestration cluster contains different workflows that define the steps for a test. See [README.md](../README.md) for a documentation of the different processes.
+The test orchestration cluster contains different processes that define the steps for a test. See [README.md](../README.md) for a documentation of the different processes.
 
 Once a test is started, this will e.g. trigger the worker to create a cluster. Afterwards, another worker is triggered to run the test. Finally, other workers are triggered to publish the test results, notify engineers (if needed) and destroy the cluster again.
 
-The workers are stateless. The only state is kept by Zeebe in the _testbench_ test orchestration cluster. Workers exchange information by reading from and writing to variables in the workflow.
+The workers are stateless. The only state is kept by Zeebe in the _testbench_ test orchestration cluster. Workers exchange information by reading from and writing to variables in the process.
 
 # Building Block View
 
@@ -65,13 +65,13 @@ The workers are stateless. The only state is kept by Zeebe in the _testbench_ te
 
 # Runtime View
 
-Most of the runtime behavior is determined by the workflows deployed to the _testbench_ cluster. See [README.md](../README.md) for a documentation of the different processes.
+Most of the runtime behavior is determined by the processes deployed to the _testbench_ cluster. See [README.md](../README.md) for a documentation of the different processes.
 
 ## Startup
 
 1. Read all environment variables
 1. Perform self test - the objective of the self test is to check connectivity to external systems; if these fail on startup, the application will not launch.
-1. Deploy test orchestration workflows
+1. Deploy test orchestration processes
 1. Register workers
 
 ## Fault Tolerance/Recovery

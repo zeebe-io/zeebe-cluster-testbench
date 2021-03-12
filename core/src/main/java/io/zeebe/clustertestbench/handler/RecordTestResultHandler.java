@@ -93,7 +93,7 @@ public class RecordTestResultHandler implements JobHandler {
     result.add(input.getGeneration());
     result.add(input.getBusinessKey());
 
-    result.add(input.getTestWorkflowId());
+    result.add(input.getTestProcessId());
 
     result.add(input.getClusterName());
     result.add(input.getClusterId());
@@ -134,7 +134,7 @@ public class RecordTestResultHandler implements JobHandler {
     private String channel;
     private String businessKey;
 
-    private String testWorkflowId;
+    private String testProcessId;
 
     private String clusterId;
     private String clusterName;
@@ -216,12 +216,12 @@ public class RecordTestResultHandler implements JobHandler {
       this.testReport = testReport;
     }
 
-    String getTestWorkflowId() {
-      return testWorkflowId;
+    String getTestProcessId() {
+      return testProcessId;
     }
 
-    void setTestWorkflowId(final String testWorkflowId) {
-      this.testWorkflowId = testWorkflowId;
+    void setTestProcessId(final String testProcessId) {
+      this.testProcessId = testProcessId;
     }
   }
 }

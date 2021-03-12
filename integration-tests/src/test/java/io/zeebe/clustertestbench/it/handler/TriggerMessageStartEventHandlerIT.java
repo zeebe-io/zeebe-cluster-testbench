@@ -9,7 +9,7 @@ import io.zeebe.bpmnspec.runner.zeebe.zeeqs.ZeeqsClient;
 import io.zeebe.bpmnspec.runner.zeebe.zeeqs.ZeeqsClient.ElementInstanceDto;
 import io.zeebe.bpmnspec.runner.zeebe.zeeqs.ZeeqsClient.VariableDto;
 import io.zeebe.client.ZeebeClient;
-import io.zeebe.client.api.response.WorkflowInstanceEvent;
+import io.zeebe.client.api.response.ProcessInstanceEvent;
 import io.zeebe.client.api.worker.JobWorker;
 import io.zeebe.clustertestbench.handler.TriggerMessageStartEventHandler;
 import java.time.Duration;
@@ -71,7 +71,7 @@ public class TriggerMessageStartEventHandlerIT {
     final var variables = Map.of("key1", "value1", "key2", "value2");
 
     // when
-    final WorkflowInstanceEvent mainWorkflowCreationResponse =
+    final ProcessInstanceEvent mainProcessCreationResponse =
         zeebeClient
             .newCreateInstanceCommand()
             .bpmnProcessId("main")
@@ -83,21 +83,21 @@ public class TriggerMessageStartEventHandlerIT {
     // then
     await()
         .atMost(1, TimeUnit.MINUTES)
-        .until(() -> zeeqsClient.getWorkflowInstanceKeys().size() == 2);
+        .until(() -> zeeqsClient.getProcessInstanceKeys().size() == 2);
 
-    final List<Long> workflowInstanceKeys = zeeqsClient.getWorkflowInstanceKeys();
+    final List<Long> processInstanceKeys = zeeqsClient.getProcessInstanceKeys();
 
-    workflowInstanceKeys.remove(mainWorkflowCreationResponse.getWorkflowInstanceKey());
+    processInstanceKeys.remove(mainProcessCreationResponse.getProcessInstanceKey());
 
-    final Long secondaryWorkflowInstanceKey = workflowInstanceKeys.get(0);
+    final Long secondaryProcessInstanceKey = processInstanceKeys.get(0);
 
     final ElementInstanceDto elementDto =
-        zeeqsClient.getElementInstances(secondaryWorkflowInstanceKey).get(0);
+        zeeqsClient.getElementInstances(secondaryProcessInstanceKey).get(0);
 
     assertThat(elementDto.getElementId()).isEqualTo("secondary");
 
     final List<VariableDto> variablesInSecondaryProcess =
-        zeeqsClient.getWorkflowInstanceVariables(secondaryWorkflowInstanceKey);
+        zeeqsClient.getProcessInstanceVariables(secondaryProcessInstanceKey);
 
     final Map<String, String> variablesInSecondaryProcessAsMap =
         variablesInSecondaryProcess.stream()

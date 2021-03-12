@@ -6,7 +6,7 @@ import static org.junit.jupiter.params.provider.EnumSource.Mode.EXCLUDE;
 import io.grpc.Status;
 import io.grpc.Status.Code;
 import io.grpc.StatusRuntimeException;
-import io.zeebe.clustertestbench.testdriver.sequential.ExceptionFilterBuilder.WorkflowNotFoundPredicate;
+import io.zeebe.clustertestbench.testdriver.sequential.ExceptionFilterBuilder.ProcessNotFoundPredicate;
 import java.util.function.Predicate;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
@@ -16,7 +16,7 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
 
 class ExceptionFilterBuilderTest {
-  private static final String TEST_PROCESS_ID = "test-workflow";
+  private static final String TEST_PROCESS_ID = "test-process";
 
   private static Exception createNestedStatusRuntimeException(final Code code) {
     return createNestedStatusRuntimeException(code, "dummy description");
@@ -77,11 +77,11 @@ class ExceptionFilterBuilderTest {
   }
 
   @Nested
-  @DisplayName("predicate workflow not found")
-  class WorkflowNotFoundPredicateTest {
+  @DisplayName("predicate process not found")
+  class ProcessNotFoundPredicateTest {
 
     private final Predicate<Exception> sutPredicate =
-        new WorkflowNotFoundPredicate(TEST_PROCESS_ID);
+        new ProcessNotFoundPredicate(TEST_PROCESS_ID);
 
     @Test
     void shouldNotMatchForArbitraryExceptions() {
@@ -96,12 +96,12 @@ class ExceptionFilterBuilderTest {
     }
 
     @Test
-    void shouldMatchForDifferentWorkflowMentionedInException() {
+    void shouldMatchForDifferentProcessMentionedInException() {
       // given
       final Exception t =
           createNestedStatusRuntimeException(
               Code.NOT_FOUND,
-              "Command rejected with code 'CREATE_WITH_AWAITING_RESULT': Expected to find workflow definition with process ID 'some-other-workflow', but none found");
+              "Command rejected with code 'CREATE_WITH_AWAITING_RESULT': Expected to find process definition with process ID 'some-other-process', but none found");
 
       // when
       final boolean match = sutPredicate.test(t);
@@ -118,7 +118,7 @@ class ExceptionFilterBuilderTest {
       final Exception t =
           createNestedStatusRuntimeException(
               Code.NOT_FOUND,
-              "Command rejected with code 'CREATE_WITH_AWAITING_RESULT': Expected to find workflow definition with process ID 'test-workflow', but none found");
+              "Command rejected with code 'CREATE_WITH_AWAITING_RESULT': Expected to find process definition with process ID 'test-process', but none found");
 
       // when
       final boolean match = sutPredicate.test(t);
@@ -133,7 +133,7 @@ class ExceptionFilterBuilderTest {
       final Exception t =
           createNestedStatusRuntimeException(
               Code.NOT_FOUND,
-              "Command rejected with code 'SOME_OTHER_COMMAND': Expected to find workflow definition with process ID 'test-workflow', but none found");
+              "Command rejected with code 'SOME_OTHER_COMMAND': Expected to find process definition with process ID 'test-process', but none found");
 
       // when
       final boolean match = sutPredicate.test(t);
@@ -212,8 +212,8 @@ class ExceptionFilterBuilderTest {
   }
 
   @Nested
-  @DisplayName("When exception filter ignores workflow not found exceptions")
-  class WorkflowNotFoundIgnoringErrorFilter {
+  @DisplayName("When exception filter ignores process not found exceptions")
+  class ProcessNotFoundIgnoringErrorFilter {
 
     @Test
     void shouldTestPositiveForArbitraryException() {
@@ -222,7 +222,7 @@ class ExceptionFilterBuilderTest {
 
       final Predicate<Exception> sutExceptionFilter =
           new ExceptionFilterBuilder()
-              .ignoreWorkflowNotFoundExceptions(TEST_PROCESS_ID)
+              .ignoreProcessNotFoundExceptions(TEST_PROCESS_ID)
               .ignoreRessourceExhaustedExceptions()
               .build();
 
@@ -234,15 +234,15 @@ class ExceptionFilterBuilderTest {
     }
 
     @Test
-    void shouldTestNegativeForWorkflowNotFoundException() {
+    void shouldTestNegativeForProcessNotFoundException() {
       // given
       final Exception t =
           createNestedStatusRuntimeException(
               Code.NOT_FOUND,
-              "Command rejected with code 'CREATE_WITH_AWAITING_RESULT': Expected to find workflow definition with process ID 'test-workflow', but none found");
+              "Command rejected with code 'CREATE_WITH_AWAITING_RESULT': Expected to find process definition with process ID 'test-process', but none found");
 
       final Predicate<Exception> sutExceptionFilter =
-          new ExceptionFilterBuilder().ignoreWorkflowNotFoundExceptions(TEST_PROCESS_ID).build();
+          new ExceptionFilterBuilder().ignoreProcessNotFoundExceptions(TEST_PROCESS_ID).build();
 
       // when
       final boolean actual = sutExceptionFilter.test(t);
@@ -254,7 +254,7 @@ class ExceptionFilterBuilderTest {
 
   @Nested
   @DisplayName(
-      "When exception filter ignores workflow not found exceptions and ressource exhausted exceptions")
+      "When exception filter ignores process not found exceptions and ressource exhausted exceptions")
   class ErrorFilterWithCombinedPredicated {
 
     @Test
@@ -265,7 +265,7 @@ class ExceptionFilterBuilderTest {
       final Predicate<Exception> sutExceptionFilter =
           new ExceptionFilterBuilder()
               .ignoreRessourceExhaustedExceptions()
-              .ignoreWorkflowNotFoundExceptions(TEST_PROCESS_ID)
+              .ignoreProcessNotFoundExceptions(TEST_PROCESS_ID)
               .ignoreRessourceExhaustedExceptions()
               .build();
 
@@ -277,16 +277,16 @@ class ExceptionFilterBuilderTest {
     }
 
     @Test
-    void shouldTestNegativeForWorkflowNotFoundException() {
+    void shouldTestNegativeForProcessNotFoundException() {
       // given
       final Exception t =
           createNestedStatusRuntimeException(
               Code.NOT_FOUND,
-              "Command rejected with code 'CREATE_WITH_AWAITING_RESULT': Expected to find workflow definition with process ID 'test-workflow', but none found");
+              "Command rejected with code 'CREATE_WITH_AWAITING_RESULT': Expected to find process definition with process ID 'test-process', but none found");
 
       final Predicate<Exception> sutExceptionFilter =
           new ExceptionFilterBuilder()
-              .ignoreWorkflowNotFoundExceptions(TEST_PROCESS_ID)
+              .ignoreProcessNotFoundExceptions(TEST_PROCESS_ID)
               .ignoreRessourceExhaustedExceptions()
               .build();
 
@@ -304,7 +304,7 @@ class ExceptionFilterBuilderTest {
 
       final Predicate<Exception> sutExceptionFilter =
           new ExceptionFilterBuilder()
-              .ignoreWorkflowNotFoundExceptions(TEST_PROCESS_ID)
+              .ignoreProcessNotFoundExceptions(TEST_PROCESS_ID)
               .ignoreRessourceExhaustedExceptions()
               .build();
 

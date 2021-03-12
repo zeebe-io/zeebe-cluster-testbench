@@ -42,7 +42,7 @@ public class NotifyEngineersHandlerTest {
         .contains("CLUSTER_PLAN_B")
         .contains("GENERATION_C")
         .contains("https://localhost.test")
-        .contains("workflowID")
+        .contains("processID")
         .contains("ERROR")
         .contains("http://jenkins/branch/build");
   }
@@ -74,7 +74,7 @@ public class NotifyEngineersHandlerTest {
     input.setClusterPlan("CLUSTER_PLAN_B");
     input.setGeneration("GENERATION_C");
     input.setOperateURL("https://localhost.test");
-    input.setTestWorkflowId("workflowID");
+    input.setTestProcessId("processID");
     input.setBusinessKey("http://jenkins/branch/build");
     final var testReport = new TestReportDTO();
     testReport.setFailureMessages(List.of("ERROR"));
