@@ -71,7 +71,7 @@ public class SequentialTestDriver implements TestDriver {
     final SequenceWorkflowBuilder builder =
         new SequenceWorkflowBuilder(Optional.of(testParameters.getSteps()), Optional.of(JOB_TYPE));
 
-    final BpmnModelInstance process = builder.buildProcess(PROCESS_ID);
+    final BpmnModelInstance process = builder.buildWorkflow(PROCESS_ID);
 
     LOGGER.info("Deploying test process:" + PROCESS_ID);
     client.newDeployCommand().addProcessModel(process, PROCESS_ID + ".bpmn").send().join();

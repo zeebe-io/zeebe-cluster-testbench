@@ -80,8 +80,7 @@ class ExceptionFilterBuilderTest {
   @DisplayName("predicate process not found")
   class ProcessNotFoundPredicateTest {
 
-    private final Predicate<Exception> sutPredicate =
-        new ProcessNotFoundPredicate(TEST_PROCESS_ID);
+    private final Predicate<Exception> sutPredicate = new ProcessNotFoundPredicate(TEST_PROCESS_ID);
 
     @Test
     void shouldNotMatchForArbitraryExceptions() {
