@@ -4,7 +4,7 @@
 
 ### Inside Camunda environment
 
-Changes to `master` are automatically deployed to production.
+Changes to `develop` are automatically deployed to production.
 
 ### In Kubernetes
 
