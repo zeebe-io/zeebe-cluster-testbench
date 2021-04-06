@@ -2,3 +2,6 @@ createAndRunImage.sh
 output-*.log
 debugWorker.sh
 zeebe-chaos
+target
+*.iml
+credentials
