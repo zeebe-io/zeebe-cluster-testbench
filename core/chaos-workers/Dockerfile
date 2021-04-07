@@ -6,7 +6,7 @@ ENV ZEEBE_VERSION=0.26.0 \
     CONTEXT=gke_camunda-cloud-240911_europe-west1-d_ultrachaos
 
 WORKDIR ${CHAOS_HOME}
-COPY chaos-worker/target/chaos-worker-*-jar-with-dependencies.jar chaosWorker.jar
+COPY chaos-worker/target/zeebe-cluster-testbench-chaos-worker-*-jar-with-dependencies.jar chaosWorker.jar
 # COPY handleJob.sh .
 # COPY runWorker.sh .
 # COPY handlerUtil.sh .
