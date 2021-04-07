@@ -92,8 +92,6 @@ pipeline {
                         println("Check all chaos script`s with shellcheck (linter).")
                         sh 'shellcheck -x *.sh'
                         println("Scripts are fine.")
-                        println("Run bash tests via bats.")
-                        sh './*Test.sh'
                     }
                     dir('scripts') {
                         println("Check general script`s with shellcheck (linter).")
