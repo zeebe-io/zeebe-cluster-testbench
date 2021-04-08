@@ -230,7 +230,7 @@ pipeline {
 
         changed {
             script {
-                if (env.BRANCH_NAME != 'develop' || agentDisconnected()) {
+                if ((env.BRANCH_NAME != 'develop' && !env.BRANCH_NAME.startsWith("stable")) || agentDisconnected()) {
                     return
                 }
                 if (hasBuildResultChanged()) {
