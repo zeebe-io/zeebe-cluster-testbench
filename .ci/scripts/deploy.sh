@@ -8,23 +8,22 @@ then
   exit 1
 fi
 
-
 tag=$1
 
-if [ "${tag}" = "latest" ]; then
-  echo "Deploying :latest to 'int' stage / 'testbench' namespace"
-  suffix=""
-elif [ "${tag}" = "dev" ]; then
-  echo "Deploying :dev to 'dev' stage / 'testbench-dev' namespace"
+if [[ ${tag} == *-dev ]]; then
+  echo "Deploying :dev to 'dev' stage / using '-dev' suffixed files"
   suffix="-dev"
+elif [[ ${tag} == *-prod ]]; then
+  echo "Deploying :prod to 'prod' stage / using '-prod' suffixed files"
+  suffix="-prod"
 else
-  echo "Unknown tag '${tag}'. Please provide the tag 'dev' or 'latest'"
+  echo "Unknown tag '${tag}'. Please provide a tag matching '*-dev' or '*-prod'"
   exit 1
 fi
-
 echo "suffix: ${suffix}"
 
-namespace="testbench${suffix}"
+# replace dots with dashes for dns compliance
+namespace="testbench-${tag//\./-}"
 echo "target namespace: ${namespace}"
 
 gcloud config set core/project zeebe-io
