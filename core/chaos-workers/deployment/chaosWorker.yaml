@@ -20,13 +20,13 @@ spec:
     spec:
       containers:
         - name: chaos-worker
-          image: gcr.io/zeebe-io/zeebe-cluster-testbench-chaos:latest
+          image: gcr.io/zeebe-io/zeebe-cluster-testbench-chaos:1.x-prod
           imagePullPolicy: Always
           env:
             - name: ZEEBE_AUTHORIZATION_SERVER_URL
               value: "https://login.cloud.ultrawombat.com/oauth/token"
             - name: ZEEBE_CLIENT_ID
-              value: "W5a4JUc3I1NIetNnodo3YTvdsRIFb12w"
+              value: "ELL8eP0qDkl6dxXVps0t51x2VkCkWf~p"
             - name: ZEEBE_CLIENT_SECRET
               valueFrom:
                 secretKeyRef:

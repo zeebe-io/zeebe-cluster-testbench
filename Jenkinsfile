@@ -240,9 +240,9 @@ pipeline {
 }
 
 def getTag() {
-    return params.DEPLOY_TO_DEV ? 'dev' : 'latest'
+    return params.DEPLOY_TO_DEV ? '1.x-dev' : '1.x-prod'
 }
 
 def getSecretStore() {
-    return params.DEPLOY_TO_DEV ? 'secret/common/ci-zeebe/testbench-secrets-dev' : 'secret/common/ci-zeebe/testbench-secrets-int'
+    return params.DEPLOY_TO_DEV ? 'secret/common/ci-zeebe/testbench-1.x-secrets-dev' : 'secret/common/ci-zeebe/testbench-1.x-secrets-prod'
 }
