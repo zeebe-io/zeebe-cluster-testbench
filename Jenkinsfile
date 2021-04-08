@@ -106,7 +106,7 @@ pipeline {
         stage('Upload') {
             when {
                 not { expression { params.RELEASE } }
-                branch 'master'
+                branch 'stable/0.26'
             }
             steps {
                 container('maven') {
@@ -120,7 +120,7 @@ pipeline {
         stage('Deploy') {
             when {
                 anyOf {
-                    branch 'master'
+                    branch 'stable/0.26'
                     expression { params.DEPLOY_TO_DEV }
                 }
             }
@@ -223,7 +223,7 @@ pipeline {
 
         changed {
             script {
-                if (env.BRANCH_NAME != 'master' || agentDisconnected()) {
+                if (env.BRANCH_NAME != 'stable/0.26' || agentDisconnected()) {
                     return
                 }
                 if (hasBuildResultChanged()) {
