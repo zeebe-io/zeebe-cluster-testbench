@@ -28,10 +28,10 @@ pipeline {
     }
 
     parameters {
-        booleanParam(name: 'DEPLOY_TO_DEV', defaultValue: false, description: 'Should this version be deployed to dev stage (by default master will deploy to int stage; other branches do not deploy at all)');
+        booleanParam(name: 'DEPLOY_TO_DEV', defaultValue: false, description: 'Click here if you want to test a feature in the development environment prior to merge');
         booleanParam(name: 'RELEASE', defaultValue: false, description: 'Build a release from current commit?')
-        string(name: 'RELEASE_VERSION', defaultValue: '0.X.0', description: 'Which version to release?')
-        string(name: 'DEVELOPMENT_VERSION', defaultValue: '0.Y.0-SNAPSHOT', description: 'Next development version?')
+        string(name: 'RELEASE_VERSION', defaultValue: '1.x.0', description: 'Which version to release?')
+        string(name: 'DEVELOPMENT_VERSION', defaultValue: '1.y.0-SNAPSHOT', description: 'Next development version?')
     }
 
     stages {
@@ -108,7 +108,11 @@ pipeline {
         stage('Upload') {
             when {
                 not { expression { params.RELEASE } }
-                branch 'master'
+                anyOf {
+                    branch 'develop'
+                    branch 'stable/*'
+                    expression { params.DEPLOY_TO_DEV }
+                }
             }
             steps {
                 container('maven') {
@@ -122,7 +126,8 @@ pipeline {
         stage('Deploy') {
             when {
                 anyOf {
-                    branch 'master'
+                    branch 'develop'
+                    branch 'stable/*'
                     expression { params.DEPLOY_TO_DEV }
                 }
             }
@@ -225,7 +230,7 @@ pipeline {
 
         changed {
             script {
-                if (env.BRANCH_NAME != 'master' || agentDisconnected()) {
+                if ((env.BRANCH_NAME != 'develop' && !env.BRANCH_NAME.startsWith("stable")) || agentDisconnected()) {
                     return
                 }
                 if (hasBuildResultChanged()) {
@@ -240,9 +245,9 @@ pipeline {
 }
 
 def getTag() {
-    return params.DEPLOY_TO_DEV ? 'dev' : 'latest'
+    return params.DEPLOY_TO_DEV ? '1.x-dev' : '1.x-prod'
 }
 
 def getSecretStore() {
-    return params.DEPLOY_TO_DEV ? 'secret/common/ci-zeebe/testbench-secrets-dev' : 'secret/common/ci-zeebe/testbench-secrets-int'
+    return params.DEPLOY_TO_DEV ? 'secret/common/ci-zeebe/testbench-1.x-secrets-dev' : 'secret/common/ci-zeebe/testbench-1.x-secrets-prod'
 }

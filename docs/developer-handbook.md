@@ -3,25 +3,32 @@
 - [Technical documentation](technical-documentation.md)
 - [Operator handbook](operator-handbook.md)
 
+## Stages
+Testbench exists on 2 stages:
+  - Dev stage - Used for development of the testbench
+  - Prod stage - Used as the actual production environment for testing Zeebe clusters
+
+All stages are clusters running on the Camunda Cloud int environment (ultrawombat).
+
 ## CI/CD Pipeline
 
 - A new build can automatically be deployed to one of two stages:
-  - Dev stage - any branch can be deployed when requested. This is done by setting the corresponding build parameter in Jenkins. Please coordinate with your colleagues as there is only one dev stage and each deploy will override it
-  - Int stage - commits to master are automatically deployed to the int stage. The int stage is the production stage. It is only called int, because it is the int environment of Camunda Cloud
-- If the master build fails, the slack channel `#zeebe-testbench-ci` (on Camunda slack) will be notified (this often happens if the changes break the deploy process as the deploy steps are only executed for master)
+  - Dev stage - any branch can be deployed when requested. This is done by setting the corresponding build parameter in Jenkins. Please coordinate with your colleagues as there is only one dev stage and each deploy will override it.
+  - Prod stage - commits to develop and stable branches are automatically deployed to the prod stage. Other branches are ignored.
+- If the develop build fails, the slack channel `#zeebe-testbench-ci` (on Camunda slack) will be notified (this often happens if the changes break the deploy process as the deploy steps are only executed for develop)
 - Secrets are stored in Vault and also deployed automatically
 
 ### Dev Stage
 
-- Image label `dev`
-- K8S namespace = `gke_zeebe-io_europe-west1-b_zeebe-cluster/testbench-dev`
-- Secrets `secret/common/ci-zeebe/testbench-secrets-dev`
+- Image tag `*-dev`
+- K8S namespace = `gke_zeebe-io_europe-west1-b_zeebe-cluster/testbench-1-x-dev`
+- Secrets `secret/common/ci-zeebe/testbench-secrets-1.x-dev`
 
-### Int Stage
+### Prod Stage
 
-- Image label `latest`
-- K8S namespace = `gke_zeebe-io_europe-west1-b_zeebe-cluster/testbench`
-- Secrets `secret/common/ci-zeebe/testbench-secrets-int`
+- Image tag `*-prod`
+- K8S namespace = `gke_zeebe-io_europe-west1-b_zeebe-cluster/testbench-1-x-prod`
+- Secrets `secret/common/ci-zeebe/testbench-secrets-1.x-prod`
 
 ## Permutation Testing
 ```
@@ -87,7 +94,7 @@ kubectl create secret generic testbench-secrets --namespace="${namespace}" \
 spec:
   containers:
     - name: testbench
-      image: gcr.io/zeebe-io/zeebe-cluster-testbench:latest
+      image: gcr.io/zeebe-io/zeebe-cluster-testbench:1.x-prod
       imagePullPolicy: Always
       env:
         - name: ZCTB_CLIENT_SECRET

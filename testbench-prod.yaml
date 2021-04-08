@@ -16,13 +16,13 @@ spec:
     spec:
       containers:
         - name: testbench
-          image: gcr.io/zeebe-io/zeebe-cluster-testbench:latest
+          image: gcr.io/zeebe-io/zeebe-cluster-testbench:1.x-prod
           imagePullPolicy: Always
           env:
             - name: ZCTB_AUTHENTICATION_SERVER_URL
               value: "https://login.cloud.ultrawombat.com/oauth/token"
             - name: ZCTB_CLIENT_ID
-              value: "W5a4JUc3I1NIetNnodo3YTvdsRIFb12w"
+              value: "ELL8eP0qDkl6dxXVps0t51x2VkCkWf~p"
             - name: ZCTB_CLIENT_SECRET
               valueFrom:
                 secretKeyRef:

@@ -16,13 +16,13 @@ spec:
     spec:
       containers:
         - name: testbench
-          image: gcr.io/zeebe-io/zeebe-cluster-testbench:dev
+          image: gcr.io/zeebe-io/zeebe-cluster-testbench:1.x-dev
           imagePullPolicy: Always
           env:
             - name: ZCTB_AUTHENTICATION_SERVER_URL
-              value: "https://login.cloud.dev.ultrawombat.com/oauth/token"
+              value: "https://login.cloud.ultrawombat.com/oauth/token"
             - name: ZCTB_CLIENT_ID
-              value: "cOf2ryfrDoCaHqXFwrQm7y7n9yEP4Imp"
+              value: "Nr0kg6UJw90-oucA3bNj20dHztIUgDjg"
             - name: ZCTB_CLIENT_SECRET
               valueFrom:
                 secretKeyRef:
@@ -34,26 +34,26 @@ spec:
                   name: testbench-secrets
                   key: contactPoint
             - name: ZCTB_CLOUD_API_URL
-              value: "https://console.cloud.dev.ultrawombat.com/customer-api/"
+              value: "https://console.cloud.ultrawombat.com/customer-api/"
             - name: ZCTB_CLOUD_AUDIENCE
-              value: "api.cloud.dev.ultrawombat.com"
+              value: "api.cloud.ultrawombat.com"
             - name: ZCTB_CLOUD_AUTHENTICATION_SERVER_URL
-              value: "https://login.cloud.dev.ultrawombat.com/oauth/token"
+              value: "https://login.cloud.ultrawombat.com/oauth/token"
             - name: ZCTB_CLOUD_CLIENT_ID
-              value: "VfebeBObQjDo~uPN"
+              value: "CW_I50Di-STzDE2i"
             - name: ZCTB_CLOUD_CLIENT_SECRET
               valueFrom:
                 secretKeyRef:
                   name: testbench-secrets
                   key: cloudClientSecret
             - name: ZCTB_INTERNAL_CLOUD_AUTHENTICATION_SERVER_URL
-              value: "https://weblogin.cloud.dev.ultrawombat.com/oauth/token"
+              value: "https://weblogin.cloud.ultrawombat.com/oauth/token"
             - name: ZCTB_INTERNAL_CLOUD_API_URL
-              value: "https://console.cloud.dev.ultrawombat.com/"
+              value: "https://console.cloud.ultrawombat.com/"
             - name: ZCTB_INTERNAL_CLOUD_AUDIENCE
-              value: "cloud.dev.ultrawombat.com"
+              value: "cloud.ultrawombat.com"
             - name: ZCTB_INTERNAL_CLOUD_CLIENT_ID
-              value: "JwL6DqOVmmROA3DGXXqyDyU1BJ5FCfM5"
+              value: "0Z2Ohfu3lVzDjtv8rYcGRZtUxrKa2Q96"
             - name: ZCTB_INTERNAL_CLOUD_CLIENT_SECRET
               valueFrom:
                 secretKeyRef:
