@@ -28,7 +28,7 @@ pipeline {
     }
 
     parameters {
-        booleanParam(name: 'DEPLOY_TO_DEV', defaultValue: false, description: 'Should this version be deployed to dev stage (by default the develop branch will deploy to dev stage; stable branches are deployed to prod and other branches do not deploy at all)');
+        booleanParam(name: 'DEPLOY_TO_DEV', defaultValue: false, description: 'Click here if you want to test a feature in the development environment prior to merge');
         booleanParam(name: 'RELEASE', defaultValue: false, description: 'Build a release from current commit?')
         string(name: 'RELEASE_VERSION', defaultValue: '1.x.0', description: 'Which version to release?')
         string(name: 'DEVELOPMENT_VERSION', defaultValue: '1.y.0-SNAPSHOT', description: 'Next development version?')
