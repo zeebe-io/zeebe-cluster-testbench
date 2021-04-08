@@ -1,0 +1,180 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:zeebe="http://camunda.org/schema/zeebe/1.0" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" id="Definitions_06vr52u" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Zeebe Modeler" exporterVersion="0.11.0">
+  <bpmn:process id="chaosExperiment" isExecutable="true">
+    <bpmn:subProcess id="Activity_11tzpu9" name="Chaos Experiment">
+      <bpmn:incoming>Flow_0ll1uwh</bpmn:incoming>
+      <bpmn:outgoing>Flow_1weinm8</bpmn:outgoing>
+      <bpmn:callActivity id="Activity_08p87mg" name="Verify Steady State">
+        <bpmn:extensionElements>
+          <zeebe:calledElement processId="actionRunner" propagateAllChildVariables="false" />
+        </bpmn:extensionElements>
+        <bpmn:incoming>Flow_1yoz0o1</bpmn:incoming>
+        <bpmn:outgoing>Flow_1lf00yb</bpmn:outgoing>
+        <bpmn:multiInstanceLoopCharacteristics isSequential="true">
+          <bpmn:extensionElements>
+            <zeebe:loopCharacteristics inputCollection="=steadyState.probes" inputElement="action" />
+          </bpmn:extensionElements>
+        </bpmn:multiInstanceLoopCharacteristics>
+      </bpmn:callActivity>
+      <bpmn:callActivity id="Activity_02n6emx" name="Introduce Chaos">
+        <bpmn:extensionElements>
+          <zeebe:calledElement processId="actionRunner" propagateAllChildVariables="false" />
+        </bpmn:extensionElements>
+        <bpmn:incoming>Flow_1lf00yb</bpmn:incoming>
+        <bpmn:outgoing>Flow_0kyhxmr</bpmn:outgoing>
+        <bpmn:multiInstanceLoopCharacteristics isSequential="true">
+          <bpmn:extensionElements>
+            <zeebe:loopCharacteristics inputCollection="=method" inputElement="action" />
+          </bpmn:extensionElements>
+        </bpmn:multiInstanceLoopCharacteristics>
+      </bpmn:callActivity>
+      <bpmn:callActivity id="Activity_0g2ceqh" name="Verify Steady State">
+        <bpmn:extensionElements>
+          <zeebe:calledElement processId="actionRunner" propagateAllChildVariables="false" />
+        </bpmn:extensionElements>
+        <bpmn:incoming>Flow_0kyhxmr</bpmn:incoming>
+        <bpmn:outgoing>Flow_0f5r5ix</bpmn:outgoing>
+        <bpmn:multiInstanceLoopCharacteristics isSequential="true">
+          <bpmn:extensionElements>
+            <zeebe:loopCharacteristics inputCollection="=steadyState.probes" inputElement="action" />
+          </bpmn:extensionElements>
+        </bpmn:multiInstanceLoopCharacteristics>
+      </bpmn:callActivity>
+      <bpmn:sequenceFlow id="Flow_1lf00yb" sourceRef="Activity_08p87mg" targetRef="Activity_02n6emx" />
+      <bpmn:sequenceFlow id="Flow_0kyhxmr" sourceRef="Activity_02n6emx" targetRef="Activity_0g2ceqh" />
+      <bpmn:endEvent id="Event_0ulf3ce">
+        <bpmn:incoming>Flow_0f5r5ix</bpmn:incoming>
+      </bpmn:endEvent>
+      <bpmn:sequenceFlow id="Flow_0f5r5ix" sourceRef="Activity_0g2ceqh" targetRef="Event_0ulf3ce" />
+      <bpmn:startEvent id="Event_1u9f9sk">
+        <bpmn:outgoing>Flow_1yoz0o1</bpmn:outgoing>
+      </bpmn:startEvent>
+      <bpmn:sequenceFlow id="Flow_1yoz0o1" sourceRef="Event_1u9f9sk" targetRef="Activity_08p87mg" />
+    </bpmn:subProcess>
+    <bpmn:boundaryEvent id="Event_06uq3eg" name="Chaos Experiment fails" attachedToRef="Activity_11tzpu9">
+      <bpmn:outgoing>Flow_104ij14</bpmn:outgoing>
+      <bpmn:errorEventDefinition id="ErrorEventDefinition_1jbnwcd" errorRef="Error_0wc7vts" />
+    </bpmn:boundaryEvent>
+    <bpmn:exclusiveGateway id="Gateway_1ty24uf">
+      <bpmn:incoming>Flow_104ij14</bpmn:incoming>
+      <bpmn:incoming>Flow_1yombys</bpmn:incoming>
+      <bpmn:outgoing>Flow_0h0aa5x</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:boundaryEvent id="Event_036qm76" name="Timeout after 3 hours" attachedToRef="Activity_11tzpu9">
+      <bpmn:outgoing>Flow_1yombys</bpmn:outgoing>
+      <bpmn:timerEventDefinition id="TimerEventDefinition_0e3kasa">
+        <bpmn:timeDuration xsi:type="bpmn:tFormalExpression">PT3H</bpmn:timeDuration>
+      </bpmn:timerEventDefinition>
+    </bpmn:boundaryEvent>
+    <bpmn:sequenceFlow id="Flow_104ij14" sourceRef="Event_06uq3eg" targetRef="Gateway_1ty24uf" />
+    <bpmn:sequenceFlow id="Flow_1yombys" sourceRef="Event_036qm76" targetRef="Gateway_1ty24uf" />
+    <bpmn:endEvent id="Event_0cqap4f" name="Chaos Experiment succeeded">
+      <bpmn:incoming>Flow_1weinm8</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:startEvent id="StartEvent_1" name="Run Chaos Experiment">
+      <bpmn:outgoing>Flow_0ll1uwh</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:sequenceFlow id="Flow_0ll1uwh" sourceRef="StartEvent_1" targetRef="Activity_11tzpu9" />
+    <bpmn:sequenceFlow id="Flow_1weinm8" sourceRef="Activity_11tzpu9" targetRef="Event_0cqap4f" />
+    <bpmn:sequenceFlow id="Flow_0h0aa5x" sourceRef="Gateway_1ty24uf" targetRef="Event_0i9wjj1" />
+    <bpmn:endEvent id="Event_0i9wjj1" name="Chaos Experiment failed">
+      <bpmn:incoming>Flow_0h0aa5x</bpmn:incoming>
+      <bpmn:errorEventDefinition id="ErrorEventDefinition_1xxn5uo" errorRef="Error_1gwy61z" />
+    </bpmn:endEvent>
+  </bpmn:process>
+  <bpmn:error id="Error_0gj5btv" name="experiment-timeout" errorCode="experiment-timeout" />
+  <bpmn:error id="Error_0wc7vts" name="action failed" errorCode="failedAction" />
+  <bpmn:error id="Error_1gwy61z" name="experimentFailed" errorCode="experimentFailed" />
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="chaosExperiment">
+      <bpmndi:BPMNEdge id="Flow_104ij14_di" bpmnElement="Flow_104ij14">
+        <di:waypoint x="430" y="478" />
+        <di:waypoint x="430" y="570" />
+        <di:waypoint x="565" y="570" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1yombys_di" bpmnElement="Flow_1yombys">
+        <di:waypoint x="590" y="478" />
+        <di:waypoint x="590" y="545" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0ll1uwh_di" bpmnElement="Flow_0ll1uwh">
+        <di:waypoint x="198" y="270" />
+        <di:waypoint x="280" y="270" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1weinm8_di" bpmnElement="Flow_1weinm8">
+        <di:waypoint x="950" y="270" />
+        <di:waypoint x="1032" y="270" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0h0aa5x_di" bpmnElement="Flow_0h0aa5x">
+        <di:waypoint x="615" y="570" />
+        <di:waypoint x="1032" y="570" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="_BPMNShape_StartEvent_2" bpmnElement="StartEvent_1">
+        <dc:Bounds x="162" y="252" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="152" y="295" width="56" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_0cqap4f_di" bpmnElement="Event_0cqap4f">
+        <dc:Bounds x="1032" y="252" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1022" y="295" width="56" height="40" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_1ty24uf_di" bpmnElement="Gateway_1ty24uf" isMarkerVisible="true">
+        <dc:Bounds x="565" y="545" width="50" height="50" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_0xte71g_di" bpmnElement="Event_0i9wjj1">
+        <dc:Bounds x="1032" y="552" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1008" y="595" width="85" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1cqlnii_di" bpmnElement="Activity_11tzpu9" isExpanded="true">
+        <dc:Bounds x="280" y="120" width="670" height="340" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Flow_1lf00yb_di" bpmnElement="Flow_1lf00yb">
+        <di:waypoint x="480" y="270" />
+        <di:waypoint x="550" y="270" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0kyhxmr_di" bpmnElement="Flow_0kyhxmr">
+        <di:waypoint x="650" y="270" />
+        <di:waypoint x="720" y="270" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0f5r5ix_di" bpmnElement="Flow_0f5r5ix">
+        <di:waypoint x="820" y="271" />
+        <di:waypoint x="872" y="271" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1yoz0o1_di" bpmnElement="Flow_1yoz0o1">
+        <di:waypoint x="338" y="270" />
+        <di:waypoint x="380" y="270" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="Activity_08p87mg_di" bpmnElement="Activity_08p87mg">
+        <dc:Bounds x="380" y="230" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_02n6emx_di" bpmnElement="Activity_02n6emx">
+        <dc:Bounds x="550" y="230" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0g2ceqh_di" bpmnElement="Activity_0g2ceqh">
+        <dc:Bounds x="720" y="231" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_1u9f9sk_di" bpmnElement="Event_1u9f9sk">
+        <dc:Bounds x="302" y="252" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_0ulf3ce_di" bpmnElement="Event_0ulf3ce">
+        <dc:Bounds x="872" y="253" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_06uq3eg_di" bpmnElement="Event_06uq3eg">
+        <dc:Bounds x="412" y="442" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="330" y="466" width="79" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_07yabv0_di" bpmnElement="Event_036qm76">
+        <dc:Bounds x="572" y="442" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="613" y="466" width="74" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>

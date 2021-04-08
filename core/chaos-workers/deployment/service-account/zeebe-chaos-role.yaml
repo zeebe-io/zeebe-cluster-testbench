@@ -6,6 +6,6 @@ metadata:
     app.kubernetes.io/component: remote
     app.kubernetes.io/name: zeebe-chaos
 rules:
-- apiGroups: ["", "extensions", "apps"]
+- apiGroups: ["*"]
   resources: ["*"]
   verbs: ["*"]

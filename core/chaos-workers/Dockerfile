@@ -1,4 +1,4 @@
-FROM python:3.8-alpine
+FROM openjdk:11-jre
 
 ARG TOKEN
 ENV ZEEBE_VERSION=0.26.0 \
@@ -6,9 +6,10 @@ ENV ZEEBE_VERSION=0.26.0 \
     CONTEXT=gke_camunda-cloud-240911_europe-west1-d_ultrachaos
 
 WORKDIR ${CHAOS_HOME}
-COPY handleJob.sh .
-COPY runWorker.sh .
-COPY handlerUtil.sh .
+COPY chaos-worker/target/zeebe-cluster-testbench-chaos-worker-*-jar-with-dependencies.jar chaosWorker.jar
+# COPY handleJob.sh .
+# COPY runWorker.sh .
+# COPY handlerUtil.sh .
 COPY installDependencies.sh .
 
 ENV PATH "${CHAOS_HOME}:${PATH}"
@@ -17,8 +18,8 @@ ENV PATH "${CHAOS_HOME}:${PATH}"
 #ADD https://github.com/krallin/tini/releases/download/${TINI_VERSION}/tini /usr/bin/tini
 #RUN chmod +x -R /usr/bin/tini
 #COPY /home/zell/playground/zbctl /usr/local/bin/zbctl
-ADD https://github.com/zeebe-io/zeebe/releases/download/${ZEEBE_VERSION}/zbctl /usr/local/bin/zbctl
-RUN chmod +x /usr/local/bin/zbctl
+# ADD https://github.com/zeebe-io/zeebe/releases/download/${ZEEBE_VERSION}/zbctl /usr/local/bin/zbctl
+# RUN chmod +x /usr/local/bin/zbctl
 
 # install dependencies
 RUN ${CHAOS_HOME}/installDependencies.sh
@@ -31,4 +32,5 @@ COPY kubeconfig /root/.kube/config
 RUN kubectl config set-credentials ${CONTEXT}-zeebe-chaos-token-user --token ${TOKEN}
 RUN kubectl config set-context ${CONTEXT} --user ${CONTEXT}-zeebe-chaos-token-user
 
-CMD ./runWorker.sh
+# ./runWorker.sh
+CMD java -jar chaosWorker.jar
