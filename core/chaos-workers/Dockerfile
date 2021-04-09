@@ -1,7 +1,7 @@
 FROM python:3.8-alpine
 
 ARG TOKEN
-ENV ZEEBE_VERSION=0.26.0 \
+ENV ZEEBE_VERSION=1.0.0-alpha4 \
     CHAOS_HOME=/home/chaos \
     CONTEXT=gke_camunda-cloud-240911_europe-west1-d_ultrachaos
 
@@ -17,7 +17,7 @@ ENV PATH "${CHAOS_HOME}:${PATH}"
 #ADD https://github.com/krallin/tini/releases/download/${TINI_VERSION}/tini /usr/bin/tini
 #RUN chmod +x -R /usr/bin/tini
 #COPY /home/zell/playground/zbctl /usr/local/bin/zbctl
-ADD https://github.com/zeebe-io/zeebe/releases/download/${ZEEBE_VERSION}/zbctl /usr/local/bin/zbctl
+ADD https://github.com/camunda-cloud/zeebe/releases/download/${ZEEBE_VERSION}/zbctl /usr/local/bin/zbctl
 RUN chmod +x /usr/local/bin/zbctl
 
 # install dependencies
