@@ -21,7 +21,7 @@
     <kotlin.code.style>official</kotlin.code.style>
     <kotlin.compiler.jvmTarget>11</kotlin.compiler.jvmTarget>
 
-    <version.kotlin>1.4.10</version.kotlin>
+    <version.kotlin>1.4.32</version.kotlin>
     <plugin.version..maven.exec>1.6.0</plugin.version..maven.exec>
   </properties>
 
