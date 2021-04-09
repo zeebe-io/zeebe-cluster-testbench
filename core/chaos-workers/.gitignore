@@ -1,4 +1,5 @@
 createAndRunImage.sh
+testbenchDebug.sh
 output-*.log
 debugWorker.sh
 zeebe-chaos
