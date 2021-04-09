@@ -95,6 +95,7 @@ fun handler(client: JobClient, activatedjob: ActivatedJob) {
     LOG.info("Commands to run: $commandList")
     val processBuilder = ProcessBuilder(commandList)
         .directory(scriptPath)
+        .inheritIO()
     processBuilder
         .environment().put("NAMESPACE", namespace)
 
