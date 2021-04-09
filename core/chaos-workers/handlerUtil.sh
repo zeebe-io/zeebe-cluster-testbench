@@ -55,7 +55,7 @@ extractTargetNamespace() {
 #	"endTime": 1604999899482,
 #	"timeOfFirstFailure": 1604999840540,
 #	"failureCount": 2,
-#	"failureMessages": ["Iteration 0 exceeded maximum time of PT10S; elapsedTime: PT12.008S; metaData:{workflowInstanceKey=9007199254741170}", "Iteration 7 exceeded maximum time of PT10S; elapsedTime: PT10.003S; metaData:{workflowInstanceKey=15762598695796879}"],
+#	"failureMessages": ["Iteration 0 exceeded maximum time of PT10S; elapsedTime: PT12.008S; metaData:{processInstanceKey=9007199254741170}", "Iteration 7 exceeded maximum time of PT10S; elapsedTime: PT10.003S; metaData:{processInstanceKey=15762598695796879}"],
 #	"metaData": {
 #		"testParams": {
 #			"steps": 3,

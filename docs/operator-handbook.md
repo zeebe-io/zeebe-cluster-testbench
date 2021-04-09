@@ -33,7 +33,7 @@ Setup and deployment:
 - Set environment variables (see below)
 - Deploy application `.ci/scripts/deploy.sh`
 - Check in logs that self check was successful (happens at start up and connects to all external systems)
-- Check in test orchestration cluster that workflows were deployed
+- Check in test orchestration cluster that processes were deployed
 
 ### Detailed Instructions
 
@@ -117,11 +117,11 @@ You can find more details on how to setup the service account and how it was pre
 14:11:41.049 [main] INFO  io.zeebe.clustertestbench.bootstrap.Launcher - Selftest - Successfully established connection to cloud API
 14:11:41.519 [main] INFO  io.zeebe.clustertestbench.bootstrap.Launcher - Selftest - Successfully established connection to Slack
 14:11:42.415 [main] INFO  io.zeebe.clustertestbench.bootstrap.Launcher - Selftest - Successfully established connection to Google Sheets
-14:11:42.422 [main] INFO  io.zeebe.clustertestbench.bootstrap.WorkflowDeployer - Found workflows to deploy:[workflows\run-all-tests-in-camunda-cloud-per-cluster-plan.bpmn, workflows\run-all-tests-in-camunda-cloud-per-region.bpmn, workflows\run-all-tests-in-camunda-cloud.bpmn, workflows\run-sequential-test-in-camunda-cloud.bpmn]
-14:11:42.422 [main] INFO  io.zeebe.clustertestbench.bootstrap.WorkflowDeployer - Deploying run-all-tests-in-camunda-cloud-per-cluster-plan.bpmn
-14:11:42.622 [main] INFO  io.zeebe.clustertestbench.bootstrap.WorkflowDeployer - Deploying run-all-tests-in-camunda-cloud-per-region.bpmn
-14:11:42.718 [main] INFO  io.zeebe.clustertestbench.bootstrap.WorkflowDeployer - Deploying run-all-tests-in-camunda-cloud.bpmn
-14:11:42.824 [main] INFO  io.zeebe.clustertestbench.bootstrap.WorkflowDeployer - Deploying run-sequential-test-in-camunda-cloud.bpmn
+14:11:42.422 [main] INFO  io.zeebe.clustertestbench.bootstrap.ProcessDeployer - Found processes to deploy:[processes\run-all-tests-in-camunda-cloud-per-cluster-plan.bpmn, processes\run-all-tests-in-camunda-cloud-per-region.bpmn, processes\run-all-tests-in-camunda-cloud.bpmn, processes\run-sequential-test-in-camunda-cloud.bpmn]
+14:11:42.422 [main] INFO  io.zeebe.clustertestbench.bootstrap.ProcessDeployer - Deploying run-all-tests-in-camunda-cloud-per-cluster-plan.bpmn
+14:11:42.622 [main] INFO  io.zeebe.clustertestbench.bootstrap.ProcessDeployer - Deploying run-all-tests-in-camunda-cloud-per-region.bpmn
+14:11:42.718 [main] INFO  io.zeebe.clustertestbench.bootstrap.ProcessDeployer - Deploying run-all-tests-in-camunda-cloud.bpmn
+14:11:42.824 [main] INFO  io.zeebe.clustertestbench.bootstrap.ProcessDeployer - Deploying run-sequential-test-in-camunda-cloud.bpmn
 14:11:42.923 [main] INFO  io.zeebe.clustertestbench.bootstrap.Launcher - Registering job worker MapNamesToUUIDsWorker for: map-names-to-uuids-job
 14:11:42.934 [main] INFO  io.zeebe.clustertestbench.bootstrap.Launcher - Job worker opened and receiving jobs.
 14:11:42.941 [main] INFO  io.zeebe.clustertestbench.bootstrap.Launcher - Registering job worker CreateClusterInCamundaCloudWorker for: create-zeebe-cluster-in-camunda-cloud-job
@@ -136,4 +136,4 @@ You can find more details on how to setup the service account and how it was pre
 14:11:42.957 [main] INFO  io.zeebe.clustertestbench.bootstrap.Launcher - Job worker opened and receiving jobs.
 ```
 
-- Check that workflows have been deployed to test orchestration cluster
+- Check that processes have been deployed to test orchestration cluster

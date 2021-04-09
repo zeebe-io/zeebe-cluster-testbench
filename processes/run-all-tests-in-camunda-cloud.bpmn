@@ -15,7 +15,7 @@
         <zeebe:calledElement processId="run-test-in-camunda-cloud" />
         <zeebe:ioMapping>
           <zeebe:input source="=sequentialTestParams" target="testParams" />
-          <zeebe:input source="=&#34;sequential-test&#34;" target="testWorkflowId" />
+          <zeebe:input source="=&#34;sequential-test&#34;" target="testProcessId" />
           <zeebe:output source="=testReport.testResult" target="sequentialTestResult" />
         </zeebe:ioMapping>
       </bpmn:extensionElements>
@@ -51,7 +51,7 @@
         <zeebe:calledElement processId="run-test-in-camunda-cloud" />
         <zeebe:ioMapping>
           <zeebe:input source="=chaosTestParams" target="testParams" />
-          <zeebe:input source="=&#34;chaos-test&#34;" target="testWorkflowId" />
+          <zeebe:input source="=&#34;chaos-test&#34;" target="testProcessId" />
           <zeebe:output source="=testReport.testResult" target="chaosExperimentResult" />
         </zeebe:ioMapping>
       </bpmn:extensionElements>

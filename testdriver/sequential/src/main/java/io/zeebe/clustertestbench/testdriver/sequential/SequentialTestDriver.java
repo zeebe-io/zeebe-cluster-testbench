@@ -40,11 +40,11 @@ public class SequentialTestDriver implements TestDriver {
           .withZone(ZoneId.systemDefault());
 
   private static final String KEY_ITERATION = "iteration";
-  private static final String KEY_WORKFLOW_INSTANCE = "workflowInstanceKey";
+  private static final String KEY_PROCESS_INSTANCE = "processInstanceKey";
   private static final String KEY_START_TIME = "startTime";
 
   private static final String JOB_TYPE = "test-job";
-  private static final String WORKFLOW_ID = "sequential-test-workflow";
+  private static final String PROCESS_ID = "sequential-test-process";
 
   private final ZeebeClient client;
   private final SequentialTestParameters testParameters;
@@ -64,17 +64,17 @@ public class SequentialTestDriver implements TestDriver {
 
     this.testParameters = requireNonNull(testParameters);
 
-    createAndDeploySequentialWorkflow();
+    createAndDeploySequentialProcess();
   }
 
-  private void createAndDeploySequentialWorkflow() {
+  private void createAndDeploySequentialProcess() {
     final SequenceWorkflowBuilder builder =
         new SequenceWorkflowBuilder(Optional.of(testParameters.getSteps()), Optional.of(JOB_TYPE));
 
-    final BpmnModelInstance workflow = builder.buildWorkflow(WORKFLOW_ID);
+    final BpmnModelInstance process = builder.buildWorkflow(PROCESS_ID);
 
-    LOGGER.info("Deploying test workflow:" + WORKFLOW_ID);
-    client.newDeployCommand().addWorkflowModel(workflow, WORKFLOW_ID + ".bpmn").send().join();
+    LOGGER.info("Deploying test process:" + PROCESS_ID);
+    client.newDeployCommand().addProcessModel(process, PROCESS_ID + ".bpmn").send().join();
   }
 
   public TestReport runTest() {
@@ -111,7 +111,7 @@ public class SequentialTestDriver implements TestDriver {
           final var result =
               client
                   .newCreateInstanceCommand()
-                  .bpmnProcessId(WORKFLOW_ID)
+                  .bpmnProcessId(PROCESS_ID)
                   .latestVersion()
                   .variables(variables)
                   .withResult()
@@ -119,14 +119,14 @@ public class SequentialTestDriver implements TestDriver {
                   .send()
                   .get();
 
-          iterationTimingContxt.putMetaData(KEY_WORKFLOW_INSTANCE, result.getWorkflowInstanceKey());
+          iterationTimingContxt.putMetaData(KEY_PROCESS_INSTANCE, result.getProcessInstanceKey());
 
         } catch (final Exception e) {
           final var exceptionFilter =
               new ExceptionFilterBuilder() //
                   .ignoreRessourceExhaustedExceptions() //
                   // can occur because deployment needs to be distributed to other partitions
-                  .ignoreWorkflowNotFoundExceptions(WORKFLOW_ID) //
+                  .ignoreProcessNotFoundExceptions(PROCESS_ID) //
                   .build();
 
           if (exceptionFilter.test(e)) {
