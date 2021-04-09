@@ -8,6 +8,7 @@ import java.io.File
 import java.nio.file.Files
 import java.util.*
 import java.util.concurrent.CountDownLatch
+import java.util.concurrent.TimeUnit
 
 private const val ROOT_PATH = "zeebe-chaos/chaos-experiments"
 private const val SHELL_EXTENSION = "sh"
@@ -98,12 +99,17 @@ fun handler(client: JobClient, activatedjob: ActivatedJob) {
         .directory(scriptPath)
         .inheritIO()
     processBuilder
-        .environment().put("NAMESPACE", namespace)
+        .environment()["NAMESPACE"] = namespace
+
+    var timeoutInSeconds = 15 * 60L // per default 15 min timeout
+    provider["timeout"]?.let {
+        timeoutInSeconds = provider["timeout"].toString().toLong()
+    }
 
     val process = processBuilder.start()
-    val exitValue = process.waitFor()
+    val inTime = process.waitFor(timeoutInSeconds, TimeUnit.SECONDS)
 
-    if (exitValue == 0) {
+    if (inTime && process.exitValue() == 0) {
         client.newCompleteCommand(activatedjob.key).send()
     } else {
         val output = String(process.inputStream.readAllBytes())
@@ -113,6 +119,7 @@ fun handler(client: JobClient, activatedjob: ActivatedJob) {
         client.newFailCommand(activatedjob.key).retries(0).errorMessage(errorMessage).send();
     }
 }
+
 
 private fun createCommandList(
     scriptPath: File,
