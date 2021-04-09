@@ -18,8 +18,11 @@ import java.util.Map;
 import java.util.concurrent.TimeUnit;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
+// todo: update ZeeQS version
+@Disabled("This test is blocked by a incompatible ZeeQS version")
 public class TriggerMessageStartEventHandlerIT {
 
   ZeebeEnvironment zeebeEnvironment = new ZeebeEnvironment();
