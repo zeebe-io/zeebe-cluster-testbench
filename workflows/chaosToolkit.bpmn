@@ -4,8 +4,7 @@
     <bpmn:startEvent id="StartEvent_1" name="Run Chaos experiments">
       <bpmn:extensionElements>
         <zeebe:ioMapping>
-          <zeebe:output source="=string(now())" target="testReport.startTime" />
-          <zeebe:output source="=null" target="experiment" />
+          <zeebe:output source="=((now() - date and time(&#34;1970-01-01T00:00Z&#34;)) / duration(&#34;PT1S&#34;)) * 1000" target="testReport.startTime" />
         </zeebe:ioMapping>
       </bpmn:extensionElements>
       <bpmn:outgoing>Flow_0kbumzp</bpmn:outgoing>
@@ -49,13 +48,14 @@
           <zeebe:output source="= &#34;Experiment failed for cluster plan: &#39;&#34; + clusterPlan + &#34;&#39;.&#34;" target="testReport.failureMessages" />
           <zeebe:output source="= 1" target="testReport.failureCount" />
           <zeebe:output source="=&#34;FAILED&#34;" target="testReport.testResult" />
-          <zeebe:output source="=string(now())" target="testReport.endTime" />
+          <zeebe:output source="=((now() - date and time(&#34;1970-01-01T00:00Z&#34;)) / duration(&#34;PT1S&#34;)) * 1000" target="testReport.endTime" />
         </zeebe:ioMapping>
       </bpmn:extensionElements>
       <bpmn:outgoing>Flow_0bb5bnj</bpmn:outgoing>
       <bpmn:errorEventDefinition id="ErrorEventDefinition_0e0k38x" errorRef="Error_0wkiw9h" />
     </bpmn:boundaryEvent>
-    <bpmn:endEvent id="Event_0fhnwbl" name="Failed to run chaso experiments">
+    <bpmn:sequenceFlow id="Flow_0bb5bnj" sourceRef="Event_15ycupq" targetRef="Event_0fhnwbl" />
+    <bpmn:endEvent id="Event_0fhnwbl" name="Failed to run chaos experiments">
       <bpmn:extensionElements>
         <zeebe:ioMapping>
           <zeebe:output source="= source" target="target" />
@@ -63,11 +63,15 @@
       </bpmn:extensionElements>
       <bpmn:incoming>Flow_0bb5bnj</bpmn:incoming>
     </bpmn:endEvent>
-    <bpmn:sequenceFlow id="Flow_0bb5bnj" sourceRef="Event_15ycupq" targetRef="Event_0fhnwbl" />
   </bpmn:process>
   <bpmn:error id="Error_0wkiw9h" name="experimentFailed" errorCode="experimentFailed" />
   <bpmndi:BPMNDiagram id="BPMNDiagram_1">
     <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="chaosToolkit">
+      <bpmndi:BPMNEdge id="Flow_0bb5bnj_di" bpmnElement="Flow_0bb5bnj">
+        <di:waypoint x="480" y="178" />
+        <di:waypoint x="480" y="240" />
+        <di:waypoint x="562" y="240" />
+      </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_19ibrle_di" bpmnElement="Flow_19ibrle">
         <di:waypoint x="500" y="120" />
         <di:waypoint x="562" y="120" />
@@ -79,11 +83,6 @@
       <bpmndi:BPMNEdge id="Flow_0kbumzp_di" bpmnElement="Flow_0kbumzp">
         <di:waypoint x="188" y="120" />
         <di:waypoint x="240" y="120" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_0bb5bnj_di" bpmnElement="Flow_0bb5bnj">
-        <di:waypoint x="480" y="178" />
-        <di:waypoint x="480" y="240" />
-        <di:waypoint x="562" y="240" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNShape id="_BPMNShape_StartEvent_2" bpmnElement="StartEvent_1">
         <dc:Bounds x="152" y="102" width="36" height="36" />
