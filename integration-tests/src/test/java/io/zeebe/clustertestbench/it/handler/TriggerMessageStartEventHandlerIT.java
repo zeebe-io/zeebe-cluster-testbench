@@ -83,9 +83,9 @@ public class TriggerMessageStartEventHandlerIT {
     // then
     await()
         .atMost(1, TimeUnit.MINUTES)
-        .until(() -> zeeqsClient.getProcessInstanceKeys().size() == 2);
+        .until(() -> zeeqsClient.getWorkflowInstanceKeys().size() == 2);
 
-    final List<Long> processInstanceKeys = zeeqsClient.getProcessInstanceKeys();
+    final List<Long> processInstanceKeys = zeeqsClient.getWorkflowInstanceKeys();
 
     processInstanceKeys.remove(mainProcessCreationResponse.getProcessInstanceKey());
 
@@ -97,7 +97,7 @@ public class TriggerMessageStartEventHandlerIT {
     assertThat(elementDto.getElementId()).isEqualTo("secondary");
 
     final List<VariableDto> variablesInSecondaryProcess =
-        zeeqsClient.getProcessInstanceVariables(secondaryProcessInstanceKey);
+        zeeqsClient.getWorkflowInstanceVariables(secondaryProcessInstanceKey);
 
     final Map<String, String> variablesInSecondaryProcessAsMap =
         variablesInSecondaryProcess.stream()
