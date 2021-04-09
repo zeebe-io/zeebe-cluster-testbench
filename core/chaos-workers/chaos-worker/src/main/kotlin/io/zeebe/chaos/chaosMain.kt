@@ -26,6 +26,7 @@ private fun createClient(): ZeebeClient {
     return ZeebeClient.newClientBuilder()
         .credentialsProvider(audience)
         .gatewayAddress(System.getenv("ZEEBE_ADDRESS"))
+        .numJobWorkerExecutionThreads(4)
         .build()
 }
 
