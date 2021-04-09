@@ -42,10 +42,10 @@ spec:
           resources:
             limits:
               cpu: 4
-              memory: 256Mi
+              memory: 1Gi
             requests:
               cpu: 2
-              memory: 100Mi
+              memory: 500Mi
           volumeMounts:
             - name: data
               mountPath: /home/chaos/data
