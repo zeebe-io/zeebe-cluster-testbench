@@ -6,3 +6,7 @@ zeebe-chaos
 target
 *.iml
 credentials
+
+credentials-testbench
+testbenchDebugRun.sh
+
