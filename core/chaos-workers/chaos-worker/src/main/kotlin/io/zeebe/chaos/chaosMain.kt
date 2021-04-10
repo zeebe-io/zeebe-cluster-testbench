@@ -47,11 +47,13 @@ fun main() {
     scriptPath.listFiles { file -> file.extension == SHELL_EXTENSION }!!
         .map { it.name }
         .filterNot { it.contains("utils") }
+//        .filterNot { it.equals(DeployMultipleVersionsHandler.JOB_TYPE) }
         .forEach { script ->
             LOG.info("Start worker with type `$script`")
             zeebeClient.newWorker().jobType(script).handler(::handler).open()
         }
 
+//    zeebeClient.newWorker().jobType(DeployMultipleVersionsHandler.JOB_TYPE).handler(DeployMultipleVersionsHandler()).open()
     zeebeClient.newWorker().jobType("readExperiments").handler(::readExperiments).open()
 
     // keep workers running
@@ -94,30 +96,51 @@ fun handler(client: JobClient, activatedjob: ActivatedJob) {
     val scriptPath = File("$ROOT_PATH/scripts/")
 
     val commandList = createCommandList(scriptPath, command, provider)
-    LOG.info("Commands to run: $commandList")
+    LOG.info("Commands to run: $commandList on namespace: $namespace")
     val processBuilder = ProcessBuilder(commandList)
         .directory(scriptPath)
         .inheritIO()
     processBuilder
         .environment()["NAMESPACE"] = namespace
 
+    val timeOut = provider["timeout"]?.toString()?.toLong()
+
+    val exitCode =
+        ProcessRunner()
+            .runProcess(commandList,
+                scriptPath,
+                mapOf("NAMESPACE" to namespace),
+                timeOut)
+
+    Result.failure<String>(Exception("")).onFailure {  }
+
+    exitCode?.let {
+        client.newCompleteCommand(activatedjob.key).send()
+    } ?: run {
+        val output = String(process.inputStream.readAllBytes())
+//        val errorOutput = String(process.errorStream.readAllBytes())
+//        val errorMessage =
+//            "Expected to run $commandList, but failed. Standard output: '$output' standard error: '$errorOutput'"
+//        client.newFailCommand(activatedjob.key).retries(0).errorMessage(errorMessage).send();
+    }
     var timeoutInSeconds = 15 * 60L // per default 15 min timeout
     provider["timeout"]?.let {
         timeoutInSeconds = provider["timeout"].toString().toLong()
     }
 
-    val process = processBuilder.start()
-    val inTime = process.waitFor(timeoutInSeconds, TimeUnit.SECONDS)
+//
+//    val process = processBuilder.start()
+//    val inTime = process.waitFor(timeoutInSeconds, TimeUnit.SECONDS)
 
-    if (inTime && process.exitValue() == 0) {
+//    if (inTime && process.exitValue() == 0) {
         client.newCompleteCommand(activatedjob.key).send()
-    } else {
-        val output = String(process.inputStream.readAllBytes())
-        val errorOutput = String(process.errorStream.readAllBytes())
-        val errorMessage =
-            "Expected to run $commandList, but failed. Standard output: '$output' standard error: '$errorOutput'"
-        client.newFailCommand(activatedjob.key).retries(0).errorMessage(errorMessage).send();
-    }
+//    } else {
+//        val output = String(process.inputStream.readAllBytes())
+//        val errorOutput = String(process.errorStream.readAllBytes())
+//        val errorMessage =
+//            "Expected to run $commandList, but failed. Standard output: '$output' standard error: '$errorOutput'"
+//        client.newFailCommand(activatedjob.key).retries(0).errorMessage(errorMessage).send();
+//    }
 }
 
 
