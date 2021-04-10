@@ -43,6 +43,11 @@
     <bpmn:sequenceFlow id="Flow_1okm6sv" sourceRef="Event_0zo9lot" targetRef="Gateway_0gybtdt" />
     <bpmn:sequenceFlow id="Flow_06wxvcu" sourceRef="Gateway_0gybtdt" targetRef="Event_13pyqn2" />
     <bpmn:boundaryEvent id="Event_0owkcly" name="Timeout" attachedToRef="Activity_1xzr6io">
+      <bpmn:extensionElements>
+        <zeebe:ioMapping>
+          <zeebe:output source="=append(testReport.failureMessages, (&#34;Action with name: &#39;&#34; + action.name + &#34; timed out.&#34;))" target="testReport.failureMessages" />
+        </zeebe:ioMapping>
+      </bpmn:extensionElements>
       <bpmn:outgoing>Flow_0yhcmxv</bpmn:outgoing>
       <bpmn:timerEventDefinition id="TimerEventDefinition_1eo7nl1">
         <bpmn:timeDuration xsi:type="bpmn:tFormalExpression">=if (is defined(action.provider.timeout)) then duration("PT" + string(action.provider.timeout) + "S") else duration("PT1H")</bpmn:timeDuration>
