@@ -47,11 +47,13 @@ fun main() {
     scriptPath.listFiles { file -> file.extension == SHELL_EXTENSION }!!
         .map { it.name }
         .filterNot { it.contains("utils") }
+        .filterNot { it.equals(DeployMultipleVersionsHandler.JOB_TYPE) }
         .forEach { script ->
             LOG.info("Start worker with type `$script`")
             zeebeClient.newWorker().jobType(script).handler(::handler).open()
         }
 
+    zeebeClient.newWorker().jobType(DeployMultipleVersionsHandler.JOB_TYPE).handler(DeployMultipleVersionsHandler()).open()
     zeebeClient.newWorker().jobType("readExperiments").handler(::readExperiments).open()
 
     // keep workers running
