@@ -10,6 +10,11 @@ import java.util.*
 import java.util.concurrent.CountDownLatch
 import java.util.concurrent.TimeUnit
 
+private const val ENV_TESTBENCH_ADDRESS = "TESTBENCH_ADDRESS"
+private const val ENV_TESTBENCH_CLIENT_ID = "TESTBENCH_CLIENT_ID"
+private const val ENV_TESTBENCH_CLIENT_SECRET = "TESTBENCH_CLIENT_SECRET"
+private const val ENV_TESTBENCH_AUTHORIZATION_SERVER_URL = "TESTBENCH_AUTHORIZATION_SERVER_URL"
+
 private const val ROOT_PATH = "zeebe-chaos/chaos-experiments"
 private const val SHELL_EXTENSION = "sh"
 private const val EXPERIMENT_FILE_NAME = "experiment.json"
@@ -18,15 +23,15 @@ private val LOG = org.slf4j.LoggerFactory.getLogger("io.zeebe.chaos.ChaosWorker"
 
 private fun createClient(): ZeebeClient {
     val audience = OAuthCredentialsProviderBuilder()
-        .audience(System.getenv("ZEEBE_ADDRESS").removeSuffix(":443"))
-        .authorizationServerUrl(System.getenv("ZEEBE_AUTHORIZATION_SERVER_URL"))
-        .clientId(System.getenv("ZEEBE_CLIENT_ID"))
-        .clientSecret(System.getenv("ZEEBE_CLIENT_SECRET"))
+        .audience(System.getenv(ENV_TESTBENCH_ADDRESS).removeSuffix(":443"))
+        .authorizationServerUrl(System.getenv(ENV_TESTBENCH_AUTHORIZATION_SERVER_URL))
+        .clientId(System.getenv(ENV_TESTBENCH_CLIENT_ID))
+        .clientSecret(System.getenv(ENV_TESTBENCH_CLIENT_SECRET))
         .build()
 
     return ZeebeClient.newClientBuilder()
         .credentialsProvider(audience)
-        .gatewayAddress(System.getenv("ZEEBE_ADDRESS"))
+        .gatewayAddress(System.getenv(ENV_TESTBENCH_ADDRESS))
         .numJobWorkerExecutionThreads(4)
         .build()
 }
@@ -47,11 +52,13 @@ fun main() {
     scriptPath.listFiles { file -> file.extension == SHELL_EXTENSION }!!
         .map { it.name }
         .filterNot { it.contains("utils") }
+        .filterNot { it.equals(DeployMultipleVersionsHandler.JOB_TYPE) }
         .forEach { script ->
             LOG.info("Start worker with type `$script`")
             zeebeClient.newWorker().jobType(script).handler(::handler).open()
         }
 
+    zeebeClient.newWorker().jobType(DeployMultipleVersionsHandler.JOB_TYPE).handler(DeployMultipleVersionsHandler()).open()
     zeebeClient.newWorker().jobType("readExperiments").handler(::readExperiments).open()
 
     // keep workers running

@@ -1,4 +1,5 @@
 createAndRunImage.sh
+testAction.sh
 testbenchDebug.sh
 output-*.log
 debugWorker.sh
