@@ -23,16 +23,16 @@ spec:
           image: gcr.io/zeebe-io/zeebe-cluster-testbench-chaos:1.x-prod
           imagePullPolicy: Always
           env:
-            - name: ZEEBE_AUTHORIZATION_SERVER_URL
+            - name: TESTBENCH_AUTHORIZATION_SERVER_URL
               value: "https://login.cloud.ultrawombat.com/oauth/token"
-            - name: ZEEBE_CLIENT_ID
+            - name: TESTBENCH_CLIENT_ID
               value: "ELL8eP0qDkl6dxXVps0t51x2VkCkWf~p"
-            - name: ZEEBE_CLIENT_SECRET
+            - name: TESTBENCH_CLIENT_SECRET
               valueFrom:
                 secretKeyRef:
                   name: testbench-secrets
                   key: clientSecret
-            - name: ZEEBE_ADDRESS
+            - name: TESTBENCH_ADDRESS
               valueFrom:
                 secretKeyRef:
                   name: testbench-secrets
