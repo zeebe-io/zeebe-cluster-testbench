@@ -21,19 +21,19 @@ class DeployMultipleVersionsHandler : JobHandler {
     }
 
     override fun handle(client: JobClient, job: ActivatedJob) {
-        LOG.info("Handle job {}", JOB_TYPE)
+        LOG.info("Handle job $JOB_TYPE")
 
         val authenticationDetails = job.variablesAsMap["authenticationDetails"]!! as Map<String, Any>
         createClient(authenticationDetails).use {
-            LOG.info("Connected to {}, start deploying multiple versions...", it.configuration.gatewayAddress)
+            LOG.info("Connected to ${it.configuration.gatewayAddress}, start deploying multiple versions...")
 
-            var version = -1
-            do {
+            var lastVersion = -1
+            for (i in 1..5) {
                 deployModel(it, MODEL_V1, "modelV1.bpmn")
-                version = deployModel(it, MODEL_V2, "modelV2.bpmn")
-            } while (version < 10)
+                lastVersion = deployModel(it, MODEL_V2, "modelV2.bpmn")
+            }
 
-            LOG.info("Deployed 10 different versions of process {}. Complete {}", PROCESS_ID, JOB_TYPE)
+            LOG.info("Deployed 10 different versions of process $PROCESS_ID, last version: $lastVersion. Complete $JOB_TYPE")
         }
 
         client.newCompleteCommand(job.key).send()
@@ -47,7 +47,7 @@ class DeployMultipleVersionsHandler : JobHandler {
                 version = deploymentEvent.workflows[0].version
             } catch (e: Exception) {
                 // try again
-                LOG.debug("Failed to deploy {}, try again.", name, e)
+                LOG.debug("Failed to deploy $name, try again.", e)
                 Thread.sleep(100)
             }
         } while (version == -1)
@@ -67,7 +67,7 @@ class DeployMultipleVersionsHandler : JobHandler {
             .authorizationServerUrl(authorizationURL)
             .clientId(clientId)
             .clientSecret(clientSecret)
-            .credentialsCachePath("/tmp/" + JOB_TYPE + ".cred")
+            .credentialsCachePath("/tmp/$JOB_TYPE.cred")
             .build()
 
         return ZeebeClient.newClientBuilder()
