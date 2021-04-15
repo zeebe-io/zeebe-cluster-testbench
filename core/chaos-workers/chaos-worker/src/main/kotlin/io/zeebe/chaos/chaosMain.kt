@@ -6,7 +6,6 @@ import io.zeebe.client.api.worker.JobClient
 import io.zeebe.client.impl.oauth.OAuthCredentialsProviderBuilder
 import java.io.File
 import java.nio.file.Files
-import java.util.*
 import java.util.concurrent.CountDownLatch
 import java.util.concurrent.TimeUnit
 
@@ -38,7 +37,7 @@ private fun createClient(): ZeebeClient {
 
 fun main() {
     // given
-    updateRepo() // get latest zeebe-chaos repo changes
+    showGitStatus()
     val zeebeClient = createClient()
 
     LOG.info("Connected to ${zeebeClient.configuration.gatewayAddress}")
@@ -154,10 +153,10 @@ private fun createCommandList(
 }
 
 /**
- * Get latest state of the zeebe-chaos repository, so we can run the latest experiments.
+ * Get current status information of git zeebe-chaos repo.
  */
-fun updateRepo() {
-    runCommands(File(ROOT_PATH), "git", "pull", "origin", "master")
+fun showGitStatus() {
+    runCommands(File(ROOT_PATH), "git", "status")
 }
 
 /**

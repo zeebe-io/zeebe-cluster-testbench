@@ -1,8 +1,7 @@
 FROM openjdk:11-jre as pre
 
 ARG TOKEN
-ENV ZEEBE_VERSION=0.26.0 \
-    CHAOS_HOME=/home/chaos \
+ENV CHAOS_HOME=/home/chaos \
     CONTEXT=gke_camunda-cloud-240911_europe-west1-d_ultrachaos
 
 WORKDIR ${CHAOS_HOME}
@@ -11,11 +10,13 @@ ENV PATH "${CHAOS_HOME}:${PATH}"
 
 # install dependencies
 RUN ${CHAOS_HOME}/installDependencies.sh
-RUN git clone https://github.com/zeebe-io/zeebe-chaos.git
+RUN git clone https://github.com/zeebe-io/zeebe-chaos.git \
+    && cd zeebe-chaos/ \
+    && git checkout 0.26.1
 
 # current user is root so we need to copy it to root
 # probably we want to create a different user
-RUN mkdir -p .kube
+RUN mkdir -p /root/.kube
 COPY kubeconfig /root/.kube/config
 RUN kubectl config set-credentials ${CONTEXT}-zeebe-chaos-token-user --token ${TOKEN}
 RUN kubectl config set-context ${CONTEXT} --user ${CONTEXT}-zeebe-chaos-token-user
