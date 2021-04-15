@@ -43,8 +43,8 @@ class DeployMultipleVersionsHandler : JobHandler {
         var version = -1
         do {
             try {
-                val deploymentEvent = client.newDeployCommand().addWorkflowModel(model, name).send().join()
-                version = deploymentEvent.workflows[0].version
+                val deploymentEvent = client.newDeployCommand().addProcessModel(model, name).send().join()
+                version = deploymentEvent.processes[0].version
             } catch (e: Exception) {
                 // try again
                 LOG.debug("Failed to deploy $name, try again.", e)
