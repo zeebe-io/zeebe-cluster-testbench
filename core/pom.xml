@@ -141,9 +141,9 @@
 
   <properties>
     <plugin.version.assembly>3.3.0</plugin.version.assembly>
-    <version.google-api>1.31.3</version.google-api>
+    <version.google-api>1.31.4</version.google-api>
     <version.google-http-client>1.39.2</version.google-http-client>
-    <version.google-sheets-api>v4-rev20210223-1.31.0</version.google-sheets-api>
+    <version.google-sheets-api>v4-rev20210322-1.31.0</version.google-sheets-api>
     <version.jaxrs>3.0.12.Final</version.jaxrs>
 
     <version.slack-api>1.6.2</version.slack-api>
