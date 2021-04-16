@@ -419,17 +419,17 @@
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <version.assertj>3.19.0</version.assertj>
     <version.commons-text>1.9</version.commons-text>
-    <version.jackson>2.12.2</version.jackson>
+    <version.jackson>2.12.3</version.jackson>
     <version.java>11</version.java>
 
     <version.junit>5.7.1</version.junit>
-    <version.log4j>2.14.0</version.log4j>
+    <version.log4j>2.14.1</version.log4j>
     <version.mockito>3.9.0</version.mockito>
     <version.resteasy>4.6.0.Final</version.resteasy>
     <version.slf4j>1.7.30</version.slf4j>
     <version.vavr>0.10.3</version.vavr>
     <version.workflowgenerator>1.0.2</version.workflowgenerator>
-    <zeebe.version>0.26.2</zeebe.version>
+    <zeebe.version>0.26.3</zeebe.version>
     <version.zeebe-bpmn-spec>1.0.0</version.zeebe-bpmn-spec>
     <version.awaitility>4.0.3</version.awaitility>
   </properties>
