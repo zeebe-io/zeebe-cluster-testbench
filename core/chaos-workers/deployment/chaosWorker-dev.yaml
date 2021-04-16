@@ -23,16 +23,16 @@ spec:
           image: gcr.io/zeebe-io/zeebe-cluster-testbench-chaos:1.x-dev
           imagePullPolicy: Always
           env:
-            - name: ZCTB_AUTHENTICATION_SERVER_URL
+            - name: TESTBENCH_AUTHORIZATION_SERVER_URL
               value: "https://login.cloud.ultrawombat.com/oauth/token"
-            - name: ZCTB_CLIENT_ID
+            - name: TESTBENCH_CLIENT_ID
               value: "Nr0kg6UJw90-oucA3bNj20dHztIUgDjg"
-            - name: ZEEBE_CLIENT_SECRET
+            - name: TESTBENCH_CLIENT_SECRET
               valueFrom:
                 secretKeyRef:
                   name: testbench-secrets
                   key: clientSecret
-            - name: ZEEBE_ADDRESS
+            - name: TESTBENCH_ADDRESS
               valueFrom:
                 secretKeyRef:
                   name: testbench-secrets
@@ -42,10 +42,10 @@ spec:
           resources:
             limits:
               cpu: 4
-              memory: 256Mi
+              memory: 1Gi
             requests:
               cpu: 2
-              memory: 100Mi
+              memory: 500Mi
           volumeMounts:
             - name: data
               mountPath: /home/chaos/data
