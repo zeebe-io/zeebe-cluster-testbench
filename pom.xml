@@ -423,7 +423,7 @@
     <version.java>11</version.java>
 
     <version.junit>5.7.1</version.junit>
-    <version.log4j>2.14.0</version.log4j>
+    <version.log4j>2.14.1</version.log4j>
     <version.mockito>3.9.0</version.mockito>
     <version.resteasy>4.6.0.Final</version.resteasy>
     <version.slf4j>1.7.30</version.slf4j>
