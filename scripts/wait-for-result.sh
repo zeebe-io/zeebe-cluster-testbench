@@ -21,7 +21,7 @@ while [ $waiting -eq 1 ]; do
 
     zbctl activate jobs "$businessKey" --insecure > activationresponse.txt 2>error.txt
 
-    key=$(jq -r '.key' < activationresponse.txt)
+    key=$(jq -r '.jobs[0].key' < activationresponse.txt)
 
     if [ -z "$key" ]; then
         echo "Still waiting"
@@ -36,11 +36,11 @@ echo "Job Completed"
 zbctl complete job "$key" --insecure
 
 # example: extract aggrgated test result
-key=$(jq -r '.key' < activationresponse.txt)
+key=$(jq -r '.jobs[0].key' < activationresponse.txt)
 
 echo "Job key is: $key"
 
-variables=$(jq -r '.variables' < activationresponse.txt)
+variables=$(jq -r '.jobs[0].variables' < activationresponse.txt)
 
 echo "Job variables are: $variables"
 
