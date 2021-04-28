@@ -22,7 +22,7 @@
     <kotlin.compiler.jvmTarget>11</kotlin.compiler.jvmTarget>
 
     <version.kotlin>1.4.10</version.kotlin>
-    <plugin.version..maven.exec>1.6.0</plugin.version..maven.exec>
+    <plugin.version..maven.exec>3.0.0</plugin.version..maven.exec>
   </properties>
 
   <build>
