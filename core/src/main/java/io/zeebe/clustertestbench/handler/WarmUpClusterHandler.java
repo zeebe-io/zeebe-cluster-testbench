@@ -34,7 +34,7 @@ public class WarmUpClusterHandler implements JobHandler {
 
     try (final ZeebeClient zeebeClient =
         ZeebeClient.newClientBuilder()
-            .brokerContactPoint(authenticationDetails.getContactPoint())
+            .gatewayAddress(authenticationDetails.getContactPoint())
             .credentialsProvider(cred)
             .build()) {
 
