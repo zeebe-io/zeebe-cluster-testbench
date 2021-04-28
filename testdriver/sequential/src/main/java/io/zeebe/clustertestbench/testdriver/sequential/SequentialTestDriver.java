@@ -58,7 +58,7 @@ public class SequentialTestDriver implements TestDriver {
 
     client =
         ZeebeClient.newClientBuilder()
-            .brokerContactPoint(authenticationDetails.getContactPoint())
+            .gatewayAddress(authenticationDetails.getContactPoint())
             .credentialsProvider(cred)
             .build();
 

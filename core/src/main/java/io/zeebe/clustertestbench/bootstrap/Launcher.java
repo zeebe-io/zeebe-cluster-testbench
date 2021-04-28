@@ -91,7 +91,7 @@ public class Launcher {
     try (final ZeebeClient client =
         ZeebeClient.newClientBuilder()
             .numJobWorkerExecutionThreads(50)
-            .brokerContactPoint(testOrchestrationContactPoint)
+            .gatewayAddress(testOrchestrationContactPoint)
             .credentialsProvider(cred)
             .build(); ) {
 
@@ -139,7 +139,7 @@ public class Launcher {
     try (final ZeebeClient client =
         ZeebeClient.newClientBuilder()
             .numJobWorkerExecutionThreads(50)
-            .brokerContactPoint(testOrchestrationContactPoint)
+            .gatewayAddress(testOrchestrationContactPoint)
             .credentialsProvider(cred)
             .build(); ) {
       client.newTopologyRequest().send().join();
