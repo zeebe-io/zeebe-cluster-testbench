@@ -62,7 +62,6 @@
     <version.resteasy>4.6.0.Final</version.resteasy>
     <version.slf4j>1.7.30</version.slf4j>
     <version.vavr>0.10.3</version.vavr>
-    <version.workflowgenerator>1.0.2</version.workflowgenerator>
     <version.zeebe-bpmn-spec>1.0.0</version.zeebe-bpmn-spec>
     <zeebe.version>1.0.0-rc1</zeebe.version>
   </properties>
@@ -104,11 +103,6 @@
         <groupId>io.camunda</groupId>
         <artifactId>zeebe-client-java</artifactId>
         <version>${zeebe.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>io.zeebe</groupId>
-        <artifactId>zeebe-workflow-generator</artifactId>
-        <version>${version.workflowgenerator}</version>
       </dependency>
       <dependency>
         <groupId>org.assertj</groupId>
