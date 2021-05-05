@@ -19,10 +19,10 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
 
-import io.zeebe.client.api.ZeebeFuture;
-import io.zeebe.client.api.command.CompleteJobCommandStep1;
-import io.zeebe.client.api.response.ActivatedJob;
-import io.zeebe.client.api.worker.JobClient;
+import io.camunda.zeebe.client.api.ZeebeFuture;
+import io.camunda.zeebe.client.api.command.CompleteJobCommandStep1;
+import io.camunda.zeebe.client.api.response.ActivatedJob;
+import io.camunda.zeebe.client.api.worker.JobClient;
 import io.zeebe.clustertestbench.cloud.response.GenerationInfo;
 import io.zeebe.clustertestbench.handler.CreateGenerationInCamundaCloudHandler.Input;
 import io.zeebe.clustertestbench.handler.CreateGenerationInCamundaCloudHandler.Output;

@@ -1,9 +1,9 @@
 package io.zeebe.clustertestbench.handler;
 
+import io.camunda.zeebe.client.api.response.ActivatedJob;
+import io.camunda.zeebe.client.api.worker.JobClient;
+import io.camunda.zeebe.client.api.worker.JobHandler;
 import io.vavr.control.Either;
-import io.zeebe.client.api.response.ActivatedJob;
-import io.zeebe.client.api.worker.JobClient;
-import io.zeebe.client.api.worker.JobHandler;
 import io.zeebe.clustertestbench.cloud.response.ChannelInfo;
 import io.zeebe.clustertestbench.cloud.response.GenerationInfo;
 import io.zeebe.clustertestbench.internal.cloud.InternalCloudAPIClient;

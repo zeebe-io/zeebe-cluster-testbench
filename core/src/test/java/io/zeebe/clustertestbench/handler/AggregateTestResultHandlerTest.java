@@ -7,11 +7,11 @@ import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import io.camunda.zeebe.client.api.ZeebeFuture;
+import io.camunda.zeebe.client.api.command.CompleteJobCommandStep1;
+import io.camunda.zeebe.client.api.response.ActivatedJob;
+import io.camunda.zeebe.client.api.worker.JobClient;
 import io.vavr.collection.Stream;
-import io.zeebe.client.api.ZeebeFuture;
-import io.zeebe.client.api.command.CompleteJobCommandStep1;
-import io.zeebe.client.api.response.ActivatedJob;
-import io.zeebe.client.api.worker.JobClient;
 import io.zeebe.clustertestbench.testdriver.api.TestReport.TestResult;
 import java.util.Collections;
 import java.util.List;

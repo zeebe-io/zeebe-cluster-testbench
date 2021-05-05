@@ -1,6 +1,6 @@
 package io.zeebe.clustertestbench.testdriver.impl;
 
-import io.zeebe.client.impl.ZeebeObjectMapper;
+import io.camunda.zeebe.client.impl.ZeebeObjectMapper;
 import io.zeebe.clustertestbench.testdriver.api.TestReport;
 import java.util.ArrayList;
 import java.util.Collections;
