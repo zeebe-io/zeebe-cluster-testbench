@@ -3,21 +3,21 @@ package io.zeebe.clustertestbench.testdriver.sequential;
 import static java.util.Objects.requireNonNull;
 import static java.util.Optional.ofNullable;
 
-import io.zeebe.client.ZeebeClient;
-import io.zeebe.client.api.response.ActivatedJob;
-import io.zeebe.client.api.worker.JobClient;
-import io.zeebe.client.api.worker.JobHandler;
-import io.zeebe.client.api.worker.JobWorker;
-import io.zeebe.client.impl.oauth.OAuthCredentialsProvider;
-import io.zeebe.client.impl.oauth.OAuthCredentialsProviderBuilder;
+import io.camunda.zeebe.client.ZeebeClient;
+import io.camunda.zeebe.client.api.response.ActivatedJob;
+import io.camunda.zeebe.client.api.worker.JobClient;
+import io.camunda.zeebe.client.api.worker.JobHandler;
+import io.camunda.zeebe.client.api.worker.JobWorker;
+import io.camunda.zeebe.client.impl.oauth.OAuthCredentialsProvider;
+import io.camunda.zeebe.client.impl.oauth.OAuthCredentialsProviderBuilder;
+import io.camunda.zeebe.model.bpmn.Bpmn;
+import io.camunda.zeebe.model.bpmn.builder.AbstractFlowNodeBuilder;
 import io.zeebe.clustertestbench.testdriver.api.CamundaCloudAuthenticationDetails;
 import io.zeebe.clustertestbench.testdriver.api.TestDriver;
 import io.zeebe.clustertestbench.testdriver.api.TestReport;
 import io.zeebe.clustertestbench.testdriver.impl.CamundaCLoudAuthenticationDetailsImpl;
 import io.zeebe.clustertestbench.testdriver.impl.TestReportImpl;
 import io.zeebe.clustertestbench.testdriver.impl.TestTimingContext;
-import io.zeebe.model.bpmn.BpmnModelInstance;
-import io.zeebe.workflow.generator.builder.SequenceWorkflowBuilder;
 import java.time.Duration;
 import java.time.Instant;
 import java.time.ZoneId;
@@ -26,7 +26,6 @@ import java.time.format.FormatStyle;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
-import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -68,10 +67,15 @@ public class SequentialTestDriver implements TestDriver {
   }
 
   private void createAndDeploySequentialProcess() {
-    final SequenceWorkflowBuilder builder =
-        new SequenceWorkflowBuilder(Optional.of(testParameters.getSteps()), Optional.of(JOB_TYPE));
-
-    final BpmnModelInstance process = builder.buildWorkflow(PROCESS_ID);
+    AbstractFlowNodeBuilder<?, ?> builder = Bpmn.createProcess(PROCESS_ID).startEvent();
+    for (int i = 0; i < testParameters.getSteps(); i++) {
+      builder =
+          builder
+              .serviceTask(String.format("step-%d", i))
+              .zeebeJobType(JOB_TYPE)
+              .zeebeJobRetries("0");
+    }
+    final var process = builder.endEvent().done();
 
     LOGGER.info("Deploying test process:" + PROCESS_ID);
     client.newDeployCommand().addProcessModel(process, PROCESS_ID + ".bpmn").send().join();

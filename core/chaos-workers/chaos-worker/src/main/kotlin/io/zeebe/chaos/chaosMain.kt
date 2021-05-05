@@ -1,9 +1,9 @@
 package io.zeebe.chaos;
 
-import io.zeebe.client.ZeebeClient
-import io.zeebe.client.api.response.ActivatedJob
-import io.zeebe.client.api.worker.JobClient
-import io.zeebe.client.impl.oauth.OAuthCredentialsProviderBuilder
+import io.camunda.zeebe.client.ZeebeClient
+import io.camunda.zeebe.client.api.response.ActivatedJob
+import io.camunda.zeebe.client.api.worker.JobClient
+import io.camunda.zeebe.client.impl.oauth.OAuthCredentialsProviderBuilder
 import java.io.File
 import java.nio.file.Files
 import java.util.*

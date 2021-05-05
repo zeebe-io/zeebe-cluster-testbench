@@ -1,12 +1,12 @@
 package io.zeebe.chaos;
 
-import io.zeebe.client.ZeebeClient
-import io.zeebe.client.api.response.ActivatedJob
-import io.zeebe.client.api.worker.JobClient
-import io.zeebe.client.api.worker.JobHandler
-import io.zeebe.client.impl.oauth.OAuthCredentialsProviderBuilder
-import io.zeebe.model.bpmn.Bpmn
-import io.zeebe.model.bpmn.BpmnModelInstance
+import io.camunda.zeebe.client.ZeebeClient
+import io.camunda.zeebe.client.api.response.ActivatedJob
+import io.camunda.zeebe.client.api.worker.JobClient
+import io.camunda.zeebe.client.api.worker.JobHandler
+import io.camunda.zeebe.client.impl.oauth.OAuthCredentialsProviderBuilder
+import io.camunda.zeebe.model.bpmn.Bpmn
+import io.camunda.zeebe.model.bpmn.BpmnModelInstance
 import org.camunda.bpm.model.xml.ModelInstance
 
 class DeployMultipleVersionsHandler : JobHandler {

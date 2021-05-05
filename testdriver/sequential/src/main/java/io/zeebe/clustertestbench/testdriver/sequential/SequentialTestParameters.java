@@ -2,7 +2,7 @@ package io.zeebe.clustertestbench.testdriver.sequential;
 
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import io.zeebe.client.impl.ZeebeObjectMapper;
+import io.camunda.zeebe.client.impl.ZeebeObjectMapper;
 import io.zeebe.clustertestbench.testdriver.api.serde.DurationDeserializer;
 import io.zeebe.clustertestbench.testdriver.api.serde.DurationSerializer;
 import java.time.Duration;

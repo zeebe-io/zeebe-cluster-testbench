@@ -2,9 +2,9 @@ package io.zeebe.clustertestbench.handler;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import io.zeebe.client.api.response.ActivatedJob;
-import io.zeebe.client.api.worker.JobClient;
-import io.zeebe.client.api.worker.JobHandler;
+import io.camunda.zeebe.client.api.response.ActivatedJob;
+import io.camunda.zeebe.client.api.worker.JobClient;
+import io.camunda.zeebe.client.api.worker.JobHandler;
 import io.zeebe.clustertestbench.testdriver.api.TestReport.TestResult;
 import io.zeebe.clustertestbench.util.StringLookup;
 import java.util.ArrayList;

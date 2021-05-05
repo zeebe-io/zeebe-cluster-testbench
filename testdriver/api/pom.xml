@@ -1,61 +1,57 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
+  <modelVersion>4.0.0</modelVersion>
 
-<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xmlns="http://maven.apache.org/POM/4.0.0"
-  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <parent>
+    <groupId>io.zeebe</groupId>
+    <artifactId>zeebe-cluster-testbench</artifactId>
+    <!-- do not remove empty tag - http://jira.codehaus.org/browse/MNG-4687 -->
+    <version>2.0.0-SNAPSHOT</version>
+    <relativePath>../..</relativePath>
+  </parent>
   <artifactId>zeebe-cluster-testbench-testdriver-api</artifactId>
+
+  <packaging>jar</packaging>
+  <name>Zeebe Cluster Testbench - API for Testdrivers</name>
 
   <dependencies>
     <dependency>
+      <groupId>io.camunda</groupId>
       <artifactId>zeebe-client-java</artifactId>
-      <groupId>io.zeebe</groupId>
     </dependency>
     <dependency>
+      <groupId>com.fasterxml.jackson.core</groupId>
       <artifactId>jackson-core</artifactId>
-      <groupId>com.fasterxml.jackson.core</groupId>
     </dependency>
     <dependency>
+      <groupId>com.fasterxml.jackson.core</groupId>
       <artifactId>jackson-databind</artifactId>
-      <groupId>com.fasterxml.jackson.core</groupId>
     </dependency>
 
     <dependency>
-      <artifactId>junit-jupiter-api</artifactId>
       <groupId>org.junit.jupiter</groupId>
+      <artifactId>junit-jupiter-api</artifactId>
       <scope>test</scope>
     </dependency>
 
     <dependency>
-      <artifactId>mockito-junit-jupiter</artifactId>
       <groupId>org.mockito</groupId>
+      <artifactId>mockito-junit-jupiter</artifactId>
       <scope>test</scope>
     </dependency>
 
     <dependency>
-      <artifactId>assertj-core</artifactId>
       <groupId>org.assertj</groupId>
+      <artifactId>assertj-core</artifactId>
       <scope>test</scope>
     </dependency>
-    
+
     <dependency>
-        <groupId>org.junit.jupiter</groupId>
-        <artifactId>junit-jupiter-params</artifactId>
-        <scope>test</scope>
+      <groupId>org.junit.jupiter</groupId>
+      <artifactId>junit-jupiter-params</artifactId>
+      <scope>test</scope>
     </dependency>
   </dependencies>
-
-  <modelVersion>4.0.0</modelVersion>
-  <name>Zeebe Cluster Testbench - API for Testdrivers</name>
-
-  <packaging>jar</packaging>
-
-  <parent>
-    <artifactId>zeebe-cluster-testbench</artifactId>
-    <groupId>io.zeebe</groupId>
-    <relativePath>../..</relativePath>
-    <!-- do not remove empty tag - http://jira.codehaus.org/browse/MNG-4687 -->
-    <version>2.0.0-SNAPSHOT</version>
-  </parent>
 
 </project>

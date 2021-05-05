@@ -1,9 +1,9 @@
 package io.zeebe.clustertestbench.handler;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import io.zeebe.client.api.response.ActivatedJob;
-import io.zeebe.client.api.worker.JobClient;
-import io.zeebe.client.api.worker.JobHandler;
+import io.camunda.zeebe.client.api.response.ActivatedJob;
+import io.camunda.zeebe.client.api.worker.JobClient;
+import io.camunda.zeebe.client.api.worker.JobHandler;
 import io.zeebe.clustertestbench.cloud.CloudAPIClient;
 import io.zeebe.clustertestbench.cloud.request.CreateClusterRequest;
 import io.zeebe.clustertestbench.cloud.request.CreateZeebeClientRequest;

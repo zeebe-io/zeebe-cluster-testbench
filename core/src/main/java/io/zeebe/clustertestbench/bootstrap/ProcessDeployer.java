@@ -1,6 +1,6 @@
 package io.zeebe.clustertestbench.bootstrap;
 
-import io.zeebe.client.ZeebeClient;
+import io.camunda.zeebe.client.ZeebeClient;
 import java.io.File;
 import java.io.IOException;
 import java.util.Arrays;

@@ -1,6 +1,6 @@
 package io.zeebe.clustertestbench.testdriver.sequential;
 
-import io.zeebe.client.impl.ZeebeObjectMapper;
+import io.camunda.zeebe.client.impl.ZeebeObjectMapper;
 import java.time.Duration;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
