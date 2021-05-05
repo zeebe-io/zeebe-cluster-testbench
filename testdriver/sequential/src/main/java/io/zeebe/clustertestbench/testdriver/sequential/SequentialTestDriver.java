@@ -11,6 +11,7 @@ import io.camunda.zeebe.client.api.worker.JobWorker;
 import io.camunda.zeebe.client.impl.oauth.OAuthCredentialsProvider;
 import io.camunda.zeebe.client.impl.oauth.OAuthCredentialsProviderBuilder;
 import io.camunda.zeebe.model.bpmn.Bpmn;
+import io.camunda.zeebe.model.bpmn.builder.AbstractFlowNodeBuilder;
 import io.zeebe.clustertestbench.testdriver.api.CamundaCloudAuthenticationDetails;
 import io.zeebe.clustertestbench.testdriver.api.TestDriver;
 import io.zeebe.clustertestbench.testdriver.api.TestReport;
@@ -66,10 +67,15 @@ public class SequentialTestDriver implements TestDriver {
   }
 
   private void createAndDeploySequentialProcess() {
-    final SequenceWorkflowBuilder builder =
-        new SequenceWorkflowBuilder(Optional.of(testParameters.getSteps()), Optional.of(JOB_TYPE));
-
-    final BpmnModelInstance process = builder.buildWorkflow(PROCESS_ID);
+    AbstractFlowNodeBuilder<?, ?> builder = Bpmn.createProcess(PROCESS_ID).startEvent();
+    for (int i = 0; i < testParameters.getSteps(); i++) {
+      builder =
+          builder
+              .serviceTask(String.format("step-%d", i))
+              .zeebeJobType(JOB_TYPE)
+              .zeebeJobRetries("0");
+    }
+    final var process = builder.endEvent().done();
 
     LOGGER.info("Deploying test process:" + PROCESS_ID);
     client.newDeployCommand().addProcessModel(process, PROCESS_ID + ".bpmn").send().join();
