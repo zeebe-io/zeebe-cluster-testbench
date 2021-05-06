@@ -67,7 +67,7 @@ public class SequentialTestDriver implements TestDriver {
   }
 
   private void createAndDeploySequentialProcess() {
-    AbstractFlowNodeBuilder<?, ?> builder = Bpmn.createProcess(PROCESS_ID).startEvent();
+    AbstractFlowNodeBuilder<?, ?> builder = Bpmn.createExecutableProcess(PROCESS_ID).startEvent();
     for (int i = 0; i < testParameters.getSteps(); i++) {
       builder =
           builder
