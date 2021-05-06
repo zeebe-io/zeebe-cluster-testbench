@@ -26,7 +26,7 @@ spec:
             - name: TESTBENCH_AUTHORIZATION_SERVER_URL
               value: "https://login.cloud.ultrawombat.com/oauth/token"
             - name: TESTBENCH_CLIENT_ID
-              value: "ELL8eP0qDkl6dxXVps0t51x2VkCkWf~p"
+              value: "6WIMz9KT7076gBWmfV7QJK0zGNotmF04"
             - name: TESTBENCH_CLIENT_SECRET
               valueFrom:
                 secretKeyRef:
