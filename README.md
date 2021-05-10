@@ -297,7 +297,9 @@ Without this mechanism the only option for the external tool to know about the r
 
 #### Analyse Cluster
 
-This process is usually called after a failure occurred. It notifies an engineer and keeps the cluster alive until analysis has completed
+This process is usually called after a failure occurred.
+It notifies an engineer and keeps the cluster alive until analysis has completed.
+Analysis can be marked as completed by either completing the task or sending the `Analysis Completed` message.
 
 ![analyse-cluster](docs/assets/analyse-cluster.png)
 
