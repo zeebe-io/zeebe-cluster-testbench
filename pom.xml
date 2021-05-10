@@ -62,7 +62,7 @@
     <version.resteasy>4.6.0.Final</version.resteasy>
     <version.slf4j>1.7.30</version.slf4j>
     <version.vavr>0.10.3</version.vavr>
-    <zeebe.version>1.0.0-rc1</zeebe.version>
+    <zeebe.version>1.0.0</zeebe.version>
   </properties>
 
   <dependencyManagement>
