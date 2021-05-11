@@ -431,7 +431,7 @@
     <version.workflowgenerator>1.0.2</version.workflowgenerator>
     <zeebe.version>0.26.3</zeebe.version>
     <version.zeebe-bpmn-spec>1.0.0</version.zeebe-bpmn-spec>
-    <version.awaitility>4.0.3</version.awaitility>
+    <version.awaitility>4.1.0</version.awaitility>
   </properties>
 
   <repositories>
