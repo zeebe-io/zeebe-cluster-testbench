@@ -52,7 +52,7 @@
     <plugin.version.surefire>3.0.0-M5</plugin.version.surefire>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <version.assertj>3.19.0</version.assertj>
-    <version.awaitility>4.0.3</version.awaitility>
+    <version.awaitility>4.1.0</version.awaitility>
     <version.commons-text>1.9</version.commons-text>
     <version.jackson>2.12.3</version.jackson>
     <version.java>11</version.java>
@@ -62,7 +62,7 @@
     <version.resteasy>4.6.0.Final</version.resteasy>
     <version.slf4j>1.7.30</version.slf4j>
     <version.vavr>0.10.3</version.vavr>
-    <zeebe.version>1.0.0-rc1</zeebe.version>
+    <zeebe.version>1.0.0</zeebe.version>
   </properties>
 
   <dependencyManagement>
