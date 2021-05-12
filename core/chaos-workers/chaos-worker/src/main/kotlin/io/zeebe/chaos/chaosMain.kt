@@ -1,12 +1,14 @@
-package io.zeebe.chaos;
+package io.zeebe.chaos
 
 import io.camunda.zeebe.client.ZeebeClient
 import io.camunda.zeebe.client.api.response.ActivatedJob
 import io.camunda.zeebe.client.api.worker.JobClient
 import io.camunda.zeebe.client.impl.oauth.OAuthCredentialsProviderBuilder
+import io.camunda.zeebe.model.bpmn.BpmnModelInstance
+import org.awaitility.Awaitility
 import java.io.File
 import java.nio.file.Files
-import java.util.*
+import java.time.Duration
 import java.util.concurrent.CountDownLatch
 import java.util.concurrent.TimeUnit
 
@@ -37,6 +39,7 @@ private fun createClient(): ZeebeClient {
 }
 
 fun main() {
+    initializeAwaitility()
     // given
     updateRepo() // get latest zeebe-chaos repo changes
     val zeebeClient = createClient()
@@ -52,13 +55,18 @@ fun main() {
     scriptPath.listFiles { file -> file.extension == SHELL_EXTENSION }!!
         .map { it.name }
         .filterNot { it.contains("utils") }
+        .filterNot { it.equals(AwaitProcessWithResultHandler.JOB_TYPE) }
         .filterNot { it.equals(DeployMultipleVersionsHandler.JOB_TYPE) }
         .forEach { script ->
             LOG.info("Start worker with type `$script`")
             zeebeClient.newWorker().jobType(script).handler(::handler).open()
         }
 
-    zeebeClient.newWorker().jobType(DeployMultipleVersionsHandler.JOB_TYPE).handler(DeployMultipleVersionsHandler()).open()
+    zeebeClient.newWorker().jobType(AwaitProcessWithResultHandler.JOB_TYPE)
+        .handler(AwaitProcessWithResultHandler()).open()
+    zeebeClient.newWorker().jobType(DeployMultipleVersionsHandler.JOB_TYPE)
+        .handler(DeployMultipleVersionsHandler()).open()
+
     zeebeClient.newWorker().jobType("readExperiments").handler(::readExperiments).open()
 
     // keep workers running
@@ -73,6 +81,11 @@ fun main() {
             })
 
     latch.await()
+}
+
+private fun initializeAwaitility() {
+    // set a default timeout for all awaitility calls
+    Awaitility.setDefaultPollInterval(Duration.ofHours(1))
 }
 
 fun readExperiments(client: JobClient, activatedjob: ActivatedJob) {
@@ -123,7 +136,7 @@ fun handler(client: JobClient, activatedjob: ActivatedJob) {
         val errorOutput = String(process.errorStream.readAllBytes())
         val errorMessage =
             "Expected to run $commandList, but failed. Standard output: '$output' standard error: '$errorOutput'"
-        client.newFailCommand(activatedjob.key).retries(0).errorMessage(errorMessage).send();
+        client.newFailCommand(activatedjob.key).retries(0).errorMessage(errorMessage).send()
     }
 }
 
@@ -180,7 +193,7 @@ fun prepareForChaosExperiments(namespace: String) {
     runCommands(workerPath, "kubectl", "--namespace=$namespace", "apply", "--filename=worker.yaml")
 }
 
-fun runCommands(workingDir: File?, vararg commands: String) : Int {
+fun runCommands(workingDir: File?, vararg commands: String): Int {
     val processBuilder = ProcessBuilder(commands.asList())
     workingDir?.let {
         processBuilder.directory(workingDir)
@@ -193,4 +206,46 @@ fun runCommands(workingDir: File?, vararg commands: String) : Int {
         String(process.errorStream.readAllBytes())
     )
     return process.exitValue()
+}
+
+internal fun ZeebeClient.deployModel(model: BpmnModelInstance, name: String): Boolean {
+    return succeeds({
+        this.newDeployCommand().addProcessModel(model, name).send().join()
+    }, { exc -> LOG.warn("Deployment of $name failed with exception: ${exc.message}") });
+}
+
+internal fun createClientForClusterUnderTest(job: ActivatedJob): ZeebeClient {
+    val authenticationDetails =
+        job.variablesAsMap["authenticationDetails"]!! as Map<String, Any>
+    val clientId = authenticationDetails["clientId"]!!.toString()
+    val clientSecret = authenticationDetails["clientSecret"]!!.toString()
+    val authorizationURL = authenticationDetails["authorizationURL"]!!.toString()
+    val audience = authenticationDetails["audience"]!!.toString()
+    val contactPoint = authenticationDetails["contactPoint"]!!.toString()
+
+    val credentialsProvider = OAuthCredentialsProviderBuilder()
+        .audience(audience)
+        .authorizationServerUrl(authorizationURL)
+        .clientId(clientId)
+        .clientSecret(clientSecret)
+        .credentialsCachePath("/tmp/${clientId}.cred")
+        .build()
+
+    return ZeebeClient.newClientBuilder()
+        .credentialsProvider(credentialsProvider)
+        .gatewayAddress(contactPoint)
+        .build()
+}
+
+internal fun succeeds(
+    callable: () -> Unit,
+    exceptionHandler: (e: Exception) -> Unit = { exc -> LOG.warn("Exception occurred: ${exc.message}") }
+): Boolean {
+    return try {
+        callable.invoke()
+        true;
+    } catch (exc: Exception) {
+        exceptionHandler.invoke(exc)
+        false
+    }
 }
