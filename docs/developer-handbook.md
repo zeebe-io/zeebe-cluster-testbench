@@ -3,12 +3,27 @@
 - [Technical documentation](technical-documentation.md)
 - [Operator handbook](operator-handbook.md)
 
+## Versions
+Testbench orchestration cluster runs on Camunda Cloud and is only compatibile with Zeebe versions that are backwards compatibly supported by the Camunda Cloud version it is running on.
+
+At the time of writing, there are 2 different versions supported by the Testbench: 0.26 and 1.0.
+Zeebe progress on these versions is done in their respective `stable` branches: `stable/0.26` and `stable/1.0`, while new progress is made on `develop`.
+
+Testbench uses the same branching structure to split the version specific code.
+Testbench's `develop` branch is kept compatible with Zeebe's `develop` branch.
+The stable branches in the Testbench repo contain everything needed to run Testbench on and against that corresponding Zeebe version.
+For example, the `stable/0.26` branch in the Testbench repo contains everything needed to run Testbench on and against Zeebe 0.26 compatible versions.
+While Zeebe's `develop` branch has not yet become backwards incompatible with it's latest stable branch (currently `stable/1.0`), Testbench does not yet have a corresponding stable branch.
+This branch can be created as soon as `develop` and the latest stable diverge.
+
 ## Stages
 Testbench exists on 2 stages:
   - Dev stage - Used for development of the testbench
   - Prod stage - Used as the actual production environment for testing Zeebe clusters
 
 All stages are clusters running on the Camunda Cloud int environment (ultrawombat).
+Each stage may have multiple clusters for multiple different versions.
+For example, `Testbench 1.x Prod` and `Testbench 0.26 Prod` are both Prod stages, but they run on and test different versions of Camunda Cloud and Zeebe.
 
 ## CI/CD Pipeline
 
