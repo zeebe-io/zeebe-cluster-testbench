@@ -55,6 +55,7 @@ fun main() {
     scriptPath.listFiles { file -> file.extension == SHELL_EXTENSION }!!
         .map { it.name }
         .filterNot { it.contains("utils") }
+        .filterNot { it.equals(AwaitMessageCorrelationHandler.JOB_TYPE) }
         .filterNot { it.equals(AwaitProcessWithResultHandler.JOB_TYPE) }
         .filterNot { it.equals(DeployMultipleVersionsHandler.JOB_TYPE) }
         .forEach { script ->
@@ -62,6 +63,8 @@ fun main() {
             zeebeClient.newWorker().jobType(script).handler(::handler).open()
         }
 
+    zeebeClient.newWorker().jobType(AwaitMessageCorrelationHandler.JOB_TYPE)
+        .handler(AwaitMessageCorrelationHandler()).open()
     zeebeClient.newWorker().jobType(AwaitProcessWithResultHandler.JOB_TYPE)
         .handler(AwaitProcessWithResultHandler()).open()
     zeebeClient.newWorker().jobType(DeployMultipleVersionsHandler.JOB_TYPE)
