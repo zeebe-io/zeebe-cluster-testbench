@@ -5,6 +5,7 @@
       <bpmn:extensionElements>
         <zeebe:ioMapping>
           <zeebe:output source="=true" target="successfulRun" />
+          <zeebe:output source="=if (is defined(action.provider.timeout)) then &#34;PT&#34; + string(action.provider.timeout) + &#34;S&#34; else &#34;PT1H&#34;" target="timeout" />
         </zeebe:ioMapping>
       </bpmn:extensionElements>
       <bpmn:outgoing>Flow_13awudk</bpmn:outgoing>
@@ -50,13 +51,13 @@
     <bpmn:boundaryEvent id="Event_0owkcly" name="Timeout" attachedToRef="Activity_1xzr6io">
       <bpmn:extensionElements>
         <zeebe:ioMapping>
-          <zeebe:output source="=append(testReport.failureMessages, (&#34; Action with name: &#39;&#34; + action.name + &#34; timed out.&#34;))" target="testReport.failureMessages" />
+          <zeebe:output source="=append(testReport.failureMessages, (&#34; Action with name: &#39;&#34; + action.name + &#34;&#39; timed out after &#34; + timeout + &#34;.&#34;))" target="testReport.failureMessages" />
           <zeebe:output source="= false" target="successfulRun" />
         </zeebe:ioMapping>
       </bpmn:extensionElements>
       <bpmn:outgoing>Flow_0yhcmxv</bpmn:outgoing>
       <bpmn:timerEventDefinition id="TimerEventDefinition_1eo7nl1">
-        <bpmn:timeDuration xsi:type="bpmn:tFormalExpression">=if (is defined(action.provider.timeout)) then duration("PT" + string(action.provider.timeout) + "S") else duration("PT1H")</bpmn:timeDuration>
+        <bpmn:timeDuration xsi:type="bpmn:tFormalExpression">=duration(timeout)</bpmn:timeDuration>
       </bpmn:timerEventDefinition>
     </bpmn:boundaryEvent>
     <bpmn:sequenceFlow id="Flow_0yhcmxv" sourceRef="Event_0owkcly" targetRef="Event_1quq7fu" />
@@ -135,14 +136,14 @@
       <bpmndi:BPMNShape id="Event_0zo9lot_di" bpmnElement="Event_0zo9lot">
         <dc:Bounds x="522" y="242" width="36" height="36" />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="TextAnnotation_1pm343k_di" bpmnElement="TextAnnotation_1pm343k">
-        <dc:Bounds x="180" y="270" width="100" height="68" />
-      </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Event_0s989l1_di" bpmnElement="Event_1quq7fu">
         <dc:Bounds x="722" y="292" width="36" height="36" />
         <bpmndi:BPMNLabel>
           <dc:Bounds x="710" y="335" width="60" height="14" />
         </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="TextAnnotation_1pm343k_di" bpmnElement="TextAnnotation_1pm343k">
+        <dc:Bounds x="180" y="270" width="100" height="68" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Event_1bnzi0o_di" bpmnElement="Event_0owkcly">
         <dc:Bounds x="302" y="172" width="36" height="36" />
