@@ -22,7 +22,8 @@ You need:
 - Camunda Cloud API credentials to create test clusters on demand
 - Google Sheet file to receive the test results
 - Google Sheet service account, token and permissions to write to that file
-- Kubernetes service account, token and permissions to interact with running clusters on Kubernetes level
+- Kubernetes service account, token and permissions to interact with running clusters on Kubernetes
+  level
 - Slack channel to receive notifications
 - Slack app and webhook URL to send notifications to a slack channel
 
@@ -32,7 +33,8 @@ Setup and deployment:
 - Setup a Kubernetes cluster to deploy into
 - Set environment variables (see below)
 - Deploy application `.ci/scripts/deploy.sh`
-- Check in logs that self check was successful (happens at start up and connects to all external systems)
+- Check in logs that self check was successful (happens at start up and connects to all external
+  systems)
 - Check in test orchestration cluster that processes were deployed
 
 ### Detailed Instructions
@@ -60,7 +62,7 @@ Setup and deployment:
 
 | File           | Field                                | Content                                                                                                 |
 | -------------- | ------------------------------------ | ------------------------------------------------------------------------------------------------------- |
-| testbench.yaml | ZCTB_CLOUD_API_URL                   | Depends on the stage (e.g. `https://console.cloud.ultrawombat.com/customer-api/` for integration stage) |
+| testbench.yaml | ZCTB_CLOUD_API_URL                   | Depends on the stage (e.g. `https://api.cloud.ultrawombat.com/` for integration stage) |
 | testbench.yaml | ZCTB_CLOUD_AUDIENCE                  | Depends on stage (e.g. `api.cloud.ultrawombat.com` for integration stage)                               |
 | testbench.yaml | ZCTB_CLOUD_AUTHENTICATION_SERVER_URL | Depends on stage (e.g. `https://login.cloud.ultrawombat.com/oauth/token` for integration stage)         |
 | testbench.yaml | ZCTB_CLOUD_CLIENT_ID                 | Cloud API -> Client -> Client Id                                                                        |
@@ -69,7 +71,8 @@ Setup and deployment:
 #### Google Sheet and Service Account
 
 1. Enable Google Sheets API https://console.developers.google.com/
-1. Create a new service account with no particular roles https://cloud.google.com/iam/docs/creating-managing-service-accounts
+1. Create a new service account with no particular
+   roles https://cloud.google.com/iam/docs/creating-managing-service-accounts
 1. Download JSON key file for this service account
 1. Create a new sheet
 1. Share sheet with service account (via the service account's email); give it edit permissions
@@ -84,7 +87,8 @@ Setup and deployment:
 
 1. Create a Slack application (https://api.slack.com/start/overview)
 1. Create an incoming webhook for your app (https://api.slack.com/messaging/webhooks)
-1. Add a new webhook to your workspace for the desired channel (you may need approval from your workspace admin)
+1. Add a new webhook to your workspace for the desired channel (you may need approval from your
+   workspace admin)
 1. Invite your app to the channel it should publish to
 1. Fill deployment descriptors as follows:
 
@@ -94,16 +98,24 @@ Setup and deployment:
 
 #### Chaos Experiments
 
-In order to run our automated chaos experiments against a zeebe cluster, which runs in a different kuebernetes cluster, we need access to that cluster.
-This means our chaos worker, which executes the chaos experiments, needs access to it. This can be done by a service account and a corresponding token which the application (the chaos worker) uses.
+In order to run our automated chaos experiments against a zeebe cluster, which runs in a different
+kuebernetes cluster, we need access to that cluster. This means our chaos worker, which executes the
+chaos experiments, needs access to it. This can be done by a service account and a corresponding
+token which the application (the chaos worker) uses.
 
-To create a service account, you can deploy the resources you find under `/core/chaos-workers/deployment/service-account`.
+To create a service account, you can deploy the resources you find
+under `/core/chaos-workers/deployment/service-account`.
 
-Then you need to build the chaos worker docker image with the service account token. The serviceaccount token can be received via `kubectl -n zeebe-chaos describe secrets zeebe-chaos-sa-token-*`.
+Then you need to build the chaos worker docker image with the service account token. The
+serviceaccount token can be received
+via `kubectl -n zeebe-chaos describe secrets zeebe-chaos-sa-token-*`.
 
-In the dockerfile of the chaos worker the token is used to setup the correct kube context etc. Ideally you store the token in the team vault, where jenkins can access it and build the docker image with the token as argument.
+In the dockerfile of the chaos worker the token is used to setup the correct kube context etc.
+Ideally you store the token in the team vault, where jenkins can access it and build the docker
+image with the token as argument.
 
-You can find more details on how to setup the service account and how it was previously done [here](https://github.com/zeebe-io/zeebe/issues/4361#issuecomment-681869448).
+You can find more details on how to setup the service account and how it was previously
+done [here](https://github.com/zeebe-io/zeebe/issues/4361#issuecomment-681869448).
 
 ### Deployment
 
