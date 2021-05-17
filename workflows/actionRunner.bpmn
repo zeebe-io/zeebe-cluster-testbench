@@ -1,7 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:zeebe="http://camunda.org/schema/zeebe/1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" id="Definitions_09krf3y" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Zeebe Modeler" exporterVersion="0.11.0">
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:zeebe="http://camunda.org/schema/zeebe/1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" id="Definitions_09krf3y" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="4.8.0">
   <bpmn:process id="actionRunner" isExecutable="true">
     <bpmn:startEvent id="Event_1hncl4g" name="Run provided action">
+      <bpmn:extensionElements>
+        <zeebe:ioMapping>
+          <zeebe:output source="=true" target="successfulRun" />
+        </zeebe:ioMapping>
+      </bpmn:extensionElements>
       <bpmn:outgoing>Flow_13awudk</bpmn:outgoing>
     </bpmn:startEvent>
     <bpmn:serviceTask id="Activity_1xzr6io" name="Run action">
@@ -45,7 +50,8 @@
     <bpmn:boundaryEvent id="Event_0owkcly" name="Timeout" attachedToRef="Activity_1xzr6io">
       <bpmn:extensionElements>
         <zeebe:ioMapping>
-          <zeebe:output source="=append(testReport.failureMessages, (&#34;Action with name: &#39;&#34; + action.name + &#34; timed out.&#34;))" target="testReport.failureMessages" />
+          <zeebe:output source="=append(testReport.failureMessages, (&#34; Action with name: &#39;&#34; + action.name + &#34; timed out.&#34;))" target="testReport.failureMessages" />
+          <zeebe:output source="= false" target="successfulRun" />
         </zeebe:ioMapping>
       </bpmn:extensionElements>
       <bpmn:outgoing>Flow_0yhcmxv</bpmn:outgoing>
@@ -56,7 +62,6 @@
     <bpmn:sequenceFlow id="Flow_0yhcmxv" sourceRef="Event_0owkcly" targetRef="Event_1quq7fu" />
     <bpmn:endEvent id="Event_1quq7fu" name="Action failed">
       <bpmn:incoming>Flow_0yhcmxv</bpmn:incoming>
-      <bpmn:errorEventDefinition id="ErrorEventDefinition_0as6mpr" errorRef="Error_0f989kq" />
     </bpmn:endEvent>
     <bpmn:textAnnotation id="TextAnnotation_1pm343k">
       <bpmn:text>Per default 1 hour, can be overwritten by executed action</bpmn:text>
@@ -130,14 +135,14 @@
       <bpmndi:BPMNShape id="Event_0zo9lot_di" bpmnElement="Event_0zo9lot">
         <dc:Bounds x="522" y="242" width="36" height="36" />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Event_04l7hv8_di" bpmnElement="Event_1quq7fu">
+      <bpmndi:BPMNShape id="TextAnnotation_1pm343k_di" bpmnElement="TextAnnotation_1pm343k">
+        <dc:Bounds x="180" y="270" width="100" height="68" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_0s989l1_di" bpmnElement="Event_1quq7fu">
         <dc:Bounds x="722" y="292" width="36" height="36" />
         <bpmndi:BPMNLabel>
           <dc:Bounds x="710" y="335" width="60" height="14" />
         </bpmndi:BPMNLabel>
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="TextAnnotation_1pm343k_di" bpmnElement="TextAnnotation_1pm343k">
-        <dc:Bounds x="180" y="270" width="100" height="68" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Event_1bnzi0o_di" bpmnElement="Event_0owkcly">
         <dc:Bounds x="302" y="172" width="36" height="36" />
