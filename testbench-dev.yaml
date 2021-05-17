@@ -34,7 +34,7 @@ spec:
                   name: testbench-secrets
                   key: contactPoint
             - name: ZCTB_CLOUD_API_URL
-              value: "https://console.cloud.dev.ultrawombat.com/customer-api/"
+              value: "https://api.cloud.dev.ultrawombat.com/"
             - name: ZCTB_CLOUD_AUDIENCE
               value: "api.cloud.dev.ultrawombat.com"
             - name: ZCTB_CLOUD_AUTHENTICATION_SERVER_URL
