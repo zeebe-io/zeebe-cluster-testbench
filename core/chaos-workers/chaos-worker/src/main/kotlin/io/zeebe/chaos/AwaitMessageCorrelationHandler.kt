@@ -7,21 +7,23 @@ import io.camunda.zeebe.client.api.worker.JobHandler
 import io.camunda.zeebe.model.bpmn.Bpmn
 import org.awaitility.kotlin.await
 import org.awaitility.kotlin.withPollInterval
-import org.awaitility.pollinterval.FibonacciPollInterval.fibonacci
+import org.awaitility.pollinterval.FibonacciPollInterval
 import java.util.concurrent.TimeUnit
 
-class AwaitProcessWithResultHandler(val createClient: (ActivatedJob) -> ZeebeClient = ::createClientForClusterUnderTest) :
+class AwaitMessageCorrelationHandler(val createClient: (ActivatedJob) -> ZeebeClient = ::createClientForClusterUnderTest) :
     JobHandler {
 
     companion object {
-        const val JOB_TYPE = "await-processes-with-result.sh"
+        const val JOB_TYPE = "await-message-correlation.sh"
 
-        private const val PROCESS_ID = "benchmark"
+        private const val PROCESS_ID = "oneReceiveMsgEvent"
         private val PROCESS =
-            Bpmn.createExecutableProcess(PROCESS_ID).name("One task process").startEvent("start")
-                .serviceTask("task").zeebeJobType("benchmark-task").endEvent("end").done()
-        private val LOG =
-            org.slf4j.LoggerFactory.getLogger(AwaitProcessWithResultHandler::class.java.name)
+            Bpmn.createExecutableProcess(PROCESS_ID).startEvent("StartEvent_1")
+                .message { it.name("test").zeebeCorrelationKeyExpression("test") }
+                .endEvent("end").done()
+        private val VARIABLES = mapOf("test" to "0")
+        val LOG =
+            org.slf4j.LoggerFactory.getLogger(AwaitMessageCorrelationHandler::class.java.name)
     }
 
     override fun handle(client: JobClient, job: ActivatedJob) {
@@ -32,15 +34,15 @@ class AwaitProcessWithResultHandler(val createClient: (ActivatedJob) -> ZeebeCli
 
             LOG.info("Deploying model")
 
-            await.withPollInterval(fibonacci(TimeUnit.SECONDS)).until { ->
+            await.withPollInterval(FibonacciPollInterval.fibonacci(TimeUnit.SECONDS)).until { ->
                 it.deployModel(
                     PROCESS,
-                    "one_task.bpmn"
+                    "oneReceiveMsgEvent.bpmn"
                 )
             }
 
             LOG.info("Creating process instance")
-            await.withPollInterval(fibonacci(TimeUnit.SECONDS))
+            await.withPollInterval(FibonacciPollInterval.fibonacci(TimeUnit.SECONDS))
                 .until { -> createInstanceWithResult(it) }
         }
 
@@ -51,7 +53,9 @@ class AwaitProcessWithResultHandler(val createClient: (ActivatedJob) -> ZeebeCli
         client: ZeebeClient
     ): Boolean {
         return succeeds({ ->
-            client.newCreateInstanceCommand().bpmnProcessId(PROCESS_ID).latestVersion()
+            client.newCreateInstanceCommand().bpmnProcessId(PROCESS_ID).latestVersion().variables(
+                VARIABLES
+            )
                 .withResult().send()
                 .join()
         })
