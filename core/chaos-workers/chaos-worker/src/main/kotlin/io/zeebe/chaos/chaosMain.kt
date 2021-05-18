@@ -118,11 +118,7 @@ fun handler(client: JobClient, activatedjob: ActivatedJob) {
     if (inTime && process.exitValue() == 0) {
         client.newCompleteCommand(activatedjob.key).send()
     } else {
-        val output = String(process.inputStream.readAllBytes())
-        val errorOutput = String(process.errorStream.readAllBytes())
-        val errorMessage =
-            "Expected to run $commandList, but failed. Standard output: '$output' standard error: '$errorOutput'"
-        client.newFailCommand(activatedjob.key).retries(0).errorMessage(errorMessage).send();
+        process.destroyForcibly()
     }
 }
 
