@@ -15,7 +15,6 @@ Example execution $0 'zell' 'Zeebe 0.24.4'"
  exit 1
 fi
 
-source credentials
 
 id=$1
 generation=$2

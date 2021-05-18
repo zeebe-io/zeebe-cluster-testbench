@@ -9,6 +9,5 @@ Example execution $0 'id'"
  exit 1
 fi
 
-source credentials
 
 zbctl publish message "Run Test" --correlationKey "$1"

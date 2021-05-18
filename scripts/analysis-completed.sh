@@ -9,6 +9,5 @@ Example execution $0 'cluster-id'"
  exit 1
 fi
 
-source credentials
 
 zbctl publish message "Analysis Completed" --correlationKey "$1"
