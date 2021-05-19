@@ -21,6 +21,7 @@ class DeployMultipleVersionsHandler : JobHandler {
     }
 
     override fun handle(client: JobClient, job: ActivatedJob) {
+        setMDCForJob(job)
         LOG.info("Handle job $JOB_TYPE")
 
         val authenticationDetails = job.variablesAsMap["authenticationDetails"]!! as Map<String, Any>
