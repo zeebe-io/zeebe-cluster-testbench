@@ -22,6 +22,7 @@ class AwaitProcessWithResultHandler(val createClient: (ActivatedJob) -> ZeebeCli
     }
 
     override fun handle(client: JobClient, job: ActivatedJob) {
+        setMDCForJob(job)
         LOG.info("Handle job $JOB_TYPE")
 
         createClient(job).use {

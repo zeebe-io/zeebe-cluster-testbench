@@ -55,6 +55,11 @@
       <groupId>io.camunda</groupId>
       <artifactId>zeebe-client-java</artifactId>
     </dependency>
+    <dependency>
+      <groupId>io.camunda</groupId>
+      <artifactId>zeebe-util</artifactId>
+      <version>${zeebe.version}</version>
+    </dependency>
   </dependencies>
 
   <build>
