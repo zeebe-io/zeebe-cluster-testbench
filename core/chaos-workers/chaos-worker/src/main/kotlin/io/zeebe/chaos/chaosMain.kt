@@ -7,7 +7,12 @@ import io.camunda.zeebe.client.impl.oauth.OAuthCredentialsProviderBuilder
 import io.camunda.zeebe.model.bpmn.BpmnModelInstance
 import org.awaitility.Awaitility
 import org.awaitility.pollinterval.FibonacciPollInterval
+import org.slf4j.MDC
+import java.io.BufferedReader
 import java.io.File
+import java.io.InputStream
+import java.io.InputStreamReader
+import java.nio.charset.StandardCharsets.UTF_8
 import java.nio.file.Files
 import java.time.Duration
 import java.util.concurrent.CountDownLatch
@@ -94,6 +99,7 @@ private fun initializeAwaitility() {
 }
 
 fun readExperiments(client: JobClient, activatedjob: ActivatedJob) {
+    setMDCForJob(activatedjob)
     val clusterPlan = activatedjob
         .variablesAsMap["clusterPlan"]!!
         .toString()
@@ -111,7 +117,10 @@ fun readExperiments(client: JobClient, activatedjob: ActivatedJob) {
 }
 
 fun handler(client: JobClient, activatedjob: ActivatedJob) {
-    val namespace = (activatedjob.variablesAsMap["clusterId"]!! as String) + "-zeebe"
+    val clusterId = activatedjob.variablesAsMap["clusterId"]!! as String
+    setMDCForJob(activatedjob)
+
+    val namespace = "$clusterId-zeebe"
     prepareForChaosExperiments(namespace)
 
     val provider = activatedjob.variablesAsMap["provider"]!! as Map<String, Any>
@@ -120,9 +129,9 @@ fun handler(client: JobClient, activatedjob: ActivatedJob) {
 
     val commandList = createCommandList(scriptPath, command, provider)
     LOG.info("Commands to run: $commandList")
+
     val processBuilder = ProcessBuilder(commandList)
         .directory(scriptPath)
-        .inheritIO()
     processBuilder
         .environment()["NAMESPACE"] = namespace
 
@@ -132,12 +141,24 @@ fun handler(client: JobClient, activatedjob: ActivatedJob) {
     }
 
     val process = processBuilder.start()
+    consumeOutputStream(process.inputStream)
+    consumeOutputStream(process.errorStream)
     val inTime = process.waitFor(timeoutInSeconds, TimeUnit.SECONDS)
 
     if (inTime && process.exitValue() == 0) {
         client.newCompleteCommand(activatedjob.key).send()
     } else {
         process.destroyForcibly()
+    }
+}
+
+internal fun consumeOutputStream(inputStream : InputStream) {
+    Thread().run {
+        BufferedReader(InputStreamReader(inputStream, UTF_8)).use { reader ->
+            reader.forEachLine {
+                LOG.debug(it)
+            }
+        }
     }
 }
 
@@ -249,4 +270,16 @@ internal fun succeeds(
         exceptionHandler.invoke(exc)
         false
     }
+}
+
+internal fun setMDCForJob(job: ActivatedJob) {
+    MDC.put("jobType", job.type)
+
+    val clusterId = job.variablesAsMap["clusterId"]!! as String
+    MDC.put("clusterId", clusterId)
+
+    val clusterPlan = job.variablesAsMap["clusterPlan"]!! as String
+    MDC.put("clusterPlan", clusterPlan)
+
+    MDC.put("processInstanceId", job.processInstanceKey.toString())
 }
