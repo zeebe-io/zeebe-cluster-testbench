@@ -6,9 +6,6 @@ import io.camunda.zeebe.client.api.worker.JobClient
 import io.camunda.zeebe.client.api.worker.JobHandler
 import io.camunda.zeebe.model.bpmn.Bpmn
 import org.awaitility.kotlin.await
-import org.awaitility.kotlin.withPollInterval
-import org.awaitility.pollinterval.FibonacciPollInterval
-import java.util.concurrent.TimeUnit
 
 class AwaitMessageCorrelationHandler(val createClient: (ActivatedJob) -> ZeebeClient = ::createClientForClusterUnderTest) :
     JobHandler {
@@ -19,6 +16,7 @@ class AwaitMessageCorrelationHandler(val createClient: (ActivatedJob) -> ZeebeCl
         private const val PROCESS_ID = "oneReceiveMsgEvent"
         private val PROCESS =
             Bpmn.createExecutableProcess(PROCESS_ID).startEvent("StartEvent_1")
+                .intermediateCatchEvent()
                 .message { it.name("test").zeebeCorrelationKeyExpression("test") }
                 .endEvent("end").done()
         private val VARIABLES = mapOf("test" to "0")
@@ -34,7 +32,7 @@ class AwaitMessageCorrelationHandler(val createClient: (ActivatedJob) -> ZeebeCl
 
             LOG.info("Deploying model")
 
-            await.withPollInterval(FibonacciPollInterval.fibonacci(TimeUnit.SECONDS)).until { ->
+            await.until { ->
                 it.deployModel(
                     PROCESS,
                     "oneReceiveMsgEvent.bpmn"
@@ -42,8 +40,7 @@ class AwaitMessageCorrelationHandler(val createClient: (ActivatedJob) -> ZeebeCl
             }
 
             LOG.info("Creating process instance")
-            await.withPollInterval(FibonacciPollInterval.fibonacci(TimeUnit.SECONDS))
-                .until { -> createInstanceWithResult(it) }
+            await.until { -> createInstanceWithResult(it) }
         }
 
         client.newCompleteCommand(job.key).send()

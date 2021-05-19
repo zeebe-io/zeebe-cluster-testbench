@@ -6,9 +6,6 @@ import io.camunda.zeebe.client.api.worker.JobClient
 import io.camunda.zeebe.client.api.worker.JobHandler
 import io.camunda.zeebe.model.bpmn.Bpmn
 import org.awaitility.kotlin.await
-import org.awaitility.kotlin.withPollInterval
-import org.awaitility.pollinterval.FibonacciPollInterval.fibonacci
-import java.util.concurrent.TimeUnit
 
 class AwaitProcessWithResultHandler(val createClient: (ActivatedJob) -> ZeebeClient = ::createClientForClusterUnderTest) :
     JobHandler {
@@ -32,7 +29,7 @@ class AwaitProcessWithResultHandler(val createClient: (ActivatedJob) -> ZeebeCli
 
             LOG.info("Deploying model")
 
-            await.withPollInterval(fibonacci(TimeUnit.SECONDS)).until { ->
+            await.until { ->
                 it.deployModel(
                     PROCESS,
                     "one_task.bpmn"
@@ -40,8 +37,7 @@ class AwaitProcessWithResultHandler(val createClient: (ActivatedJob) -> ZeebeCli
             }
 
             LOG.info("Creating process instance")
-            await.withPollInterval(fibonacci(TimeUnit.SECONDS))
-                .until { -> createInstanceWithResult(it) }
+            await.until { -> createInstanceWithResult(it) }
         }
 
         client.newCompleteCommand(job.key).send()
