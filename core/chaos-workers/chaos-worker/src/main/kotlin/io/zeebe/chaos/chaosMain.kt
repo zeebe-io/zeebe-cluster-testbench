@@ -281,5 +281,5 @@ internal fun setMDCForJob(job: ActivatedJob) {
     val clusterPlan = job.variablesAsMap["clusterPlan"]!! as String
     MDC.put("clusterPlan", clusterPlan)
 
-    MDC.put("processInstanceId", job.processInstanceKey.toString())
+    MDC.put("processInstanceKey", job.processInstanceKey.toString())
 }

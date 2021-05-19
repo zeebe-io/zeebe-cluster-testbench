@@ -3,8 +3,7 @@
   <Properties>
     <Property name="log.path">logs</Property>
     <Property name="log.stackdriver.serviceName">chaos-worker</Property>
-    <Property name="log.stackdriver.serviceVersion">${env:ZEEBE_LOG_STACKDRIVER_SERVICEVERSION:-}
-    </Property>
+    <Property name="log.stackdriver.serviceVersion">2.0.0</Property>
   </Properties>
 
   <Appenders>
