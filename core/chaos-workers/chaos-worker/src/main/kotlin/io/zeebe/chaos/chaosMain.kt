@@ -6,6 +6,7 @@ import io.camunda.zeebe.client.api.worker.JobClient
 import io.camunda.zeebe.client.impl.oauth.OAuthCredentialsProviderBuilder
 import io.camunda.zeebe.model.bpmn.BpmnModelInstance
 import org.awaitility.Awaitility
+import org.awaitility.pollinterval.FibonacciPollInterval
 import java.io.File
 import java.nio.file.Files
 import java.time.Duration
@@ -88,7 +89,8 @@ fun main() {
 
 private fun initializeAwaitility() {
     // set a default timeout for all awaitility calls
-    Awaitility.setDefaultPollInterval(Duration.ofHours(1))
+    Awaitility.setDefaultTimeout(Duration.ofHours(1))
+    Awaitility.setDefaultPollInterval(FibonacciPollInterval.fibonacci(TimeUnit.SECONDS))
 }
 
 fun readExperiments(client: JobClient, activatedjob: ActivatedJob) {
@@ -210,7 +212,7 @@ fun runCommands(workingDir: File?, vararg commands: String): Int {
 internal fun ZeebeClient.deployModel(model: BpmnModelInstance, name: String): Boolean {
     return succeeds({
         this.newDeployCommand().addProcessModel(model, name).send().join()
-    }, { exc -> LOG.warn("Deployment of $name failed with exception: ${exc.message}") });
+    }, { exc -> LOG.warn("Deployment of $name failed with exception: ${exc.message}") })
 }
 
 internal fun createClientForClusterUnderTest(job: ActivatedJob): ZeebeClient {
@@ -242,7 +244,7 @@ internal fun succeeds(
 ): Boolean {
     return try {
         callable.invoke()
-        true;
+        true
     } catch (exc: Exception) {
         exceptionHandler.invoke(exc)
         false
