@@ -151,6 +151,7 @@ pipeline {
                     ]]) {
 
                         dir('core/chaos-workers/') {
+                            sh 'ls -la target/'
                             sh 'docker build . -t gcr.io/zeebe-io/zeebe-cluster-testbench-chaos:${TAG} --build-arg TOKEN=${token}'
                             sh 'docker push gcr.io/zeebe-io/zeebe-cluster-testbench-chaos:${TAG}'
                         }
