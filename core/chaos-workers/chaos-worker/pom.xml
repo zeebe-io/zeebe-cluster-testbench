@@ -112,6 +112,7 @@
               <mainClass>io.zeebe.chaos.ChaosMainKt</mainClass>
             </transformer>
           </transformers>
+          <finalName>chaosWorker.jar</finalName>
         </configuration>
         <dependencies>
           <dependency>
