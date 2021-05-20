@@ -22,7 +22,7 @@ RUN kubectl config set-context ${CONTEXT} --user ${CONTEXT}-zeebe-chaos-token-us
 
 FROM pre as runner
 
-COPY chaos-worker/target/zeebe-cluster-testbench-chaos-worker-*.jar chaosWorker.jar
+COPY chaos-worker/target/chaosWorker.jar chaosWorker.jar
 
 # ./runWorker.sh
 CMD java -jar chaosWorker.jar
