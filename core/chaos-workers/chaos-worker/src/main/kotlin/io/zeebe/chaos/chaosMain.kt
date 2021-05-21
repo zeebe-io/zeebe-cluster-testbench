@@ -145,7 +145,7 @@ fun handler(client: JobClient, activatedjob: ActivatedJob) {
     processBuilder.redirectErrorStream(true)
     val process = processBuilder.start()
     // the input stream of the process object is connected to the output stream we want to consume, don't ask.
-    consumeOutputStream(process.inputStream)
+    consumeOutputStream(activatedjob, process.inputStream)
     val inTime = process.waitFor(timeoutInSeconds, TimeUnit.SECONDS)
 
     if (inTime && process.exitValue() == 0) {
@@ -155,8 +155,9 @@ fun handler(client: JobClient, activatedjob: ActivatedJob) {
     }
 }
 
-internal fun consumeOutputStream(inputStream: InputStream) {
+internal fun consumeOutputStream(job : ActivatedJob, inputStream: InputStream) {
     thread(start = true) {
+        setMDCForJob(job)
         BufferedReader(InputStreamReader(inputStream, UTF_8)).use { reader ->
             reader.forEachLine {
                 LOG.debug(it)
