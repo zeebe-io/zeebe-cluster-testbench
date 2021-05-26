@@ -4,17 +4,18 @@ import static io.zeebe.clustertestbench.handler.TriggerMessageStartEventHandler.
 import static java.util.Collections.emptyMap;
 import static java.util.Collections.singletonMap;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.camunda.community.zeebe.testutils.ZeebeWorkerAssertions.assertThat;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import io.camunda.zeebe.client.ZeebeClient;
 import io.camunda.zeebe.client.api.ZeebeFuture;
-import io.camunda.zeebe.client.api.command.CompleteJobCommandStep1;
 import io.camunda.zeebe.client.api.command.PublishMessageCommandStep1;
 import io.camunda.zeebe.client.api.command.PublishMessageCommandStep1.PublishMessageCommandStep2;
 import io.camunda.zeebe.client.api.command.PublishMessageCommandStep1.PublishMessageCommandStep3;
-import io.camunda.zeebe.client.api.response.ActivatedJob;
-import io.camunda.zeebe.client.api.worker.JobClient;
+import java.util.HashMap;
+import org.camunda.community.zeebe.testutils.stubs.ActivatedJobStub;
+import org.camunda.community.zeebe.testutils.stubs.JobClientStub;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -26,31 +27,26 @@ import org.mockito.junit.jupiter.MockitoExtension;
 class TriggerMessageStartEventHandlerTest {
   private static final Long TEST_JOB_KEY = 42L;
 
-  @Mock JobClient mockJobClient;
+  JobClientStub jobClientStub = new JobClientStub();
+
+  ActivatedJobStub activatedJobStub;
+
+  TriggerMessageStartEventHandler sutHandler;
+
+  @Mock ZeebeClient mockZeebeClient;
 
   @Mock PublishMessageCommandStep1 mockPublishMessageCommandStep1;
   @Mock PublishMessageCommandStep2 mockPublishMessageCommandStep2;
   @Mock PublishMessageCommandStep3 mockPublishMessageCommandStep3;
 
-  @SuppressWarnings("rawtypes")
   @Mock
-  ZeebeFuture mockZeebeFuturePublishMessageCommand;
-
-  @Mock CompleteJobCommandStep1 mockCompleteJobCommandStep1;
-
-  @SuppressWarnings("rawtypes")
-  @Mock
-  ZeebeFuture mockZeebeFutureConpleteJobCommand;
-
-  @Mock ActivatedJob mockActivatedJob;
-
-  @Mock ZeebeClient mockZeebeClient;
-
-  TriggerMessageStartEventHandler sutHandler;
+  ZeebeFuture<io.camunda.zeebe.client.api.response.PublishMessageResponse>
+      mockZeebeFuturePublishMessageCommand;
 
   @BeforeEach
   void setUo() {
     sutHandler = new TriggerMessageStartEventHandler(mockZeebeClient);
+    activatedJobStub = jobClientStub.createActivatedJob();
   }
 
   @Test
@@ -61,39 +57,40 @@ class TriggerMessageStartEventHandlerTest {
   }
 
   @Test
-  void shouldThrowExceptionIfHeaderIsMissing() throws Exception {
+  void shouldThrowExceptionIfHeaderIsMissing() {
     // given
-    when(mockActivatedJob.getCustomHeaders()).thenReturn(emptyMap());
+    activatedJobStub.setCustomHeaders(emptyMap());
 
     // when + then
-    assertThatThrownBy(() -> sutHandler.handle(mockJobClient, mockActivatedJob))
+    assertThatThrownBy(() -> sutHandler.handle(jobClientStub, activatedJobStub))
         .isExactlyInstanceOf(IllegalArgumentException.class)
         .hasMessage("Header value 'messageName' is not defined");
+
+    assertThat(activatedJobStub).isStillActivated();
   }
 
   @Test
   void shouldThrowExceptionIfHeaderEntryIsEmpty() {
     // given
-    when(mockActivatedJob.getCustomHeaders()).thenReturn(singletonMap(KEY_MESSAGE_NAME, ""));
+    activatedJobStub.setCustomHeaders(singletonMap(KEY_MESSAGE_NAME, ""));
 
     // when + then
-    assertThatThrownBy(() -> sutHandler.handle(mockJobClient, mockActivatedJob))
+    assertThatThrownBy(() -> sutHandler.handle(jobClientStub, activatedJobStub))
         .isExactlyInstanceOf(IllegalArgumentException.class);
+
+    assertThat(activatedJobStub).isStillActivated();
   }
 
-  @SuppressWarnings("unchecked")
   @Test
   void shouldSendMessageWithVariablesFromJobAndCompleteJob() throws Exception {
     // given
     final var messageName = "testMessageName";
-    final var variables = "testVariablesString";
+    activatedJobStub.setCustomHeaders(singletonMap(KEY_MESSAGE_NAME, messageName));
 
-    mockJobCompletChain();
-
-    when(mockActivatedJob.getCustomHeaders())
-        .thenReturn(singletonMap(KEY_MESSAGE_NAME, messageName));
-
-    when(mockActivatedJob.getVariables()).thenReturn(variables);
+    final var variables = new HashMap<String, Object>(singletonMap("testKey", "testValue"));
+    variables.put("testKey", "testValue");
+    variables.put("anotherKey", "anotherValue");
+    activatedJobStub.setInputVariables(variables);
 
     when(mockZeebeClient.newPublishMessageCommand()).thenReturn(mockPublishMessageCommandStep1);
     when(mockPublishMessageCommandStep1.messageName(Mockito.anyString()))
@@ -105,28 +102,18 @@ class TriggerMessageStartEventHandlerTest {
     when(mockPublishMessageCommandStep3.send()).thenReturn(mockZeebeFuturePublishMessageCommand);
 
     // when
-    sutHandler.handle(mockJobClient, mockActivatedJob);
+    sutHandler.handle(jobClientStub, activatedJobStub);
 
     // then
 
     // should send message
     verify(mockZeebeClient).newPublishMessageCommand();
     verify(mockPublishMessageCommandStep1).messageName(messageName);
-    verify(mockPublishMessageCommandStep3).variables(variables);
+    verify(mockPublishMessageCommandStep3).variables(activatedJobStub.getVariables());
     verify(mockPublishMessageCommandStep3).send();
     verify(mockZeebeFuturePublishMessageCommand).join();
 
     // should complete job
-    verify(mockJobClient).newCompleteCommand(TEST_JOB_KEY);
-    verify(mockCompleteJobCommandStep1).send();
-    verify(mockZeebeFutureConpleteJobCommand).join();
-  }
-
-  @SuppressWarnings("unchecked")
-  private void mockJobCompletChain() {
-    when(mockActivatedJob.getKey()).thenReturn(TEST_JOB_KEY);
-    when(mockJobClient.newCompleteCommand(Mockito.anyLong()))
-        .thenReturn(mockCompleteJobCommandStep1);
-    when(mockCompleteJobCommandStep1.send()).thenReturn(mockZeebeFutureConpleteJobCommand);
+    assertThat(activatedJobStub).completed();
   }
 }

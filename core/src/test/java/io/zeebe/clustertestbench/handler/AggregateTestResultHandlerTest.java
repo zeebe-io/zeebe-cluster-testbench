@@ -1,32 +1,25 @@
 package io.zeebe.clustertestbench.handler;
 
+import static java.util.Map.entry;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.verifyNoMoreInteractions;
-import static org.mockito.Mockito.when;
+import static org.camunda.community.zeebe.testutils.ZeebeWorkerAssertions.assertThat;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import io.camunda.zeebe.client.api.ZeebeFuture;
-import io.camunda.zeebe.client.api.command.CompleteJobCommandStep1;
-import io.camunda.zeebe.client.api.response.ActivatedJob;
-import io.camunda.zeebe.client.api.worker.JobClient;
 import io.vavr.collection.Stream;
 import io.zeebe.clustertestbench.testdriver.api.TestReport.TestResult;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import org.camunda.community.zeebe.testutils.stubs.ActivatedJobStub;
+import org.camunda.community.zeebe.testutils.stubs.JobClientStub;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
-import org.mockito.Mock;
-import org.mockito.Mockito;
-import org.mockito.junit.jupiter.MockitoExtension;
 
-@ExtendWith(MockitoExtension.class)
 public class AggregateTestResultHandlerTest {
 
   static Stream<Arguments> provideValidValues() {
@@ -69,109 +62,71 @@ public class AggregateTestResultHandlerTest {
   }
 
   @Nested
-  @ExtendWith(MockitoExtension.class)
   public class HandleJobTest {
-    @Mock JobClient mockJobClient;
+    JobClientStub jobClientStub = new JobClientStub();
 
-    @Mock CompleteJobCommandStep1 mockCompleteJobCommandStep1;
-    @Mock CompleteJobCommandStep1 mockCompleteJobCommandStep2;
-
-    @SuppressWarnings("rawtypes")
-    @Mock
-    ZeebeFuture mockZeebeFuture;
-
-    @Mock ActivatedJob mockActivatedJob;
+    ActivatedJobStub activatedJobStub;
 
     final AggregateTestResultHandler sutHandler = new AggregateTestResultHandler();
+
+    @BeforeEach
+    public void setUp() {
+      activatedJobStub = jobClientStub.createActivatedJob();
+    }
 
     @Test
     public void shouldAggregateResultOfDifferentTestsWhichStoreTheirResultInDifferentVariables()
         throws Exception {
       // given
-      mockJobCompletChain();
-
-      when(mockActivatedJob.getCustomHeaders())
-          .thenReturn(
-              Map.of(AggregateTestResultHandler.KEY_VARAIBLENAMES, "testA_result, testB_result"));
-      when(mockActivatedJob.getVariablesAsMap())
-          .thenReturn(Map.of("testA_result", "PASSED", "testB_result", "FAILED"));
+      activatedJobStub.setCustomHeaders(
+          Map.of(AggregateTestResultHandler.KEY_VARAIBLENAMES, "testA_result, testB_result"));
+      activatedJobStub.setInputVariables(
+          Map.of("testA_result", "PASSED", "testB_result", "FAILED"));
 
       // when
-      sutHandler.handle(mockJobClient, mockActivatedJob);
+      sutHandler.handle(jobClientStub, activatedJobStub);
 
-      verify(mockCompleteJobCommandStep1)
-          .variables(Map.of(AggregateTestResultHandler.KEY_AGGREGATED_RESULT, "FAILED"));
-
-      verify(mockJobClient).newCompleteCommand(Mockito.anyLong());
-      verify(mockCompleteJobCommandStep2).send();
-      verify(mockZeebeFuture).join();
-
-      verifyNoMoreInteractions(mockJobClient);
-      verifyNoMoreInteractions(mockCompleteJobCommandStep1);
-      verifyNoMoreInteractions(mockCompleteJobCommandStep2);
-      verifyNoMoreInteractions(mockZeebeFuture);
+      // then
+      assertThat(activatedJobStub)
+          .completed()
+          .extractingOutput()
+          .containsExactly(entry(AggregateTestResultHandler.KEY_AGGREGATED_RESULT, "FAILED"));
     }
 
     @Test
     public void shouldAggregateResultsOfTestsThatRunAsMultiInstanceAndStoreTheirResultInAnArray()
         throws Exception {
       // given
-      mockJobCompletChain();
 
-      when(mockActivatedJob.getCustomHeaders())
-          .thenReturn(Map.of(AggregateTestResultHandler.KEY_VARAIBLENAMES, "testResults"));
-      when(mockActivatedJob.getVariablesAsMap())
-          .thenReturn(Map.of("testResults", List.of("PASSED", "SKIPPED", "FAILED", "PASSED")));
+      activatedJobStub.setCustomHeaders(
+          Map.of(AggregateTestResultHandler.KEY_VARAIBLENAMES, "testResults"));
+      activatedJobStub.setInputVariables(
+          Map.of("testResults", List.of("PASSED", "SKIPPED", "FAILED", "PASSED")));
 
       // when
-      sutHandler.handle(mockJobClient, mockActivatedJob);
+      sutHandler.handle(jobClientStub, activatedJobStub);
 
-      verify(mockCompleteJobCommandStep1)
-          .variables(Map.of(AggregateTestResultHandler.KEY_AGGREGATED_RESULT, "FAILED"));
-
-      verify(mockJobClient).newCompleteCommand(Mockito.anyLong());
-      verify(mockCompleteJobCommandStep2).send();
-      verify(mockZeebeFuture).join();
-
-      verifyNoMoreInteractions(mockJobClient);
-      verifyNoMoreInteractions(mockCompleteJobCommandStep1);
-      verifyNoMoreInteractions(mockCompleteJobCommandStep2);
-      verifyNoMoreInteractions(mockZeebeFuture);
+      assertThat(activatedJobStub)
+          .completed()
+          .extractingOutput()
+          .containsExactly(entry(AggregateTestResultHandler.KEY_AGGREGATED_RESULT, "FAILED"));
     }
 
     @Test
-    public void shoulReturnSkippedWhenAggregatingAnEmpotyList() throws Exception {
+    public void shouldReturnSkippedWhenAggregatingAnEmptyList() throws Exception {
       // given
-      mockJobCompletChain();
 
-      when(mockActivatedJob.getCustomHeaders())
-          .thenReturn(Map.of(AggregateTestResultHandler.KEY_VARAIBLENAMES, "testResults"));
-      when(mockActivatedJob.getVariablesAsMap())
-          .thenReturn(Map.of("testResults", Collections.EMPTY_LIST));
+      activatedJobStub.setCustomHeaders(
+          Map.of(AggregateTestResultHandler.KEY_VARAIBLENAMES, "testResults"));
+      activatedJobStub.setInputVariables(Map.of("testResults", Collections.EMPTY_LIST));
 
       // when
-      sutHandler.handle(mockJobClient, mockActivatedJob);
+      sutHandler.handle(jobClientStub, activatedJobStub);
 
-      verify(mockCompleteJobCommandStep1)
-          .variables(Map.of(AggregateTestResultHandler.KEY_AGGREGATED_RESULT, "SKIPPED"));
-
-      verify(mockJobClient).newCompleteCommand(Mockito.anyLong());
-      verify(mockCompleteJobCommandStep2).send();
-      verify(mockZeebeFuture).join();
-
-      verifyNoMoreInteractions(mockJobClient);
-      verifyNoMoreInteractions(mockCompleteJobCommandStep1);
-      verifyNoMoreInteractions(mockCompleteJobCommandStep2);
-      verifyNoMoreInteractions(mockZeebeFuture);
-    }
-
-    @SuppressWarnings("unchecked")
-    private void mockJobCompletChain() {
-      when(mockJobClient.newCompleteCommand(Mockito.anyLong()))
-          .thenReturn(mockCompleteJobCommandStep1);
-      when(mockCompleteJobCommandStep1.variables(Mockito.anyMap()))
-          .thenReturn(mockCompleteJobCommandStep2);
-      when(mockCompleteJobCommandStep2.send()).thenReturn(mockZeebeFuture);
+      assertThat(activatedJobStub)
+          .completed()
+          .extractingOutput()
+          .containsExactly(entry(AggregateTestResultHandler.KEY_AGGREGATED_RESULT, "SKIPPED"));
     }
   }
 

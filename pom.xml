@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
   <modelVersion>4.0.0</modelVersion>
 
@@ -32,14 +34,18 @@
 
   <scm>
     <connection>scm:git:git@github.com:zeebe-io/zeebe-cluster-testbench.git</connection>
-    <developerConnection>scm:git:git@github.com:zeebe-io/zeebe-cluster-testbench.git</developerConnection>
+    <developerConnection>scm:git:git@github.com:zeebe-io/zeebe-cluster-testbench.git
+    </developerConnection>
     <tag>HEAD</tag>
     <url>https://github.com/zeebe-io/zeebe-cluster-testbench</url>
   </scm>
 
   <properties>
-    <nexus.release.repository>https://app.camunda.com/nexus/content/repositories/zeebe-io/</nexus.release.repository>
-    <nexus.snapshot.repository>https://app.camunda.com/nexus/content/repositories/zeebe-io-snapshots/</nexus.snapshot.repository>
+    <nexus.release.repository>https://app.camunda.com/nexus/content/repositories/zeebe-io/
+    </nexus.release.repository>
+    <nexus.snapshot.repository>
+      https://app.camunda.com/nexus/content/repositories/zeebe-io-snapshots/
+    </nexus.snapshot.repository>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <plugin.version.build-helper>3.2.0</plugin.version.build-helper>
     <plugin.version.checkstyle>3.1.2</plugin.version.checkstyle>
@@ -64,6 +70,7 @@
     <version.resteasy>4.6.0.Final</version.resteasy>
     <version.slf4j>1.7.30</version.slf4j>
     <version.vavr>0.10.3</version.vavr>
+    <version.zeebeWorkerJavaTestutils>0.0.2</version.zeebeWorkerJavaTestutils>
     <zeebe.version>1.0.0</zeebe.version>
   </properties>
 
@@ -187,6 +194,11 @@
         <groupId>org.awaitility</groupId>
         <artifactId>awaitility</artifactId>
         <version>${version.awaitility}</version>
+      </dependency>
+      <dependency>
+        <artifactId>zeebe-worker-java-testutils</artifactId>
+        <groupId>io.zeebe</groupId>
+        <version>${version.zeebeWorkerJavaTestutils}</version>
       </dependency>
     </dependencies>
   </dependencyManagement>
