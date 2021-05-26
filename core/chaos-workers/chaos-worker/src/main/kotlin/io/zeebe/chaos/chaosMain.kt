@@ -13,6 +13,7 @@ import java.nio.charset.StandardCharsets.UTF_8
 import java.nio.file.Files
 import java.util.concurrent.CountDownLatch
 import java.util.concurrent.TimeUnit
+import kotlin.concurrent.thread
 
 private const val ENV_TESTBENCH_ADDRESS = "TESTBENCH_ADDRESS"
 private const val ENV_TESTBENCH_CLIENT_ID = "TESTBENCH_CLIENT_ID"
@@ -121,9 +122,11 @@ fun handler(client: JobClient, activatedjob: ActivatedJob) {
         timeoutInSeconds = provider["timeout"].toString().toLong()
     }
 
+    // redirects the error stream to the output stream
+    processBuilder.redirectErrorStream(true)
     val process = processBuilder.start()
-    consumeOutputStream(process.inputStream)
-    consumeOutputStream(process.errorStream)
+    // the input stream of the process object is connected to the output stream we want to consume, don't ask.
+    consumeOutputStream(activatedjob, process.inputStream)
     val inTime = process.waitFor(timeoutInSeconds, TimeUnit.SECONDS)
 
     if (inTime && process.exitValue() == 0) {
@@ -133,8 +136,9 @@ fun handler(client: JobClient, activatedjob: ActivatedJob) {
     }
 }
 
-internal fun consumeOutputStream(inputStream : InputStream) {
-    Thread().run {
+internal fun consumeOutputStream(job : ActivatedJob, inputStream: InputStream) {
+    thread(start = true) {
+        setMDCForJob(job)
         BufferedReader(InputStreamReader(inputStream, UTF_8)).use { reader ->
             reader.forEachLine {
                 LOG.debug(it)
