@@ -6,6 +6,8 @@ import io.camunda.zeebe.client.api.worker.JobClient
 import io.camunda.zeebe.client.api.worker.JobHandler
 import io.camunda.zeebe.model.bpmn.Bpmn
 import io.camunda.zeebe.model.bpmn.BpmnModelInstance
+import org.awaitility.kotlin.await
+import java.util.concurrent.TimeUnit
 
 class DeployMultipleVersionsHandler(val createClient: (ActivatedJob) -> ZeebeClient = ::createClientForClusterUnderTest) :
     JobHandler {
@@ -31,7 +33,7 @@ class DeployMultipleVersionsHandler(val createClient: (ActivatedJob) -> ZeebeCli
 
             var lastVersion = -1
             for (i in 1..5) {
-                it.deployModel(MODEL_V1, "modelV1.bpmn")
+                await.until { -> it.deployModel(MODEL_V1, "modelV1.bpmn") }
                 lastVersion = waitForModelDeployment(it, MODEL_V2, "modelV2.bpmn")
             }
 
