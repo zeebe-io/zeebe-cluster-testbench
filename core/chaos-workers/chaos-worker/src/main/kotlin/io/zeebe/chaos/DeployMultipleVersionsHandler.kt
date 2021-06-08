@@ -2,21 +2,17 @@ package io.zeebe.chaos
 
 import io.camunda.zeebe.client.ZeebeClient
 import io.camunda.zeebe.client.api.response.ActivatedJob
+import io.camunda.zeebe.client.api.response.DeploymentEvent
 import io.camunda.zeebe.client.api.worker.JobClient
 import io.camunda.zeebe.client.api.worker.JobHandler
 import io.camunda.zeebe.model.bpmn.Bpmn
-import io.camunda.zeebe.model.bpmn.BpmnModelInstance
 import org.awaitility.kotlin.await
-import java.util.concurrent.TimeUnit
 
 class DeployMultipleVersionsHandler(val createClient: (ActivatedJob) -> ZeebeClient = ::createClientForClusterUnderTest) :
     JobHandler {
 
     private val PROCESS_ID = "multiVersion"
-    private val MODEL_V1 =
-        Bpmn.createExecutableProcess(PROCESS_ID).name("v1").startEvent().endEvent().done()
-    private val MODEL_V2 =
-        Bpmn.createExecutableProcess(PROCESS_ID).name("v2").startEvent().endEvent().done()
+    private val RESOURCE_NAME = PROCESS_ID +".bpmn"
     private val LOG =
         org.slf4j.LoggerFactory.getLogger("io.zeebe.chaos.DeployMultipleVersionsHandler")
 
@@ -31,11 +27,10 @@ class DeployMultipleVersionsHandler(val createClient: (ActivatedJob) -> ZeebeCli
         createClient(job).use {
             LOG.info("Connected to ${it.configuration.gatewayAddress}, start deploying multiple versions...")
 
-            var lastVersion = -1
-            for (i in 1..5) {
-                await.until { -> it.deployModel(MODEL_V1, "modelV1.bpmn") }
-                lastVersion = waitForModelDeployment(it, MODEL_V2, "modelV2.bpmn")
-            }
+            val lastVersion = IntRange(1, 10)
+                    .map{i -> waitForModelDeployment(it, i)}
+                    .map{e -> e?.processes?.get(0)?.version ?: -1 }
+                    .last()
 
             LOG.info("Deployed 10 different versions of process $PROCESS_ID, last version: $lastVersion. Complete $JOB_TYPE")
         }
@@ -43,25 +38,20 @@ class DeployMultipleVersionsHandler(val createClient: (ActivatedJob) -> ZeebeCli
         client.newCompleteCommand(job.key).send()
     }
 
-    private fun waitForModelDeployment(
-        client: ZeebeClient,
-        model: BpmnModelInstance,
-        name: String
-    ): Int {
-        var version = -1
-        do {
-            try {
-                val deploymentEvent =
-                    client.newDeployCommand().addProcessModel(model, name).send().join()
-                version = deploymentEvent.processes[0].version
-            } catch (e: Exception) {
-                // try again
-                LOG.debug("Failed to deploy $name, try again.", e)
-                Thread.sleep(100)
-            }
-        } while (version == -1)
-        return version
+    private fun waitForModelDeployment(client: ZeebeClient, index: Int): DeploymentEvent? {
+        var event: DeploymentEvent? = null
+        await.untilAsserted {
+            event = client.newDeployCommand()
+                    .addProcessModel(
+                            Bpmn.createExecutableProcess(PROCESS_ID)
+                                    .name("v1")
+                                    .startEvent("start-" + index)
+                                    .endEvent()
+                                    .done(),
+                            RESOURCE_NAME)
+                    .send()
+                    .join()
+        }
+        return event
     }
-
-
 }
