@@ -12,9 +12,9 @@ class DeployMultipleVersionsHandler(val createClient: (ActivatedJob) -> ZeebeCli
 
     private val PROCESS_ID = "multiVersion"
     private val MODEL_V1 =
-        Bpmn.createExecutableProcess(PROCESS_ID).name("v1").startEvent().endEvent().done()
+        Bpmn.createExecutableProcess(PROCESS_ID).name("Multi version process").startEvent("start-1").endEvent().done()
     private val MODEL_V2 =
-        Bpmn.createExecutableProcess(PROCESS_ID).name("v2").startEvent().endEvent().done()
+        Bpmn.createExecutableProcess(PROCESS_ID).name("Multi version process").startEvent("start-2").endEvent().done()
     private val LOG =
         org.slf4j.LoggerFactory.getLogger("io.zeebe.chaos.DeployMultipleVersionsHandler")
 
