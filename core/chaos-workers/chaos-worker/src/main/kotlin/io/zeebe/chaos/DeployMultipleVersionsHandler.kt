@@ -51,7 +51,7 @@ class DeployMultipleVersionsHandler(val createClient: (ActivatedJob) -> ZeebeCli
             event = client.newDeployCommand()
                     .addProcessModel(
                             Bpmn.createExecutableProcess(PROCESS_ID)
-                                    .name("v1")
+                                    .name("Multi version process")
                                     .startEvent("start-" + index)
                                     .endEvent()
                                     .done(),
