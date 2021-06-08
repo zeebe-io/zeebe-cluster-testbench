@@ -52,7 +52,7 @@ class DeployMultipleVersionsHandler : JobHandler {
             event = client.newDeployCommand()
                     .addWorkflowModel(
                             Bpmn.createExecutableProcess(PROCESS_ID)
-                                    .name("v1")
+                                    .name("Multi version process")
                                     .startEvent("start-" + index)
                                     .endEvent()
                                     .done(),
