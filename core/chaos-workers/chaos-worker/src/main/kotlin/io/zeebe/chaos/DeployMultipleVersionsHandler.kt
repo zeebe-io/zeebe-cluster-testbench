@@ -32,10 +32,17 @@ class DeployMultipleVersionsHandler(val createClient: (ActivatedJob) -> ZeebeCli
                     .map{e -> e?.processes?.get(0)?.version ?: -1 }
                     .last()
 
-            LOG.info("Deployed 10 different versions of process $PROCESS_ID, last version: $lastVersion. Complete $JOB_TYPE")
+            if (lastVersion < 10) {
+                LOG.warn("Deployed 10 different versions of process $PROCESS_ID, last version: $lastVersion. Fail $JOB_TYPE")
+                client.newFailCommand(job.key)
+                        .retries(job.retries)
+                        .errorMessage("Expected to deploy 10 different versions of process $PROCESS_ID, but only deployed $lastVersion")
+                        .send()
+            } else {
+                LOG.info("Deployed 10 different versions of process $PROCESS_ID, last version: $lastVersion. Complete $JOB_TYPE")
+                client.newCompleteCommand(job.key).send()
+            }
         }
-
-        client.newCompleteCommand(job.key).send()
     }
 
     private fun waitForModelDeployment(client: ZeebeClient, index: Int): DeploymentEvent? {
