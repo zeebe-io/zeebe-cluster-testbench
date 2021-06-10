@@ -8,8 +8,7 @@ import io.camunda.zeebe.client.api.worker.JobHandler
 import io.camunda.zeebe.model.bpmn.Bpmn
 import org.awaitility.kotlin.await
 
-class DeployMultipleVersionsHandler(val createClient: (ActivatedJob) -> ZeebeClient = ::createClientForClusterUnderTest) :
-    JobHandler {
+class DeployMultipleVersionsHandler : JobHandler {
 
     private val PROCESS_ID = "multiVersion"
     private val RESOURCE_NAME = PROCESS_ID +".bpmn"
@@ -20,27 +19,27 @@ class DeployMultipleVersionsHandler(val createClient: (ActivatedJob) -> ZeebeCli
         const val JOB_TYPE = "deploy-different-versions.sh"
     }
 
-    override fun handle(client: JobClient, job: ActivatedJob) {
+    override fun handle(testbench: JobClient, job: ActivatedJob) {
         setMDCForJob(job)
         LOG.info("Handle job $JOB_TYPE")
 
-        createClient(job).use {
-            LOG.info("Connected to ${it.configuration.gatewayAddress}, start deploying multiple versions...")
+        createClientForClusterUnderTest(job).use { clusterUnderTest ->
+            LOG.info("Connected to ${clusterUnderTest.configuration.gatewayAddress}, start deploying multiple versions...")
 
             val lastVersion = IntRange(1, 10)
-                    .map{i -> waitForModelDeployment(it, i)}
+                    .map{i -> waitForModelDeployment(clusterUnderTest, i)}
                     .map{e -> e?.processes?.get(0)?.version ?: -1 }
                     .last()
 
             if (lastVersion < 10) {
                 LOG.warn("Deployed 10 different versions of process $PROCESS_ID, last version: $lastVersion. Fail $JOB_TYPE")
-                client.newFailCommand(job.key)
+                testbench.newFailCommand(job.key)
                         .retries(job.retries)
                         .errorMessage("Expected to deploy 10 different versions of process $PROCESS_ID, but only deployed $lastVersion")
                         .send()
             } else {
                 LOG.info("Deployed 10 different versions of process $PROCESS_ID, last version: $lastVersion. Complete $JOB_TYPE")
-                client.newCompleteCommand(job.key).send()
+                testbench.newCompleteCommand(job.key).send()
             }
         }
     }
