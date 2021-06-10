@@ -4,9 +4,13 @@ import io.camunda.zeebe.client.api.response.ActivatedJob;
 import io.camunda.zeebe.client.api.worker.JobClient;
 import io.camunda.zeebe.client.api.worker.JobHandler;
 import io.zeebe.clustertestbench.cloud.CloudAPIClient;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class GatherInformationAboutClusterInCamundaCloudHandler implements JobHandler {
 
+  private static final Logger LOGGER =
+      LoggerFactory.getLogger(GatherInformationAboutClusterInCamundaCloudHandler.class);
   private final CloudAPIClient cloudApiClient;
 
   public GatherInformationAboutClusterInCamundaCloudHandler(final CloudAPIClient cloudApiClient) {
@@ -15,11 +19,13 @@ public class GatherInformationAboutClusterInCamundaCloudHandler implements JobHa
 
   @Override
   public void handle(final JobClient client, final ActivatedJob job) throws Exception {
-    final Input input = job.getVariablesAsType(Input.class);
+    final var input = job.getVariablesAsType(Input.class);
+    final var clusterId = input.getClusterId();
 
-    final String operateURL =
-        cloudApiClient.getClusterInfo(input.getClusterId()).getStatus().getOperateUrl();
+    LOGGER.debug("Fetching cluster info for id {}", clusterId);
+    final var clusterInfo = cloudApiClient.getClusterInfo(clusterId);
 
+    final String operateURL = clusterInfo.getStatus().getOperateUrl();
     client.newCompleteCommand(job.getKey()).variables(new Output(operateURL)).send();
   }
 
