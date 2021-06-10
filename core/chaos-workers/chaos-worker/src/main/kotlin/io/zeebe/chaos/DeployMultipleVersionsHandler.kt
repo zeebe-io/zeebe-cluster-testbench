@@ -27,9 +27,9 @@ class DeployMultipleVersionsHandler : JobHandler {
         createClientForClusterUnderTest(job).use { clusterUnderTest ->
             LOG.info("Connected to ${clusterUnderTest.configuration.gatewayAddress}, start deploying multiple versions...")
 
-            val lastVersion = IntRange(1, 10)
-                    .map{i -> waitForModelDeployment(clusterUnderTest, i)}
-                    .map{e -> e?.workflows?.get(0)?.version ?: -1 }
+            val lastVersion = (1..10)
+                    .map{ waitForModelDeployment(clusterUnderTest, it) }
+                    .map{ it?.workflows?.get(0)?.version ?: -1 }
                     .last()
 
             if (lastVersion < 10) {
