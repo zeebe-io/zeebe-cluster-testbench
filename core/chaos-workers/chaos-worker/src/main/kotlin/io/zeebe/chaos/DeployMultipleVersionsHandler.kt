@@ -20,28 +20,27 @@ class DeployMultipleVersionsHandler : JobHandler {
         const val JOB_TYPE = "deploy-different-versions.sh"
     }
 
-    override fun handle(client: JobClient, job: ActivatedJob) {
+    override fun handle(testbench: JobClient, job: ActivatedJob) {
         setMDCForJob(job)
         LOG.info("Handle job $JOB_TYPE")
 
-        val authenticationDetails = job.variablesAsMap["authenticationDetails"]!! as Map<String, Any>
-        createClient(authenticationDetails).use {
-            LOG.info("Connected to ${it.configuration.gatewayAddress}, start deploying multiple versions...")
+        createClientForClusterUnderTest(job).use { clusterUnderTest ->
+            LOG.info("Connected to ${clusterUnderTest.configuration.gatewayAddress}, start deploying multiple versions...")
 
             val lastVersion = IntRange(1, 10)
-                    .map{i -> waitForModelDeployment(it, i)}
+                    .map{i -> waitForModelDeployment(clusterUnderTest, i)}
                     .map{e -> e?.workflows?.get(0)?.version ?: -1 }
                     .last()
 
             if (lastVersion < 10) {
                 LOG.warn("Deployed 10 different versions of process $PROCESS_ID, last version: $lastVersion. Fail $JOB_TYPE")
-                client.newFailCommand(job.key)
+                testbench.newFailCommand(job.key)
                         .retries(job.retries)
                         .errorMessage("Expected to deploy 10 different versions of process $PROCESS_ID, but only deployed $lastVersion")
                         .send()
             } else {
                 LOG.info("Deployed 10 different versions of process $PROCESS_ID, last version: $lastVersion. Complete $JOB_TYPE")
-                client.newCompleteCommand(job.key).send()
+                testbench.newCompleteCommand(job.key).send()
             }
         }
     }
@@ -63,7 +62,8 @@ class DeployMultipleVersionsHandler : JobHandler {
         return event
     }
 
-    private fun createClient(authenticationDetails: Map<String, Any>): ZeebeClient {
+    private fun createClientForClusterUnderTest(job: ActivatedJob): ZeebeClient {
+        val authenticationDetails = job.variablesAsMap["authenticationDetails"]!! as Map<String, Any>
         val clientId = authenticationDetails["clientId"]!!.toString()
         val clientSecret = authenticationDetails["clientSecret"]!!.toString()
         val authorizationURL = authenticationDetails["authorizationURL"]!!.toString()
