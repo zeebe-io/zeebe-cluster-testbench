@@ -32,10 +32,12 @@ class DeployMultipleVersionsHandler : JobHandler {
                     .last()
 
             if (lastVersion < 10) {
-                LOG.warn("Deployed 10 different versions of process $PROCESS_ID, last version: $lastVersion. Fail $JOB_TYPE")
+                val message =
+                    "Expected to deploy 10 different versions of process $PROCESS_ID, but only deployed $lastVersion"
+                LOG.warn("$message. Fail $JOB_TYPE")
                 testbench.newFailCommand(job.key)
                         .retries(job.retries)
-                        .errorMessage("Expected to deploy 10 different versions of process $PROCESS_ID, but only deployed $lastVersion")
+                        .errorMessage(message)
                         .send()
             } else {
                 LOG.info("Deployed 10 different versions of process $PROCESS_ID, last version: $lastVersion. Complete $JOB_TYPE")
