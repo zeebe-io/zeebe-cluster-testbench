@@ -13,32 +13,27 @@ import static io.zeebe.clustertestbench.internal.cloud.StubInternalCloudAPIClien
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.assertj.core.api.Assertions.entry;
+import static org.camunda.community.zeebe.testutils.ZeebeWorkerAssertions.assertThat;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.verifyNoMoreInteractions;
-import static org.mockito.Mockito.when;
 
-import io.camunda.zeebe.client.api.ZeebeFuture;
-import io.camunda.zeebe.client.api.command.CompleteJobCommandStep1;
-import io.camunda.zeebe.client.api.response.ActivatedJob;
-import io.camunda.zeebe.client.api.worker.JobClient;
 import io.zeebe.clustertestbench.cloud.response.GenerationInfo;
-import io.zeebe.clustertestbench.handler.CreateGenerationInCamundaCloudHandler.Input;
-import io.zeebe.clustertestbench.handler.CreateGenerationInCamundaCloudHandler.Output;
 import io.zeebe.clustertestbench.internal.cloud.InternalCloudAPIClient;
 import io.zeebe.clustertestbench.internal.cloud.StubInternalCloudAPIClient;
 import io.zeebe.clustertestbench.internal.cloud.request.CreateGenerationRequest;
 import io.zeebe.clustertestbench.internal.cloud.request.UpdateChannelRequest;
 import java.util.ArrayList;
+import java.util.Map;
 import java.util.stream.Collectors;
+import org.camunda.community.zeebe.testutils.stubs.ActivatedJobStub;
+import org.camunda.community.zeebe.testutils.stubs.JobClientStub;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
-import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
@@ -50,63 +45,63 @@ class CreateGenerationInCamundaCloudHandlerTest {
   @DisplayName("Handle Job")
   class HandleJobTest {
 
+    public static final String FIELD_ZEEBE_IMAGE = "zeebeImage";
+    public static final String FIELD_GENERATION_TEMPLATE = "generationTemplate";
+    public static final String FIELD_CHANNEL = "channel";
     final InternalCloudAPIClient stubInternalApiClient = new StubInternalCloudAPIClient(false);
 
     InternalCloudAPIClient spyInternalApiClient;
 
     CreateGenerationInCamundaCloudHandler sutCreateGenerationHandler;
 
-    @Mock JobClient mockJobClient;
+    JobClientStub jobClientStub = new JobClientStub();
 
-    @Mock CompleteJobCommandStep1 mockCompleteJobCommandStep1;
-    @Mock CompleteJobCommandStep1 mockCompleteJobCommandStep2;
-
-    @SuppressWarnings("rawtypes")
-    @Mock
-    ZeebeFuture mockZeebeFuture;
-
-    @Mock ActivatedJob mockActivatedJob;
+    ActivatedJobStub activatedJobStub;
 
     @BeforeEach
     public void setUp() {
       spyInternalApiClient = spy(stubInternalApiClient);
       sutCreateGenerationHandler = new CreateGenerationInCamundaCloudHandler(spyInternalApiClient);
 
-      final var input = new Input();
-      input.setZeebeImage(ZEEBE_IMAGE);
-      input.setGenerationTemplate(DEFAULT_GENERATION_NAME);
-      input.setChannel(DEFAULT_CHANNEL_NAME);
+      activatedJobStub = jobClientStub.createActivatedJob();
 
-      when(mockActivatedJob.getVariablesAsType(Input.class)).thenReturn(input);
+      activatedJobStub.setInputVariables(
+          Map.of(
+              FIELD_ZEEBE_IMAGE,
+              ZEEBE_IMAGE,
+              FIELD_GENERATION_TEMPLATE,
+              DEFAULT_GENERATION_NAME,
+              FIELD_CHANNEL,
+              DEFAULT_CHANNEL_NAME));
     }
 
     @Test
-    public void shouldThrowRuntimExceptionIfGenerationTemplateCannotBeFound() throws Exception {
+    public void shouldThrowRuntimeExceptionIfGenerationTemplateCannotBeFound() {
       // given
-      final var input = new Input();
-      input.setZeebeImage(ZEEBE_IMAGE);
-      input.setGenerationTemplate("unknown-generation");
-
-      when(mockActivatedJob.getVariablesAsType(Input.class)).thenReturn(input);
+      activatedJobStub.setInputVariables(
+          Map.of(FIELD_ZEEBE_IMAGE, ZEEBE_IMAGE, FIELD_GENERATION_TEMPLATE, "unknown-generation"));
 
       // when + then
-      assertThatThrownBy(() -> sutCreateGenerationHandler.handle(mockJobClient, mockActivatedJob))
+      assertThatThrownBy(() -> sutCreateGenerationHandler.handle(jobClientStub, activatedJobStub))
           .isExactlyInstanceOf(IllegalArgumentException.class)
           .hasMessageContaining("Unable to find generation")
           .hasMessageContaining("unknown-generation");
+
+      assertThat(activatedJobStub).isStillActivated();
     }
 
     @Test
-    public void shouldThrowRuntimExceptionIfChannelCannotBeFound() throws Exception {
+    public void shouldThrowRuntimeExceptionIfChannelCannotBeFound() {
       // given
-      final var input = new Input();
-      input.setGenerationTemplate(DEFAULT_GENERATION_NAME);
-      input.setChannel("unknown-channel");
-
-      when(mockActivatedJob.getVariablesAsType(Input.class)).thenReturn(input);
+      activatedJobStub.setInputVariables(
+          Map.of(
+              FIELD_GENERATION_TEMPLATE,
+              DEFAULT_GENERATION_NAME,
+              FIELD_CHANNEL,
+              "unknown-channel"));
 
       // when + then
-      assertThatThrownBy(() -> sutCreateGenerationHandler.handle(mockJobClient, mockActivatedJob))
+      assertThatThrownBy(() -> sutCreateGenerationHandler.handle(jobClientStub, activatedJobStub))
           .isExactlyInstanceOf(IllegalArgumentException.class)
           .hasMessageContaining("Unable to find channel")
           .hasMessageContaining("unknown-channel");
@@ -114,11 +109,8 @@ class CreateGenerationInCamundaCloudHandlerTest {
 
     @Test
     public void shouldCreateGeneration() throws Exception {
-      // given
-      mockJobCompletChain();
-
       // when
-      sutCreateGenerationHandler.handle(mockJobClient, mockActivatedJob);
+      sutCreateGenerationHandler.handle(jobClientStub, activatedJobStub);
 
       // then
       final var argumentCapture = ArgumentCaptor.forClass(CreateGenerationRequest.class);
@@ -134,7 +126,7 @@ class CreateGenerationInCamundaCloudHandlerTest {
     }
 
     @Test
-    public void shouldThrowExceptiionIfGenerationWasNotCreated() throws Exception {
+    public void shouldThrowExceptionIfGenerationWasNotCreated() {
       // given
       final var brokenStubInternalApiClient = new StubInternalCloudAPIClient(true);
       final var spyStubInternalApiClient = spy(brokenStubInternalApiClient);
@@ -142,18 +134,15 @@ class CreateGenerationInCamundaCloudHandlerTest {
       final var sutLocal = new CreateGenerationInCamundaCloudHandler(spyStubInternalApiClient);
 
       // when + then
-      assertThatThrownBy(() -> sutLocal.handle(mockJobClient, mockActivatedJob))
+      assertThatThrownBy(() -> sutLocal.handle(jobClientStub, activatedJobStub))
           .isExactlyInstanceOf(RuntimeException.class)
           .hasMessageContaining("Creation of generation unsuccessful");
     }
 
     @Test
     public void shouldAddGenerationToChannel() throws Exception {
-      // given
-      mockJobCompletChain();
-
       // when
-      sutCreateGenerationHandler.handle(mockJobClient, mockActivatedJob);
+      sutCreateGenerationHandler.handle(jobClientStub, activatedJobStub);
 
       // then
       final var argumentCapture = ArgumentCaptor.forClass(UpdateChannelRequest.class);
@@ -171,53 +160,15 @@ class CreateGenerationInCamundaCloudHandlerTest {
     }
 
     @Test
-    void shouldCompleteJob() throws Exception {
-      // given
-      mockJobCompletChain();
-
-      // when
-      sutCreateGenerationHandler.handle(mockJobClient, mockActivatedJob);
-
-      // then
-      verify(mockJobClient).newCompleteCommand(Mockito.anyLong());
-      verify(mockCompleteJobCommandStep1).variables((Object) Mockito.any());
-      verify(mockCompleteJobCommandStep2).send();
-      verify(mockZeebeFuture).join();
-
-      verifyNoMoreInteractions(mockJobClient);
-      verifyNoMoreInteractions(mockCompleteJobCommandStep1);
-      verifyNoMoreInteractions(mockCompleteJobCommandStep2);
-      verifyNoMoreInteractions(mockZeebeFuture);
-    }
-
-    @Test
-    void shouldCompleteTheRightJob() throws Exception {
-      // given
-      final var jobKey = 42L;
-      when(mockActivatedJob.getKey()).thenReturn(jobKey);
-      mockJobCompletChain();
-
-      // when
-      sutCreateGenerationHandler.handle(mockJobClient, mockActivatedJob);
-
-      // then
-      verify(mockJobClient).newCompleteCommand(jobKey);
-    }
-
-    @Test
     void shouldSetGenerationNameAndUuidUponCompletion() throws Exception {
       // given
-      mockJobCompletChain();
       final var initialGenerations = new ArrayList<>(stubInternalApiClient.listGenerationInfos());
 
       // when
-      sutCreateGenerationHandler.handle(mockJobClient, mockActivatedJob);
+      sutCreateGenerationHandler.handle(jobClientStub, activatedJobStub);
 
       // then
-      final var argumentCapture = ArgumentCaptor.forClass(Output.class);
-      verify(mockCompleteJobCommandStep1).variables(argumentCapture.capture());
-
-      final var output = argumentCapture.getValue();
+      assertThat(activatedJobStub).completed();
 
       final var createdGenerations = new ArrayList<>(stubInternalApiClient.listGenerationInfos());
       createdGenerations.removeAll(initialGenerations);
@@ -226,12 +177,16 @@ class CreateGenerationInCamundaCloudHandlerTest {
 
       final var createdGeneration = createdGenerations.get(0);
 
-      assertThat(output.getGeneration()).isEqualTo(createdGeneration.getName());
-      assertThat(output.getGenerationUUID()).isEqualTo(createdGeneration.getUuid());
+      assertThat(activatedJobStub)
+          .completed()
+          .extractingOutput()
+          .containsOnly(
+              entry("generation", createdGeneration.getName()),
+              entry("generationUUID", createdGeneration.getUuid()));
     }
 
     @Test
-    void shouldDeleteGenerationIfExceptionOccursAfterGenerationHasBennCreated() throws Exception {
+    void shouldDeleteGenerationIfExceptionOccursAfterGenerationHasBennCreated() {
       // given
       final var message =
           "Deliberate runtime exception in shouldDeleteGenerationIfExceptionOccursAfterGenerationHasBennCreated";
@@ -240,20 +195,11 @@ class CreateGenerationInCamundaCloudHandlerTest {
           .updateChannel(Mockito.any(), Mockito.any());
 
       // when + then
-      assertThatThrownBy(() -> sutCreateGenerationHandler.handle(mockJobClient, mockActivatedJob))
+      assertThatThrownBy(() -> sutCreateGenerationHandler.handle(jobClientStub, activatedJobStub))
           .isExactlyInstanceOf(RuntimeException.class)
           .hasMessage(message);
 
       verify(spyInternalApiClient).deleteGeneration(Mockito.any());
-    }
-
-    @SuppressWarnings("unchecked")
-    private void mockJobCompletChain() {
-      when(mockJobClient.newCompleteCommand(Mockito.anyLong()))
-          .thenReturn(mockCompleteJobCommandStep1);
-      when(mockCompleteJobCommandStep1.variables((Object) Mockito.any()))
-          .thenReturn(mockCompleteJobCommandStep2);
-      when(mockCompleteJobCommandStep2.send()).thenReturn(mockZeebeFuture);
     }
   }
 

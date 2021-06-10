@@ -1,16 +1,15 @@
 package io.zeebe.clustertestbench.handler;
 
+import static org.camunda.community.zeebe.testutils.ZeebeWorkerAssertions.assertThat;
 import static org.mockito.Mockito.inOrder;
+import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
-import static org.mockito.Mockito.when;
 
-import io.camunda.zeebe.client.api.ZeebeFuture;
-import io.camunda.zeebe.client.api.command.CompleteJobCommandStep1;
-import io.camunda.zeebe.client.api.response.ActivatedJob;
-import io.camunda.zeebe.client.api.worker.JobClient;
-import io.zeebe.clustertestbench.handler.DeleteGenerationInCamundaCloudHandler.Input;
 import io.zeebe.clustertestbench.internal.cloud.InternalCloudAPIClient;
+import java.util.Map;
+import org.camunda.community.zeebe.testutils.stubs.ActivatedJobStub;
+import org.camunda.community.zeebe.testutils.stubs.JobClientStub;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -25,36 +24,25 @@ class DeleteGenerationInCamundaCloudHandlerTest {
 
   @Mock InternalCloudAPIClient mockInternalApiClient;
 
-  @Mock JobClient mockJobClient;
+  JobClientStub jobClientStub = new JobClientStub();
 
-  @Mock CompleteJobCommandStep1 mockCompleteJobCommandStep1;
+  ActivatedJobStub activatedJobStub;
 
-  @SuppressWarnings("rawtypes")
-  @Mock
-  ZeebeFuture mockZeebeFuture;
+  DeleteGenerationInCamundaCloudHandler sutDeleteGenerationHandler;
 
-  @Mock ActivatedJob mockActivatedJob;
-
-  DeleteGenerationInCamundaCloudHandler sutDeleteGenerationhandler;
-
-  @SuppressWarnings("unchecked")
   @BeforeEach
   public void setUp() {
-    sutDeleteGenerationhandler = new DeleteGenerationInCamundaCloudHandler(mockInternalApiClient);
-    when(mockJobClient.newCompleteCommand(Mockito.anyLong()))
-        .thenReturn(mockCompleteJobCommandStep1);
-    when(mockCompleteJobCommandStep1.send()).thenReturn(mockZeebeFuture);
+    sutDeleteGenerationHandler = new DeleteGenerationInCamundaCloudHandler(mockInternalApiClient);
 
-    final var input = new Input();
-    input.setGenerationUUID(TEST_GENERATION_UUID);
+    activatedJobStub = jobClientStub.createActivatedJob();
 
-    when(mockActivatedJob.getVariablesAsType(Input.class)).thenReturn(input);
+    activatedJobStub.setInputVariables(Map.of("generationUUID", TEST_GENERATION_UUID));
   }
 
   @Test
   void shouldCallApiToDeleteGeneration() throws Exception {
     // when
-    sutDeleteGenerationhandler.handle(mockJobClient, mockActivatedJob);
+    sutDeleteGenerationHandler.handle(jobClientStub, activatedJobStub);
 
     // then
     verify(mockInternalApiClient).deleteGeneration(Mockito.any());
@@ -64,7 +52,7 @@ class DeleteGenerationInCamundaCloudHandlerTest {
   @Test
   void shouldDeleteTheRightGeneration() throws Exception {
     // when
-    sutDeleteGenerationhandler.handle(mockJobClient, mockActivatedJob);
+    sutDeleteGenerationHandler.handle(jobClientStub, activatedJobStub);
 
     // then
     verify(mockInternalApiClient).deleteGeneration(TEST_GENERATION_UUID);
@@ -72,45 +60,20 @@ class DeleteGenerationInCamundaCloudHandlerTest {
   }
 
   @Test
-  void shouldCompleteJob() throws Exception {
-    // when
-    sutDeleteGenerationhandler.handle(mockJobClient, mockActivatedJob);
-
-    // then
-    verify(mockJobClient).newCompleteCommand(Mockito.anyLong());
-    verify(mockCompleteJobCommandStep1).send();
-    verify(mockZeebeFuture).join();
-
-    verifyNoMoreInteractions(mockJobClient);
-    verifyNoMoreInteractions(mockCompleteJobCommandStep1);
-    verifyNoMoreInteractions(mockZeebeFuture);
-  }
-
-  @Test
   void shouldCompleteJobAfterDeletingTheGeneration() throws Exception {
+    final var spyJobClientStub = spy(jobClientStub);
     // when
-    sutDeleteGenerationhandler.handle(mockJobClient, mockActivatedJob);
+    sutDeleteGenerationHandler.handle(spyJobClientStub, activatedJobStub);
 
     // then
-    final var inOrder = inOrder(mockInternalApiClient, mockJobClient);
+    final var inOrder = inOrder(mockInternalApiClient, spyJobClientStub);
 
     inOrder.verify(mockInternalApiClient).deleteGeneration(Mockito.any());
-    inOrder.verify(mockJobClient).newCompleteCommand(Mockito.anyLong());
+    inOrder.verify(spyJobClientStub).newCompleteCommand(Mockito.anyLong());
 
     verifyNoMoreInteractions(mockInternalApiClient);
-    verifyNoMoreInteractions(mockJobClient);
-  }
+    verifyNoMoreInteractions(spyJobClientStub);
 
-  @Test
-  void shouldCompleteTheRightJob() throws Exception {
-    // given
-    final var jobKey = 42L;
-    when(mockActivatedJob.getKey()).thenReturn(jobKey);
-
-    // when
-    sutDeleteGenerationhandler.handle(mockJobClient, mockActivatedJob);
-
-    // then
-    verify(mockJobClient).newCompleteCommand(jobKey);
+    assertThat(activatedJobStub).completed();
   }
 }

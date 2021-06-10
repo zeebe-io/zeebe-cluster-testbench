@@ -1,33 +1,31 @@
 package io.zeebe.clustertestbench.handler;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Mockito.verify;
+import static java.util.Map.entry;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.camunda.community.zeebe.testutils.ZeebeWorkerAssertions.assertThat;
 import static org.mockito.Mockito.when;
 
-import io.camunda.zeebe.client.api.ZeebeFuture;
-import io.camunda.zeebe.client.api.command.CompleteJobCommandStep1;
-import io.camunda.zeebe.client.api.response.ActivatedJob;
-import io.camunda.zeebe.client.api.worker.JobClient;
 import io.zeebe.clustertestbench.cloud.CloudAPIClient;
 import io.zeebe.clustertestbench.cloud.response.ClusterInfo;
 import io.zeebe.clustertestbench.cloud.response.GenerationInfo;
-import io.zeebe.clustertestbench.handler.CheckGenerationUsageHandler.Input;
-import io.zeebe.clustertestbench.handler.CheckGenerationUsageHandler.Output;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
-import org.assertj.core.api.Assertions;
+import java.util.Map;
+import org.camunda.community.zeebe.testutils.stubs.ActivatedJobStub;
+import org.camunda.community.zeebe.testutils.stubs.JobClientStub;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 @ExtendWith(MockitoExtension.class)
 class CheckGenerationUsageHandlerTest {
-  private static final Long TEST_JOB_KEY = 42L;
 
+  public static final String GENERATION_FIELD = "generationUUID";
+  public static final String RESULT_FIELD = "generationNotInUse";
+  private static final Long TEST_JOB_KEY = 42L;
   private static final String UUID_B = "UUID B";
   private static final String UUID_A = "UUID A";
   private static final GenerationInfo GENERATION_A = new GenerationInfo();
@@ -50,131 +48,74 @@ class CheckGenerationUsageHandlerTest {
 
   @Mock CloudAPIClient mockCloudAPIClient;
 
-  @Mock JobClient mockJobClient;
-
-  @Mock CompleteJobCommandStep1 mockCompleteJobCommandStep1;
-  @Mock CompleteJobCommandStep1 mockCompleteJobCommandStep2;
-
-  @SuppressWarnings("rawtypes")
-  @Mock
-  ZeebeFuture mockZeebeFuture;
-
-  @Mock ActivatedJob mockActivatedJob;
+  JobClientStub jobClientStub = new JobClientStub();
+  ActivatedJobStub activatedJobStub;
 
   CheckGenerationUsageHandler sutHandler;
 
   @BeforeEach
   void setUp() {
     sutHandler = new CheckGenerationUsageHandler(mockCloudAPIClient);
+    activatedJobStub = jobClientStub.createActivatedJob();
   }
 
   @Test
-  void shouldReturnFalseWhenGeenrationIsInUse() throws Exception {
+  void shouldReturnFalseWhenGenerationIsInUse() throws Exception {
     // given
-    final var input = new Input();
-    input.setGenerationUUID(UUID_A);
-
-    when(mockActivatedJob.getVariablesAsType(Input.class)).thenReturn(input);
+    activatedJobStub.setInputVariables(Map.of(GENERATION_FIELD, UUID_A));
 
     when(mockCloudAPIClient.listClusterInfos()).thenReturn(CLUSTERS);
 
-    mockJobCompletChain();
-
     // when
-    sutHandler.handle(mockJobClient, mockActivatedJob);
+    sutHandler.handle(jobClientStub, activatedJobStub);
 
     // then
-    verify(mockJobClient).newCompleteCommand(TEST_JOB_KEY);
-
-    final var argumentCapture = ArgumentCaptor.forClass(Output.class);
-    verify(mockCompleteJobCommandStep1).variables(argumentCapture.capture());
-
-    final var output = argumentCapture.getValue();
-
-    assertThat(output.isGenerationNotInUse()).isFalse();
-
-    verify(mockCompleteJobCommandStep2).send();
-    verify(mockZeebeFuture).join();
+    assertThat(activatedJobStub)
+        .completed()
+        .extractingOutput()
+        .contains(entry(RESULT_FIELD, false));
   }
 
   @Test
-  void shouldReturnTrueWhenGeenrationIsNotUsed() throws Exception {
+  void shouldReturnTrueWhenGenerationIsNotUsed() throws Exception {
     // given
-    final var input = new Input();
-    input.setGenerationUUID("UUID C");
-
-    when(mockActivatedJob.getVariablesAsType(Input.class)).thenReturn(input);
+    activatedJobStub.setInputVariables(Map.of(GENERATION_FIELD, "UUID_C"));
 
     when(mockCloudAPIClient.listClusterInfos()).thenReturn(CLUSTERS);
 
-    mockJobCompletChain();
-
     // when
-    sutHandler.handle(mockJobClient, mockActivatedJob);
+    sutHandler.handle(jobClientStub, activatedJobStub);
 
     // then
-    verify(mockJobClient).newCompleteCommand(TEST_JOB_KEY);
-
-    final var argumentCapture = ArgumentCaptor.forClass(Output.class);
-    verify(mockCompleteJobCommandStep1).variables(argumentCapture.capture());
-
-    final var output = argumentCapture.getValue();
-
-    assertThat(output.isGenerationNotInUse()).isTrue();
-
-    verify(mockCompleteJobCommandStep2).send();
-    verify(mockZeebeFuture).join();
+    assertThat(activatedJobStub).completed().extractingOutput().contains(entry(RESULT_FIELD, true));
   }
 
   @Test
   void shouldReturnTrueWhenThereAreNoClustersAtAll() throws Exception {
     // given
-    final var input = new Input();
-    input.setGenerationUUID(UUID_A);
-
-    when(mockActivatedJob.getVariablesAsType(Input.class)).thenReturn(input);
+    activatedJobStub.setInputVariables(Map.of(GENERATION_FIELD, UUID_A));
 
     when(mockCloudAPIClient.listClusterInfos()).thenReturn(Collections.emptyList());
 
-    mockJobCompletChain();
-
     // when
-    sutHandler.handle(mockJobClient, mockActivatedJob);
+    sutHandler.handle(jobClientStub, activatedJobStub);
 
     // then
-    verify(mockJobClient).newCompleteCommand(TEST_JOB_KEY);
-
-    final var argumentCapture = ArgumentCaptor.forClass(Output.class);
-    verify(mockCompleteJobCommandStep1).variables(argumentCapture.capture());
-
-    final var output = argumentCapture.getValue();
-
-    assertThat(output.isGenerationNotInUse()).isTrue();
-
-    verify(mockCompleteJobCommandStep2).send();
-    verify(mockZeebeFuture).join();
+    assertThat(activatedJobStub).completed().extractingOutput().contains(entry(RESULT_FIELD, true));
   }
 
   @Test
   void shouldThrowExceptionIfGenerationUUIDIsNull() {
     // given
-    final var input = new Input();
-    input.setGenerationUUID(null);
+    final var input = new HashMap<String, Object>();
+    input.put(GENERATION_FIELD, null);
 
-    when(mockActivatedJob.getVariablesAsType(Input.class)).thenReturn(input);
+    activatedJobStub.setInputVariables(input);
 
     // when
-    Assertions.assertThatThrownBy(() -> sutHandler.handle(mockJobClient, mockActivatedJob))
+    assertThatThrownBy(() -> sutHandler.handle(jobClientStub, activatedJobStub))
         .isExactlyInstanceOf(IllegalArgumentException.class);
-  }
 
-  @SuppressWarnings("unchecked")
-  private void mockJobCompletChain() {
-    when(mockActivatedJob.getKey()).thenReturn(TEST_JOB_KEY);
-    when(mockJobClient.newCompleteCommand(Mockito.anyLong()))
-        .thenReturn(mockCompleteJobCommandStep1);
-    when(mockCompleteJobCommandStep1.variables((Object) Mockito.any()))
-        .thenReturn(mockCompleteJobCommandStep2);
-    when(mockCompleteJobCommandStep2.send()).thenReturn(mockZeebeFuture);
+    assertThat(activatedJobStub).isStillActivated();
   }
 }
