@@ -71,7 +71,7 @@
     <version.slf4j>1.7.30</version.slf4j>
     <version.vavr>0.10.3</version.vavr>
     <version.zeebeWorkerJavaTestutils>0.0.2</version.zeebeWorkerJavaTestutils>
-    <zeebe.version>1.0.0</zeebe.version>
+    <zeebe.version>1.0.1</zeebe.version>
   </properties>
 
   <dependencyManagement>
