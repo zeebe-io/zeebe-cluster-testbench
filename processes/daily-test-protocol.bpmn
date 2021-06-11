@@ -1,121 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:zeebe="http://camunda.org/schema/zeebe/1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" id="Definitions_0ol02m8" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Zeebe Modeler" exporterVersion="0.10.0">
-  <bpmn:process id="daily-test-protocol" name="Daily Tests" isExecutable="true">
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:zeebe="http://camunda.org/schema/zeebe/1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" id="Definitions_0ol02m8" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="4.8.1">
+  <bpmn:process id="daily-test-protocol" name="Legacy - Daily Tests" isExecutable="true">
     <bpmn:startEvent id="Event_11jd3o5" name="Start">
-      <bpmn:outgoing>Flow_1gt1xs8</bpmn:outgoing>
+      <bpmn:outgoing>Flow_02ba432</bpmn:outgoing>
     </bpmn:startEvent>
-    <bpmn:sequenceFlow id="Flow_1gt1xs8" sourceRef="Event_11jd3o5" targetRef="Activity_1tm7a6c" />
-    <bpmn:subProcess id="Activity_1tm7a6c">
-      <bpmn:extensionElements>
-        <zeebe:ioMapping>
-          <zeebe:input source="= &#34;new chaos&#34;" target="region" />
-          <zeebe:input source="=&#34;Internal Dev&#34;" target="channel" />
-          <zeebe:input source="=[&#34;Development&#34;, &#34;Production - S&#34;, &#34;Production - M&#34;, &#34;Production - L&#34;]" target="clusterPlans" />
-          <zeebe:input source="={&#34;steps&#34;:3,&#34;iterations&#34;:10,&#34;maxTimeForIteration&#34;:&#34;PT20S&#34;,&#34;maxTimeForCompleteTest&#34;:&#34;PT4M&#34;}" target="sequentialTestParams" />
-          <zeebe:input source="={}" target="chaosTestParams" />
-          <zeebe:input source="=&#34;Daily Test Protocol&#34;" target="rootProcess" />
-        </zeebe:ioMapping>
-      </bpmn:extensionElements>
-      <bpmn:incoming>Flow_1gt1xs8</bpmn:incoming>
-      <bpmn:outgoing>Flow_08as7sy</bpmn:outgoing>
-      <bpmn:subProcess id="Activity_01rcw4r" triggeredByEvent="true">
-        <bpmn:callActivity id="Activity_0ga0m8g" name="Run All Tests in Camunda Cloud per Cluster Plan">
-          <bpmn:extensionElements>
-            <zeebe:taskDefinition type="run-all-tests-in-camunda-cloud-per-cluster-plan" />
-            <zeebe:ioMapping>
-              <zeebe:output source="=&#34;block variable propagation&#34;" target="dummy" />
-            </zeebe:ioMapping>
-            <zeebe:calledElement processId="run-all-tests-in-camunda-cloud-per-cluster-plan" />
-          </bpmn:extensionElements>
-          <bpmn:incoming>Flow_1d7hw5p</bpmn:incoming>
-          <bpmn:outgoing>Flow_0br4aao</bpmn:outgoing>
-        </bpmn:callActivity>
-        <bpmn:startEvent id="event-daily-trigger" name="1/d" isInterrupting="false">
-          <bpmn:outgoing>Flow_1d7hw5p</bpmn:outgoing>
-          <bpmn:timerEventDefinition id="TimerEventDefinition_163oulo">
-            <bpmn:timeCycle xsi:type="bpmn:tFormalExpression">R/P1D</bpmn:timeCycle>
-          </bpmn:timerEventDefinition>
-        </bpmn:startEvent>
-        <bpmn:sequenceFlow id="Flow_1d7hw5p" sourceRef="event-daily-trigger" targetRef="Activity_0ga0m8g" />
-        <bpmn:endEvent id="Event_0arjkp8">
-          <bpmn:incoming>Flow_0br4aao</bpmn:incoming>
-        </bpmn:endEvent>
-        <bpmn:sequenceFlow id="Flow_0br4aao" sourceRef="Activity_0ga0m8g" targetRef="Event_0arjkp8" />
-      </bpmn:subProcess>
-      <bpmn:subProcess id="Activity_0301x0i" triggeredByEvent="true">
-        <bpmn:callActivity id="Activity_03q5y87" name="Run All Tests in Camunda Cloud per Cluster Plan">
-          <bpmn:extensionElements>
-            <zeebe:taskDefinition type="run-all-tests-in-camunda-cloud-per-cluster-plan" />
-            <zeebe:ioMapping>
-              <zeebe:output source="=&#34;block variable propagation&#34;" target="dummy" />
-            </zeebe:ioMapping>
-            <zeebe:calledElement processId="run-all-tests-in-camunda-cloud-per-cluster-plan" />
-          </bpmn:extensionElements>
-          <bpmn:incoming>Flow_1xbbcbp</bpmn:incoming>
-          <bpmn:outgoing>Flow_0slylrf</bpmn:outgoing>
-        </bpmn:callActivity>
-        <bpmn:endEvent id="Event_1cxeguy">
-          <bpmn:incoming>Flow_0slylrf</bpmn:incoming>
-        </bpmn:endEvent>
-        <bpmn:sequenceFlow id="Flow_0slylrf" sourceRef="Activity_03q5y87" targetRef="Event_1cxeguy" />
-        <bpmn:sequenceFlow id="Flow_1xbbcbp" sourceRef="Event_18keuqa" targetRef="Activity_03q5y87" />
-        <bpmn:startEvent id="Event_18keuqa" name="Run test" isInterrupting="false">
-          <bpmn:outgoing>Flow_1xbbcbp</bpmn:outgoing>
-          <bpmn:messageEventDefinition id="MessageEventDefinition_0pm1vdl" messageRef="Message_1w96d5v" />
-        </bpmn:startEvent>
-        <bpmn:association id="Association_1reid6x" sourceRef="Event_18keuqa" targetRef="TextAnnotation_0o41fut" />
-      </bpmn:subProcess>
-      <bpmn:callActivity id="Activity_102ufle" name="Run All Tests in Camunda Cloud per Cluster Plan">
-        <bpmn:extensionElements>
-          <zeebe:ioMapping>
-            <zeebe:output source="=&#34;block variable propagation&#34;" target="dummy" />
-          </zeebe:ioMapping>
-          <zeebe:calledElement processId="run-all-tests-in-camunda-cloud-per-cluster-plan" />
-        </bpmn:extensionElements>
-        <bpmn:incoming>Flow_16s83zj</bpmn:incoming>
-        <bpmn:outgoing>Flow_1bdi6t8</bpmn:outgoing>
-      </bpmn:callActivity>
-      <bpmn:intermediateCatchEvent id="Event_0kmckia" name="Stop Daily Test">
-        <bpmn:incoming>Flow_1bdi6t8</bpmn:incoming>
-        <bpmn:outgoing>Flow_0o21by8</bpmn:outgoing>
-        <bpmn:messageEventDefinition id="MessageEventDefinition_1pbzckl" messageRef="msg-stop-daily-test" />
-      </bpmn:intermediateCatchEvent>
-      <bpmn:sequenceFlow id="Flow_1bdi6t8" sourceRef="Activity_102ufle" targetRef="Event_0kmckia" />
-      <bpmn:endEvent id="Event_0289uku">
-        <bpmn:incoming>Flow_0o21by8</bpmn:incoming>
-      </bpmn:endEvent>
-      <bpmn:sequenceFlow id="Flow_0o21by8" sourceRef="Event_0kmckia" targetRef="Event_0289uku" />
-      <bpmn:startEvent id="Event_09sxql7">
-        <bpmn:outgoing>Flow_16s83zj</bpmn:outgoing>
-      </bpmn:startEvent>
-      <bpmn:sequenceFlow id="Flow_16s83zj" sourceRef="Event_09sxql7" targetRef="Activity_102ufle" />
-      <bpmn:textAnnotation id="TextAnnotation_0o41fut">
-        <bpmn:text>correlationKey: id
-messageName: Run Test</bpmn:text>
-      </bpmn:textAnnotation>
-      <bpmn:textAnnotation id="TextAnnotation_1mv67mf">
-        <bpmn:text>messageName: Stop Daily Test
-correlationKey: id</bpmn:text>
-      </bpmn:textAnnotation>
-      <bpmn:association id="Association_1wltllz" sourceRef="Event_0kmckia" targetRef="TextAnnotation_1mv67mf" />
-    </bpmn:subProcess>
     <bpmn:endEvent id="Event_1xxpnq4" name="End">
-      <bpmn:incoming>Flow_08as7sy</bpmn:incoming>
+      <bpmn:incoming>Flow_02ba432</bpmn:incoming>
     </bpmn:endEvent>
-    <bpmn:sequenceFlow id="Flow_08as7sy" sourceRef="Activity_1tm7a6c" targetRef="Event_1xxpnq4" />
+    <bpmn:sequenceFlow id="Flow_02ba432" sourceRef="Event_11jd3o5" targetRef="Event_1xxpnq4" />
     <bpmn:textAnnotation id="TextAnnotation_1a05piu">
-      <bpmn:text>id: used for correlation to stop this instance or trigger new run
-generation: generation (version) that shall be tested</bpmn:text>
+      <bpmn:text>This process has been replaced by the Nightly QA run started from Jenkins, which hooks into the External Tool Integration process</bpmn:text>
     </bpmn:textAnnotation>
     <bpmn:association id="Association_093haej" sourceRef="Event_11jd3o5" targetRef="TextAnnotation_1a05piu" />
-    <bpmn:textAnnotation id="TextAnnotation_0sixl3w">
-      <bpmn:text>Defaults:
-region = "new chaos"
-channel = "Internal Dev"
-clusterPlans = ["Development", "Production - S", "Production - M", "Production - L"]
-sequentialTestParams = {"steps":3,"iterations":10,"maxTimeForIteration":"PT20S","maxTimeForCompleteTest":"PT4M"}</bpmn:text>
-    </bpmn:textAnnotation>
-    <bpmn:association id="Association_12qpqds" sourceRef="Activity_1tm7a6c" targetRef="TextAnnotation_0sixl3w" />
   </bpmn:process>
   <bpmn:message id="msg-stop-daily-test" name="Stop Daily Test">
     <bpmn:extensionElements>
@@ -129,129 +25,28 @@ sequentialTestParams = {"steps":3,"iterations":10,"maxTimeForIteration":"PT20S",
   </bpmn:message>
   <bpmndi:BPMNDiagram id="BPMNDiagram_1">
     <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="daily-test-protocol">
-      <bpmndi:BPMNEdge id="Flow_08as7sy_di" bpmnElement="Flow_08as7sy">
-        <di:waypoint x="1040" y="365" />
-        <di:waypoint x="1122" y="365" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_1gt1xs8_di" bpmnElement="Flow_1gt1xs8">
-        <di:waypoint x="398" y="365" />
-        <di:waypoint x="520" y="365" />
+      <bpmndi:BPMNShape id="TextAnnotation_1a05piu_di" bpmnElement="TextAnnotation_1a05piu">
+        <dc:Bounds x="170" y="80" width="250" height="70" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Flow_02ba432_di" bpmnElement="Flow_02ba432">
+        <di:waypoint x="398" y="195" />
+        <di:waypoint x="472" y="195" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNShape id="Event_11jd3o5_di" bpmnElement="Event_11jd3o5">
-        <dc:Bounds x="362" y="347" width="36" height="36" />
+        <dc:Bounds x="362" y="177" width="36" height="36" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="369" y="390" width="24" height="14" />
+          <dc:Bounds x="369" y="220" width="24" height="14" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_0u77xvo_di" bpmnElement="Activity_1tm7a6c" isExpanded="true">
-        <dc:Bounds x="520" y="80" width="520" height="570" />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNEdge id="Flow_16s83zj_di" bpmnElement="Flow_16s83zj">
-        <di:waypoint x="608" y="200" />
-        <di:waypoint x="650" y="200" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_0o21by8_di" bpmnElement="Flow_0o21by8">
-        <di:waypoint x="838" y="200" />
-        <di:waypoint x="882" y="200" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_1bdi6t8_di" bpmnElement="Flow_1bdi6t8">
-        <di:waypoint x="750" y="200" />
-        <di:waypoint x="802" y="200" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNShape id="Activity_0tjx4ls_di" bpmnElement="Activity_01rcw4r" isExpanded="true">
-        <dc:Bounds x="540" y="490" width="420" height="130" />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNEdge id="Flow_0br4aao_di" bpmnElement="Flow_0br4aao">
-        <di:waypoint x="780" y="550" />
-        <di:waypoint x="882" y="550" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_1d7hw5p_di" bpmnElement="Flow_1d7hw5p">
-        <di:waypoint x="608" y="550" />
-        <di:waypoint x="680" y="550" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNShape id="Activity_0ga0m8g_di" bpmnElement="Activity_0ga0m8g">
-        <dc:Bounds x="680" y="510" width="100" height="80" />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Event_0ah35vz_di" bpmnElement="event-daily-trigger">
-        <dc:Bounds x="572" y="532" width="36" height="36" />
-        <bpmndi:BPMNLabel>
-          <dc:Bounds x="583" y="575" width="16" height="14" />
-        </bpmndi:BPMNLabel>
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Event_0arjkp8_di" bpmnElement="Event_0arjkp8">
-        <dc:Bounds x="882" y="532" width="36" height="36" />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_0301x0i_di" bpmnElement="Activity_0301x0i" isExpanded="true">
-        <dc:Bounds x="540" y="340" width="420" height="140" />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNEdge id="Flow_1xbbcbp_di" bpmnElement="Flow_1xbbcbp">
-        <di:waypoint x="608" y="410" />
-        <di:waypoint x="680" y="410" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_0slylrf_di" bpmnElement="Flow_0slylrf">
-        <di:waypoint x="780" y="410" />
-        <di:waypoint x="872" y="410" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNShape id="Activity_03q5y87_di" bpmnElement="Activity_03q5y87">
-        <dc:Bounds x="680" y="370" width="100" height="80" />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Event_1cxeguy_di" bpmnElement="Event_1cxeguy">
-        <dc:Bounds x="872" y="392" width="36" height="36" />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Event_13e3fuu_di" bpmnElement="Event_18keuqa">
-        <dc:Bounds x="572" y="392" width="36" height="36" />
-        <bpmndi:BPMNLabel>
-          <dc:Bounds x="571" y="435" width="41" height="14" />
-        </bpmndi:BPMNLabel>
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNEdge id="Association_1reid6x_di" bpmnElement="Association_1reid6x">
-        <di:waypoint x="596" y="393" />
-        <di:waypoint x="620" y="330" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNShape id="Activity_102ufle_di" bpmnElement="Activity_102ufle">
-        <dc:Bounds x="650" y="160" width="100" height="80" />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Event_0kmckia_di" bpmnElement="Event_0kmckia">
-        <dc:Bounds x="802" y="182" width="36" height="36" />
-        <bpmndi:BPMNLabel>
-          <dc:Bounds x="785" y="225" width="74" height="14" />
-        </bpmndi:BPMNLabel>
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Event_0289uku_di" bpmnElement="Event_0289uku">
-        <dc:Bounds x="882" y="182" width="36" height="36" />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Event_09sxql7_di" bpmnElement="Event_09sxql7">
-        <dc:Bounds x="572" y="182" width="36" height="36" />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="TextAnnotation_0o41fut_di" bpmnElement="TextAnnotation_0o41fut">
-        <dc:Bounds x="580" y="290" width="167" height="40" />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="TextAnnotation_1mv67mf_di" bpmnElement="TextAnnotation_1mv67mf">
-        <dc:Bounds x="800" y="110" width="220" height="40" />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNEdge id="Association_1wltllz_di" bpmnElement="Association_1wltllz">
-        <di:waypoint x="826" y="183" />
-        <di:waypoint x="854" y="150" />
-      </bpmndi:BPMNEdge>
       <bpmndi:BPMNShape id="Event_1xxpnq4_di" bpmnElement="Event_1xxpnq4">
-        <dc:Bounds x="1122" y="347" width="36" height="36" />
+        <dc:Bounds x="472" y="177" width="36" height="36" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="1130" y="390" width="20" height="14" />
+          <dc:Bounds x="480" y="220" width="20" height="14" />
         </bpmndi:BPMNLabel>
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="TextAnnotation_1a05piu_di" bpmnElement="TextAnnotation_1a05piu">
-        <dc:Bounds x="160" y="270" width="358" height="40" />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="TextAnnotation_0sixl3w_di" bpmnElement="TextAnnotation_0sixl3w">
-        <dc:Bounds x="260" y="670" width="680" height="82" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNEdge id="Association_093haej_di" bpmnElement="Association_093haej">
-        <di:waypoint x="380" y="347" />
-        <di:waypoint x="342" y="310" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Association_12qpqds_di" bpmnElement="Association_12qpqds">
-        <di:waypoint x="850" y="650" />
-        <di:waypoint x="692" y="670" />
+        <di:waypoint x="380" y="177" />
+        <di:waypoint x="368" y="150" />
       </bpmndi:BPMNEdge>
     </bpmndi:BPMNPlane>
   </bpmndi:BPMNDiagram>
