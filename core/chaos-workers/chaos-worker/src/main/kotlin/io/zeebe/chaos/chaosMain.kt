@@ -1,9 +1,11 @@
 package io.zeebe.chaos
 
+import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import io.camunda.zeebe.client.ZeebeClient
 import io.camunda.zeebe.client.api.response.ActivatedJob
 import io.camunda.zeebe.client.api.worker.JobClient
 import io.camunda.zeebe.client.impl.oauth.OAuthCredentialsProviderBuilder
+import io.camunda.zeebe.model.bpmn.Bpmn
 import io.camunda.zeebe.model.bpmn.BpmnModelInstance
 import org.awaitility.Awaitility
 import org.awaitility.pollinterval.FibonacciPollInterval
@@ -15,7 +17,6 @@ import java.io.InputStreamReader
 import java.nio.charset.StandardCharsets.UTF_8
 import java.nio.file.Files
 import java.time.Duration
-import java.util.concurrent.CountDownLatch
 import java.util.concurrent.TimeUnit
 import kotlin.concurrent.thread
 
@@ -49,7 +50,21 @@ fun main() {
     initializeAwaitility()
     // given
     updateRepo() // get latest zeebe-chaos repo changes
-    val zeebeClient = createClient()
+
+    val clusterPlanDir = File("$ROOT_PATH/camunda-cloud/")
+    val clusterPlanFolder = clusterPlanDir.listFiles()
+
+    clusterPlanFolder.forEach {
+        val clusterPlan = it.name
+
+        if (it.listFiles() != null) {
+            it.listFiles().forEach {
+                process(clusterPlan, it)
+            }
+        }
+    }
+
+/*    val zeebeClient = createClient()
 
     LOG.info("Connected to ${zeebeClient.configuration.gatewayAddress}")
     val topology = zeebeClient.newTopologyRequest().send().join()
@@ -90,7 +105,35 @@ fun main() {
                 }
             })
 
-    latch.await()
+    latch.await()*/
+}
+
+fun process(clusterPlan: String, experimentFolder: File) {
+    LOG.info("ClusterPlan $clusterPlan - experiment ${experimentFolder.name}")
+
+    val experimentSpec = File(experimentFolder, EXPERIMENT_FILE_NAME)
+/*
+    var content = Files.readString(experimentSpec.toPath())
+
+    LOG.info(content)
+*/
+
+    val mapper = jacksonObjectMapper()
+
+    val experiment = mapper.readValue(experimentSpec, Experiment::class.java)
+
+    LOG.info(experiment.toString())
+
+    val bpmn = toBpmn(clusterPlan, experimentFolder.name, experiment)
+
+    LOG.info(bpmn.toString())
+
+    val fileName = clusterPlan + "_" + experimentFolder.name
+
+    Bpmn.writeModelToFile(
+        File(ROOT_PATH + "/bpmnGenerated", fileName),
+        bpmn
+    )
 }
 
 private fun initializeAwaitility() {
@@ -155,7 +198,7 @@ fun handler(client: JobClient, activatedjob: ActivatedJob) {
     }
 }
 
-internal fun consumeOutputStream(job : ActivatedJob, inputStream: InputStream) {
+internal fun consumeOutputStream(job: ActivatedJob, inputStream: InputStream) {
     thread(start = true) {
         setMDCForJob(job)
         BufferedReader(InputStreamReader(inputStream, UTF_8)).use { reader ->
