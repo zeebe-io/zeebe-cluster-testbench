@@ -12,7 +12,7 @@ Available Documentation
 
 ## User Guide
 
-This document describes the different workflows that are deployed as part of this project. These workflows can either be launched directly - for ad hoc test runs - or they are launched by Zeebe as part of one of the periodic test protocols (e.g _Daily Test_).
+This document describes the different workflows that are deployed as part of this project. These workflows can be launched directly (for ad hoc test runs); can be launched by Zeebe as part of one of the periodic test protocols (e.g _QA Protocol_); or can be launched from an external tool (e.g. _Jenkins_).
 
 This document also contains a list of the available workers. Users are encouraged to use these workers and define and deploy additional workflows based on these building blocks.
 
@@ -31,7 +31,7 @@ This document (and this project) define workflows at different levels of detail:
   - Calling the test workflow
   - Recording test results, sending out notifications in case of test failures
   - Cleaning up the test environment after the test
-- Test Protocol - this is the outermost layer. This is comparable to a test suite. Some protocols (e.g. _Daily test_) also include the schedule for running tests.
+- Test Protocol - this is the outermost layer. This is comparable to a test suite.
 
 The purpose of the layering is to have reusable building blocks and separation of concerns between layers.
 
@@ -209,26 +209,6 @@ The cluster parameters shall be given as name and UUID. The UUIDs are used to cr
 
 ### Test Protocols
 
-#### Daily Test
-
-![daily-test-protocol](docs/assets/daily-test-protocol.png "Daily test protocol")
-
-**Workflow ID:** `daily-test-protocol`
-
-The daily test protocol runs all tests in all cluster plans. Tests are repeated every day, until they are stopped by sending a message to a running process instance.
-
-| Inputs       | Description                                                                          | Type     |
-| ------------ | ------------------------------------------------------------------------------------ | -------- |
-| `generation` | name of the generation for the cluster                                               | `String` |
-| `id`         | id of the workflow instance, needed as correlation key when stopping the daily tests | `String` |
-
-The following defaults are defined in the process description:
-
-- `clusterPlans`
-- `channel`
-- `region`
-- `sequentialTestParams`
-
 #### QA Protocol
 
 ![qa-protocol](docs/assets/qa-protocol.png "QA protocol")
@@ -335,4 +315,3 @@ These messages are important to control aspects of the test control flow:
 | Analyse Cluster     | `Analyse Cluster`     | n/a             | `generation`, `clusterPlan`, `clusterId`, `clusterName`, `operateURL`, `testReport` |
 | Analysis Completed  | `Analysis Completed`  | `clusterId`     | n/a                                                                                 |
 | Clean up Generation | `Clean Up Generation` | n/a             | `generationUUID`                                                                    |
-| Stop Daily Test     | `Stop Daily Test`     | `id`            | n/a                                                                                 |
