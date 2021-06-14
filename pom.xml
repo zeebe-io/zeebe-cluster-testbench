@@ -335,6 +335,11 @@
         <artifactId>awaitility</artifactId>
         <version>${version.awaitility}</version>
       </dependency>
+      <dependency>
+        <groupId>org.awaitility</groupId>
+        <artifactId>awaitility-kotlin</artifactId>
+        <version>${version.awaitility}</version>
+      </dependency>
     </dependencies>
   </dependencyManagement>
   <groupId>io.zeebe</groupId>

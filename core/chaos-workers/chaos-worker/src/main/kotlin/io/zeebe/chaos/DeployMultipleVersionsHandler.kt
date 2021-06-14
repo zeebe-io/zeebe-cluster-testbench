@@ -2,61 +2,70 @@ package io.zeebe.chaos;
 
 import io.zeebe.client.ZeebeClient
 import io.zeebe.client.api.response.ActivatedJob
+import io.zeebe.client.api.response.DeploymentEvent
 import io.zeebe.client.api.worker.JobClient
 import io.zeebe.client.api.worker.JobHandler
 import io.zeebe.client.impl.oauth.OAuthCredentialsProviderBuilder
 import io.zeebe.model.bpmn.Bpmn
-import io.zeebe.model.bpmn.BpmnModelInstance
-import org.camunda.bpm.model.xml.ModelInstance
+import org.awaitility.kotlin.await
 
 class DeployMultipleVersionsHandler : JobHandler {
 
     private val PROCESS_ID = "multiVersion"
-    private val MODEL_V1 = Bpmn.createExecutableProcess(PROCESS_ID).name("v1").startEvent().endEvent().done()
-    private val MODEL_V2 = Bpmn.createExecutableProcess(PROCESS_ID).name("v2").startEvent().endEvent().done()
-    private val LOG = org.slf4j.LoggerFactory.getLogger("io.zeebe.chaos.DeployMultipleVersionsHandler")
+    private val RESOURCE_NAME = PROCESS_ID +".bpmn"
+    private val LOG =
+        org.slf4j.LoggerFactory.getLogger("io.zeebe.chaos.DeployMultipleVersionsHandler")
 
     companion object {
         const val JOB_TYPE = "deploy-different-versions.sh"
     }
 
-    override fun handle(client: JobClient, job: ActivatedJob) {
+    override fun handle(testbench: JobClient, job: ActivatedJob) {
         setMDCForJob(job)
         LOG.info("Handle job $JOB_TYPE")
 
-        val authenticationDetails = job.variablesAsMap["authenticationDetails"]!! as Map<String, Any>
-        createClient(authenticationDetails).use {
-            LOG.info("Connected to ${it.configuration.gatewayAddress}, start deploying multiple versions...")
+        createClientForClusterUnderTest(job).use { clusterUnderTest ->
+            LOG.info("Connected to ${clusterUnderTest.configuration.gatewayAddress}, start deploying multiple versions...")
 
-            var lastVersion = -1
-            for (i in 1..5) {
-                deployModel(it, MODEL_V1, "modelV1.bpmn")
-                lastVersion = deployModel(it, MODEL_V2, "modelV2.bpmn")
+            val lastVersion = (1..10)
+                    .map{ waitForModelDeployment(clusterUnderTest, it) }
+                    .map{ it?.workflows?.get(0)?.version ?: -1 }
+                    .last()
+
+            if (lastVersion < 10) {
+                val message =
+                    "Expected to deploy 10 different versions of process $PROCESS_ID, but only deployed $lastVersion"
+                LOG.warn("$message. Fail $JOB_TYPE")
+                testbench.newFailCommand(job.key)
+                        .retries(job.retries)
+                        .errorMessage(message)
+                        .send()
+            } else {
+                LOG.info("Deployed 10 different versions of process $PROCESS_ID, last version: $lastVersion. Complete $JOB_TYPE")
+                testbench.newCompleteCommand(job.key).send()
             }
-
-            LOG.info("Deployed 10 different versions of process $PROCESS_ID, last version: $lastVersion. Complete $JOB_TYPE")
         }
-
-        client.newCompleteCommand(job.key).send()
     }
 
-    private fun deployModel(client: ZeebeClient, model: BpmnModelInstance, name: String) : Int{
-        var version = -1
-        do {
-            try {
-                val deploymentEvent = client.newDeployCommand().addWorkflowModel(model, name).send().join()
-                version = deploymentEvent.workflows[0].version
-            } catch (e: Exception) {
-                // try again
-                LOG.debug("Failed to deploy $name, try again.", e)
-                Thread.sleep(100)
-            }
-        } while (version == -1)
-        return version
+    private fun waitForModelDeployment(client: ZeebeClient, index: Int): DeploymentEvent? {
+        var event: DeploymentEvent? = null
+        await.untilAsserted {
+            event = client.newDeployCommand()
+                    .addWorkflowModel(
+                            Bpmn.createExecutableProcess(PROCESS_ID)
+                                    .name("Multi version process")
+                                    .startEvent("start-" + index)
+                                    .endEvent()
+                                    .done(),
+                            RESOURCE_NAME)
+                    .send()
+                    .join()
+        }
+        return event
     }
 
-
-    private fun createClient(authenticationDetails: Map<String, Any>): ZeebeClient {
+    private fun createClientForClusterUnderTest(job: ActivatedJob): ZeebeClient {
+        val authenticationDetails = job.variablesAsMap["authenticationDetails"]!! as Map<String, Any>
         val clientId = authenticationDetails["clientId"]!!.toString()
         val clientSecret = authenticationDetails["clientSecret"]!!.toString()
         val authorizationURL = authenticationDetails["authorizationURL"]!!.toString()
