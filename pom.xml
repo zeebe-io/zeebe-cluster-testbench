@@ -411,7 +411,7 @@
     <plugin.version.build-helper>3.2.0</plugin.version.build-helper>
 
     <plugin.version.checkstyle>3.1.2</plugin.version.checkstyle>
-    <plugin.version.dependency>3.1.2</plugin.version.dependency>
+    <plugin.version.dependency>3.2.0</plugin.version.dependency>
 
     <plugin.version.flakytestextractor>2.0.3</plugin.version.flakytestextractor>
     <plugin.version.fmt>2.10</plugin.version.fmt>
