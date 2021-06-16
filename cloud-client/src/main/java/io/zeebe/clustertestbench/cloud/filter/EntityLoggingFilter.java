@@ -81,11 +81,13 @@ public final class EntityLoggingFilter
 
   private String readEntityFromStream(final InputStream stream) throws IOException {
     final var sb = new StringBuilder();
-    final var entity = new byte[MAX_ENTITY_SIZE + 1];
-    final int entitySize = stream.read(entity);
-    sb.append(new String(entity, 0, Math.min(entitySize, MAX_ENTITY_SIZE), StandardCharsets.UTF_8));
-    if (entitySize > MAX_ENTITY_SIZE) {
-      sb.append("...more...");
+    var totalRead = 0;
+    var numRead = 0;
+    var entity = new byte[MAX_ENTITY_SIZE + 1];
+    while ((numRead = stream.read(entity, totalRead, MAX_ENTITY_SIZE)) > 0) {
+      sb.append(new String(entity, 0, Math.min(numRead, MAX_ENTITY_SIZE), StandardCharsets.UTF_8));
+      totalRead += numRead;
+      entity = new byte[MAX_ENTITY_SIZE + 1];
     }
     return sb.toString();
   }
@@ -108,9 +110,6 @@ public final class EntityLoggingFilter
       final byte[] entity = baos.toByteArray();
 
       sb.append(new String(entity, 0, entity.length, StandardCharsets.UTF_8));
-      if (entity.length > MAX_ENTITY_SIZE) {
-        sb.append("...more...");
-      }
       sb.append('\n');
 
       return sb;
@@ -118,9 +117,7 @@ public final class EntityLoggingFilter
 
     @Override
     public void write(final int i) throws IOException {
-      if (baos.size() <= MAX_ENTITY_SIZE) {
-        baos.write(i);
-      }
+      baos.write(i);
       out.write(i);
     }
   }
