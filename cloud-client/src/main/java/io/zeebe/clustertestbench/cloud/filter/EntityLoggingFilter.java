@@ -42,35 +42,40 @@ public final class EntityLoggingFilter
   public void filter(ClientRequestContext requestContext, ClientResponseContext responseContext)
       throws IOException {
     if (responseContext.hasEntity()) {
-      final var sb = new StringBuilder();
-      responseContext.setEntityStream(logInboundEntity(sb, responseContext.getEntityStream()));
-      log(sb);
+      responseContext.setEntityStream(logInboundEntity(requestContext, responseContext));
     }
   }
 
   @Override
   public void aroundWriteTo(WriterInterceptorContext context)
       throws IOException, WebApplicationException {
-    final LoggingStream stream = (LoggingStream) context.getProperty(ENTITY_STREAM_PROPERTY);
+    final var stream = (LoggingStream) context.getProperty(ENTITY_STREAM_PROPERTY);
     context.proceed();
     if (stream != null) {
       log(stream.getStringBuilder());
     }
   }
 
-  private InputStream logInboundEntity(final StringBuilder b, InputStream stream)
+  private InputStream logInboundEntity(
+      final ClientRequestContext requestContext, final ClientResponseContext responseContext)
       throws IOException {
+    final var sb = new StringBuilder();
+    sb.append(String.format("%s %s => ", requestContext.getMethod(), requestContext.getUri()));
+
+    var stream = responseContext.getEntityStream();
     if (!stream.markSupported()) {
       stream = new BufferedInputStream(stream);
     }
     stream.mark(MAX_ENTITY_SIZE + 1);
     final var entity = new byte[MAX_ENTITY_SIZE + 1];
     final int entitySize = stream.read(entity);
-    b.append(new String(entity, 0, Math.min(entitySize, MAX_ENTITY_SIZE), StandardCharsets.UTF_8));
+    sb.append(new String(entity, 0, Math.min(entitySize, MAX_ENTITY_SIZE), StandardCharsets.UTF_8));
     if (entitySize > MAX_ENTITY_SIZE) {
-      b.append("...more...");
+      sb.append("...more...");
     }
-    b.append('\n');
+    sb.append('\n');
+    log(sb);
+
     stream.reset();
     return stream;
   }
