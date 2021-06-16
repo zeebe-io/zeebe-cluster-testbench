@@ -27,7 +27,7 @@ public final class EntityLoggingFilter
 
   private static final Logger LOGGER = LoggerFactory.getLogger(EntityLoggingFilter.class);
   private static final String ENTITY_STREAM_PROPERTY = "EntityLoggingFilter.entityStream";
-  private static final int MAX_ENTITY_SIZE = 1024 * 1024; // original was 1024 * 8 but was too small
+  private static final int MAX_ENTITY_SIZE = 1024 * 8;
 
   @Override
   public void filter(ClientRequestContext requestContext) {
