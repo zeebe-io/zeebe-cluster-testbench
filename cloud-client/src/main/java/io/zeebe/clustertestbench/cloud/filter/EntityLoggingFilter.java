@@ -42,7 +42,8 @@ public final class EntityLoggingFilter
   public void filter(ClientRequestContext requestContext, ClientResponseContext responseContext)
       throws IOException {
     if (responseContext.hasEntity()) {
-      responseContext.setEntityStream(logInboundEntity(requestContext, responseContext));
+      final var entityStream = responseContext.getEntityStream();
+      responseContext.setEntityStream(logInboundEntitySafely(requestContext, entityStream));
     }
   }
 
@@ -52,39 +53,48 @@ public final class EntityLoggingFilter
     final var stream = (LoggingStream) context.getProperty(ENTITY_STREAM_PROPERTY);
     context.proceed();
     if (stream != null) {
-      log(stream.getStringBuilder());
+      log(stream.getStringBuilder().toString());
     }
   }
 
-  private InputStream logInboundEntity(
-      final ClientRequestContext requestContext, final ClientResponseContext responseContext)
+  /** Logs the entity and resets the stream it read it from */
+  private InputStream logInboundEntitySafely(
+      final ClientRequestContext requestContext, final InputStream entityStream)
       throws IOException {
-    final var sb = new StringBuilder();
-    sb.append(String.format("%s %s => ", requestContext.getMethod(), requestContext.getUri()));
-
-    var stream = responseContext.getEntityStream();
+    var stream = entityStream;
     if (!stream.markSupported()) {
       stream = new BufferedInputStream(stream);
     }
     stream.mark(MAX_ENTITY_SIZE + 1);
+    logEntityFromStream(stream, requestContext);
+    stream.reset();
+    return stream;
+  }
+
+  private void logEntityFromStream(
+      final InputStream stream, final ClientRequestContext requestContext) throws IOException {
+    final var method = requestContext.getMethod();
+    final var uri = requestContext.getUri();
+    final var entity = readEntityFromStream(stream);
+    log(String.format("%s %s => %s%n", method, uri, entity));
+  }
+
+  private String readEntityFromStream(final InputStream stream) throws IOException {
+    final var sb = new StringBuilder();
     final var entity = new byte[MAX_ENTITY_SIZE + 1];
     final int entitySize = stream.read(entity);
     sb.append(new String(entity, 0, Math.min(entitySize, MAX_ENTITY_SIZE), StandardCharsets.UTF_8));
     if (entitySize > MAX_ENTITY_SIZE) {
       sb.append("...more...");
     }
-    sb.append('\n');
-    log(sb);
-
-    stream.reset();
-    return stream;
+    return sb.toString();
   }
 
-  private void log(StringBuilder sb) {
-    LOGGER.debug("{}", sb);
+  private void log(String entry) {
+    LOGGER.debug("{}", entry);
   }
 
-  private final class LoggingStream extends FilterOutputStream {
+  private static final class LoggingStream extends FilterOutputStream {
 
     final StringBuilder sb = new StringBuilder();
     final ByteArrayOutputStream baos = new ByteArrayOutputStream();
