@@ -81,7 +81,7 @@ public final class EntityLoggingFilter
   }
 
   private void log(StringBuilder sb) {
-    LOGGER.info("{}", sb);
+    LOGGER.debug("{}", sb);
   }
 
   private final class LoggingStream extends FilterOutputStream {
