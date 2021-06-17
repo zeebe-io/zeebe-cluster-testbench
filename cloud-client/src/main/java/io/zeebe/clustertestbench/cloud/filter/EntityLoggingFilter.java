@@ -15,6 +15,7 @@ import javax.ws.rs.client.ClientResponseContext;
 import javax.ws.rs.client.ClientResponseFilter;
 import javax.ws.rs.ext.WriterInterceptor;
 import javax.ws.rs.ext.WriterInterceptorContext;
+import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -75,21 +76,8 @@ public final class EntityLoggingFilter
       final InputStream stream, final ClientRequestContext requestContext) throws IOException {
     final var method = requestContext.getMethod();
     final var uri = requestContext.getUri();
-    final var entity = readEntityFromStream(stream);
+    final var entity = IOUtils.toString(stream, StandardCharsets.UTF_8);
     log(String.format("%s %s => %s%n", method, uri, entity));
-  }
-
-  private String readEntityFromStream(final InputStream stream) throws IOException {
-    final var sb = new StringBuilder();
-    var totalRead = 0;
-    var numRead = 0;
-    var entity = new byte[MAX_ENTITY_SIZE + 1];
-    while ((numRead = stream.read(entity, totalRead, MAX_ENTITY_SIZE)) > 0) {
-      sb.append(new String(entity, 0, Math.min(numRead, MAX_ENTITY_SIZE), StandardCharsets.UTF_8));
-      totalRead += numRead;
-      entity = new byte[MAX_ENTITY_SIZE + 1];
-    }
-    return sb.toString();
   }
 
   private void log(String entry) {
