@@ -16,7 +16,7 @@
   <name>Zeebe Cluster Testbench - Sequential Testdriver</name>
 
   <properties>
-    <version.grpc-api>1.38.0</version.grpc-api>
+    <version.grpc-api>1.38.1</version.grpc-api>
   </properties>
 
   <dependencies>
