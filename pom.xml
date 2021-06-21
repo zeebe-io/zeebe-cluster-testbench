@@ -433,7 +433,7 @@
     <version.log4j2-cachefile>2.14.1</version.log4j2-cachefile>
     <version.mockito>3.11.1</version.mockito>
     <version.resteasy>4.6.0.Final</version.resteasy>
-    <version.slf4j>1.7.30</version.slf4j>
+    <version.slf4j>1.7.31</version.slf4j>
     <version.vavr>0.10.3</version.vavr>
     <version.workflowgenerator>1.0.2</version.workflowgenerator>
     <zeebe.version>0.26.4</zeebe.version>
