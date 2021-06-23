@@ -10,5 +10,8 @@
     <Root level="info">
       <AppenderRef ref="Console"/>
     </Root>
+    <Logger name="io.zeebe.clustertestbench.cloud.filter" level="debug" additivity="false">
+      <AppenderRef ref="Console"/>
+    </Logger>
   </Loggers>
 </Configuration>

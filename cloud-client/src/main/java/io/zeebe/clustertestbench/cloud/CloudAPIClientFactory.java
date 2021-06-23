@@ -1,6 +1,7 @@
 package io.zeebe.clustertestbench.cloud;
 
 import io.zeebe.clustertestbench.cloud.filter.BadRequestResponseFilter;
+import io.zeebe.clustertestbench.cloud.filter.EntityLoggingFilter;
 import io.zeebe.clustertestbench.cloud.oauth.OAuthInterceptor;
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
@@ -24,6 +25,7 @@ public class CloudAPIClientFactory {
         ClientBuilder.newBuilder()
             .register(oauthInterceptor)
             .register(BadRequestResponseFilter.class)
+            .register(EntityLoggingFilter.class)
             .build();
     final WebTarget target = client.target(cloudApiUrl);
     final ResteasyWebTarget rtarget = (ResteasyWebTarget) target;
