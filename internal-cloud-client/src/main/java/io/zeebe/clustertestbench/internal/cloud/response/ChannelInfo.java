@@ -9,7 +9,7 @@ import java.util.Map;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class ChannelInfo {
 
-  private List<GenerationInfo> allowedGenerations = new ArrayList();
+  private List<GenerationInfo> allowedGenerations = new ArrayList<>();
 
   private GenerationInfo defaultGeneration;
 
