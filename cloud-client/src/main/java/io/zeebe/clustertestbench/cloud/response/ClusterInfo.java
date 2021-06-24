@@ -13,6 +13,7 @@ public class ClusterInfo {
   private GenerationInfo generation;
   private ChannelInfo channel;
   private ClusterStatus status;
+  private Links links;
 
   public String getUuid() {
     return uuid;
@@ -78,6 +79,14 @@ public class ClusterInfo {
     this.status = status;
   }
 
+  public Links getLinks() {
+    return links;
+  }
+
+  public void setLinks(final Links links) {
+    this.links = links;
+  }
+
   @Override
   public String toString() {
     return "ClusterInfo [uuid="
@@ -96,6 +105,8 @@ public class ClusterInfo {
         + channel
         + ", status="
         + status
+        + ", links="
+        + links
         + "]";
   }
 
@@ -272,5 +283,41 @@ public class ClusterInfo {
      * TODO - other fields - map status fields to enums
      */
 
+  }
+
+  public static class Links {
+
+    private String zeebe;
+    private String operate;
+    private String tasklist;
+
+    public String getZeebe() {
+      return zeebe;
+    }
+
+    public void setZeebe(final String zeebe) {
+      this.zeebe = zeebe;
+    }
+
+    public String getOperate() {
+      return operate;
+    }
+
+    public void setOperate(final String operate) {
+      this.operate = operate;
+    }
+
+    public String getTasklist() {
+      return tasklist;
+    }
+
+    public void setTasklist(final String tasklist) {
+      this.tasklist = tasklist;
+    }
+
+    @Override
+    public String toString() {
+      return "Links [" + "zeebe=" + zeebe + ", operate=" + operate + ", tasklist=" + tasklist + ']';
+    }
   }
 }
