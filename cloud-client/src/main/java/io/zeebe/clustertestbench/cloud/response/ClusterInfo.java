@@ -110,10 +110,6 @@ public class ClusterInfo {
         + "]";
   }
 
-  /* TODO
-   * - field "spec"
-   **/
-
   @JsonIgnoreProperties(ignoreUnknown = true)
   public static class ClusterPlanTypeInfo {
 
@@ -232,7 +228,6 @@ public class ClusterInfo {
     private String ready;
     private String zeebeStatus;
     private String operateStatus;
-    private String operateUrl; // fixme: has been removed but is still used
 
     public String getReady() {
       return ready;
@@ -258,14 +253,6 @@ public class ClusterInfo {
       this.operateStatus = operateStatus;
     }
 
-    public String getOperateUrl() {
-      return operateUrl;
-    }
-
-    public void setOperateUrl(final String operateUrl) {
-      this.operateUrl = operateUrl;
-    }
-
     @Override
     public String toString() {
       return "ClusterStatus [ready="
@@ -274,8 +261,6 @@ public class ClusterInfo {
           + zeebeStatus
           + ", operateStatus="
           + operateStatus
-          + ", operateUrl="
-          + operateUrl
           + "]";
     }
 
