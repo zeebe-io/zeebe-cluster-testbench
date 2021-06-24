@@ -7,6 +7,7 @@ public class ClusterInfo {
 
   private String uuid;
   private String name;
+  private String created;
   private ClusterPlanTypeInfo planType;
   private K8sContextInfo k8sContext;
   private GenerationInfo generation;
@@ -27,6 +28,14 @@ public class ClusterInfo {
 
   public void setName(final String name) {
     this.name = name;
+  }
+
+  public String getCreated() {
+    return created;
+  }
+
+  public void setCreated(final String created) {
+    this.created = created;
   }
 
   public ClusterPlanTypeInfo getPlanType() {
@@ -75,6 +84,8 @@ public class ClusterInfo {
         + uuid
         + ", name="
         + name
+        + ", created="
+        + created
         + ", planType="
         + planType
         + ", k8sContext="
