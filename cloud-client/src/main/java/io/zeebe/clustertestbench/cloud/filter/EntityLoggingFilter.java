@@ -28,10 +28,10 @@ public final class EntityLoggingFilter
 
   private static final Logger LOGGER = LoggerFactory.getLogger(EntityLoggingFilter.class);
   private static final String ENTITY_STREAM_PROPERTY = "EntityLoggingFilter.entityStream";
-  private static final int MAX_ENTITY_SIZE = 1024 * 8;
+  private static final int MAX_ENTITY_SIZE = 1024 * 1024;
 
   @Override
-  public void filter(ClientRequestContext requestContext) {
+  public void filter(final ClientRequestContext requestContext) {
     if (requestContext.hasEntity()) {
       final var stream = new LoggingStream(requestContext.getEntityStream());
       requestContext.setEntityStream(stream);
@@ -40,7 +40,7 @@ public final class EntityLoggingFilter
   }
 
   @Override
-  public void filter(ClientRequestContext requestContext, ClientResponseContext responseContext)
+  public void filter(final ClientRequestContext requestContext, final ClientResponseContext responseContext)
       throws IOException {
     if (responseContext.hasEntity()) {
       final var entityStream = responseContext.getEntityStream();
@@ -49,7 +49,7 @@ public final class EntityLoggingFilter
   }
 
   @Override
-  public void aroundWriteTo(WriterInterceptorContext context)
+  public void aroundWriteTo(final WriterInterceptorContext context)
       throws IOException, WebApplicationException {
     final var stream = (LoggingStream) context.getProperty(ENTITY_STREAM_PROPERTY);
     context.proceed();
@@ -80,7 +80,7 @@ public final class EntityLoggingFilter
     log(String.format("%s %s => %s%n", method, uri, entity));
   }
 
-  private void log(String entry) {
+  private void log(final String entry) {
     LOGGER.debug(entry);
   }
 
@@ -89,7 +89,7 @@ public final class EntityLoggingFilter
     final StringBuilder sb = new StringBuilder();
     final ByteArrayOutputStream baos = new ByteArrayOutputStream();
 
-    LoggingStream(OutputStream out) {
+    LoggingStream(final OutputStream out) {
       super(out);
     }
 
