@@ -8,7 +8,7 @@ import io.zeebe.clustertestbench.internal.cloud.InternalCloudAPIClient;
 import io.zeebe.clustertestbench.internal.cloud.request.CreateGenerationRequest;
 import io.zeebe.clustertestbench.internal.cloud.request.UpdateChannelRequest;
 import io.zeebe.clustertestbench.internal.cloud.response.ChannelInfo;
-import io.zeebe.clustertestbench.internal.cloud.response.GenerationInfo;
+import io.zeebe.clustertestbench.internal.cloud.response.ChannelInfo.GenerationInfo;
 import io.zeebe.clustertestbench.util.StringLookup;
 import java.util.Collections;
 import java.util.HashMap;
