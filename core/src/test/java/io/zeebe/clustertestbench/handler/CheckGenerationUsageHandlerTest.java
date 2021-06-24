@@ -7,7 +7,6 @@ import static org.mockito.Mockito.when;
 
 import io.zeebe.clustertestbench.cloud.CloudAPIClient;
 import io.zeebe.clustertestbench.cloud.response.ClusterInfo;
-import io.zeebe.clustertestbench.cloud.response.GenerationInfo;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -28,8 +27,8 @@ class CheckGenerationUsageHandlerTest {
   private static final Long TEST_JOB_KEY = 42L;
   private static final String UUID_B = "UUID B";
   private static final String UUID_A = "UUID A";
-  private static final GenerationInfo GENERATION_A = new GenerationInfo();
-  private static final GenerationInfo GENERATION_B = new GenerationInfo();
+  private static final ClusterInfo.GenerationInfo GENERATION_A = new ClusterInfo.GenerationInfo();
+  private static final ClusterInfo.GenerationInfo GENERATION_B = new ClusterInfo.GenerationInfo();
   private static final ClusterInfo CLUSTER_Z = new ClusterInfo();
   private static final ClusterInfo CLUSTER_Y = new ClusterInfo();
   private static final ClusterInfo CLUSTER_X = new ClusterInfo();
