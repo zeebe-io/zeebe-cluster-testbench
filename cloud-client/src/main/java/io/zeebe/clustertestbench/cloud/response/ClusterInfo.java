@@ -265,7 +265,7 @@ public class ClusterInfo {
     }
 
     /*
-     * TODO - other fields - map status fields to enums
+     * TODO - map status fields to enums
      */
 
   }
