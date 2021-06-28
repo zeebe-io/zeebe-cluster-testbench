@@ -5,7 +5,7 @@ import io.camunda.zeebe.client.api.worker.JobClient;
 import io.camunda.zeebe.client.api.worker.JobHandler;
 import io.zeebe.clustertestbench.cloud.CloudAPIClient;
 import io.zeebe.clustertestbench.cloud.response.ClusterInfo;
-import io.zeebe.clustertestbench.cloud.response.ClusterStatus;
+import io.zeebe.clustertestbench.cloud.response.ClusterInfo.ClusterStatus;
 import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

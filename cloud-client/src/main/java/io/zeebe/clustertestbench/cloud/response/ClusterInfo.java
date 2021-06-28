@@ -5,23 +5,39 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class ClusterInfo {
 
-  private ClusterPlanTypeInfo planType;
-
-  private K8sContextInfo k8sContext;
-
   private String uuid;
-  private String ownerId;
   private String name;
-
-  private boolean internal;
-
+  private String created;
+  private ClusterPlanTypeInfo planType;
+  private K8sContextInfo k8sContext;
   private GenerationInfo generation;
-
   private ChannelInfo channel;
-
   private ClusterStatus status;
+  private Links links;
 
-  private ClusterMetadata metadata;
+  public String getUuid() {
+    return uuid;
+  }
+
+  public void setUuid(final String uuid) {
+    this.uuid = uuid;
+  }
+
+  public String getName() {
+    return name;
+  }
+
+  public void setName(final String name) {
+    this.name = name;
+  }
+
+  public String getCreated() {
+    return created;
+  }
+
+  public void setCreated(final String created) {
+    this.created = created;
+  }
 
   public ClusterPlanTypeInfo getPlanType() {
     return planType;
@@ -37,38 +53,6 @@ public class ClusterInfo {
 
   public void setK8sContext(final K8sContextInfo k8sContext) {
     this.k8sContext = k8sContext;
-  }
-
-  public String getUuid() {
-    return uuid;
-  }
-
-  public void setUuid(final String uuid) {
-    this.uuid = uuid;
-  }
-
-  public String getOwnerId() {
-    return ownerId;
-  }
-
-  public void setOwnerId(final String ownerId) {
-    this.ownerId = ownerId;
-  }
-
-  public String getName() {
-    return name;
-  }
-
-  public void setName(final String name) {
-    this.name = name;
-  }
-
-  public boolean isInternal() {
-    return internal;
-  }
-
-  public void setInternal(final boolean internal) {
-    this.internal = internal;
   }
 
   public GenerationInfo getGeneration() {
@@ -95,41 +79,230 @@ public class ClusterInfo {
     this.status = status;
   }
 
-  public ClusterMetadata getMetadata() {
-    return metadata;
+  public Links getLinks() {
+    return links;
   }
 
-  public void setMetadata(final ClusterMetadata metadata) {
-    this.metadata = metadata;
+  public void setLinks(final Links links) {
+    this.links = links;
   }
 
   @Override
   public String toString() {
-    return "ClusterInfo [planType="
+    return "ClusterInfo [uuid="
+        + uuid
+        + ", name="
+        + name
+        + ", created="
+        + created
+        + ", planType="
         + planType
         + ", k8sContext="
         + k8sContext
-        + ", uuid="
-        + uuid
-        + ", ownerId="
-        + ownerId
-        + ", name="
-        + name
-        + ", internal="
-        + internal
         + ", generation="
         + generation
         + ", channel="
         + channel
         + ", status="
         + status
-        + ", metadata="
-        + metadata
+        + ", links="
+        + links
         + "]";
   }
 
-  /* TODO
-   * - field "spec"
-   **/
+  @JsonIgnoreProperties(ignoreUnknown = true)
+  public static class ClusterPlanTypeInfo {
 
+    private String uuid;
+    private String name;
+
+    public String getUuid() {
+      return uuid;
+    }
+
+    public void setUuid(final String uuid) {
+      this.uuid = uuid;
+    }
+
+    public String getName() {
+      return name;
+    }
+
+    public void setName(final String name) {
+      this.name = name;
+    }
+
+    @Override
+    public String toString() {
+      return "ClusterPlanTypeInfo [uuid=" + uuid + ", name=" + name + "]";
+    }
+  }
+
+  @JsonIgnoreProperties(ignoreUnknown = true)
+  public static class K8sContextInfo {
+
+    private String uuid;
+    private String name;
+
+    public String getUuid() {
+      return uuid;
+    }
+
+    public void setUuid(final String uuid) {
+      this.uuid = uuid;
+    }
+
+    public String getName() {
+      return name;
+    }
+
+    public void setName(final String name) {
+      this.name = name;
+    }
+
+    @Override
+    public String toString() {
+      return "K8sContextInfo [uuid=" + uuid + ", name=" + name + "]";
+    }
+  }
+
+  @JsonIgnoreProperties(ignoreUnknown = true)
+  public static class GenerationInfo {
+
+    private String uuid;
+    private String name;
+
+    public String getUuid() {
+      return uuid;
+    }
+
+    public void setUuid(final String uuid) {
+      this.uuid = uuid;
+    }
+
+    public String getName() {
+      return name;
+    }
+
+    public void setName(final String name) {
+      this.name = name;
+    }
+
+    @Override
+    public String toString() {
+      return "GenerationInfo [uuid=" + uuid + ", name=" + name + "]";
+    }
+  }
+
+  @JsonIgnoreProperties(ignoreUnknown = true)
+  public static class ChannelInfo {
+
+    private String uuid;
+    private String name;
+
+    public String getUuid() {
+      return uuid;
+    }
+
+    public void setUuid(final String uuid) {
+      this.uuid = uuid;
+    }
+
+    public String getName() {
+      return name;
+    }
+
+    public void setName(final String name) {
+      this.name = name;
+    }
+
+    @Override
+    public String toString() {
+      return "ChannelInfo [uuid=" + uuid + ", name=" + name + "]";
+    }
+  }
+
+  @JsonIgnoreProperties(ignoreUnknown = true)
+  public static class ClusterStatus {
+
+    private String ready;
+    private String zeebeStatus;
+    private String operateStatus;
+
+    public String getReady() {
+      return ready;
+    }
+
+    public void setReady(final String ready) {
+      this.ready = ready;
+    }
+
+    public String getZeebeStatus() {
+      return zeebeStatus;
+    }
+
+    public void setZeebeStatus(final String zeebeStatus) {
+      this.zeebeStatus = zeebeStatus;
+    }
+
+    public String getOperateStatus() {
+      return operateStatus;
+    }
+
+    public void setOperateStatus(final String operateStatus) {
+      this.operateStatus = operateStatus;
+    }
+
+    @Override
+    public String toString() {
+      return "ClusterStatus [ready="
+          + ready
+          + ", zeebeStatus="
+          + zeebeStatus
+          + ", operateStatus="
+          + operateStatus
+          + "]";
+    }
+
+    /*
+     * TODO - map status fields to enums
+     */
+
+  }
+
+  public static class Links {
+
+    private String zeebe;
+    private String operate;
+    private String tasklist;
+
+    public String getZeebe() {
+      return zeebe;
+    }
+
+    public void setZeebe(final String zeebe) {
+      this.zeebe = zeebe;
+    }
+
+    public String getOperate() {
+      return operate;
+    }
+
+    public void setOperate(final String operate) {
+      this.operate = operate;
+    }
+
+    public String getTasklist() {
+      return tasklist;
+    }
+
+    public void setTasklist(final String tasklist) {
+      this.tasklist = tasklist;
+    }
+
+    @Override
+    public String toString() {
+      return "Links [" + "zeebe=" + zeebe + ", operate=" + operate + ", tasklist=" + tasklist + ']';
+    }
+  }
 }

@@ -1,9 +1,9 @@
 package io.zeebe.clustertestbench.internal.cloud;
 
-import io.zeebe.clustertestbench.cloud.response.ChannelInfo;
-import io.zeebe.clustertestbench.cloud.response.GenerationInfo;
 import io.zeebe.clustertestbench.internal.cloud.request.CreateGenerationRequest;
 import io.zeebe.clustertestbench.internal.cloud.request.UpdateChannelRequest;
+import io.zeebe.clustertestbench.internal.cloud.response.ChannelInfo;
+import io.zeebe.clustertestbench.internal.cloud.response.ChannelInfo.GenerationInfo;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;

@@ -25,7 +25,7 @@ public class GatherInformationAboutClusterInCamundaCloudHandler implements JobHa
     LOGGER.debug("Fetching cluster info for id {}", clusterId);
     final var clusterInfo = cloudApiClient.getClusterInfo(clusterId);
 
-    final String operateURL = clusterInfo.getStatus().getOperateUrl();
+    final String operateURL = clusterInfo.getLinks().getOperate();
     client.newCompleteCommand(job.getKey()).variables(new Output(operateURL)).send();
   }
 
