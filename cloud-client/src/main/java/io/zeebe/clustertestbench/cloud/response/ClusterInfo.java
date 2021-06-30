@@ -270,6 +270,7 @@ public class ClusterInfo {
 
   }
 
+  @JsonIgnoreProperties(ignoreUnknown = true)
   public static class Links {
 
     private String zeebe;
