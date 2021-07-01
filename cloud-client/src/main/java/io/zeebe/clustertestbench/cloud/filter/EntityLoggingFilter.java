@@ -7,6 +7,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.nio.charset.StandardCharsets;
+import java.util.Objects;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import javax.annotation.Priority;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.client.ClientRequestContext;
@@ -40,11 +43,12 @@ public final class EntityLoggingFilter
   }
 
   @Override
-  public void filter(final ClientRequestContext requestContext, final ClientResponseContext responseContext)
+  public void filter(
+      final ClientRequestContext requestContext, final ClientResponseContext responseContext)
       throws IOException {
     if (responseContext.hasEntity()) {
-      final var entityStream = responseContext.getEntityStream();
-      responseContext.setEntityStream(logInboundEntitySafely(requestContext, entityStream));
+      final var stream = logInboundEntitySafely(requestContext, responseContext);
+      responseContext.setEntityStream(stream);
     }
   }
 
@@ -60,24 +64,34 @@ public final class EntityLoggingFilter
 
   /** Logs the entity and resets the stream it read it from */
   private InputStream logInboundEntitySafely(
-      final ClientRequestContext requestContext, final InputStream entityStream)
+      final ClientRequestContext requestContext, final ClientResponseContext responseContext)
       throws IOException {
-    var stream = entityStream;
+    var stream = responseContext.getEntityStream();
     if (!stream.markSupported()) {
       stream = new BufferedInputStream(stream);
     }
     stream.mark(MAX_ENTITY_SIZE + 1);
-    logEntityFromStream(stream, requestContext);
+    logEntityFromStream(stream, requestContext, responseContext);
     stream.reset();
     return stream;
   }
 
   private void logEntityFromStream(
-      final InputStream stream, final ClientRequestContext requestContext) throws IOException {
-    final var method = requestContext.getMethod();
-    final var uri = requestContext.getUri();
-    final var entity = IOUtils.toString(stream, StandardCharsets.UTF_8);
-    log(String.format("%s %s => %s%n", method, uri, entity));
+      final InputStream stream,
+      final ClientRequestContext requestContext,
+      final ClientResponseContext responseContext)
+      throws IOException {
+    final String method = requestContext.getMethod();
+    final var uri = Objects.toString(requestContext.getUri(), null);
+    final var requestEntity = Objects.toString(requestContext.getEntity(), null);
+    final String request =
+        Stream.of(method, uri, requestEntity)
+            .filter(Objects::nonNull)
+            .collect(Collectors.joining(" "));
+    final int status = responseContext.getStatus();
+    final var responseEntity = IOUtils.toString(stream, StandardCharsets.UTF_8);
+    final var response = String.format("%d %s", status, responseEntity);
+    log(String.format("%s => %s%n", request, response));
   }
 
   private void log(final String entry) {
