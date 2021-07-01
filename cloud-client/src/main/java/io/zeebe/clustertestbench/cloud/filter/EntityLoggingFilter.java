@@ -55,11 +55,7 @@ public final class EntityLoggingFilter
   @Override
   public void aroundWriteTo(final WriterInterceptorContext context)
       throws IOException, WebApplicationException {
-    final var stream = (LoggingStream) context.getProperty(ENTITY_STREAM_PROPERTY);
     context.proceed();
-    if (stream != null) {
-      log(stream.getStringBuilder().toString());
-    }
   }
 
   /** Logs the entity and resets the stream it read it from */
