@@ -1,17 +1,11 @@
 package io.zeebe.clustertestbench.handler;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 import io.camunda.zeebe.client.api.response.ActivatedJob;
 import io.camunda.zeebe.client.api.worker.JobClient;
 import io.camunda.zeebe.client.api.worker.JobHandler;
 import io.zeebe.clustertestbench.cloud.CloudAPIClient;
 import io.zeebe.clustertestbench.cloud.request.CreateClusterRequest;
-import io.zeebe.clustertestbench.cloud.request.CreateZeebeClientRequest;
 import io.zeebe.clustertestbench.cloud.response.CreateClusterResponse;
-import io.zeebe.clustertestbench.cloud.response.CreateZeebeClientResponse;
-import io.zeebe.clustertestbench.cloud.response.ZeebeClientConnectiontInfo;
-import io.zeebe.clustertestbench.testdriver.api.CamundaCloudAuthenticationDetails;
-import io.zeebe.clustertestbench.testdriver.impl.CamundaCLoudAuthenticationDetailsImpl;
 import io.zeebe.clustertestbench.util.RandomNameGenerator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -20,7 +14,6 @@ public class CreateClusterInCamundaCloudHandler implements JobHandler {
 
   private static final Logger LOGGER =
       LoggerFactory.getLogger(CreateClusterInCamundaCloudHandler.class);
-
   private static final RandomNameGenerator NAME_GENRATOR = new RandomNameGenerator();
 
   private final CloudAPIClient cloudApiClient;
@@ -31,41 +24,43 @@ public class CreateClusterInCamundaCloudHandler implements JobHandler {
 
   @Override
   public void handle(final JobClient client, final ActivatedJob job) throws Exception {
-    final Input input = job.getVariablesAsType(Input.class);
+    final var input = job.getVariablesAsType(Input.class);
 
     final String name = NAME_GENRATOR.next();
 
     LOGGER.info("Creating cluster {}", name);
-    final CreateClusterResponse createClusterRepoonse =
-        cloudApiClient.createCluster(
-            new CreateClusterRequest(
-                name,
-                input.getClusterPlanUUID(),
-                input.getChannelUUID(),
-                input.getGenerationUUID(),
-                input.getRegionUUID()));
-
-    final String clusterId = createClusterRepoonse.getClusterId();
-
+    CreateClusterResponse createClusterReponse = null;
     try {
-      final CreateZeebeClientResponse createZeebeClientResponse =
-          cloudApiClient.createZeebeClient(
-              clusterId, new CreateZeebeClientRequest(name + "_client"));
+      createClusterReponse =
+          cloudApiClient.createCluster(
+              new CreateClusterRequest(
+                  name,
+                  input.getClusterPlanUUID(),
+                  input.getChannelUUID(),
+                  input.getGenerationUUID(),
+                  input.getRegionUUID()));
 
-      final ZeebeClientConnectiontInfo connectionInfo =
-          cloudApiClient.getZeebeClientInfo(clusterId, createZeebeClientResponse.getClientId());
+      final String clusterId = createClusterReponse.getClusterId();
+      LOGGER.info("Cluster {} ({}) created successfully", name, clusterId);
 
-      client
-          .newCompleteCommand(job.getKey())
-          .variables(new Output(createZeebeClientResponse, connectionInfo, name, clusterId))
-          .send();
+      client.newCompleteCommand(job.getKey()).variables(new Output(name, clusterId)).send();
+
     } catch (final Exception e) {
-      cloudApiClient.deleteCluster(clusterId);
-
-      client
-          .newFailCommand(job.getKey())
-          .retries(job.getRetries() - 1)
-          .errorMessage("Error while creating stack trace: " + e.getMessage());
+      final var message = String.format("Expected to create cluster %s, but failed", name);
+      LOGGER.error(message, e);
+      try {
+        if (createClusterReponse != null) {
+          // delete cluster to keep worker idempotent
+          LOGGER.info("Delete cluster {}", createClusterReponse.getClusterId());
+          cloudApiClient.deleteCluster(createClusterReponse.getClusterId());
+        }
+      } finally {
+        client
+            .newFailCommand(job.getKey())
+            .retries(job.getRetries() - 1)
+            .errorMessage(message)
+            .send();
+      }
     }
   }
 
@@ -110,35 +105,12 @@ public class CreateClusterInCamundaCloudHandler implements JobHandler {
 
   private static final class Output {
 
-    private CamundaCLoudAuthenticationDetailsImpl authenticationDetails;
     private final String clusterId;
     private final String clusterName;
 
-    public Output(
-        final CreateZeebeClientResponse createZeebeClientResponse,
-        final ZeebeClientConnectiontInfo connectionInfo,
-        final String clusterName,
-        final String clusterId) {
-      this.authenticationDetails =
-          new CamundaCLoudAuthenticationDetailsImpl(
-              connectionInfo.getZeebeAuthorizationServerUrl(),
-              connectionInfo.getZeebeAudience(),
-              connectionInfo.getZeebeAddress(),
-              createZeebeClientResponse.getClientId(),
-              createZeebeClientResponse.getClientSecret());
+    public Output(final String clusterName, final String clusterId) {
       this.clusterName = clusterName;
       this.clusterId = clusterId;
-    }
-
-    @JsonProperty(CamundaCloudAuthenticationDetails.VARIABLE_KEY)
-    public CamundaCLoudAuthenticationDetailsImpl getAuthenticationDetails() {
-      return authenticationDetails;
-    }
-
-    @JsonProperty(CamundaCloudAuthenticationDetails.VARIABLE_KEY)
-    public void setAuthenticationDetails(
-        final CamundaCLoudAuthenticationDetailsImpl authenticationDetails) {
-      this.authenticationDetails = authenticationDetails;
     }
 
     public String getClusterId() {
