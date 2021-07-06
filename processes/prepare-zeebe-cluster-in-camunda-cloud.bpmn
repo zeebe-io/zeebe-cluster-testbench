@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:zeebe="http://camunda.org/schema/zeebe/1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" id="Definitions_10jos80" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Zeebe Modeler" exporterVersion="0.10.0">
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:zeebe="http://camunda.org/schema/zeebe/1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" id="Definitions_10jos80" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="4.8.1">
   <bpmn:process id="prepare-zeebe-cluster-in-camunda-cloud" name="Prepare Zeebe Cluster in Camunda Cloud" isExecutable="true">
     <bpmn:startEvent id="start" name="Start">
       <bpmn:outgoing>Flow_0v89qt6</bpmn:outgoing>
@@ -13,11 +13,11 @@
       <bpmn:outgoing>Flow_0f4lf0m</bpmn:outgoing>
     </bpmn:serviceTask>
     <bpmn:exclusiveGateway id="Gateway_0h5nxf3">
-      <bpmn:incoming>Flow_0f4lf0m</bpmn:incoming>
       <bpmn:incoming>Flow_1t5mjg2</bpmn:incoming>
+      <bpmn:incoming>Flow_16dvxg9</bpmn:incoming>
       <bpmn:outgoing>Flow_1nplddv</bpmn:outgoing>
     </bpmn:exclusiveGateway>
-    <bpmn:sequenceFlow id="Flow_0f4lf0m" sourceRef="create-zeebe-cluster-in-camunda-cloud" targetRef="Gateway_0h5nxf3" />
+    <bpmn:sequenceFlow id="Flow_0f4lf0m" sourceRef="create-zeebe-cluster-in-camunda-cloud" targetRef="create-api-client-for-cluster-in-camunda-cloud" />
     <bpmn:sequenceFlow id="Flow_1nplddv" sourceRef="Gateway_0h5nxf3" targetRef="timer-ten-seconds" />
     <bpmn:exclusiveGateway id="Gateway_0rsc9zf" default="Flow_1t5mjg2">
       <bpmn:incoming>Flow_1ggxjdm</bpmn:incoming>
@@ -63,49 +63,61 @@
       <bpmn:incoming>Flow_0wk7aco</bpmn:incoming>
       <bpmn:outgoing>Flow_1lelmzg</bpmn:outgoing>
     </bpmn:serviceTask>
+    <bpmn:sequenceFlow id="Flow_16dvxg9" sourceRef="create-api-client-for-cluster-in-camunda-cloud" targetRef="Gateway_0h5nxf3" />
+    <bpmn:serviceTask id="create-api-client-for-cluster-in-camunda-cloud" name="Create Api Client for Cluster in Camunda Cloud">
+      <bpmn:extensionElements>
+        <zeebe:taskDefinition type="create-api-client-for-cluster-in-camunda-cloud" />
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_0f4lf0m</bpmn:incoming>
+      <bpmn:outgoing>Flow_16dvxg9</bpmn:outgoing>
+    </bpmn:serviceTask>
   </bpmn:process>
   <bpmndi:BPMNDiagram id="BPMNDiagram_1">
     <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="prepare-zeebe-cluster-in-camunda-cloud">
       <bpmndi:BPMNEdge id="Flow_1lelmzg_di" bpmnElement="Flow_1lelmzg">
-        <di:waypoint x="1180" y="117" />
-        <di:waypoint x="1252" y="117" />
+        <di:waypoint x="1310" y="117" />
+        <di:waypoint x="1382" y="117" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_0wk7aco_di" bpmnElement="Flow_0wk7aco">
-        <di:waypoint x="1020" y="117" />
-        <di:waypoint x="1080" y="117" />
+        <di:waypoint x="1150" y="117" />
+        <di:waypoint x="1210" y="117" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_0krlig2_di" bpmnElement="condition-healthy">
-        <di:waypoint x="805" y="117" />
-        <di:waypoint x="920" y="117" />
+        <di:waypoint x="935" y="117" />
+        <di:waypoint x="1050" y="117" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="844" y="99" width="38" height="14" />
+          <dc:Bounds x="974" y="99" width="38" height="14" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_0xvisg0_di" bpmnElement="Flow_0xvisg0">
-        <di:waypoint x="558" y="117" />
-        <di:waypoint x="600" y="117" />
+        <di:waypoint x="688" y="117" />
+        <di:waypoint x="730" y="117" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_1t5mjg2_di" bpmnElement="Flow_1t5mjg2">
-        <di:waypoint x="780" y="142" />
-        <di:waypoint x="780" y="200" />
-        <di:waypoint x="450" y="200" />
-        <di:waypoint x="450" y="142" />
+        <di:waypoint x="910" y="142" />
+        <di:waypoint x="910" y="200" />
+        <di:waypoint x="580" y="200" />
+        <di:waypoint x="580" y="142" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_1ggxjdm_di" bpmnElement="Flow_1ggxjdm">
-        <di:waypoint x="700" y="117" />
-        <di:waypoint x="755" y="117" />
+        <di:waypoint x="830" y="117" />
+        <di:waypoint x="885" y="117" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_1nplddv_di" bpmnElement="Flow_1nplddv">
-        <di:waypoint x="475" y="117" />
-        <di:waypoint x="522" y="117" />
+        <di:waypoint x="605" y="117" />
+        <di:waypoint x="652" y="117" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_0f4lf0m_di" bpmnElement="Flow_0f4lf0m">
         <di:waypoint x="370" y="117" />
-        <di:waypoint x="425" y="117" />
+        <di:waypoint x="420" y="117" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_0v89qt6_di" bpmnElement="Flow_0v89qt6">
         <di:waypoint x="215" y="117" />
         <di:waypoint x="270" y="117" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_16dvxg9_di" bpmnElement="Flow_16dvxg9">
+        <di:waypoint x="520" y="117" />
+        <di:waypoint x="555" y="117" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNShape id="_BPMNShape_StartEvent_2" bpmnElement="start">
         <dc:Bounds x="179" y="99" width="36" height="36" />
@@ -117,28 +129,31 @@
         <dc:Bounds x="270" y="77" width="100" height="80" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Gateway_0h5nxf3_di" bpmnElement="Gateway_0h5nxf3" isMarkerVisible="true">
-        <dc:Bounds x="425" y="92" width="50" height="50" />
+        <dc:Bounds x="555" y="92" width="50" height="50" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Gateway_0rsc9zf_di" bpmnElement="Gateway_0rsc9zf" isMarkerVisible="true">
-        <dc:Bounds x="755" y="92" width="50" height="50" />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_0ukqd8v_di" bpmnElement="query-zeebe-cluster-state-in-camunda-cloud">
-        <dc:Bounds x="600" y="77" width="100" height="80" />
+        <dc:Bounds x="885" y="92" width="50" height="50" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Event_025t7ts_di" bpmnElement="Event_025t7ts">
-        <dc:Bounds x="1252" y="99" width="36" height="36" />
+        <dc:Bounds x="1382" y="99" width="36" height="36" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Event_1si8upl_di" bpmnElement="timer-ten-seconds">
-        <dc:Bounds x="522" y="99" width="36" height="36" />
+        <dc:Bounds x="652" y="99" width="36" height="36" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="531" y="142" width="19" height="14" />
+          <dc:Bounds x="662" y="142" width="18" height="14" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Activity_1w3gv94_di" bpmnElement="gather-information-about-cluster-in-camunda-cloud">
-        <dc:Bounds x="920" y="77" width="100" height="80" />
+        <dc:Bounds x="1050" y="77" width="100" height="80" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Activity_00qa5g7_di" bpmnElement="warm-up-cluster">
-        <dc:Bounds x="1080" y="77" width="100" height="80" />
+        <dc:Bounds x="1210" y="77" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1owpdj3_di" bpmnElement="create-api-client-for-cluster-in-camunda-cloud">
+        <dc:Bounds x="420" y="77" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0ukqd8v_di" bpmnElement="query-zeebe-cluster-state-in-camunda-cloud">
+        <dc:Bounds x="730" y="77" width="100" height="80" />
       </bpmndi:BPMNShape>
     </bpmndi:BPMNPlane>
   </bpmndi:BPMNDiagram>
