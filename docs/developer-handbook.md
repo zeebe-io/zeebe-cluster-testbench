@@ -68,8 +68,7 @@ The permutation testing reports appear under `.[module]/target/pit-reports/[time
 
 | Convention | Rationale |
 |---------- | ---------|
-| Verify all shell scripts with _
-shellcheck_ | Shellcheck tests shell scripts for common mistakes and vulnerabilities. It has been very valuable in making the scripts we use more secure |
+| Verify all shell scripts with _shellcheck_ | Shellcheck tests shell scripts for common mistakes and vulnerabilities. It has been very valuable in making the scripts we use more secure |
 
 ## Best Practices
 
