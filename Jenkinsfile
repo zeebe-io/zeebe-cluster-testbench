@@ -120,7 +120,7 @@ pipeline {
         stage('Deploy') {
             when {
                 anyOf {
-                    branch 'stable/0.26'
+                   // branch 'stable/0.26'
                     expression { params.DEPLOY_TO_DEV }
                 }
             }
