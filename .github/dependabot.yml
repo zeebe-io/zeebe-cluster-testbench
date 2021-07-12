@@ -14,4 +14,3 @@ updates:
     directory: "/" # Location of package manifests
     schedule:
       interval: "daily"
-    target-branch: "stable/0.26"
