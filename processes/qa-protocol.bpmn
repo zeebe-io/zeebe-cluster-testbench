@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:zeebe="http://camunda.org/schema/zeebe/1.0" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" id="Definitions_06r49fl" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Zeebe Modeler" exporterVersion="0.10.0">
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:zeebe="http://camunda.org/schema/zeebe/1.0" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" id="Definitions_06r49fl" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="4.8.1">
   <bpmn:process id="qa-protocol" name="QA Protocol" isExecutable="true">
     <bpmn:startEvent id="StartEvent_1">
       <bpmn:outgoing>Flow_0s03s3e</bpmn:outgoing>
@@ -12,7 +12,7 @@
         <zeebe:calledElement processId="run-all-tests-in-camunda-cloud-per-cluster-plan" />
         <zeebe:ioMapping>
           <zeebe:input source="=&#34;new chaos&#34;" target="region" />
-          <zeebe:input source="=[&#34;Development&#34;, &#34;Production - S&#34;, &#34;Production - M&#34;, &#34;Production - L&#34;]" target="clusterPlans" />
+          <zeebe:input source="=[&#34;Production - S&#34;]" target="clusterPlans" />
           <zeebe:input source="={&#34;steps&#34;:3,&#34;iterations&#34;:10,&#34;maxTimeForIteration&#34;:&#34;PT20S&#34;,&#34;maxTimeForCompleteTest&#34;:&#34;PT4M&#34;}" target="sequentialTestParams" />
           <zeebe:input source="={}" target="chaosTestParams" />
           <zeebe:input source="=&#34;QA Protocol&#34;" target="rootProcess" />
@@ -62,9 +62,6 @@ channel: channel in which the QA tests shall be run</bpmn:text>
   </bpmn:process>
   <bpmndi:BPMNDiagram id="BPMNDiagram_1">
     <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="qa-protocol">
-      <bpmndi:BPMNShape id="TextAnnotation_0yzgtu4_di" bpmnElement="TextAnnotation_0yzgtu4">
-        <dc:Bounds x="590" y="240" width="310" height="53" />
-      </bpmndi:BPMNShape>
       <bpmndi:BPMNEdge id="Flow_1qkrt5u_di" bpmnElement="Flow_1qkrt5u">
         <di:waypoint x="690" y="177" />
         <di:waypoint x="752" y="177" />
@@ -101,6 +98,9 @@ channel: channel in which the QA tests shall be run</bpmn:text>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="TextAnnotation_0lbo537_di" bpmnElement="TextAnnotation_0lbo537">
         <dc:Bounds x="147" y="40" width="608" height="48" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="TextAnnotation_0yzgtu4_di" bpmnElement="TextAnnotation_0yzgtu4">
+        <dc:Bounds x="590" y="240" width="310" height="53" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNEdge id="Association_0din8b3_di" bpmnElement="Association_0din8b3">
         <di:waypoint x="430" y="199" />
