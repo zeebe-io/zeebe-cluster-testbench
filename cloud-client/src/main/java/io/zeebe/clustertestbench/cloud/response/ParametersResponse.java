@@ -2,6 +2,7 @@ package io.zeebe.clustertestbench.cloud.response;
 
 import com.fasterxml.jackson.annotation.JsonAlias;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import io.zeebe.clustertestbench.cloud.response.ClusterInfo.K8sContextInfo;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -164,6 +165,7 @@ public class ParametersResponse {
     private boolean internal;
     private String name;
     private String uuid;
+    private K8sContextInfo k8sContext;
 
     public String getDescription() {
       return description;
@@ -195,6 +197,14 @@ public class ParametersResponse {
 
     public void setUuid(final String uuid) {
       this.uuid = uuid;
+    }
+
+    public K8sContextInfo getK8sContext() {
+      return k8sContext;
+    }
+
+    public void setK8sContext(final K8sContextInfo k8sContext) {
+      this.k8sContext = k8sContext;
     }
 
     @Override
