@@ -10,6 +10,7 @@ import io.zeebe.clustertestbench.cloud.response.ParametersResponse.ChannelInfo.G
 import io.zeebe.clustertestbench.cloud.response.ParametersResponse.ClusterPlanTypeInfo;
 import io.zeebe.clustertestbench.cloud.response.ParametersResponse.RegionInfo;
 import io.zeebe.clustertestbench.util.StringLookup;
+import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -34,10 +35,11 @@ public class MapNamesToUUIDsHandler implements JobHandler {
 
     final ChannelInfo channelInfo = mapChannel(inputOutput, parameters);
 
+    final RegionInfo regionInfo = mapRegion(inputOutput, parameters);
+
     mapGeneration(inputOutput, channelInfo);
 
-    mapClusterPlan(inputOutput, parameters);
-    mapRegion(inputOutput, parameters);
+    mapClusterPlan(inputOutput, parameters, regionInfo);
 
     LOGGER.info("Output: " + inputOutput);
     client.newCompleteCommand(job.getKey()).variables(inputOutput).send();
@@ -111,7 +113,10 @@ public class MapNamesToUUIDsHandler implements JobHandler {
     inputOutput.setGenerationUUID(generationInfo.getUuid());
   }
 
-  private void mapClusterPlan(final InputOutput inputOutput, final ParametersResponse parameters) {
+  private void mapClusterPlan(
+      final InputOutput inputOutput,
+      final ParametersResponse parameters,
+      final RegionInfo regionInfo) {
     final ClusterPlanTypeInfo clusterPlanInfo;
 
     if ((inputOutput.getClusterPlanUUID() == null) && (inputOutput.getClusterPlan() == null)) {
@@ -121,11 +126,17 @@ public class MapNamesToUUIDsHandler implements JobHandler {
 
     final StringLookup<ClusterPlanTypeInfo> clusterPlanLookup;
     if (inputOutput.getClusterPlanUUID() == null) {
+
+      final var clusterPlansInTheRegion =
+          parameters.getClusterPlanTypes().stream()
+              .filter(plan -> regionInfo.getUuid().equals(plan.getK8sContext().getUuid()))
+              .collect(Collectors.toList());
+
       clusterPlanLookup =
           new StringLookup<>(
               "clusterPlan",
               inputOutput.getClusterPlan(),
-              parameters.getClusterPlanTypes(),
+              clusterPlansInTheRegion,
               ClusterPlanTypeInfo::getName,
               true);
     } else {
@@ -145,7 +156,7 @@ public class MapNamesToUUIDsHandler implements JobHandler {
     inputOutput.setClusterPlanUUID(clusterPlanInfo.getUuid());
   }
 
-  private void mapRegion(final InputOutput inputOutput, final ParametersResponse parameters) {
+  private RegionInfo mapRegion(final InputOutput inputOutput, final ParametersResponse parameters) {
     final RegionInfo regionInfo;
 
     if ((inputOutput.getRegionUUID() == null) && (inputOutput.getRegion() == null)) {
@@ -175,6 +186,7 @@ public class MapNamesToUUIDsHandler implements JobHandler {
 
     inputOutput.setRegion(regionInfo.getName());
     inputOutput.setRegionUUID(regionInfo.getUuid());
+    return regionInfo;
   }
 
   private static final class InputOutput {
