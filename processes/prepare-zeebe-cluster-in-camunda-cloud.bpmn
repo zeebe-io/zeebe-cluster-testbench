@@ -83,13 +83,13 @@
     </bpmn:subProcess>
     <bpmn:sequenceFlow id="Flow_04hrlj4" sourceRef="create-api-client-for-cluster-in-camunda-cloud" targetRef="Activity_12o4zvy" />
     <bpmn:sequenceFlow id="Flow_0co0hrw" sourceRef="Activity_12o4zvy" targetRef="gather-information-about-cluster-in-camunda-cloud" />
-    <bpmn:boundaryEvent id="Event_1v9wu39" attachedToRef="Activity_12o4zvy">
+    <bpmn:boundaryEvent id="timeout-healthcheck" name="2H" attachedToRef="Activity_12o4zvy">
       <bpmn:outgoing>Flow_08i347f</bpmn:outgoing>
       <bpmn:timerEventDefinition id="TimerEventDefinition_1e4cu8f">
-        <bpmn:timeDuration xsi:type="bpmn:tFormalExpression">PT30M</bpmn:timeDuration>
+        <bpmn:timeDuration xsi:type="bpmn:tFormalExpression">PT2H</bpmn:timeDuration>
       </bpmn:timerEventDefinition>
     </bpmn:boundaryEvent>
-    <bpmn:sequenceFlow id="Flow_08i347f" sourceRef="Event_1v9wu39" targetRef="notify-prepare-zeebe-cluster-failed" />
+    <bpmn:sequenceFlow id="Flow_08i347f" sourceRef="timeout-healthcheck" targetRef="notify-prepare-zeebe-cluster-failed" />
     <bpmn:sequenceFlow id="Flow_1n7t1lx" sourceRef="notify-prepare-zeebe-cluster-failed" targetRef="Event_1qm3w9j" />
     <bpmn:endEvent id="Event_1qm3w9j">
       <bpmn:incoming>Flow_1n7t1lx</bpmn:incoming>
@@ -106,6 +106,23 @@
   <bpmn:error id="Error_124scus" name="Prepare Zeebe Cluster Failed" errorCode="prepare-zeebe-cluster-failed" />
   <bpmndi:BPMNDiagram id="BPMNDiagram_1">
     <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="prepare-zeebe-cluster-in-camunda-cloud">
+      <bpmndi:BPMNEdge id="Flow_1n7t1lx_di" bpmnElement="Flow_1n7t1lx">
+        <di:waypoint x="1310" y="360" />
+        <di:waypoint x="1362" y="360" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_08i347f_di" bpmnElement="Flow_08i347f">
+        <di:waypoint x="1140" y="298" />
+        <di:waypoint x="1140" y="360" />
+        <di:waypoint x="1210" y="360" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0co0hrw_di" bpmnElement="Flow_0co0hrw">
+        <di:waypoint x="1280" y="167" />
+        <di:waypoint x="1340" y="167" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_04hrlj4_di" bpmnElement="Flow_04hrlj4">
+        <di:waypoint x="520" y="167" />
+        <di:waypoint x="590" y="167" />
+      </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_1lelmzg_di" bpmnElement="Flow_1lelmzg">
         <di:waypoint x="1600" y="167" />
         <di:waypoint x="1672" y="167" />
@@ -122,23 +139,6 @@
         <di:waypoint x="215" y="167" />
         <di:waypoint x="270" y="167" />
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_04hrlj4_di" bpmnElement="Flow_04hrlj4">
-        <di:waypoint x="520" y="167" />
-        <di:waypoint x="590" y="167" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_0co0hrw_di" bpmnElement="Flow_0co0hrw">
-        <di:waypoint x="1280" y="167" />
-        <di:waypoint x="1340" y="167" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_08i347f_di" bpmnElement="Flow_08i347f">
-        <di:waypoint x="1140" y="298" />
-        <di:waypoint x="1140" y="360" />
-        <di:waypoint x="1210" y="360" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_1n7t1lx_di" bpmnElement="Flow_1n7t1lx">
-        <di:waypoint x="1310" y="360" />
-        <di:waypoint x="1362" y="360" />
-      </bpmndi:BPMNEdge>
       <bpmndi:BPMNShape id="_BPMNShape_StartEvent_2" bpmnElement="start">
         <dc:Bounds x="179" y="149" width="36" height="36" />
         <bpmndi:BPMNLabel>
@@ -147,9 +147,6 @@
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Activity_0fqnyt6_di" bpmnElement="create-zeebe-cluster-in-camunda-cloud">
         <dc:Bounds x="270" y="127" width="100" height="80" />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_1owpdj3_di" bpmnElement="create-api-client-for-cluster-in-camunda-cloud">
-        <dc:Bounds x="420" y="127" width="100" height="80" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Event_025t7ts_di" bpmnElement="Event_025t7ts">
         <dc:Bounds x="1672" y="149" width="36" height="36" />
@@ -160,37 +157,12 @@
       <bpmndi:BPMNShape id="Activity_00qa5g7_di" bpmnElement="warm-up-cluster">
         <dc:Bounds x="1500" y="127" width="100" height="80" />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Event_126hjh3_di" bpmnElement="Event_1qm3w9j">
-        <dc:Bounds x="1362" y="342" width="36" height="36" />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_1gud8ge_di" bpmnElement="notify-prepare-zeebe-cluster-failed">
-        <dc:Bounds x="1210" y="320" width="100" height="80" />
+      <bpmndi:BPMNShape id="Activity_1owpdj3_di" bpmnElement="create-api-client-for-cluster-in-camunda-cloud">
+        <dc:Bounds x="420" y="127" width="100" height="80" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Activity_12o4zvy_di" bpmnElement="Activity_12o4zvy" isExpanded="true">
         <dc:Bounds x="590" y="80" width="690" height="200" />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNEdge id="Flow_1t5mjg2_di" bpmnElement="Flow_1t5mjg2">
-        <di:waypoint x="1060" y="185" />
-        <di:waypoint x="1060" y="243" />
-        <di:waypoint x="730" y="243" />
-        <di:waypoint x="730" y="185" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_1nplddv_di" bpmnElement="Flow_1nplddv">
-        <di:waypoint x="755" y="160" />
-        <di:waypoint x="802" y="160" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_1ggxjdm_di" bpmnElement="Flow_1ggxjdm">
-        <di:waypoint x="980" y="160" />
-        <di:waypoint x="1035" y="160" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_0xvisg0_di" bpmnElement="Flow_0xvisg0">
-        <di:waypoint x="838" y="160" />
-        <di:waypoint x="880" y="160" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_0oqcfzw_di" bpmnElement="Flow_0oqcfzw">
-        <di:waypoint x="658" y="160" />
-        <di:waypoint x="705" y="160" />
-      </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_1jhcbhr_di" bpmnElement="condition_healthy">
         <di:waypoint x="1085" y="160" />
         <di:waypoint x="1142" y="160" />
@@ -198,6 +170,31 @@
           <dc:Bounds x="1095" y="142" width="38" height="14" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0oqcfzw_di" bpmnElement="Flow_0oqcfzw">
+        <di:waypoint x="658" y="160" />
+        <di:waypoint x="705" y="160" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0xvisg0_di" bpmnElement="Flow_0xvisg0">
+        <di:waypoint x="838" y="160" />
+        <di:waypoint x="880" y="160" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1ggxjdm_di" bpmnElement="Flow_1ggxjdm">
+        <di:waypoint x="980" y="160" />
+        <di:waypoint x="1035" y="160" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1nplddv_di" bpmnElement="Flow_1nplddv">
+        <di:waypoint x="755" y="160" />
+        <di:waypoint x="802" y="160" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1t5mjg2_di" bpmnElement="Flow_1t5mjg2">
+        <di:waypoint x="1060" y="185" />
+        <di:waypoint x="1060" y="243" />
+        <di:waypoint x="730" y="243" />
+        <di:waypoint x="730" y="185" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="Event_0f04civ_di" bpmnElement="Event_0f04civ">
+        <dc:Bounds x="622" y="142" width="36" height="36" />
+      </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Gateway_0h5nxf3_di" bpmnElement="Gateway_0h5nxf3" isMarkerVisible="true">
         <dc:Bounds x="705" y="135" width="50" height="50" />
       </bpmndi:BPMNShape>
@@ -213,14 +210,20 @@
           <dc:Bounds x="812" y="185" width="19" height="14" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Event_0f04civ_di" bpmnElement="Event_0f04civ">
-        <dc:Bounds x="622" y="142" width="36" height="36" />
-      </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Event_0o2ftqr_di" bpmnElement="Event_0o2ftqr">
         <dc:Bounds x="1142" y="142" width="36" height="36" />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Event_03kpu5l_di" bpmnElement="Event_1v9wu39">
+      <bpmndi:BPMNShape id="Event_126hjh3_di" bpmnElement="Event_1qm3w9j">
+        <dc:Bounds x="1362" y="342" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1gud8ge_di" bpmnElement="notify-prepare-zeebe-cluster-failed">
+        <dc:Bounds x="1210" y="320" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_03kpu5l_di" bpmnElement="timeout-healthcheck">
         <dc:Bounds x="1122" y="262" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1122" y="305" width="15" height="14" />
+        </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
     </bpmndi:BPMNPlane>
   </bpmndi:BPMNDiagram>
