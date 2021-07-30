@@ -27,6 +27,7 @@ import io.zeebe.clustertestbench.handler.DeleteGenerationInCamundaCloudHandler;
 import io.zeebe.clustertestbench.handler.GatherInformationAboutClusterInCamundaCloudHandler;
 import io.zeebe.clustertestbench.handler.MapNamesToUUIDsHandler;
 import io.zeebe.clustertestbench.handler.NotifyEngineersHandler;
+import io.zeebe.clustertestbench.handler.NotifyEngineersPrepareFailedHandler;
 import io.zeebe.clustertestbench.handler.QueryClusterStateInCamundaCloudHandler;
 import io.zeebe.clustertestbench.handler.RecordTestResultHandler;
 import io.zeebe.clustertestbench.handler.SequentialTestHandler;
@@ -290,6 +291,11 @@ public class Launcher {
         client,
         "notify-engineers-job",
         new NotifyEngineersHandler(slackNotificationService),
+        Duration.ofSeconds(10));
+    registerWorker(
+        client,
+        "notify-prepare-zeebe-cluster-failed",
+        new NotifyEngineersPrepareFailedHandler(slackNotificationService),
         Duration.ofSeconds(10));
     registerWorker(
         client,
