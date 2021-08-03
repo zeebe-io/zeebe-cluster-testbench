@@ -46,7 +46,8 @@ public class NotifyEngineersHandler implements JobHandler {
         .append(" failed for generation ")
         .append("`" + input.getGeneration() + "`") //
         .append(" on cluster ")
-        .append("_" + input.getClusterName() + "_");
+        .append("_" + input.getClusterName() + "_")
+        .append(" `" + input.getClusterId() + "`");
 
     resultBuilder.append("\n");
 
@@ -86,6 +87,7 @@ public class NotifyEngineersHandler implements JobHandler {
   static final class Input {
     private String generation;
     private String clusterPlan;
+    private String clusterId;
     private String clusterName;
     private String operateURL;
     private String testProcessId;
@@ -107,6 +109,14 @@ public class NotifyEngineersHandler implements JobHandler {
 
     public void setClusterPlan(final String clusterPlan) {
       this.clusterPlan = clusterPlan;
+    }
+
+    public String getClusterId() {
+      return clusterId;
+    }
+
+    public void setClusterId(final String clusterId) {
+      this.clusterId = clusterId;
     }
 
     public String getClusterName() {
@@ -147,7 +157,7 @@ public class NotifyEngineersHandler implements JobHandler {
       return businessKey;
     }
 
-    public void setBusinessKey(String businessKey) {
+    public void setBusinessKey(final String businessKey) {
       this.businessKey = businessKey;
     }
   }

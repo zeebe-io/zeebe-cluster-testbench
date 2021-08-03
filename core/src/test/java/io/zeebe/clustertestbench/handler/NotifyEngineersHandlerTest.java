@@ -25,6 +25,13 @@ import org.junit.jupiter.api.Test;
 
 public class NotifyEngineersHandlerTest {
 
+  public static final String CLUSTER_ID = "a1b2c3d4e-f5e6-d7c8-b9a8-b7c6d5e4f3e2";
+  public static final String CLUSTER_NAME = "CLUSTER_A";
+  public static final String CLUSTER_PLAN = "CLUSTER_PLAN_B";
+  public static final String GENERATION = "GENERATION_C";
+  public static final String OPERATE_URL = "https://localhost.test";
+  public static final String PROCESS_ID = "processID";
+  public static final String BUSINESS_KEY = "http://jenkins/branch/build";
   JobClientStub jobClientStub = new JobClientStub();
 
   ActivatedJobStub activatedJobStub;
@@ -49,13 +56,16 @@ public class NotifyEngineersHandlerTest {
 
     // then
     assertThat(simpleNotificationService.lastMessage)
-        .contains("CLUSTER_A")
-        .contains("CLUSTER_PLAN_B")
-        .contains("GENERATION_C")
-        .contains("https://localhost.test")
-        .contains("processID")
+        .contains(CLUSTER_NAME)
+        .contains(CLUSTER_ID)
+        .contains(CLUSTER_PLAN)
+        .contains(GENERATION)
+        .contains(OPERATE_URL)
+        .contains(PROCESS_ID)
         .contains("ERROR")
-        .contains("http://jenkins/branch/build");
+        .contains(BUSINESS_KEY);
+
+    System.out.println(simpleNotificationService.lastMessage);
 
     assertThat(activatedJobStub).completed();
   }
@@ -85,12 +95,13 @@ public class NotifyEngineersHandlerTest {
 
     final var input = new HashMap<String, Object>();
 
-    input.put("clusterName", "CLUSTER_A");
-    input.put("clusterPlan", "CLUSTER_PLAN_B");
-    input.put("generation", "GENERATION_C");
-    input.put("operateURL", "https://localhost.test");
-    input.put("testProcessId", "processID");
-    input.put("businessKey", "http://jenkins/branch/build");
+    input.put("clusterName", CLUSTER_NAME);
+    input.put("clusterId", CLUSTER_ID);
+    input.put("clusterPlan", CLUSTER_PLAN);
+    input.put("generation", GENERATION);
+    input.put("operateURL", OPERATE_URL);
+    input.put("testProcessId", PROCESS_ID);
+    input.put("businessKey", BUSINESS_KEY);
 
     final var testReport = new TestReportDTO();
     testReport.setFailureMessages(List.of("ERROR"));
