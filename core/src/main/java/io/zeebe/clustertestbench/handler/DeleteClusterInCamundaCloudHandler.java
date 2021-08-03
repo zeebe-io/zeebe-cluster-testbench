@@ -17,7 +17,16 @@ public class DeleteClusterInCamundaCloudHandler implements JobHandler {
   public void handle(final JobClient client, final ActivatedJob job) throws Exception {
     final Input input = job.getVariablesAsType(Input.class);
 
-    cloudApiClient.deleteCluster(input.getClusterId());
+    final var clusterId = input.getClusterId();
+    cloudApiClient.listClusterInfos().stream()
+        // check whether cluster still exists
+        .filter(clusterInfo -> clusterId.equals(clusterInfo.getUuid()))
+        .findFirst()
+        .ifPresent(
+            (clusterInfo) -> {
+              // if so, delete it
+              cloudApiClient.deleteCluster(clusterId);
+            });
 
     client.newCompleteCommand(job.getKey()).send();
   }
