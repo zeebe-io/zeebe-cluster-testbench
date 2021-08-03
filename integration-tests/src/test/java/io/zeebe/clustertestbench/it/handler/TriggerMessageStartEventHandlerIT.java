@@ -4,13 +4,13 @@ import static java.util.stream.Collectors.toMap;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.awaitility.Awaitility.await;
 
+import io.camunda.zeebe.client.ZeebeClient;
+import io.camunda.zeebe.client.api.response.ProcessInstanceEvent;
+import io.camunda.zeebe.client.api.worker.JobWorker;
 import io.zeebe.bpmnspec.runner.zeebe.ZeebeEnvironment;
 import io.zeebe.bpmnspec.runner.zeebe.zeeqs.ZeeqsClient;
 import io.zeebe.bpmnspec.runner.zeebe.zeeqs.ZeeqsClient.ElementInstanceDto;
 import io.zeebe.bpmnspec.runner.zeebe.zeeqs.ZeeqsClient.VariableDto;
-import io.zeebe.client.ZeebeClient;
-import io.zeebe.client.api.response.ProcessInstanceEvent;
-import io.zeebe.client.api.worker.JobWorker;
 import io.zeebe.clustertestbench.handler.TriggerMessageStartEventHandler;
 import java.time.Duration;
 import java.util.List;
@@ -18,11 +18,8 @@ import java.util.Map;
 import java.util.concurrent.TimeUnit;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
-// todo: update ZeeQS version
-@Disabled("This test is blocked by a incompatible ZeeQS version")
 public class TriggerMessageStartEventHandlerIT {
 
   ZeebeEnvironment zeebeEnvironment = new ZeebeEnvironment();
@@ -86,9 +83,9 @@ public class TriggerMessageStartEventHandlerIT {
     // then
     await()
         .atMost(1, TimeUnit.MINUTES)
-        .until(() -> zeeqsClient.getWorkflowInstanceKeys().size() == 2);
+        .until(() -> zeeqsClient.getProcessInstanceKeys().size() == 2);
 
-    final List<Long> processInstanceKeys = zeeqsClient.getWorkflowInstanceKeys();
+    final List<Long> processInstanceKeys = zeeqsClient.getProcessInstanceKeys();
 
     processInstanceKeys.remove(mainProcessCreationResponse.getProcessInstanceKey());
 
@@ -100,13 +97,13 @@ public class TriggerMessageStartEventHandlerIT {
     assertThat(elementDto.getElementId()).isEqualTo("secondary");
 
     final List<VariableDto> variablesInSecondaryProcess =
-        zeeqsClient.getWorkflowInstanceVariables(secondaryProcessInstanceKey);
+        zeeqsClient.getProcessInstanceVariables(secondaryProcessInstanceKey);
 
     final Map<String, String> variablesInSecondaryProcessAsMap =
         variablesInSecondaryProcess.stream()
             .collect(
                 toMap(
-                    dto -> dto.getName(),
+                    VariableDto::getName,
                     dto -> dto.getValue().replace("\"", ""))); // value is wrapped in " characters
 
     assertThat(variablesInSecondaryProcessAsMap).containsExactlyInAnyOrderEntriesOf(variables);
