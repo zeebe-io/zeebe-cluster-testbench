@@ -192,7 +192,7 @@ pipeline {
                 GPG_PASS = credentials('password_maven_central_gpg_signing_key')
                 GPG_PUB_KEY = credentials('maven_central_gpg_signing_key_pub')
                 GPG_SEC_KEY = credentials('maven_central_gpg_signing_key_sec')
-                GITHUB_TOKEN = credentials('camunda-jenkins-github')
+                GITHUB_TOKEN = credentials("${zeebeUtils.zeebeCredentialsId}")
                 RELEASE_VERSION = "${params.RELEASE_VERSION}"
                 DEVELOPMENT_VERSION = "${params.DEVELOPMENT_VERSION}"
             }
@@ -200,15 +200,15 @@ pipeline {
             steps {
                 container('maven') {
                     configFileProvider([configFile(fileId: 'maven-nexus-settings-zeebe', variable: 'MAVEN_SETTINGS_XML')]) {
-                        sshagent(['camunda-jenkins-github-ssh']) {
-                            sh 'gpg -q --import ${GPG_PUB_KEY} '
-                            sh 'gpg -q --allow-secret-key-import --import --no-tty --batch --yes ${GPG_SEC_KEY}'
-                            sh 'git config --global user.email "ci@camunda.com"'
-                            sh 'git config --global user.name "camunda-jenkins"'
-                            sh 'mkdir ~/.ssh/ && ssh-keyscan github.com >> ~/.ssh/known_hosts'
-                            sh 'mvn -B -s $MAVEN_SETTINGS_XML -DskipTests source:jar javadoc:jar release:prepare release:perform -Prelease'
-                            sh '.ci/scripts/github-release.sh'
-                        }
+                        sh 'gpg -q --import ${GPG_PUB_KEY} '
+                        sh 'gpg -q --allow-secret-key-import --import --no-tty --batch --yes ${GPG_SEC_KEY}'
+                        sh 'git config --global user.email "ci@camunda.com"'
+                        sh 'git config --global user.name "${GITHUB_TOKEN_USR}"'
+                        sh '''
+                            mvn -B -s $MAVEN_SETTINGS_XML -DskipTests source:jar \
+                              javadoc:jar release:prepare release:perform -Prelease
+                        '''
+                        sh '.ci/scripts/github-release.sh'
                     }
                 }
             }
