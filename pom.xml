@@ -33,8 +33,8 @@
   </modules>
 
   <scm>
-    <connection>scm:git:git@github.com:zeebe-io/zeebe-cluster-testbench.git</connection>
-    <developerConnection>scm:git:git@github.com:zeebe-io/zeebe-cluster-testbench.git
+    <connection>scm:git:https://${GITHUB_TOKEN_USR}:${GITHUB_TOKEN_PSW}@github.com/zeebe-io/zeebe-cluster-testbench.git</connection>
+    <developerConnection>scm:git:https://${GITHUB_TOKEN_USR}:${GITHUB_TOKEN_PSW}@github.com/zeebe-io/zeebe-cluster-testbench.git
     </developerConnection>
     <tag>HEAD</tag>
     <url>https://github.com/zeebe-io/zeebe-cluster-testbench</url>
