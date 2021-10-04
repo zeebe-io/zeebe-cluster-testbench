@@ -221,11 +221,13 @@ fun prepareForChaosExperiments(namespace: String) {
 
 fun runCommands(workingDir: File?, vararg commands: String): Int {
     val processBuilder = ProcessBuilder(commands.asList())
+        .redirectErrorStream(true)
+
     workingDir?.let {
         processBuilder.directory(workingDir)
     }
     val process = processBuilder.start()
-    process.waitFor()
+    process.waitFor(5, TimeUnit.MINUTES)
     LOG.info(
         "Run ${commands.contentToString()} \n {} {}",
         String(process.inputStream.readAllBytes()),
