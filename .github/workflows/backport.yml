@@ -21,28 +21,27 @@ jobs:
       )
     steps:
       - uses: actions/checkout@v2
-        with:
-          # Required to find all branches
-          fetch-depth: 0
       - name: Create backport PRs
-        # Should be kept in sync with `version`
         uses: zeebe-io/backport-action@v0.0.6
         with:
-          # Required
-          # Version of the backport-action
-          # Must equal the version in `uses`
-          # Recommended: latest tag or `master`
-          version: v0.0.4
-
           # Required
           # Token to authenticate requests to GitHub
           github_token: ${{ secrets.GITHUB_TOKEN }}
 
           # Required
-          # Working directory for the backport script
+          # Working directory for the backport action
           github_workspace: ${{ github.workspace }}
 
           # Optional
           # Regex pattern to match github labels
-          # Must contain a capture group for target branchname
+          # Must contain a capture group for the target branch
           # label_pattern: ^backport ([^ ]+)$
+
+          # Optional
+          # Template used as description in the pull requests created by this action.
+          # Placeholders can be used to define variable values.
+          # These are indicated by a dollar sign and curly braces (`${placeholder}`).
+          # Please refer to this action's README for all available placeholders.
+          # pull_description: |-
+          #   # Description
+          #   Backport of #${pull_number} to `${target_branch}`.
