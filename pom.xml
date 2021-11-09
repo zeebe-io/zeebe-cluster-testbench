@@ -67,7 +67,7 @@
     <version.junit>5.8.1</version.junit>
     <version.log4j>2.14.1</version.log4j>
     <version.mockito>4.0.0</version.mockito>
-    <version.resteasy>4.7.2.Final</version.resteasy>
+    <version.resteasy>5.0.0.Final</version.resteasy>
     <version.slf4j>1.7.32</version.slf4j>
     <version.vavr>0.10.4</version.vavr>
     <version.zeebeWorkerJavaTestutils>1.2.1</version.zeebeWorkerJavaTestutils>
