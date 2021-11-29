@@ -81,6 +81,7 @@ public class SequentialTestDriver implements TestDriver {
     client.newDeployCommand().addProcessModel(process, PROCESS_ID + ".bpmn").send().join();
   }
 
+  @Override
   public TestReport runTest() {
     LOGGER.info("Starting Sequential Test ");
 
@@ -89,7 +90,7 @@ public class SequentialTestDriver implements TestDriver {
             new TestTimingContext(
                 testParameters.getMaxTimeForCompleteTest(),
                 "Test exceeded maximum time of " + testParameters.getMaxTimeForCompleteTest(),
-                testReport::addFailure); ) {
+                testReport::addFailure)) {
       final Duration timeForIteration = testParameters.getMaxTimeForIteration();
 
       final JobWorker workerRegistration =
@@ -121,7 +122,7 @@ public class SequentialTestDriver implements TestDriver {
                   .withResult()
                   .requestTimeout(timeForIteration.multipliedBy(2))
                   .send()
-                  .get();
+                  .join();
 
           iterationTimingContxt.putMetaData(KEY_PROCESS_INSTANCE, result.getProcessInstanceKey());
 

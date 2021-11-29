@@ -46,12 +46,9 @@
       <scope>test</scope>
     </dependency>
 
-    <!-- running the spec with Zeebe -->
     <dependency>
-      <groupId>io.zeebe.bpmn-spec</groupId>
-      <artifactId>zeebe-test-runner</artifactId>
-      <version>${bpmn-spec.version}</version>
-      <scope>test</scope>
+      <groupId>io.camunda</groupId>
+      <artifactId>zeebe-process-test-extension-testcontainer</artifactId>
     </dependency>
   </dependencies>
 
