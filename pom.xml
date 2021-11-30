@@ -24,7 +24,6 @@
     location below and in .ci/scripts/github-release.sh -->
   <modules>
     <module>core</module>
-    <module>core/chaos-workers/chaos-worker</module>
     <module>cloud-client</module>
     <module>internal-cloud-client</module>
     <module>testdriver/api</module>

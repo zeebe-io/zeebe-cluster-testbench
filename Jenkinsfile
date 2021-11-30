@@ -88,11 +88,6 @@ pipeline {
         stage('Verify scripts') {
             steps {
                 container('maven') {
-                    dir('core/chaos-workers') {
-                        println("Check all chaos script`s with shellcheck (linter).")
-                        sh 'shellcheck -x *.sh'
-                        println("Scripts are fine.")
-                    }
                     dir('scripts') {
                         println("Check general script`s with shellcheck (linter).")
                         sh 'touch credentials'
@@ -144,18 +139,6 @@ pipeline {
 
                     sh 'docker build -t gcr.io/zeebe-io/zeebe-cluster-testbench:${TAG} .'
                     sh 'docker push gcr.io/zeebe-io/zeebe-cluster-testbench:${TAG}'
-                    withVault([vaultSecrets: [
-                        [path: 'secret/common/ci-zeebe/zeebe-chaos-service-account', secretValues: [
-                            [vaultKey: 'token'],
-                        ]],
-                    ]]) {
-
-                        dir('core/chaos-workers/') {
-                            sh 'ls -la chaos-worker/target/'
-                            sh 'docker build . -t gcr.io/zeebe-io/zeebe-cluster-testbench-chaos:${TAG} --build-arg TOKEN=${token}'
-                            sh 'docker push gcr.io/zeebe-io/zeebe-cluster-testbench-chaos:${TAG}'
-                        }
-                    }
                 }
 
 
