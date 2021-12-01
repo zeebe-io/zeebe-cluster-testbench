@@ -20,7 +20,7 @@ spec:
     spec:
       containers:
         - name: chaos-worker
-          image: gcr.io/zeebe-io/zeebe-cluster-testbench-chaos:1.x-dev
+          image: gcr.io/zeebe-io/zeebe-chaos-worker:WORKER_VERSION
           imagePullPolicy: Always
           env:
             - name: TESTBENCH_AUTHORIZATION_SERVER_URL
