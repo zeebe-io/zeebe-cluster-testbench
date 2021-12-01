@@ -54,7 +54,7 @@ kubectl create secret generic testbench-secrets --namespace="${namespace}" \
 kubectl apply --namespace="${namespace}" -f "testbench${suffix}.yaml"
 
 # apply changes to chaosWorker.yaml, if any
-sed -i "s/WORKER_VERSION/$workerVersion/g" "core/chaos-workers/deployment/*.yaml"
+sed -i "s/WORKER_VERSION/$workerVersion/g" core/chaos-workers/deployment/*.yaml
 kubectl apply --namespace="${namespace}" -f "core/chaos-workers/deployment/chaosWorker${suffix}.yaml"
 kubectl apply --namespace="${namespace}" -f "core/chaos-workers/deployment/chaos-data-claim.yaml"
 
