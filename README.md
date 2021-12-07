@@ -9,6 +9,7 @@ Available Documentation
 - [Operator handbook](docs/operator-handbook.md)
 - [Technical documentation](docs/technical-documentation.md)
 - [Service Task Reference](docs/service-tasks.md)
+- [Extension Guide](docs/extension-guide.md)
 
 ## User Guide
 
