@@ -23,9 +23,18 @@ can be used to authenticate against the Zeebe cluster.
 The called process is expected to return a _testReport_ (see class `TestReport` for the expected structure)
 
 ## Testing Something Other than Zeebe
-The current setup is squarely focused on Zeebe.
+The current setup is squarely focused on Zeebe. In order to adapt if to other applications, you probably need to:
 
-We also keep track of the Operate URL associated with the cluster, but we don't yet know the Tasklist URL or Optimize URL.
+1. Build a generation that includes the version of your applications
+2. Extract additional information about the cluster from Console API
+3. Think about authentication
+
+If you want to test against a specific version of your application, please have a look at `CreateGenerationInCamundaCloudHandler`.
+The way this works today is that it takes two arguments: a _generationTemplate_ and a _zeebeImage_.
+This worker creates a new generation with the desired Zeebe image - the images for the other applications are taken from the template.
+This could easily be extended to also set a custom Tasklist, Optimize, etc. image.
+
+We keep track of the Operate URL associated with the cluster, but we don't yet know the Tasklist URL or Optimize URL.
 
 The first step to make this information available in the test process would be to change `GatherInformationAboutClusterInCamundaCloudHandler`.
 This is the worker that reads out information about a cluster and writes this information into the process instance.
