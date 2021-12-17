@@ -13,7 +13,7 @@ spec:
       emptyDir: {}
   containers:
     - name: maven
-      image: maven:3.6.0-jdk-11
+      image: maven:3.6.2-jdk-11-slim
       command: ["cat"]
       tty: true
       env:
