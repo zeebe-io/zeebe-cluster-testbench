@@ -1,7 +1,7 @@
 #!/bin/sh -eux
 
 apt-get -qq update
-apt-get install --no-install-recommends -qq -y jq libatomic1 bats git
+apt-get install --no-install-recommends -qq -y jq libatomic1 bats git wget
 
 # install shell check
 shellcheckVersion=v0.7.1
