@@ -22,7 +22,7 @@ spec:
             - name: ZCTB_AUTHENTICATION_SERVER_URL
               value: "https://login.cloud.ultrawombat.com/oauth/token"
             - name: ZCTB_CLIENT_ID
-              value: "eMh_XGlt.jJ8de6QrO~cdU5IcuG-2DGN"
+              value: "9nXUMVqejyftot44BeGDYzAm16paBHhD"
             - name: ZCTB_CLIENT_SECRET
               valueFrom:
                 secretKeyRef:
@@ -40,7 +40,7 @@ spec:
             - name: ZCTB_CLOUD_AUTHENTICATION_SERVER_URL
               value: "https://login.cloud.ultrawombat.com/oauth/token"
             - name: ZCTB_CLOUD_CLIENT_ID
-              value: "CW_I50Di-STzDE2i"
+              value: "oMgf5fM6MKLLhrAU"
             - name: ZCTB_CLOUD_CLIENT_SECRET
               valueFrom:
                 secretKeyRef:
