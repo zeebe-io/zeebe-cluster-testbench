@@ -23,7 +23,7 @@
     <version.google-sheets-api>v4-rev20210629-1.32.1</version.google-sheets-api>
     <version.jaxrs>3.0.12.Final</version.jaxrs>
 
-    <version.slack-api>1.16.1</version.slack-api>
+    <version.slack-api>1.17.0</version.slack-api>
   </properties>
 
   <dependencies>
