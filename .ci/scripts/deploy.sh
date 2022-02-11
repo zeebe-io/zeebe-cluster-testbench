@@ -9,7 +9,7 @@ then
 fi
 
 tag=$1
-workerVersion=1.2.2
+workerVersion=1.2.3
 
 if [[ ${tag} == *-dev ]]; then
   echo "Deploying :dev to 'dev' stage / using '-dev' suffixed files"
