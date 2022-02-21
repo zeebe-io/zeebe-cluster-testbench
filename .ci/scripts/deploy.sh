@@ -62,6 +62,6 @@ kubectl apply --namespace="${namespace}" -f "core/chaos-workers/deployment/chaos
 kubectl rollout restart deployment testbench --namespace="${namespace}"
 kubectl rollout restart deployment chaos-worker --namespace="${namespace}"
 
-# wait for pods getting started
-kubectl wait --for=condition=Ready pod -l app=testbench --timeout=180s --namespace="${namespace}"
-kubectl wait --for=condition=Ready pod -l app=chaos-worker --timeout=180s --namespace="${namespace}"
+# wait for rollouts to complete
+kubectl rollout status deployment testbench --timeout=180s --namespace="${namespace}"
+kubectl rollout status deployment chaos-worker --timeout=180s --namespace="${namespace}"
