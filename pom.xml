@@ -64,7 +64,7 @@
     <version.jackson>2.13.1</version.jackson>
     <version.java>11</version.java>
     <version.junit>5.8.2</version.junit>
-    <version.log4j>2.17.1</version.log4j>
+    <version.log4j>2.17.2</version.log4j>
     <version.mockito>4.3.1</version.mockito>
     <version.resteasy>5.0.1.Final</version.resteasy>
     <version.slf4j>1.7.33</version.slf4j>
