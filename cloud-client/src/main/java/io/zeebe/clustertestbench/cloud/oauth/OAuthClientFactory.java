@@ -1,9 +1,9 @@
 package io.zeebe.clustertestbench.cloud.oauth;
 
 import io.zeebe.clustertestbench.cloud.filter.BadRequestResponseFilter;
-import javax.ws.rs.client.Client;
-import javax.ws.rs.client.ClientBuilder;
-import javax.ws.rs.client.WebTarget;
+import jakarta.ws.rs.client.Client;
+import jakarta.ws.rs.client.ClientBuilder;
+import jakarta.ws.rs.client.WebTarget;
 import org.jboss.resteasy.client.jaxrs.ResteasyWebTarget;
 
 public class OAuthClientFactory {

@@ -1,11 +1,11 @@
 package io.zeebe.clustertestbench.cloud.filter;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import jakarta.ws.rs.client.ClientRequestContext;
+import jakarta.ws.rs.client.ClientResponseContext;
+import jakarta.ws.rs.client.ClientResponseFilter;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
-import javax.ws.rs.client.ClientRequestContext;
-import javax.ws.rs.client.ClientResponseContext;
-import javax.ws.rs.client.ClientResponseFilter;
 import org.apache.commons.io.IOUtils;
 
 public class BadRequestResponseFilter implements ClientResponseFilter {
