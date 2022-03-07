@@ -1,8 +1,8 @@
 package io.zeebe.clustertestbench.cloud.oauth;
 
-import javax.ws.rs.Consumes;
-import javax.ws.rs.POST;
-import javax.ws.rs.Produces;
+import jakarta.ws.rs.Consumes;
+import jakarta.ws.rs.POST;
+import jakarta.ws.rs.Produces;
 
 public interface OAuthClient {
 
