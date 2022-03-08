@@ -32,8 +32,11 @@
   </modules>
 
   <scm>
-    <connection>scm:git:https://${GITHUB_TOKEN_USR}:${GITHUB_TOKEN_PSW}@github.com/zeebe-io/zeebe-cluster-testbench.git</connection>
-    <developerConnection>scm:git:https://${GITHUB_TOKEN_USR}:${GITHUB_TOKEN_PSW}@github.com/zeebe-io/zeebe-cluster-testbench.git
+    <connection>
+      scm:git:https://${GITHUB_TOKEN_USR}:${GITHUB_TOKEN_PSW}@github.com/zeebe-io/zeebe-cluster-testbench.git
+    </connection>
+    <developerConnection>
+      scm:git:https://${GITHUB_TOKEN_USR}:${GITHUB_TOKEN_PSW}@github.com/zeebe-io/zeebe-cluster-testbench.git
     </developerConnection>
     <tag>HEAD</tag>
     <url>https://github.com/zeebe-io/zeebe-cluster-testbench</url>
@@ -70,6 +73,7 @@
     <version.slf4j>1.7.36</version.slf4j>
     <version.vavr>0.10.4</version.vavr>
     <version.zeebeWorkerJavaTestutils>1.2.9</version.zeebeWorkerJavaTestutils>
+    <version.zeebe-process-test>1.4.0-alpha2</version.zeebe-process-test>
     <zeebe.version>1.3.5</zeebe.version>
   </properties>
 
@@ -198,6 +202,12 @@
         <artifactId>zeebe-worker-java-testutils</artifactId>
         <groupId>io.zeebe</groupId>
         <version>${version.zeebeWorkerJavaTestutils}</version>
+      </dependency>
+      <dependency>
+        <groupId>io.camunda</groupId>
+        <artifactId>zeebe-process-test-extension-testcontainer</artifactId>
+        <version>${version.zeebe-process-test}</version>
+        <scope>test</scope>
       </dependency>
     </dependencies>
   </dependencyManagement>

@@ -1,39 +1,32 @@
 package io.zeebe.clustertestbench.it.handler;
 
-import static java.util.stream.Collectors.toMap;
+import static io.camunda.zeebe.process.test.assertions.BpmnAssert.assertThat;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.awaitility.Awaitility.await;
 
 import io.camunda.zeebe.client.ZeebeClient;
+import io.camunda.zeebe.client.api.response.DeploymentEvent;
 import io.camunda.zeebe.client.api.response.ProcessInstanceEvent;
 import io.camunda.zeebe.client.api.worker.JobWorker;
-import io.zeebe.bpmnspec.runner.zeebe.ZeebeEnvironment;
-import io.zeebe.bpmnspec.runner.zeebe.zeeqs.ZeeqsClient;
-import io.zeebe.bpmnspec.runner.zeebe.zeeqs.ZeeqsClient.ElementInstanceDto;
-import io.zeebe.bpmnspec.runner.zeebe.zeeqs.ZeeqsClient.VariableDto;
+import io.camunda.zeebe.process.test.extension.testcontainer.ZeebeProcessTest;
+import io.camunda.zeebe.process.test.inspections.InspectionUtility;
+import io.camunda.zeebe.process.test.inspections.model.InspectedProcessInstance;
 import io.zeebe.clustertestbench.handler.TriggerMessageStartEventHandler;
 import java.time.Duration;
-import java.util.List;
 import java.util.Map;
-import java.util.concurrent.TimeUnit;
+import java.util.Optional;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+@ZeebeProcessTest
 public class TriggerMessageStartEventHandlerIT {
 
-  ZeebeEnvironment zeebeEnvironment = new ZeebeEnvironment();
-  ZeebeClient zeebeClient;
-  ZeeqsClient zeeqsClient;
-  JobWorker workerRegistration;
+  private ZeebeClient zeebeClient;
+
+  private JobWorker workerRegistration;
 
   @BeforeEach
   void setUp() {
-    zeebeEnvironment.setup();
-
-    zeebeClient = zeebeEnvironment.getZeebeClient();
-    zeeqsClient = zeebeEnvironment.getZeeqsClient();
-
     workerRegistration =
         zeebeClient
             .newWorker()
@@ -46,7 +39,6 @@ public class TriggerMessageStartEventHandlerIT {
   @AfterEach
   void tearDown() {
     workerRegistration.close();
-    zeebeEnvironment.cleanUp();
   }
 
   /**
@@ -59,14 +51,15 @@ public class TriggerMessageStartEventHandlerIT {
    * </ul>
    */
   @Test
-  void shoulTriggerSecondaryProcess() {
+  void shouldTriggerSecondaryProcess() throws InterruptedException {
     // given
-    zeebeClient
-        .newDeployCommand()
-        .addResourceFromClasspath("it/triggermessagestartevent/main.bpmn")
-        .addResourceFromClasspath("it/triggermessagestartevent/secondary.bpmn")
-        .send()
-        .join();
+    final DeploymentEvent deploymentEvent =
+        zeebeClient
+            .newDeployCommand()
+            .addResourceFromClasspath("it/triggermessagestartevent/main.bpmn")
+            .addResourceFromClasspath("it/triggermessagestartevent/secondary.bpmn")
+            .send()
+            .join();
 
     final var variables = Map.of("key1", "value1", "key2", "value2");
 
@@ -80,32 +73,22 @@ public class TriggerMessageStartEventHandlerIT {
             .send()
             .join();
 
+    // TODO replace with waitForIdleState
+    Thread.sleep(250);
+
     // then
-    await()
-        .atMost(1, TimeUnit.MINUTES)
-        .until(() -> zeeqsClient.getProcessInstanceKeys().size() == 2);
+    assertThat(deploymentEvent)
+        .extractingProcessByResourceName("it/triggermessagestartevent/secondary.bpmn")
+        .hasInstances(1);
 
-    final List<Long> processInstanceKeys = zeeqsClient.getProcessInstanceKeys();
+    final Optional<InspectedProcessInstance> optProcessInstance =
+        InspectionUtility.findProcessEvents().findLastProcessInstance();
 
-    processInstanceKeys.remove(mainProcessCreationResponse.getProcessInstanceKey());
+    assertThat(optProcessInstance).isPresent();
 
-    final Long secondaryProcessInstanceKey = processInstanceKeys.get(0);
+    final InspectedProcessInstance lastProcessInstance = optProcessInstance.get();
 
-    final ElementInstanceDto elementDto =
-        zeeqsClient.getElementInstances(secondaryProcessInstanceKey).get(0);
-
-    assertThat(elementDto.getElementId()).isEqualTo("secondary");
-
-    final List<VariableDto> variablesInSecondaryProcess =
-        zeeqsClient.getProcessInstanceVariables(secondaryProcessInstanceKey);
-
-    final Map<String, String> variablesInSecondaryProcessAsMap =
-        variablesInSecondaryProcess.stream()
-            .collect(
-                toMap(
-                    VariableDto::getName,
-                    dto -> dto.getValue().replace("\"", ""))); // value is wrapped in " characters
-
-    assertThat(variablesInSecondaryProcessAsMap).containsExactlyInAnyOrderEntriesOf(variables);
+    assertThat(lastProcessInstance).hasVariableWithValue("key1", "value1");
+    assertThat(lastProcessInstance).hasVariableWithValue("key2", "value2");
   }
 }
