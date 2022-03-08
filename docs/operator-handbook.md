@@ -4,7 +4,7 @@
 
 ### Inside Camunda environment
 
-Changes to `develop` are automatically deployed to production.
+Changes to `main` are automatically deployed to production.
 
 ### In Kubernetes
 

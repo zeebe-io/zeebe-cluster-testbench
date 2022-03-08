@@ -102,7 +102,7 @@ pipeline {
             when {
                 not { expression { params.RELEASE } }
                 anyOf {
-                    branch 'develop'
+                    branch 'main'
                     branch 'stable/*'
                     expression { params.DEPLOY_TO_DEV }
                 }
@@ -119,7 +119,7 @@ pipeline {
         stage('Deploy') {
             when {
                 anyOf {
-                    branch 'develop'
+                    branch 'main'
                     branch 'stable/*'
                     expression { params.DEPLOY_TO_DEV }
                 }
@@ -212,7 +212,7 @@ pipeline {
 
         changed {
             script {
-                if ((env.BRANCH_NAME != 'develop' && !env.BRANCH_NAME.startsWith("stable")) || agentDisconnected()) {
+                if ((env.BRANCH_NAME != 'main' && !env.BRANCH_NAME.startsWith("stable")) || agentDisconnected()) {
                     return
                 }
                 if (hasBuildResultChanged()) {

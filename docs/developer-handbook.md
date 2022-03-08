@@ -14,13 +14,13 @@ There is also a branch for the earlier `0.26` version available. This branch is 
 actively developed. However, it can be reactivated should the need arise.
 
 Testbench uses the same branching structure as Zeebe to split the version specific code.
-Testbench's `develop` branch is kept compatible with Zeebe's `develop` branch. The stable branches
-in Testbench repo contain everything needed to run Testbench on and against that corresponding Zeebe
+Testbench's `main` branch is kept compatible with Zeebe's `main` branch. The stable branches in
+Testbench repo contain everything needed to run Testbench on and against that corresponding Zeebe
 version. For example, the `stable/0.26` branch in the Testbench repo contains everything needed to
-run Testbench on and against Zeebe 0.26 compatible versions. While Zeebe's `develop`
+run Testbench on and against Zeebe 0.26 compatible versions. While Zeebe's `main`
 branch has not yet become backwards incompatible with its latest stable branch (
 currently `stable/1.0`), Testbench does not yet have a corresponding stable branch. This branch can
-be created as soon as `develop` and the latest stable diverge.
+be created as soon as `main` and the latest stable diverge.
 
 ## Stages
 
@@ -37,11 +37,11 @@ All stages are clusters running on the Camunda Cloud int environment (ultrawomba
   - Dev stage - any branch can be deployed when requested. This is done by setting the corresponding
     build parameter in Jenkins. Please coordinate with your colleagues as there is only one dev
     stage and each deploy will override it.
-  - Prod stage - commits to develop and stable branches are automatically deployed to the prod
-    stage. Other branches are ignored.
-- If the develop build fails, the slack channel `#zeebe-testbench-ci` (on Camunda slack) will be
+  - Prod stage - commits to main and stable branches are automatically deployed to the prod stage.
+    Other branches are ignored.
+- If the main build fails, the slack channel `#zeebe-testbench-ci` (on Camunda slack) will be
   notified (this often happens if the changes break the deploy process as the deploy steps are only
-  executed for develop)
+  executed for main)
 - Secrets are stored in Vault and also deployed automatically
 
 ### Dev Stage
@@ -68,7 +68,8 @@ The permutation testing reports appear under `.[module]/target/pit-reports/[time
 
 | Convention | Rationale |
 |---------- | ---------|
-| Verify all shell scripts with _shellcheck_ | Shellcheck tests shell scripts for common mistakes and vulnerabilities. It has been very valuable in making the scripts we use more secure |
+| Verify all shell scripts with _
+shellcheck_ | Shellcheck tests shell scripts for common mistakes and vulnerabilities. It has been very valuable in making the scripts we use more secure |
 
 ## Best Practices
 
