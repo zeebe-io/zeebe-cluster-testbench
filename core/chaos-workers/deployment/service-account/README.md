@@ -18,3 +18,4 @@ To receive the token use:
 ```shell
 kubectl -n zeebe-chaos describe secrets zeebe-chaos-sa-token-*
 ```
+

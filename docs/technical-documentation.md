@@ -23,8 +23,8 @@ The _Zeebe Cluster Testbench_ is a tool to run end to end tests against Zeebe cl
 
 # Architecture Constraints
 
-| Constraint                                                         | Rationale                                                                                                                                                                 |
-| ------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+|                             Constraint                             |                                                                                 Rationale                                                                                 |
+|--------------------------------------------------------------------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | Use Zeebe cluster to orchestrate the tests                         | This is part of the "drink your own champaign" / "eat your own dog food" initiative. Apart from that using Zeebe for orchestration is perfect for the given quality goals |
 | Java (or other languages in the Java ecosystem) for implementation | Camunda has many experienced Java software developers                                                                                                                     |
 | Maven / Jenkins build pipeline                                     | Integrates well with existing Camunda infrastructure                                                                                                                      |
@@ -70,9 +70,9 @@ Most of the runtime behavior is determined by the processes deployed to the _tes
 ## Startup
 
 1. Read all environment variables
-1. Perform self test - the objective of the self test is to check connectivity to external systems; if these fail on startup, the application will not launch.
-1. Deploy test orchestration processes
-1. Register workers
+2. Perform self test - the objective of the self test is to check connectivity to external systems; if these fail on startup, the application will not launch.
+3. Deploy test orchestration processes
+4. Register workers
 
 ## Fault Tolerance/Recovery
 
@@ -110,8 +110,8 @@ The _testbench_ cluster is deployed to a high availability cluster.
 
 ## Glossary
 
-| Term                             | Definition                                                                                                                              |
-| -------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------- |
+|               Term               |                                                               Definition                                                                |
+|----------------------------------|-----------------------------------------------------------------------------------------------------------------------------------------|
 | Cloud API                        | API provided by Camunda Cloud to create, query and destroy clusters, and to create, query and delete client accounts for these clusters |
 | Internal Cloud API/Cloud Backend | Internal API of Camunda Cloud. It is used to perform administrative actions like creating new generations for clusters to test.         |
 | _testbench_ cluster              | The Zeebe cluster in which the tests are orchestrated                                                                                   |

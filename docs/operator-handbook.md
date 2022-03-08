@@ -42,12 +42,12 @@ Setup and deployment:
 #### Test Orchestration Cluster
 
 1. Login to Camunda Cloud
-1. Create new cluster
-1. Create new client for that cluster
-1. Fill deployment descriptors as follows:
+2. Create new cluster
+3. Create new client for that cluster
+4. Fill deployment descriptors as follows:
 
-| File                             | Field                          | Content                                                                    |
-| -------------------------------- | ------------------------------ | -------------------------------------------------------------------------- |
+|               File               |             Field              |                                  Content                                   |
+|----------------------------------|--------------------------------|----------------------------------------------------------------------------|
 | testbench.yaml, chaosWorker.yaml | ZCTB_AUTHENTICATION_SERVER_URL | Cluster Client -> Connection Information -> ZEEBE_AUTHORIZATION_SERVER_URL |
 | testbench.yaml, chaosWorker.yaml | ZCTB_CLIENT_ID                 | Cluster Client -> Connection Information -> ZEEBE_CLIENT_ID                |
 | ENV_VARS                         | CLIENT_SECRET                  | Cluster Client -> Connection Information -> ZEEBE_CLIENT_SECRET            |
@@ -56,45 +56,45 @@ Setup and deployment:
 #### Camunda Cloud API Client
 
 1. Login to Camunda Cloud
-1. Go to Organization Settings -> Cloud API
-1. Create new client with all privileges
-1. Fill deployment descriptors as follows:
+2. Go to Organization Settings -> Cloud API
+3. Create new client with all privileges
+4. Fill deployment descriptors as follows:
 
-| File           | Field                                | Content                                                                                                 |
-| -------------- | ------------------------------------ | ------------------------------------------------------------------------------------------------------- |
-| testbench.yaml | ZCTB_CLOUD_API_URL                   | Depends on the stage (e.g. `https://api.cloud.ultrawombat.com/` for integration stage) |
-| testbench.yaml | ZCTB_CLOUD_AUDIENCE                  | Depends on stage (e.g. `api.cloud.ultrawombat.com` for integration stage)                               |
-| testbench.yaml | ZCTB_CLOUD_AUTHENTICATION_SERVER_URL | Depends on stage (e.g. `https://login.cloud.ultrawombat.com/oauth/token` for integration stage)         |
-| testbench.yaml | ZCTB_CLOUD_CLIENT_ID                 | Cloud API -> Client -> Client Id                                                                        |
-| ENV_VARS       | CLOUD_CLIENT_SECRET                  | Cloud API -> Client -> Client Secret                                                                    |
+|      File      |                Field                 |                                             Content                                             |
+|----------------|--------------------------------------|-------------------------------------------------------------------------------------------------|
+| testbench.yaml | ZCTB_CLOUD_API_URL                   | Depends on the stage (e.g. `https://api.cloud.ultrawombat.com/` for integration stage)          |
+| testbench.yaml | ZCTB_CLOUD_AUDIENCE                  | Depends on stage (e.g. `api.cloud.ultrawombat.com` for integration stage)                       |
+| testbench.yaml | ZCTB_CLOUD_AUTHENTICATION_SERVER_URL | Depends on stage (e.g. `https://login.cloud.ultrawombat.com/oauth/token` for integration stage) |
+| testbench.yaml | ZCTB_CLOUD_CLIENT_ID                 | Cloud API -> Client -> Client Id                                                                |
+| ENV_VARS       | CLOUD_CLIENT_SECRET                  | Cloud API -> Client -> Client Secret                                                            |
 
 #### Google Sheet and Service Account
 
 1. Enable Google Sheets API https://console.developers.google.com/
-1. Create a new service account with no particular
+2. Create a new service account with no particular
    roles https://cloud.google.com/iam/docs/creating-managing-service-accounts
-1. Download JSON key file for this service account
-1. Create a new sheet
-1. Share sheet with service account (via the service account's email); give it edit permissions
-1. Fill deployment descriptors as follows:
+3. Download JSON key file for this service account
+4. Create a new sheet
+5. Share sheet with service account (via the service account's email); give it edit permissions
+6. Fill deployment descriptors as follows:
 
-| File           | Field                      | Content                                                                                  |
-| -------------- | -------------------------- | ---------------------------------------------------------------------------------------- |
+|      File      |           Field            |                                         Content                                          |
+|----------------|----------------------------|------------------------------------------------------------------------------------------|
 | testbench.yaml | ZCTB_REPORT_SHEET_ID       | ID of the sheet you created (Press share, copy link; take the bit that looks like an ID) |
 | ENV_VARS       | SHEETS_API_KEYFILE_CONTENT | Complete content of downloaded key file                                                  |
 
 #### Slack App and Webhook
 
 1. Create a Slack application (https://api.slack.com/start/overview)
-1. Create an incoming webhook for your app (https://api.slack.com/messaging/webhooks)
-1. Add a new webhook to your workspace for the desired channel (you may need approval from your
+2. Create an incoming webhook for your app (https://api.slack.com/messaging/webhooks)
+3. Add a new webhook to your workspace for the desired channel (you may need approval from your
    workspace admin)
-1. Invite your app to the channel it should publish to
-1. Fill deployment descriptors as follows:
+4. Invite your app to the channel it should publish to
+5. Fill deployment descriptors as follows:
 
-| File           | Field              | Content                         |
-| -------------- | ------------------ | ------------------------------- |
-| ENV_VARS       | SLACK_WEBHOOK_URL  | The webhook URL for your app    |
+|   File   |       Field       |           Content            |
+|----------|-------------------|------------------------------|
+| ENV_VARS | SLACK_WEBHOOK_URL | The webhook URL for your app |
 
 #### Chaos Experiments
 
@@ -149,3 +149,4 @@ done [here](https://github.com/zeebe-io/zeebe/issues/4361#issuecomment-681869448
 ```
 
 - Check that processes have been deployed to test orchestration cluster
+

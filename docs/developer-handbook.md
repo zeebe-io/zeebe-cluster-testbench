@@ -66,16 +66,16 @@ The permutation testing reports appear under `.[module]/target/pit-reports/[time
 
 ## Conventions
 
-| Convention | Rationale |
-|---------- | ---------|
-| Verify all shell scripts with _
-shellcheck_ | Shellcheck tests shell scripts for common mistakes and vulnerabilities. It has been very valuable in making the scripts we use more secure |
+|           Convention            |                                                                 Rationale                                                                  |
+|---------------------------------|--------------------------------------------------------------------------------------------------------------------------------------------|
+| Verify all shell scripts with _ |
+| shellcheck_                     | Shellcheck tests shell scripts for common mistakes and vulnerabilities. It has been very valuable in making the scripts we use more secure |
 
 ## Best Practices
 
-| Best Practice | Rationale |
-|---------- | ---------|
-| Test shell script workers with [bats](https://github.com/sstephenson/bats) | Tests are great. Shell scripts can be tested, too. Let's do this|
+|                               Best Practice                                |                            Rationale                             |
+|----------------------------------------------------------------------------|------------------------------------------------------------------|
+| Test shell script workers with [bats](https://github.com/sstephenson/bats) | Tests are great. Shell scripts can be tested, too. Let's do this |
 
 ## Issue Discipline
 
@@ -132,3 +132,4 @@ spec:
               name: testbench-secrets
               key: clientSecret
 ```
+
