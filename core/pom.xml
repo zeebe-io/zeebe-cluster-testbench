@@ -6,7 +6,7 @@
     <groupId>io.zeebe</groupId>
     <artifactId>zeebe-cluster-testbench</artifactId>
     <version>3.0.0-SNAPSHOT</version>
-    <relativePath>..</relativePath>
+    <relativePath>../pom.xml</relativePath>
   </parent>
 
   <artifactId>zeebe-cluster-testbench-core</artifactId>

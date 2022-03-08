@@ -7,7 +7,7 @@
     <artifactId>zeebe-cluster-testbench</artifactId>
     <!-- do not remove empty tag - http://jira.codehaus.org/browse/MNG-4687 -->
     <version>3.0.0-SNAPSHOT</version>
-    <relativePath>..</relativePath>
+    <relativePath>../pom.xml</relativePath>
   </parent>
   <artifactId>zeebe-cluster-testbench-internal-cloud-client</artifactId>
   <!-- Note that this project implements a client for internal Camunda Cloud
