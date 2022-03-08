@@ -437,6 +437,7 @@
             </includes>
             <excludes>
               <exclude>**/target/**/*.md</exclude>
+              <exclodes>bats-core/**</exclodes>
             </excludes>
             <flexmark/>
           </markdown>
