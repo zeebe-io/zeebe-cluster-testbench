@@ -23,6 +23,7 @@ can be used to authenticate against the Zeebe cluster.
 The called process is expected to return a _testReport_ (see class `TestReport` for the expected structure)
 
 ## Testing Something Other than Zeebe
+
 The current setup is squarely focused on Zeebe. In order to adapt if to other applications, you probably need to:
 
 1. Build a generation that includes the version of your applications
@@ -49,12 +50,14 @@ worker in Java, it may help to look at `OAuthClient` which contains implementati
 user account tokens. These are then used in interceptors to request a token before REST calls are made
 
 ## Copy and Paste Goodness
+
 Things that have already been implemented and might be useful to take inspiration from, or just to copy to save time:
 * You can look at https://github.com/zeebe-io/zeebe-chaos/tree/master/chaos-workers which implements the extension mechanism described above. It deploys its own processes and workers to the test bench.
 * Test bench has a CI pipeline for continuous deployment (`Jenkinsfile, prepare-deploy.sh, deploy.sh`). The main branch is deployed to the production environment. Additionally, developers can manually deploy from feature branches to a Dev cluster. This is used for testing before merging the feature branch.
 * Zeebe has a [CI pipeline](https://github.com/camunda-cloud/zeebe/blob/22b0bf7d08f390bb2c288bb08bffc3f930c41fae/Jenkinsfile#L321) that triggers a test run on test bench, waits for the aggregated result and succeeds/fails the build depending on the result
 
 ## Outlook
+
 We are looking for people interested in extending the test bench with more tests or more applications to test.
 
 The further development of test bench will be shaped by the needs of such extensions.

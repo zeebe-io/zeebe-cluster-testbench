@@ -67,13 +67,13 @@ This process runs the sequential test in a given cluster in Camunda Cloud:
 
 **Process ID:** `sequential-test`
 
-| Inputs                  | Description                                     | Type                               |
-| ----------------------- | ----------------------------------------------- | ---------------------------------- |
+|         Inputs          |                   Description                   |                Type                |
+|-------------------------|-------------------------------------------------|------------------------------------|
 | `testParams`            | Settings to parameterize the sequential test    | `SequentialTestParameters`         |
 | `authenticationDetails` | Credentials to authenticate against the cluster | `CamundaCloudAutenticationDetails` |
 
-| Outputs      | Description | Type         |
-| ------------ | ----------- | ------------ |
+|   Outputs    | Description |     Type     |
+|--------------|-------------|--------------|
 | `testReport` | test report | `TestReport` |
 | `testResult` | test result | `TestResult` |
 
@@ -93,14 +93,14 @@ This process runs the chaos test in a given cluster in Camunda Cloud:
 
 **Process ID:** `chaos-test`
 
-| Inputs                  | Description                                                                           | Type                               |
-| ----------------------- | ------------------------------------------------------------------------------------- | ---------------------------------- |
+|         Inputs          |                                      Description                                      |                Type                |
+|-------------------------|---------------------------------------------------------------------------------------|------------------------------------|
 | `clusterPlan`           | name of the cluster plan for the cluster; used to differentiate the chaos experiments | `String`                           |
 | `testParams`            | Settings to parameterize the chaos test                                               | tbd                                |
 | `authenticationDetails` | Credentials to authenticate against the cluster                                       | `CamundaCloudAutenticationDetails` |
 
-| Outputs      | Description | Type         |
-| ------------ | ----------- | ------------ |
+|   Outputs    | Description |     Type     |
+|--------------|-------------|--------------|
 | `testReport` | test report | `TestReport` |
 | `testResult` | test result | `TestResult` |
 
@@ -117,16 +117,16 @@ This process runs all tests in a fresh cluster in Camunda Cloud in different clu
 
 **Process ID:** `run-all-tests-in-camunda-cloud-per-cluster-plan`
 
-| Inputs                 | Description                                  | Type                       |
-| ---------------------- | -------------------------------------------- | -------------------------- |
+|         Inputs         |                 Description                  |            Type            |
+|------------------------|----------------------------------------------|----------------------------|
 | `generation`           | name of the generation for the cluster       | `String`                   |
 | `clusterPlans`         | names of the cluster plans for the clusters  | `List<String>`             |
 | `channel`              | name of the channel for the cluster          | `String`                   |
 | `region`               | name of the region for the cluster           | `String`                   |
 | `sequentialTestParams` | Settings to parameterize the sequential test | `SequentialTestParameters` |
 
-| Outputs                | Description                                      | Type         |
-| ---------------------- | ------------------------------------------------ | ------------ |
+|        Outputs         |                   Description                    |     Type     |
+|------------------------|--------------------------------------------------|--------------|
 | `aggregatedTestResult` | Aggregated test result for all tests/experiments | `TestResult` |
 
 #### Run All Tests in Camunda Cloud per Region
@@ -137,16 +137,16 @@ This process runs all tests in a fresh cluster in Camunda Cloud in different reg
 
 **Process ID:** `run-all-tests-in-camunda-cloud-per-region`
 
-| Inputs                 | Description                                  | Type                       |
-| ---------------------- | -------------------------------------------- | -------------------------- |
+|         Inputs         |                 Description                  |            Type            |
+|------------------------|----------------------------------------------|----------------------------|
 | `generation`           | name of the generation for the cluster       | `String`                   |
 | `clusterPlan`          | name of the cluster plan for the cluster     | `String`                   |
 | `channel`              | name of the channel for the cluster          | `String`                   |
 | `regions`              | names of the regions for the clusters        | `List<String>`             |
 | `sequentialTestParams` | Settings to parameterize the sequential test | `SequentialTestParameters` |
 
-| Outputs                | Description                                      | Type         |
-| ---------------------- | ------------------------------------------------ | ------------ |
+|        Outputs         |                   Description                    |     Type     |
+|------------------------|--------------------------------------------------|--------------|
 | `aggregatedTestResult` | Aggregated test result for all tests/experiments | `TestResult` |
 
 #### Run All Tests in Camunda Cloud
@@ -159,8 +159,8 @@ Depending of the region of the new created cluster chaos experiments are execute
 
 **Process ID:** `run-all-tests-in-camunda-cloud`
 
-| Inputs                          | Description                                   | Type                       |
-| ------------------------------- | --------------------------------------------- | -------------------------- |
+|             Inputs              |                  Description                  |            Type            |
+|---------------------------------|-----------------------------------------------|----------------------------|
 | `generation`/`generationUUID`   | name/UUID of the generation for the cluster   | `String`                   |
 | `clusterPlan`/`clusterPlanUUID` | name/UUID of the cluster plan for the cluster | `String`                   |
 | `channel`/`channelUUID`         | name/UUID of the channel for the cluster      | `String`                   |
@@ -169,8 +169,8 @@ Depending of the region of the new created cluster chaos experiments are execute
 
 The cluster parameters can either be specified using human-friendly names or machine-friendly UUIDs. Both are possible and the counterpart will be found as part of the process. The generation can be omitted. In that case the channel's default generation will be used.
 
-| Outputs                | Description                                      | Type         |
-| ---------------------- | ------------------------------------------------ | ------------ |
+|        Outputs         |                   Description                    |     Type     |
+|------------------------|--------------------------------------------------|--------------|
 | `aggregatedTestResult` | Aggregated test result for all tests/experiments | `TestResult` |
 
 #### Run Test in Camunda Cloud
@@ -186,26 +186,26 @@ This way, the test process can terminate and report the test result, while the a
 
 **Process ID:** `run-test-in-camunda-cloud`
 
-| Inputs                           | Description                                                                             | Type                       |
-| -------------------------------- | --------------------------------------------------------------------------------------- | -------------------------- |
-| `generation` + `generationUUID`  | name + UUID of the generation for the cluster                                           | `String`                   |
-| `clusterPlan` +`clusterPlanUUID` | name + UUID of the cluster plan for the cluster                                         | `String`                   |
-| `channel` + `channelUUID`        | name + UUID of the channel for the cluster                                              | `String`                   |
-| `region` + `regionUUID`          | name + UUID of the region for the cluster                                               | `String`                   |
-| `testParams`                     | Settings to parameterize the sequential test                                            | `SequentialTestParameters` |
-| `testProcessId`                 | The id of the test process which should be run. Is used in the `Run Test` CallActivity | `String`                   |
+|              Inputs              |                                      Description                                       |            Type            |
+|----------------------------------|----------------------------------------------------------------------------------------|----------------------------|
+| `generation` + `generationUUID`  | name + UUID of the generation for the cluster                                          | `String`                   |
+| `clusterPlan` +`clusterPlanUUID` | name + UUID of the cluster plan for the cluster                                        | `String`                   |
+| `channel` + `channelUUID`        | name + UUID of the channel for the cluster                                             | `String`                   |
+| `region` + `regionUUID`          | name + UUID of the region for the cluster                                              | `String`                   |
+| `testParams`                     | Settings to parameterize the sequential test                                           | `SequentialTestParameters` |
+| `testProcessId`                  | The id of the test process which should be run. Is used in the `Run Test` CallActivity | `String`                   |
 
 The cluster parameters shall be given as name and UUID. The UUIDs are used to create the cluster. The names are used for the recording of test results
 
-| Runtime Variables       | Description                                     | Type                               |
-| ----------------------- | ----------------------------------------------- | ---------------------------------- |
+|    Runtime Variables    |                   Description                   |                Type                |
+|-------------------------|-------------------------------------------------|------------------------------------|
 | `clusterId`             | ID of the cluster in which Zeebe is tested      | `String`                           |
 | `clusterName`           | Name of the cluster in which Zeebe is tested    | `String`                           |
 | `authenticationDetails` | Credentials to authenticate against the cluster | `CamundaCloudAutenticationDetails` |
 | `operateURL`            | URL to Operate web interface                    | `String`                           |
 
-| Outputs      | Description | Type         |
-| ------------ | ----------- | ------------ |
+|   Outputs    | Description |     Type     |
+|--------------|-------------|--------------|
 | `testReport` | test report | `TestReport` |
 
 ### Test Protocols
@@ -218,14 +218,14 @@ The cluster parameters shall be given as name and UUID. The UUIDs are used to cr
 
 The QA protocol runs all tests. Tests are run on demand (e.g. for a PR merge or to test a release candidate). It will create a temporary generation for the tests to run. This generation will be removed after all tests and all analysis tasks have completed.
 
-| Inputs               | Description                                                                                                                                                                                                          | Type     |
-| -------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------- |
+|        Inputs        |                                                                                                     Description                                                                                                      |   Type   |
+|----------------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|----------|
 | `zeebeImage`         | The Zeebe image that shall be tested (fully qualified name, including registry and label). _Note_ the label/tag must start with a semantic version, otherwise it will be rejected by the backend                     | `String` |
 | `generationTemplate` | Name of an existing generation that will be used as a template for the generation to be created. The template will serve to identify the versions of Operate and Elasticsearch that Zeebe image shall be paired with | `String` |
 | `channel`            | name of the channel for the tests                                                                                                                                                                                    | `String` |
 
-| Outputs                | Description                                      | Type         |
-| ---------------------- | ------------------------------------------------ | ------------ |
+|        Outputs         |                   Description                    |     Type     |
+|------------------------|--------------------------------------------------|--------------|
 | `aggregatedTestResult` | Aggregated test result for all tests/experiments | `TestResult` |
 
 ### Utility Processes
@@ -240,19 +240,19 @@ This process creates a Zeebe cluster in Camnuda cloud and waits until the cluste
 
 **Process ID:** `prepare-zeebe-cluster-in-camunda-cloud`
 
-| Inputs            | Description                              | Type     |
-| ----------------- | ---------------------------------------- | -------- |
+|      Inputs       |               Description                |   Type   |
+|-------------------|------------------------------------------|----------|
 | `generationUUID`  | UUID of the generation for the cluster   | `String` |
 | `clusterPlanUUID` | UUID of the cluster plan for the cluster | `String` |
 | `channelUUID`     | UUID of the channel for the cluster      | `String` |
 | `regionUUID`      | UUID of the region for the cluster       | `String` |
 
-| Runtime Variables | Description                                 | Type     |
-| ----------------- | ------------------------------------------- | -------- |
+| Runtime Variables |                 Description                 |   Type   |
+|-------------------|---------------------------------------------|----------|
 | `clusterStatus`   | Current status of the newly created cluster | `String` |
 
-| Outputs                 | Description                                     | Type                               |
-| ----------------------- | ----------------------------------------------- | ---------------------------------- |
+|         Outputs         |                   Description                   |                Type                |
+|-------------------------|-------------------------------------------------|------------------------------------|
 | `clusterId`             | ID of the cluster in which Zeebe is tested      | `String`                           |
 | `clusterName`           | Name of the cluster in which Zeebe is tested    | `String`                           |
 | `authenticationDetails` | Credentials to authenticate against the cluster | `CamundaCloudAutenticationDetails` |
@@ -270,8 +270,8 @@ Without this mechanism the only option for the external tool to know about the r
 
 **Process ID:** `external-tool-integration`
 
-| Inputs                      | Description                                                               | Type     |
-| --------------------------- | ------------------------------------------------------------------------- | -------- |
+|           Inputs            |                                Description                                |   Type   |
+|-----------------------------|---------------------------------------------------------------------------|----------|
 | `processId`                 | ID of the process to call                                                 | `String` |
 | `businessKey`               | Business key. This will be used as job type to fetch the result           | `String` |
 | _variables for the process_ | additional variables that will be forwarded to the process that is called |          |
@@ -286,8 +286,8 @@ Analysis can be marked as completed by either completing the task or sending the
 
 **Process ID:** `analyse-cluster`
 
-| Inputs        | Description                                  | Type         |
-| ------------- | -------------------------------------------- | ------------ |
+|    Inputs     |                 Description                  |     Type     |
+|---------------|----------------------------------------------|--------------|
 | `generation`  | name of the generation for the cluster       | `String`     |
 | `clusterPlan` | name of the cluster plan for the cluster     | `String`     |
 | `clusterId`   | ID of the cluster in which Zeebe is tested   | `String`     |
@@ -305,16 +305,17 @@ This process peridically checks how many clusters are still using a generation. 
 
 **Process ID:** `clean-up-generation`
 
-| Inputs           | Description                      | Type     |
-| ---------------- | -------------------------------- | -------- |
+|      Inputs      |           Description            |   Type   |
+|------------------|----------------------------------|----------|
 | `generationUUID` | UUID of the generation to delete | `String` |
 
 ### Messages
 
 These messages are important to control aspects of the test control flow:
 
-| Message             | Message Name          | Correlation Key | Payload                                                                             |
-| ------------------- | --------------------- | --------------- | ----------------------------------------------------------------------------------- |
+|       Message       |     Message Name      | Correlation Key |                                       Payload                                       |
+|---------------------|-----------------------|-----------------|-------------------------------------------------------------------------------------|
 | Analyse Cluster     | `Analyse Cluster`     | n/a             | `generation`, `clusterPlan`, `clusterId`, `clusterName`, `operateURL`, `testReport` |
 | Analysis Completed  | `Analysis Completed`  | `clusterId`     | n/a                                                                                 |
 | Clean up Generation | `Clean Up Generation` | n/a             | `generationUUID`                                                                    |
+
