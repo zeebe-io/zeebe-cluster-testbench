@@ -1,5 +1,7 @@
 package io.zeebe.clustertestbench.cloud.oauth;
 
+import io.zeebe.clustertestbench.cloud.oauth.OAuthClient.ServiceAccountTokenRequest;
+import io.zeebe.clustertestbench.cloud.oauth.OAuthClient.UserAccountTokenRequest;
 import jakarta.ws.rs.client.ClientRequestContext;
 import jakarta.ws.rs.client.ClientRequestFilter;
 import jakarta.ws.rs.client.ClientResponseContext;
@@ -64,8 +66,8 @@ public final class OAuthInterceptor implements ClientRequestFilter, ClientRespon
     final OAuthClient oauthClient =
         new OAuthClientFactory().createOAuthClient(authenticationServerURL);
 
-    final OAuthServiceAccountTokenRequest tokenRequest =
-        new OAuthServiceAccountTokenRequest(
+    final ServiceAccountTokenRequest tokenRequest =
+        new ServiceAccountTokenRequest(
             audience, clientId, clientSecret, GRANT_TYPE_CLIENT_CREDENTIALS);
 
     final Supplier<OAuthCredentials> credentialSupplier =
@@ -84,8 +86,8 @@ public final class OAuthInterceptor implements ClientRequestFilter, ClientRespon
     final OAuthClient oauthClient =
         new OAuthClientFactory().createOAuthClient(authenticationServerURL);
 
-    final OAuthUserAccountTokenRequest tokenRequest =
-        new OAuthUserAccountTokenRequest(
+    final UserAccountTokenRequest tokenRequest =
+        new UserAccountTokenRequest(
             audience, clientId, clientSecret, GRANT_TYPE_PASSWORD, username, password);
 
     final Supplier<OAuthCredentials> credentialSupplier =
