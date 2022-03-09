@@ -5,7 +5,7 @@ import io.camunda.zeebe.client.api.response.ActivatedJob;
 import io.camunda.zeebe.client.api.worker.JobClient;
 import io.camunda.zeebe.client.api.worker.JobHandler;
 import io.zeebe.clustertestbench.cloud.CloudAPIClient;
-import io.zeebe.clustertestbench.cloud.request.CreateZeebeClientRequest;
+import io.zeebe.clustertestbench.cloud.CloudAPIClient.CreateZeebeClientRequest;
 import io.zeebe.clustertestbench.cloud.response.CreateZeebeClientResponse;
 import io.zeebe.clustertestbench.cloud.response.ZeebeClientConnectiontInfo;
 import io.zeebe.clustertestbench.testdriver.api.CamundaCloudAuthenticationDetails;
@@ -153,7 +153,7 @@ public class CreateApiClientInCamundaCloudHandler implements JobHandler {
     public Output(
         final CreateZeebeClientResponse createZeebeClientResponse,
         final ZeebeClientConnectiontInfo connectionInfo) {
-      this.authenticationDetails =
+      authenticationDetails =
           new CamundaCLoudAuthenticationDetailsImpl(
               connectionInfo.getZeebeAuthorizationServerUrl(),
               connectionInfo.getZeebeAudience(),
