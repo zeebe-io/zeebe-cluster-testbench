@@ -13,7 +13,7 @@ import org.apache.http.HttpStatus;
 public final class OAuthInterceptor implements ClientRequestFilter, ClientResponseFilter {
   private static final String HEADER_AUTH_KEY = "Authorization";
   private static final String GRANT_TYPE_CLIENT_CREDENTIALS = "client_credentials";
-  private static final String GRANT_TYPE_PASWORD = "password";
+  private static final String GRANT_TYPE_PASSWORD = "password";
 
   private OAuthCredentials credentials;
   private final Supplier<OAuthCredentials> credentialSupplier;
@@ -86,7 +86,7 @@ public final class OAuthInterceptor implements ClientRequestFilter, ClientRespon
 
     final OAuthUserAccountTokenRequest tokenRequest =
         new OAuthUserAccountTokenRequest(
-            audience, clientId, clientSecret, GRANT_TYPE_PASWORD, username, password);
+            audience, clientId, clientSecret, GRANT_TYPE_PASSWORD, username, password);
 
     final Supplier<OAuthCredentials> credentialSupplier =
         () -> oauthClient.requestToken(tokenRequest);
