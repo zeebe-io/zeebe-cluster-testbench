@@ -40,7 +40,6 @@
     <nexus.release.repository>https://app.camunda.com/nexus/content/repositories/zeebe-io/</nexus.release.repository>
     <nexus.snapshot.repository>https://app.camunda.com/nexus/content/repositories/zeebe-io-snapshots/</nexus.snapshot.repository>
     <plugin.version.build-helper>3.2.0</plugin.version.build-helper>
-    <plugin.version.checkstyle>3.1.2</plugin.version.checkstyle>
     <plugin.version.dependency>3.2.0</plugin.version.dependency>
     <plugin.version.flakytestextractor>2.1.1</plugin.version.flakytestextractor>
     <plugin.version.fmt>2.13</plugin.version.fmt>
@@ -337,39 +336,6 @@
               <goal>extract-flaky-tests</goal>
             </goals>
             <phase>post-integration-test</phase>
-          </execution>
-        </executions>
-      </plugin>
-      <!-- CHECKSTYLE -->
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-checkstyle-plugin</artifactId>
-        <version>${plugin.version.checkstyle}</version>
-        <configuration>
-          <configLocation>check/.checkstyle.xml</configLocation>
-          <encoding>UTF-8</encoding>
-          <failOnViolation>true</failOnViolation>
-          <includeTestSourceDirectory>true</includeTestSourceDirectory>
-          <sourceDirectories>
-            <sourceDirectory>${project.build.sourceDirectory}</sourceDirectory>
-            <sourceDirectory>${project.build.testSourceDirectory}</sourceDirectory>
-          </sourceDirectories>
-        </configuration>
-        <dependencies>
-          <dependency>
-            <groupId>io.camunda</groupId>
-            <artifactId>zeebe-build-tools</artifactId>
-            <version>${zeebe.version}</version>
-          </dependency>
-        </dependencies>
-        <!-- dependency on build tool to reference the checkstyle cfg -->
-        <executions>
-          <execution>
-            <id>validate-java</id>
-            <goals>
-              <goal>check</goal>
-            </goals>
-            <phase>validate</phase>
           </execution>
         </executions>
       </plugin>
