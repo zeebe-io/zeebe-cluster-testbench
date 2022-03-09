@@ -34,11 +34,12 @@ public final class EntityLoggingFilter
   private static final int MAX_ENTITY_SIZE = 1024 * 1024;
 
   @Override
-  public void filter(final ClientRequestContext requestContext) {
+  public void filter(final ClientRequestContext requestContext) throws IOException {
     if (requestContext.hasEntity()) {
-      final var stream = new LoggingStream(requestContext.getEntityStream());
-      requestContext.setEntityStream(stream);
-      requestContext.setProperty(ENTITY_STREAM_PROPERTY, stream);
+      try (final var stream = new LoggingStream(requestContext.getEntityStream())) {
+        requestContext.setEntityStream(stream);
+        requestContext.setProperty(ENTITY_STREAM_PROPERTY, stream);
+      }
     }
   }
 
