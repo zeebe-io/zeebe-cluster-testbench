@@ -5,21 +5,23 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import io.camunda.zeebe.client.ZeebeClient;
 import io.camunda.zeebe.client.api.response.DeploymentEvent;
-import io.camunda.zeebe.client.api.response.ProcessInstanceEvent;
 import io.camunda.zeebe.client.api.worker.JobWorker;
-import io.camunda.zeebe.process.test.extension.testcontainer.ZeebeProcessTest;
+import io.camunda.zeebe.process.test.api.ZeebeTestEngine;
+import io.camunda.zeebe.process.test.extension.ZeebeProcessTest;
 import io.camunda.zeebe.process.test.inspections.InspectionUtility;
 import io.camunda.zeebe.process.test.inspections.model.InspectedProcessInstance;
 import io.zeebe.clustertestbench.handler.TriggerMessageStartEventHandler;
 import java.time.Duration;
 import java.util.Map;
 import java.util.Optional;
+import java.util.concurrent.TimeoutException;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-@ZeebeProcessTest
+@ZeebeProcessTest()
 public class TriggerMessageStartEventHandlerIT {
+  private ZeebeTestEngine engine;
 
   private ZeebeClient zeebeClient;
 
@@ -51,7 +53,7 @@ public class TriggerMessageStartEventHandlerIT {
    * </ul>
    */
   @Test
-  void shouldTriggerSecondaryProcess() throws InterruptedException {
+  void shouldTriggerSecondaryProcess() throws InterruptedException, TimeoutException {
     // given
     final DeploymentEvent deploymentEvent =
         zeebeClient
@@ -64,17 +66,17 @@ public class TriggerMessageStartEventHandlerIT {
     final var variables = Map.of("key1", "value1", "key2", "value2");
 
     // when
-    final ProcessInstanceEvent mainProcessCreationResponse =
-        zeebeClient
-            .newCreateInstanceCommand()
-            .bpmnProcessId("main")
-            .latestVersion()
-            .variables(variables)
-            .send()
-            .join();
+    zeebeClient
+        .newCreateInstanceCommand()
+        .bpmnProcessId("main")
+        .latestVersion()
+        .variables(variables)
+        .send()
+        .join();
 
-    // TODO replace with waitForIdleState
-    Thread.sleep(250);
+    engine.waitForIdleState(Duration.ofSeconds(1));
+    // TODO remove this when waitForIdleState works properly
+    Thread.sleep(200);
 
     // then
     assertThat(deploymentEvent)
