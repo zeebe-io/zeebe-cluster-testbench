@@ -1,7 +1,7 @@
 package io.zeebe.clustertestbench.cloud;
 
+import com.fasterxml.jackson.annotation.JsonAlias;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import io.zeebe.clustertestbench.cloud.response.ParametersResponse;
 import io.zeebe.clustertestbench.cloud.response.ZeebeClientConnectiontInfo;
 import io.zeebe.clustertestbench.cloud.response.ZeebeClientInfo;
 import jakarta.ws.rs.Consumes;
@@ -13,6 +13,7 @@ import jakarta.ws.rs.PathParam;
 import jakarta.ws.rs.Produces;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 
 @Path("clusters")
 public interface CloudAPIClient {
@@ -117,4 +118,27 @@ public interface CloudAPIClient {
 
   @JsonIgnoreProperties(ignoreUnknown = true)
   record CreateZeebeClientResponse(String clientId, String clientSecret) {}
+
+  record ParametersResponse(
+      List<ParametersChannelInfo> channels,
+      List<ParametersClusterPlanTypeInfo> clusterPlanTypes,
+      List<ParametersRegionInfo> regions) {}
+
+  @JsonIgnoreProperties(ignoreUnknown = true)
+  record ParametersChannelInfo(
+      List<ParametersGenerationInfo> allowedGenerations,
+      ParametersGenerationInfo defaultGeneration,
+      @JsonAlias("isDefault") boolean isDefault,
+      String name,
+      String uuid) {}
+
+  @JsonIgnoreProperties(ignoreUnknown = true)
+  record ParametersGenerationInfo(String name, String uuid, Map<String, String> versions) {}
+
+  @JsonIgnoreProperties(ignoreUnknown = true)
+  record ParametersClusterPlanTypeInfo(
+      String description, boolean internal, String name, String uuid, K8sContextInfo k8sContext) {}
+
+  @JsonIgnoreProperties(ignoreUnknown = true)
+  record ParametersRegionInfo(String name, String region, String uuid, String zone) {}
 }

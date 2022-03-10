@@ -4,11 +4,11 @@ import io.camunda.zeebe.client.api.response.ActivatedJob;
 import io.camunda.zeebe.client.api.worker.JobClient;
 import io.camunda.zeebe.client.api.worker.JobHandler;
 import io.zeebe.clustertestbench.cloud.CloudAPIClient;
-import io.zeebe.clustertestbench.cloud.response.ParametersResponse;
-import io.zeebe.clustertestbench.cloud.response.ParametersResponse.ChannelInfo;
-import io.zeebe.clustertestbench.cloud.response.ParametersResponse.ChannelInfo.GenerationInfo;
-import io.zeebe.clustertestbench.cloud.response.ParametersResponse.ClusterPlanTypeInfo;
-import io.zeebe.clustertestbench.cloud.response.ParametersResponse.RegionInfo;
+import io.zeebe.clustertestbench.cloud.CloudAPIClient.ParametersChannelInfo;
+import io.zeebe.clustertestbench.cloud.CloudAPIClient.ParametersClusterPlanTypeInfo;
+import io.zeebe.clustertestbench.cloud.CloudAPIClient.ParametersGenerationInfo;
+import io.zeebe.clustertestbench.cloud.CloudAPIClient.ParametersRegionInfo;
+import io.zeebe.clustertestbench.cloud.CloudAPIClient.ParametersResponse;
 import io.zeebe.clustertestbench.util.StringLookup;
 import java.util.stream.Collectors;
 import org.slf4j.Logger;
@@ -33,9 +33,9 @@ public class MapNamesToUUIDsHandler implements JobHandler {
 
     final ParametersResponse parameters = cloudClient.getParameters();
 
-    final ChannelInfo channelInfo = mapChannel(inputOutput, parameters);
+    final ParametersChannelInfo channelInfo = mapChannel(inputOutput, parameters);
 
-    final RegionInfo regionInfo = mapRegion(inputOutput, parameters);
+    final ParametersRegionInfo regionInfo = mapRegion(inputOutput, parameters);
 
     mapGeneration(inputOutput, channelInfo);
 
@@ -45,63 +45,64 @@ public class MapNamesToUUIDsHandler implements JobHandler {
     client.newCompleteCommand(job.getKey()).variables(inputOutput).send();
   }
 
-  private ChannelInfo mapChannel(
+  private ParametersChannelInfo mapChannel(
       final InputOutput inputOutput, final ParametersResponse parameters) {
-    final ChannelInfo channelInfo;
+    final ParametersChannelInfo channelInfo;
 
     if ((inputOutput.getChannelUUID() == null) && (inputOutput.getChannel() == null)) {
       throw new IllegalArgumentException("Neither 'generation' nor 'generationUUID' are provided");
     }
 
-    final StringLookup<ChannelInfo> channelLookup;
+    final StringLookup<ParametersChannelInfo> channelLookup;
     if (inputOutput.getChannelUUID() == null) {
       channelLookup =
           new StringLookup<>(
               "channel",
               inputOutput.getChannel(),
-              parameters.getChannels(),
-              ChannelInfo::getName,
+              parameters.channels(),
+              ParametersChannelInfo::name,
               true);
     } else {
       channelLookup =
           new StringLookup<>(
               "channel",
               inputOutput.getChannelUUID(),
-              parameters.getChannels(),
-              ChannelInfo::getUuid,
+              parameters.channels(),
+              ParametersChannelInfo::uuid,
               false);
     }
 
     channelInfo = channelLookup.lookup().getOrElseThrow(msg -> new IllegalArgumentException(msg));
 
-    inputOutput.setChannel(channelInfo.getName());
-    inputOutput.setChannelUUID(channelInfo.getUuid());
+    inputOutput.setChannel(channelInfo.name());
+    inputOutput.setChannelUUID(channelInfo.name());
 
     return channelInfo;
   }
 
-  private void mapGeneration(final InputOutput inputOutput, final ChannelInfo channelInfo) {
-    final GenerationInfo generationInfo;
+  private void mapGeneration(
+      final InputOutput inputOutput, final ParametersChannelInfo channelInfo) {
+    final ParametersGenerationInfo generationInfo;
     if ((inputOutput.getGenerationUUID() == null) && (inputOutput.getGeneration() == null)) {
-      generationInfo = channelInfo.getDefaultGeneration();
+      generationInfo = channelInfo.defaultGeneration();
     } else {
 
-      final StringLookup<GenerationInfo> generationLoookup;
+      final StringLookup<ParametersGenerationInfo> generationLoookup;
       if (inputOutput.getGenerationUUID() == null) {
         generationLoookup =
             new StringLookup<>(
                 "generation",
                 inputOutput.getGeneration(),
-                channelInfo.getAllowedGenerations(),
-                GenerationInfo::getName,
+                channelInfo.allowedGenerations(),
+                ParametersGenerationInfo::name,
                 true);
       } else {
         generationLoookup =
             new StringLookup<>(
                 "generation",
                 inputOutput.getGenerationUUID(),
-                channelInfo.getAllowedGenerations(),
-                GenerationInfo::getUuid,
+                channelInfo.allowedGenerations(),
+                ParametersGenerationInfo::uuid,
                 false);
       }
 
@@ -109,27 +110,27 @@ public class MapNamesToUUIDsHandler implements JobHandler {
           generationLoookup.lookup().getOrElseThrow(msg -> new IllegalArgumentException(msg));
     }
 
-    inputOutput.setGeneration(generationInfo.getName());
-    inputOutput.setGenerationUUID(generationInfo.getUuid());
+    inputOutput.setGeneration(generationInfo.name());
+    inputOutput.setGenerationUUID(generationInfo.uuid());
   }
 
   private void mapClusterPlan(
       final InputOutput inputOutput,
       final ParametersResponse parameters,
-      final RegionInfo regionInfo) {
-    final ClusterPlanTypeInfo clusterPlanInfo;
+      final ParametersRegionInfo regionInfo) {
+    final ParametersClusterPlanTypeInfo clusterPlanInfo;
 
     if ((inputOutput.getClusterPlanUUID() == null) && (inputOutput.getClusterPlan() == null)) {
       throw new IllegalArgumentException(
           "Neither 'clusterPlan' nor 'clusterPlanUUID' are provided");
     }
 
-    final StringLookup<ClusterPlanTypeInfo> clusterPlanLookup;
+    final StringLookup<ParametersClusterPlanTypeInfo> clusterPlanLookup;
     if (inputOutput.getClusterPlanUUID() == null) {
 
       final var clusterPlansInTheRegion =
-          parameters.getClusterPlanTypes().stream()
-              .filter(plan -> regionInfo.getUuid().equals(plan.getK8sContext().uuid()))
+          parameters.clusterPlanTypes().stream()
+              .filter(plan -> regionInfo.uuid().equals(plan.k8sContext().uuid()))
               .collect(Collectors.toList());
 
       clusterPlanLookup =
@@ -137,55 +138,56 @@ public class MapNamesToUUIDsHandler implements JobHandler {
               "clusterPlan",
               inputOutput.getClusterPlan(),
               clusterPlansInTheRegion,
-              ClusterPlanTypeInfo::getName,
+              ParametersClusterPlanTypeInfo::name,
               true);
     } else {
       clusterPlanLookup =
           new StringLookup<>(
               "clusterPlan",
               inputOutput.getClusterPlanUUID(),
-              parameters.getClusterPlanTypes(),
-              ClusterPlanTypeInfo::getUuid,
+              parameters.clusterPlanTypes(),
+              ParametersClusterPlanTypeInfo::uuid,
               false);
     }
 
     clusterPlanInfo =
         clusterPlanLookup.lookup().getOrElseThrow(msg -> new IllegalArgumentException(msg));
 
-    inputOutput.setClusterPlan(clusterPlanInfo.getName());
-    inputOutput.setClusterPlanUUID(clusterPlanInfo.getUuid());
+    inputOutput.setClusterPlan(clusterPlanInfo.name());
+    inputOutput.setClusterPlanUUID(clusterPlanInfo.uuid());
   }
 
-  private RegionInfo mapRegion(final InputOutput inputOutput, final ParametersResponse parameters) {
-    final RegionInfo regionInfo;
+  private ParametersRegionInfo mapRegion(
+      final InputOutput inputOutput, final ParametersResponse parameters) {
+    final ParametersRegionInfo regionInfo;
 
     if ((inputOutput.getRegionUUID() == null) && (inputOutput.getRegion() == null)) {
       throw new IllegalArgumentException("Neither 'region' nor 'regionUUID' are provided");
     }
 
-    final StringLookup<RegionInfo> regionLookup;
+    final StringLookup<ParametersRegionInfo> regionLookup;
     if (inputOutput.getRegionUUID() == null) {
       regionLookup =
           new StringLookup<>(
               "region",
               inputOutput.getRegion(),
-              parameters.getRegions(),
-              RegionInfo::getName,
+              parameters.regions(),
+              ParametersRegionInfo::name,
               true);
     } else {
       regionLookup =
           new StringLookup<>(
               "region",
               inputOutput.getRegionUUID(),
-              parameters.getRegions(),
-              RegionInfo::getUuid,
+              parameters.regions(),
+              ParametersRegionInfo::name,
               false);
     }
 
     regionInfo = regionLookup.lookup().getOrElseThrow(msg -> new IllegalArgumentException(msg));
 
-    inputOutput.setRegion(regionInfo.getName());
-    inputOutput.setRegionUUID(regionInfo.getUuid());
+    inputOutput.setRegion(regionInfo.name());
+    inputOutput.setRegionUUID(regionInfo.uuid());
     return regionInfo;
   }
 
