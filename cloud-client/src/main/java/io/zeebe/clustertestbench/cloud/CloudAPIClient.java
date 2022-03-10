@@ -2,7 +2,6 @@ package io.zeebe.clustertestbench.cloud;
 
 import com.fasterxml.jackson.annotation.JsonAlias;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import io.zeebe.clustertestbench.cloud.response.ZeebeClientInfo;
 import jakarta.ws.rs.Consumes;
 import jakarta.ws.rs.DELETE;
 import jakarta.ws.rs.GET;
@@ -152,4 +151,7 @@ public interface CloudAPIClient {
       return zeebeAddress.substring(0, zeebeAddress.lastIndexOf(":"));
     }
   }
+
+  @JsonIgnoreProperties(ignoreUnknown = true)
+  record ZeebeClientInfo(String clientId, String clientSecret, String name, String uuid) {}
 }
