@@ -1,8 +1,6 @@
 package io.zeebe.clustertestbench.cloud;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import io.zeebe.clustertestbench.cloud.response.CreateClusterResponse;
-import io.zeebe.clustertestbench.cloud.response.CreateZeebeClientResponse;
 import io.zeebe.clustertestbench.cloud.response.ParametersResponse;
 import io.zeebe.clustertestbench.cloud.response.ZeebeClientConnectiontInfo;
 import io.zeebe.clustertestbench.cloud.response.ZeebeClientInfo;
@@ -113,4 +111,10 @@ public interface CloudAPIClient {
 
   @JsonIgnoreProperties(ignoreUnknown = true)
   record Links(String zeebe, String operate, String tasklist) {}
+
+  @JsonIgnoreProperties(ignoreUnknown = true)
+  record CreateClusterResponse(String clusterId) {}
+
+  @JsonIgnoreProperties(ignoreUnknown = true)
+  record CreateZeebeClientResponse(String clientId, String clientSecret) {}
 }

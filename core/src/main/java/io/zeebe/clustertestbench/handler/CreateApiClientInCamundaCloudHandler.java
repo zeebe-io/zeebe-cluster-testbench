@@ -6,7 +6,7 @@ import io.camunda.zeebe.client.api.worker.JobClient;
 import io.camunda.zeebe.client.api.worker.JobHandler;
 import io.zeebe.clustertestbench.cloud.CloudAPIClient;
 import io.zeebe.clustertestbench.cloud.CloudAPIClient.CreateZeebeClientRequest;
-import io.zeebe.clustertestbench.cloud.response.CreateZeebeClientResponse;
+import io.zeebe.clustertestbench.cloud.CloudAPIClient.CreateZeebeClientResponse;
 import io.zeebe.clustertestbench.cloud.response.ZeebeClientConnectiontInfo;
 import io.zeebe.clustertestbench.testdriver.api.CamundaCloudAuthenticationDetails;
 import io.zeebe.clustertestbench.testdriver.impl.CamundaCLoudAuthenticationDetailsImpl;
@@ -42,7 +42,7 @@ public class CreateApiClientInCamundaCloudHandler implements JobHandler {
       final var createZeebeClientResponse =
           cloudApiClient.createZeebeClient(
               clusterId, new CreateZeebeClientRequest(clusterName + "_client"));
-      clientId = createZeebeClientResponse.getClientId();
+      clientId = createZeebeClientResponse.clientId();
       LOGGER.info("Created client {} for cluster {}", clientId, clusterId);
 
       ZeebeClientConnectiontInfo clientInfo;
@@ -158,8 +158,8 @@ public class CreateApiClientInCamundaCloudHandler implements JobHandler {
               connectionInfo.getZeebeAuthorizationServerUrl(),
               connectionInfo.getZeebeAudience(),
               connectionInfo.getZeebeAddress(),
-              createZeebeClientResponse.getClientId(),
-              createZeebeClientResponse.getClientSecret());
+              createZeebeClientResponse.clientId(),
+              createZeebeClientResponse.clientSecret());
     }
 
     @JsonProperty(CamundaCloudAuthenticationDetails.VARIABLE_KEY)

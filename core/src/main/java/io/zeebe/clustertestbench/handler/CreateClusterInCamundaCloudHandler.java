@@ -5,7 +5,7 @@ import io.camunda.zeebe.client.api.worker.JobClient;
 import io.camunda.zeebe.client.api.worker.JobHandler;
 import io.zeebe.clustertestbench.cloud.CloudAPIClient;
 import io.zeebe.clustertestbench.cloud.CloudAPIClient.CreateClusterRequest;
-import io.zeebe.clustertestbench.cloud.response.CreateClusterResponse;
+import io.zeebe.clustertestbench.cloud.CloudAPIClient.CreateClusterResponse;
 import io.zeebe.clustertestbench.util.RandomNameGenerator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -40,7 +40,7 @@ public class CreateClusterInCamundaCloudHandler implements JobHandler {
                   input.getGenerationUUID(),
                   input.getRegionUUID()));
 
-      final String clusterId = createClusterReponse.getClusterId();
+      final String clusterId = createClusterReponse.clusterId();
       LOGGER.info("Cluster {} ({}) created successfully", name, clusterId);
 
       client.newCompleteCommand(job.getKey()).variables(new Output(name, clusterId)).send();
@@ -51,8 +51,8 @@ public class CreateClusterInCamundaCloudHandler implements JobHandler {
       try {
         if (createClusterReponse != null) {
           // delete cluster to keep worker idempotent
-          LOGGER.info("Delete cluster {}", createClusterReponse.getClusterId());
-          cloudApiClient.deleteCluster(createClusterReponse.getClusterId());
+          LOGGER.info("Delete cluster {}", createClusterReponse.clusterId());
+          cloudApiClient.deleteCluster(createClusterReponse.clusterId());
         }
       } finally {
         client
