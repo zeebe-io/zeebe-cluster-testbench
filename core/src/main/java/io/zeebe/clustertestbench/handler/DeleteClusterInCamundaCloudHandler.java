@@ -20,7 +20,7 @@ public class DeleteClusterInCamundaCloudHandler implements JobHandler {
     final var clusterId = input.getClusterId();
     cloudApiClient.listClusterInfos().stream()
         // check whether cluster still exists
-        .filter(clusterInfo -> clusterId.equals(clusterInfo.getUuid()))
+        .filter(clusterInfo -> clusterId.equals(clusterInfo.uuid()))
         .findFirst()
         .ifPresent(
             (clusterInfo) -> {

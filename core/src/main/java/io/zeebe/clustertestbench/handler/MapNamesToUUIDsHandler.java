@@ -21,7 +21,7 @@ public class MapNamesToUUIDsHandler implements JobHandler {
   private final CloudAPIClient cloudClient;
 
   public MapNamesToUUIDsHandler(final CloudAPIClient cloudAPIClient) {
-    this.cloudClient = cloudAPIClient;
+    cloudClient = cloudAPIClient;
   }
 
   @Override
@@ -129,7 +129,7 @@ public class MapNamesToUUIDsHandler implements JobHandler {
 
       final var clusterPlansInTheRegion =
           parameters.getClusterPlanTypes().stream()
-              .filter(plan -> regionInfo.getUuid().equals(plan.getK8sContext().getUuid()))
+              .filter(plan -> regionInfo.getUuid().equals(plan.getK8sContext().uuid()))
               .collect(Collectors.toList());
 
       clusterPlanLookup =

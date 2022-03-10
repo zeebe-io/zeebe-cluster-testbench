@@ -1,6 +1,6 @@
 package io.zeebe.clustertestbench.cloud;
 
-import io.zeebe.clustertestbench.cloud.response.ClusterInfo;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import io.zeebe.clustertestbench.cloud.response.CreateClusterResponse;
 import io.zeebe.clustertestbench.cloud.response.CreateZeebeClientResponse;
 import io.zeebe.clustertestbench.cloud.response.ParametersResponse;
@@ -84,4 +84,33 @@ public interface CloudAPIClient {
       return PERMISSIONS;
     }
   }
+
+  record ClusterInfo(
+      String uuid,
+      String name,
+      String created,
+      ClusterPlanTypeInfo planType,
+      K8sContextInfo k8sContext,
+      GenerationInfo generation,
+      ChannelInfo channel,
+      ClusterStatus status,
+      Links links) {}
+
+  @JsonIgnoreProperties(ignoreUnknown = true)
+  record ClusterPlanTypeInfo(String uuid, String name) {}
+
+  @JsonIgnoreProperties(ignoreUnknown = true)
+  record K8sContextInfo(String uuid, String name) {}
+
+  @JsonIgnoreProperties(ignoreUnknown = true)
+  record GenerationInfo(String uuid, String name) {}
+
+  @JsonIgnoreProperties(ignoreUnknown = true)
+  record ChannelInfo(String uuid, String name) {}
+
+  @JsonIgnoreProperties(ignoreUnknown = true)
+  record ClusterStatus(String ready, String zeebeStatus, String operateStatus) {}
+
+  @JsonIgnoreProperties(ignoreUnknown = true)
+  record Links(String zeebe, String operate, String tasklist) {}
 }

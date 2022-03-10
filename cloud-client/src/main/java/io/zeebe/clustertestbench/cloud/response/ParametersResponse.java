@@ -2,7 +2,7 @@ package io.zeebe.clustertestbench.cloud.response;
 
 import com.fasterxml.jackson.annotation.JsonAlias;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import io.zeebe.clustertestbench.cloud.response.ClusterInfo.K8sContextInfo;
+import io.zeebe.clustertestbench.cloud.CloudAPIClient.K8sContextInfo;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
