@@ -2,7 +2,6 @@ package io.zeebe.clustertestbench.cloud;
 
 import com.fasterxml.jackson.annotation.JsonAlias;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import io.zeebe.clustertestbench.cloud.response.ZeebeClientConnectiontInfo;
 import io.zeebe.clustertestbench.cloud.response.ZeebeClientInfo;
 import jakarta.ws.rs.Consumes;
 import jakarta.ws.rs.DELETE;
@@ -63,7 +62,7 @@ public interface CloudAPIClient {
   @Path("{clusterId}/clients/{clientId}/")
   @Consumes("application/json")
   @Produces("application/json")
-  ZeebeClientConnectiontInfo getZeebeClientInfo(
+  ZeebeClientConnectionInfo getZeebeClientInfo(
       @PathParam("clusterId") String clusterId, @PathParam("clientId") String zeebeClientId);
 
   @DELETE
@@ -141,4 +140,16 @@ public interface CloudAPIClient {
 
   @JsonIgnoreProperties(ignoreUnknown = true)
   record ParametersRegionInfo(String name, String region, String uuid, String zone) {}
+
+  @JsonIgnoreProperties(ignoreUnknown = true)
+  record ZeebeClientConnectionInfo(
+      String name,
+      @JsonAlias("ZEEBE_ADDRESS") String zeebeAddress,
+      @JsonAlias("ZEEBE_CLIENT_ID") String zeebeClientId,
+      @JsonAlias("ZEEBE_AUTHORIZATION_SERVER_URL") String zeebeAuthorizationServerUrl) {
+
+    public String getZeebeAudience() {
+      return zeebeAddress.substring(0, zeebeAddress.lastIndexOf(":"));
+    }
+  }
 }
