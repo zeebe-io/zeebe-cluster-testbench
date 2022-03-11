@@ -215,6 +215,11 @@
         <version>${version.commons-io}</version>
       </dependency>
       <dependency>
+        <groupId>commons-io</groupId>
+        <artifactId>commons-io</artifactId>
+        <version>${version.commons-io}</version>
+      </dependency>
+      <dependency>
         <groupId>org.junit</groupId>
         <artifactId>junit-bom</artifactId>
         <version>${version.junit}</version>
@@ -235,6 +240,11 @@
         <groupId>org.awaitility</groupId>
         <artifactId>awaitility</artifactId>
         <version>${version.awaitility}</version>
+      </dependency>
+      <dependency>
+        <groupId>com.github.tomakehurst</groupId>
+        <artifactId>wiremock-jre8</artifactId>
+        <version>${version.wiremock}</version>
       </dependency>
       <dependency>
         <groupId>com.github.tomakehurst</groupId>
@@ -293,7 +303,43 @@
           <artifactId>maven-failsafe-plugin</artifactId>
           <version>${plugin.version.failsafe}</version>
         </plugin>
-
+        <plugin>
+          <groupId>eu.stamp-project</groupId>
+          <artifactId>pitmp-maven-plugin</artifactId>
+          <version>${plugin.version.pitest}</version>
+          <dependencies>
+            <dependency>
+              <groupId>org.pitest</groupId>
+              <artifactId>pitest-junit5-plugin</artifactId>
+              <version>${plugin.version.pitest-junit5}</version>
+            </dependency>
+          </dependencies>
+        </plugin>
+        <plugin>
+          <groupId>io.zeebe</groupId>
+          <artifactId>flaky-test-extractor-maven-plugin</artifactId>
+          <version>${plugin.version.flakytestextractor}</version>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-dependency-plugin</artifactId>
+          <version>${plugin.version.dependency}</version>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-javadoc-plugin</artifactId>
+          <version>${plugin.version.javadoc}</version>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-surefire-plugin</artifactId>
+          <version>${plugin.version.surefire}</version>
+        </plugin>
+        <plugin>
+          <groupId>org.jacoco</groupId>
+          <artifactId>jacoco-maven-plugin</artifactId>
+          <version>${plugin.version.jacoco}</version>
+        </plugin>
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-shade-plugin</artifactId>
@@ -313,7 +359,6 @@
       <plugin>
         <groupId>eu.stamp-project</groupId>
         <artifactId>pitmp-maven-plugin</artifactId>
-        <version>${plugin.version.pitest}</version>
         <configuration>
           <mutators>
             <mutator>STRONGER</mutator>
@@ -328,19 +373,11 @@
           </mutators>
           <excludedTestClasses>*IT</excludedTestClasses>
         </configuration>
-        <dependencies>
-          <dependency>
-            <groupId>org.pitest</groupId>
-            <artifactId>pitest-junit5-plugin</artifactId>
-            <version>${plugin.version.pitest-junit5}</version>
-          </dependency>
-        </dependencies>
       </plugin>
       <!-- flaky test extractor plugin -->
       <plugin>
         <groupId>io.zeebe</groupId>
         <artifactId>flaky-test-extractor-maven-plugin</artifactId>
-        <version>${plugin.version.flakytestextractor}</version>
         <executions>
           <execution>
             <goals>
@@ -353,7 +390,6 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-dependency-plugin</artifactId>
-        <version>${plugin.version.dependency}</version>
       </plugin>
       <!-- temporarily disabled <plugin> <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-enforcer-plugin</artifactId> <version>1.4.1</version> <configuration>
@@ -363,19 +399,16 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-javadoc-plugin</artifactId>
-        <version>${plugin.version.javadoc}</version>
       </plugin>
       <!-- Surefire plugin -->
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-surefire-plugin</artifactId>
-        <version>${plugin.version.surefire}</version>
       </plugin>
       <!-- JaCoCo Plugin -->
       <plugin>
         <groupId>org.jacoco</groupId>
         <artifactId>jacoco-maven-plugin</artifactId>
-        <version>${plugin.version.jacoco}</version>
         <executions>
           <execution>
             <id>coverage-initialize</id>
@@ -396,7 +429,6 @@
       <plugin>
         <groupId>com.diffplug.spotless</groupId>
         <artifactId>spotless-maven-plugin</artifactId>
-        <version>${plugin.version.spotless}</version>
         <configuration>
           <!-- Google code format plugin -->
           <java>
