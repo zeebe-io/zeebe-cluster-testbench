@@ -30,22 +30,18 @@
     </dependency>
     <dependency>
       <groupId>io.zeebe</groupId>
-      <artifactId>zeebe-cluster-testbench-internal-cloud-client</artifactId>
-      <type>test-jar</type>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>io.zeebe</groupId>
       <artifactId>zeebe-cluster-testbench-testdriver-api</artifactId>
     </dependency>
     <dependency>
       <groupId>io.zeebe</groupId>
       <artifactId>zeebe-cluster-testbench-testdriver-sequential</artifactId>
     </dependency>
+
     <dependency>
       <groupId>io.camunda</groupId>
       <artifactId>zeebe-client-java</artifactId>
     </dependency>
+
     <dependency>
       <groupId>io.camunda</groupId>
       <artifactId>zeebe-util</artifactId>
@@ -59,15 +55,26 @@
       <groupId>com.fasterxml.jackson.core</groupId>
       <artifactId>jackson-annotations</artifactId>
     </dependency>
-
     <dependency>
       <groupId>io.vavr</groupId>
       <artifactId>vavr</artifactId>
     </dependency>
-
     <dependency>
       <groupId>org.apache.commons</groupId>
       <artifactId>commons-text</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>io.zeebe</groupId>
+      <artifactId>zeebe-cluster-testbench-internal-cloud-client</artifactId>
+      <type>test-jar</type>
+      <scope>test</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>io.zeebe</groupId>
+      <artifactId>zeebe-worker-java-testutils</artifactId>
+      <scope>test</scope>
     </dependency>
 
     <dependency>
@@ -80,21 +87,14 @@
       <artifactId>junit-jupiter-api</artifactId>
       <scope>test</scope>
     </dependency>
-
     <dependency>
       <groupId>org.mockito</groupId>
       <artifactId>mockito-junit-jupiter</artifactId>
       <scope>test</scope>
     </dependency>
-
     <dependency>
       <groupId>org.junit.jupiter</groupId>
       <artifactId>junit-jupiter-params</artifactId>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>io.zeebe</groupId>
-      <artifactId>zeebe-worker-java-testutils</artifactId>
       <scope>test</scope>
     </dependency>
   </dependencies>
