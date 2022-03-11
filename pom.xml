@@ -19,8 +19,6 @@
   <name>Zeebe Cluster Testbench</name>
   <description>${name}</description>
 
-  <!-- When changing the artifact or name, also make sure to change the SCM
-    location below and in .ci/scripts/github-release.sh -->
   <modules>
     <module>core</module>
     <module>cloud-client</module>
@@ -374,7 +372,6 @@
           <excludedTestClasses>*IT</excludedTestClasses>
         </configuration>
       </plugin>
-      <!-- flaky test extractor plugin -->
       <plugin>
         <groupId>io.zeebe</groupId>
         <artifactId>flaky-test-extractor-maven-plugin</artifactId>
@@ -400,12 +397,10 @@
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-javadoc-plugin</artifactId>
       </plugin>
-      <!-- Surefire plugin -->
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-surefire-plugin</artifactId>
       </plugin>
-      <!-- JaCoCo Plugin -->
       <plugin>
         <groupId>org.jacoco</groupId>
         <artifactId>jacoco-maven-plugin</artifactId>
@@ -423,7 +418,6 @@
             </goals>
             <phase>post-integration-test</phase>
           </execution>
-          <!-- Threshold -->
         </executions>
       </plugin>
       <plugin>
