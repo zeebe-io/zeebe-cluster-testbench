@@ -5,8 +5,8 @@ import io.camunda.zeebe.client.api.worker.JobClient;
 import io.camunda.zeebe.client.api.worker.JobHandler;
 import io.vavr.control.Either;
 import io.zeebe.clustertestbench.internal.cloud.InternalCloudAPIClient;
-import io.zeebe.clustertestbench.internal.cloud.request.CreateGenerationRequest;
-import io.zeebe.clustertestbench.internal.cloud.request.UpdateChannelRequest;
+import io.zeebe.clustertestbench.internal.cloud.InternalCloudAPIClient.CreateGenerationRequest;
+import io.zeebe.clustertestbench.internal.cloud.InternalCloudAPIClient.UpdateChannelRequest;
 import io.zeebe.clustertestbench.internal.cloud.response.ChannelInfo;
 import io.zeebe.clustertestbench.internal.cloud.response.ChannelInfo.GenerationInfo;
 import io.zeebe.clustertestbench.util.StringLookup;
@@ -96,17 +96,16 @@ public class CreateGenerationInCamundaCloudHandler implements JobHandler {
     final var generationInfos = internalApiClient.listGenerationInfos();
 
     final var generationLookup =
-        new StringLookup<GenerationInfo>(
-            "generation", name, generationInfos, GenerationInfo::getName, true);
+        new StringLookup<>("generation", name, generationInfos, GenerationInfo::getName, true);
 
     return generationLookup.lookup();
   }
 
-  private ChannelInfo lookupChannel(final String channel) throws Exception {
+  private ChannelInfo lookupChannel(final String channel) {
     final var channelInfos = internalApiClient.listChannelInfos();
 
     final var channelLookup =
-        new StringLookup<ChannelInfo>("channel", channel, channelInfos, ChannelInfo::getName, true);
+        new StringLookup<>("channel", channel, channelInfos, ChannelInfo::getName, true);
 
     return channelLookup.lookup().getOrElseThrow(msg -> new IllegalArgumentException(msg));
   }

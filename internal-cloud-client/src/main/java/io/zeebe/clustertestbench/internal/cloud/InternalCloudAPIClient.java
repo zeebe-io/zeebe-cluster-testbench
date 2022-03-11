@@ -1,7 +1,6 @@
 package io.zeebe.clustertestbench.internal.cloud;
 
-import io.zeebe.clustertestbench.internal.cloud.request.CreateGenerationRequest;
-import io.zeebe.clustertestbench.internal.cloud.request.UpdateChannelRequest;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import io.zeebe.clustertestbench.internal.cloud.response.ChannelInfo;
 import io.zeebe.clustertestbench.internal.cloud.response.ChannelInfo.GenerationInfo;
 import jakarta.ws.rs.Consumes;
@@ -13,6 +12,7 @@ import jakarta.ws.rs.Path;
 import jakarta.ws.rs.PathParam;
 import jakarta.ws.rs.Produces;
 import java.util.List;
+import java.util.Map;
 
 @Path("api")
 public interface InternalCloudAPIClient {
@@ -45,4 +45,13 @@ public interface InternalCloudAPIClient {
   @Produces("application/json")
   @Consumes("application/json")
   void updateChannel(@PathParam("channelUUID") String channelUUID, UpdateChannelRequest request);
+
+  record CreateGenerationRequest(
+      String name, Map<String, String> versions, List<String> upgradeableFrom) {}
+
+  record UpdateChannelRequest(
+      String name,
+      @JsonProperty("isDefault") boolean isDefault,
+      String defaultGenerationId,
+      List<String> allowedGenerationIds) {}
 }

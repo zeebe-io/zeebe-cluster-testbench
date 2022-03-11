@@ -1,7 +1,5 @@
 package io.zeebe.clustertestbench.internal.cloud;
 
-import io.zeebe.clustertestbench.internal.cloud.request.CreateGenerationRequest;
-import io.zeebe.clustertestbench.internal.cloud.request.UpdateChannelRequest;
 import io.zeebe.clustertestbench.internal.cloud.response.ChannelInfo;
 import io.zeebe.clustertestbench.internal.cloud.response.ChannelInfo.GenerationInfo;
 import java.util.ArrayList;
@@ -71,8 +69,8 @@ public class StubInternalCloudAPIClient implements InternalCloudAPIClient {
   public void createGeneration(final CreateGenerationRequest request) {
     if (!broken) {
       final GenerationInfo generationInfo = new GenerationInfo();
-      generationInfo.setName(request.getName());
-      generationInfo.setVersions(request.getVersions());
+      generationInfo.setName(request.name());
+      generationInfo.setVersions(request.versions());
       generationInfo.setUuid(UUID.randomUUID().toString());
 
       generationInfos.add(generationInfo);
