@@ -5,9 +5,9 @@ import io.camunda.zeebe.client.api.response.ActivatedJob;
 import io.camunda.zeebe.client.api.worker.JobClient;
 import io.camunda.zeebe.client.api.worker.JobHandler;
 import io.zeebe.clustertestbench.cloud.CloudAPIClient;
-import io.zeebe.clustertestbench.cloud.request.CreateZeebeClientRequest;
-import io.zeebe.clustertestbench.cloud.response.CreateZeebeClientResponse;
-import io.zeebe.clustertestbench.cloud.response.ZeebeClientConnectiontInfo;
+import io.zeebe.clustertestbench.cloud.CloudAPIClient.CreateZeebeClientRequest;
+import io.zeebe.clustertestbench.cloud.CloudAPIClient.CreateZeebeClientResponse;
+import io.zeebe.clustertestbench.cloud.CloudAPIClient.ZeebeClientConnectionInfo;
 import io.zeebe.clustertestbench.testdriver.api.CamundaCloudAuthenticationDetails;
 import io.zeebe.clustertestbench.testdriver.impl.CamundaCLoudAuthenticationDetailsImpl;
 import java.time.Duration;
@@ -42,10 +42,10 @@ public class CreateApiClientInCamundaCloudHandler implements JobHandler {
       final var createZeebeClientResponse =
           cloudApiClient.createZeebeClient(
               clusterId, new CreateZeebeClientRequest(clusterName + "_client"));
-      clientId = createZeebeClientResponse.getClientId();
+      clientId = createZeebeClientResponse.clientId();
       LOGGER.info("Created client {} for cluster {}", clientId, clusterId);
 
-      ZeebeClientConnectiontInfo clientInfo;
+      ZeebeClientConnectionInfo clientInfo;
       var i = 0;
       while ((clientInfo = getConnectionInfo(clusterId, clientId)) == null) {
         // todo: remove this workaround after https://github.com/camunda-cloud/console/issues/2225
@@ -80,10 +80,10 @@ public class CreateApiClientInCamundaCloudHandler implements JobHandler {
   }
 
   @Nullable
-  private ZeebeClientConnectiontInfo getConnectionInfo(
+  private ZeebeClientConnectionInfo getConnectionInfo(
       final String clusterId, final String clientId) {
     LOGGER.info("Retrieving connection info for client {} in cluster {}", clientId, clusterId);
-    final ZeebeClientConnectiontInfo clientInfo;
+    final ZeebeClientConnectionInfo clientInfo;
     try {
       clientInfo = cloudApiClient.getZeebeClientInfo(clusterId, clientId);
     } catch (final Exception e) {
@@ -91,11 +91,11 @@ public class CreateApiClientInCamundaCloudHandler implements JobHandler {
       return null;
     }
 
-    if (!PATTERN.matcher(clientInfo.getZeebeAddress()).find()) {
+    if (!PATTERN.matcher(clientInfo.zeebeAddress()).find()) {
       final var message =
           String.format(
               "Client %s info's zeebe address '%s' does not match '<uuid>.<region>.zeebe'",
-              clientId, clientInfo.getZeebeAddress());
+              clientId, clientInfo.zeebeAddress());
       LOGGER.warn(message);
       return null;
     }
@@ -152,14 +152,14 @@ public class CreateApiClientInCamundaCloudHandler implements JobHandler {
 
     public Output(
         final CreateZeebeClientResponse createZeebeClientResponse,
-        final ZeebeClientConnectiontInfo connectionInfo) {
-      this.authenticationDetails =
+        final ZeebeClientConnectionInfo connectionInfo) {
+      authenticationDetails =
           new CamundaCLoudAuthenticationDetailsImpl(
-              connectionInfo.getZeebeAuthorizationServerUrl(),
+              connectionInfo.zeebeAuthorizationServerUrl(),
               connectionInfo.getZeebeAudience(),
-              connectionInfo.getZeebeAddress(),
-              createZeebeClientResponse.getClientId(),
-              createZeebeClientResponse.getClientSecret());
+              connectionInfo.zeebeAddress(),
+              createZeebeClientResponse.clientId(),
+              createZeebeClientResponse.clientSecret());
     }
 
     @JsonProperty(CamundaCloudAuthenticationDetails.VARIABLE_KEY)

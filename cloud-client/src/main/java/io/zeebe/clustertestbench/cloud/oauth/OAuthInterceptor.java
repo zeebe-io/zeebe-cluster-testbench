@@ -1,5 +1,7 @@
 package io.zeebe.clustertestbench.cloud.oauth;
 
+import io.zeebe.clustertestbench.cloud.oauth.OAuthClient.ServiceAccountTokenRequest;
+import io.zeebe.clustertestbench.cloud.oauth.OAuthClient.UserAccountTokenRequest;
 import jakarta.ws.rs.client.ClientRequestContext;
 import jakarta.ws.rs.client.ClientRequestFilter;
 import jakarta.ws.rs.client.ClientResponseContext;
@@ -13,7 +15,7 @@ import org.apache.http.HttpStatus;
 public final class OAuthInterceptor implements ClientRequestFilter, ClientResponseFilter {
   private static final String HEADER_AUTH_KEY = "Authorization";
   private static final String GRANT_TYPE_CLIENT_CREDENTIALS = "client_credentials";
-  private static final String GRANT_TYPE_PASWORD = "password";
+  private static final String GRANT_TYPE_PASSWORD = "password";
 
   private OAuthCredentials credentials;
   private final Supplier<OAuthCredentials> credentialSupplier;
@@ -64,8 +66,8 @@ public final class OAuthInterceptor implements ClientRequestFilter, ClientRespon
     final OAuthClient oauthClient =
         new OAuthClientFactory().createOAuthClient(authenticationServerURL);
 
-    final OAuthServiceAccountTokenRequest tokenRequest =
-        new OAuthServiceAccountTokenRequest(
+    final ServiceAccountTokenRequest tokenRequest =
+        new ServiceAccountTokenRequest(
             audience, clientId, clientSecret, GRANT_TYPE_CLIENT_CREDENTIALS);
 
     final Supplier<OAuthCredentials> credentialSupplier =
@@ -84,9 +86,9 @@ public final class OAuthInterceptor implements ClientRequestFilter, ClientRespon
     final OAuthClient oauthClient =
         new OAuthClientFactory().createOAuthClient(authenticationServerURL);
 
-    final OAuthUserAccountTokenRequest tokenRequest =
-        new OAuthUserAccountTokenRequest(
-            audience, clientId, clientSecret, GRANT_TYPE_PASWORD, username, password);
+    final UserAccountTokenRequest tokenRequest =
+        new UserAccountTokenRequest(
+            audience, clientId, clientSecret, GRANT_TYPE_PASSWORD, username, password);
 
     final Supplier<OAuthCredentials> credentialSupplier =
         () -> oauthClient.requestToken(tokenRequest);

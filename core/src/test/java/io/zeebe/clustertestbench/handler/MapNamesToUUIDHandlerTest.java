@@ -7,7 +7,7 @@ import static org.mockito.Mockito.when;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.zeebe.clustertestbench.cloud.CloudAPIClient;
-import io.zeebe.clustertestbench.cloud.response.ParametersResponse;
+import io.zeebe.clustertestbench.cloud.CloudAPIClient.ParametersResponse;
 import java.util.Map;
 import org.assertj.core.api.Assertions;
 import org.camunda.community.zeebe.testutils.stubs.ActivatedJobStub;
@@ -121,7 +121,7 @@ public class MapNamesToUUIDHandlerTest {
   }
 
   @Test
-  void shouldNotMapToClusterPlanInAnotherRegionWhenNotFoundInGivenRegion() throws Exception {
+  void shouldNotMapToClusterPlanInAnotherRegionWhenNotFoundInGivenRegion() {
     // given
     activatedJobStub.setInputVariables(
         Map.of(

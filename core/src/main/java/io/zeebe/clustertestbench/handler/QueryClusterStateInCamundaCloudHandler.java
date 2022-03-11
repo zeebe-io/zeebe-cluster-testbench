@@ -4,8 +4,8 @@ import io.camunda.zeebe.client.api.response.ActivatedJob;
 import io.camunda.zeebe.client.api.worker.JobClient;
 import io.camunda.zeebe.client.api.worker.JobHandler;
 import io.zeebe.clustertestbench.cloud.CloudAPIClient;
-import io.zeebe.clustertestbench.cloud.response.ClusterInfo;
-import io.zeebe.clustertestbench.cloud.response.ClusterInfo.ClusterStatus;
+import io.zeebe.clustertestbench.cloud.CloudAPIClient.ClusterInfo;
+import io.zeebe.clustertestbench.cloud.CloudAPIClient.ClusterStatus;
 import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -27,8 +27,8 @@ public class QueryClusterStateInCamundaCloudHandler implements JobHandler {
 
     final String clusterStatus =
         Optional.ofNullable(cloudApiClient.getClusterInfo(input.getClusterId()))
-            .map(ClusterInfo::getStatus)
-            .map(ClusterStatus::getReady)
+            .map(ClusterInfo::status)
+            .map(ClusterStatus::ready)
             .orElse("Unknown");
 
     LOGGER.info("Status of cluster " + input.getClusterName() + " " + clusterStatus);

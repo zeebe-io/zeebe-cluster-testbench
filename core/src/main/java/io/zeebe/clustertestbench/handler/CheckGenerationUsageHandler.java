@@ -16,7 +16,7 @@ public class CheckGenerationUsageHandler implements JobHandler {
   }
 
   @Override
-  public void handle(JobClient client, ActivatedJob job) throws Exception {
+  public void handle(final JobClient client, final ActivatedJob job) throws Exception {
     final var input = job.getVariablesAsType(Input.class);
 
     final var generationUUID = input.getGenerationUUID();
@@ -29,7 +29,7 @@ public class CheckGenerationUsageHandler implements JobHandler {
 
     final var notInUse =
         clusterInfos.stream()
-            .filter(clusterInfo -> generationUUID.equals(clusterInfo.getGeneration().getUuid()))
+            .filter(clusterInfo -> generationUUID.equals(clusterInfo.generation().uuid()))
             .findAny()
             .isEmpty();
     client.newCompleteCommand(job.getKey()).variables(new Output(notInUse)).send().join();
@@ -42,7 +42,7 @@ public class CheckGenerationUsageHandler implements JobHandler {
       return generationUUID;
     }
 
-    public void setGenerationUUID(String generationUUID) {
+    public void setGenerationUUID(final String generationUUID) {
       this.generationUUID = generationUUID;
     }
   }
@@ -50,7 +50,7 @@ public class CheckGenerationUsageHandler implements JobHandler {
   static class Output {
     private final boolean generationNotInUse;
 
-    public Output(boolean generationNotInUse) {
+    public Output(final boolean generationNotInUse) {
       this.generationNotInUse = generationNotInUse;
     }
 

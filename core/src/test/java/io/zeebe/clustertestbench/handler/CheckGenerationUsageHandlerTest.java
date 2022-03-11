@@ -6,7 +6,8 @@ import static org.camunda.community.zeebe.testutils.ZeebeWorkerAssertions.assert
 import static org.mockito.Mockito.when;
 
 import io.zeebe.clustertestbench.cloud.CloudAPIClient;
-import io.zeebe.clustertestbench.cloud.response.ClusterInfo;
+import io.zeebe.clustertestbench.cloud.CloudAPIClient.ClusterInfo;
+import io.zeebe.clustertestbench.cloud.CloudAPIClient.GenerationInfo;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -24,26 +25,14 @@ class CheckGenerationUsageHandlerTest {
 
   public static final String GENERATION_FIELD = "generationUUID";
   public static final String RESULT_FIELD = "generationNotInUse";
-  private static final Long TEST_JOB_KEY = 42L;
   private static final String UUID_B = "UUID B";
   private static final String UUID_A = "UUID A";
-  private static final ClusterInfo.GenerationInfo GENERATION_A = new ClusterInfo.GenerationInfo();
-  private static final ClusterInfo.GenerationInfo GENERATION_B = new ClusterInfo.GenerationInfo();
-  private static final ClusterInfo CLUSTER_Z = new ClusterInfo();
-  private static final ClusterInfo CLUSTER_Y = new ClusterInfo();
-  private static final ClusterInfo CLUSTER_X = new ClusterInfo();
+  private static final GenerationInfo GENERATION_A = new GenerationInfo(UUID_A, "Generation A");
+  private static final ClusterInfo CLUSTER_X = createClusterInfoForGeneration(GENERATION_A);
+  private static final GenerationInfo GENERATION_B = new GenerationInfo(UUID_B, "Generation B");
+  private static final ClusterInfo CLUSTER_Z = createClusterInfoForGeneration(GENERATION_B);
+  private static final ClusterInfo CLUSTER_Y = createClusterInfoForGeneration(GENERATION_B);
   private static final List<ClusterInfo> CLUSTERS = List.of(CLUSTER_Z, CLUSTER_Y, CLUSTER_X);
-
-  static {
-    GENERATION_A.setName("Generation A");
-    GENERATION_A.setUuid(UUID_A);
-    GENERATION_B.setName("Generation B");
-    GENERATION_B.setUuid(UUID_B);
-
-    CLUSTER_Z.setGeneration(GENERATION_B);
-    CLUSTER_Y.setGeneration(GENERATION_B);
-    CLUSTER_X.setGeneration(GENERATION_A);
-  }
 
   @Mock CloudAPIClient mockCloudAPIClient;
 
@@ -116,5 +105,9 @@ class CheckGenerationUsageHandlerTest {
         .isExactlyInstanceOf(IllegalArgumentException.class);
 
     assertThat(activatedJobStub).isStillActivated();
+  }
+
+  private static ClusterInfo createClusterInfoForGeneration(final GenerationInfo generation) {
+    return new ClusterInfo(null, null, null, null, null, generation, null, null, null);
   }
 }
