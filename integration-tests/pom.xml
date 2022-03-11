@@ -16,7 +16,6 @@
   <name>Zeebe Cluster Testbench - Integration Tests</name>
 
   <properties>
-    <bpmn-spec.version>2.0.1</bpmn-spec.version>
     <plugin.version.failsafe>3.0.0-M7</plugin.version.failsafe>
   </properties>
 

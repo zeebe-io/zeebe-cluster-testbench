@@ -40,7 +40,6 @@
   <properties>
     <nexus.release.repository>https://artifacts.camunda.com/artifactory/zeebe-io/</nexus.release.repository>
     <nexus.snapshot.repository>https://artifacts.camunda.com/artifactory/zeebe-io-snapshots/</nexus.snapshot.repository>
-    <plugin.version.build-helper>3.2.0</plugin.version.build-helper>
     <plugin.version.dependency>3.4.0</plugin.version.dependency>
     <plugin.version.flakytestextractor>2.1.1</plugin.version.flakytestextractor>
     <plugin.version.flatten>1.3.0</plugin.version.flatten>
@@ -51,7 +50,6 @@
     <plugin.version.maven-shade>3.4.1</plugin.version.maven-shade>
     <plugin.version.pitest>1.3.7</plugin.version.pitest>
     <plugin.version.pitest-junit5>1.1.0</plugin.version.pitest-junit5>
-    <plugin.version.shade>3.2.4</plugin.version.shade>
     <plugin.version.spotless>2.28.0</plugin.version.spotless>
     <plugin.version.surefire>3.0.0-M7</plugin.version.surefire>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -64,7 +62,6 @@
     <version.junit>5.9.1</version.junit>
     <version.log4j>2.19.0</version.log4j>
     <version.log4j-maven-shade-plugin-extensions>2.19.0</version.log4j-maven-shade-plugin-extensions>
-    <version.log4j2-cachefile>2.14.1</version.log4j2-cachefile>
     <version.mockito>4.10.0</version.mockito>
     <version.resteasy>6.2.2.Final</version.resteasy>
     <version.slf4j>2.0.6</version.slf4j>

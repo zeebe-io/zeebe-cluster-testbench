@@ -16,8 +16,6 @@
 
   <properties>
     <plugin.version.assembly>3.3.0</plugin.version.assembly>
-    <version.jaxrs>3.0.12.Final</version.jaxrs>
-
     <version.slack-api>1.27.2</version.slack-api>
   </properties>
 
