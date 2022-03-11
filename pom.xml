@@ -73,6 +73,7 @@
   </properties>
 
   <dependencyManagement>
+    <!-- internal modules -->
     <dependencies>
       <dependency>
         <groupId>io.zeebe</groupId>
@@ -105,6 +106,8 @@
         <artifactId>zeebe-cluster-testbench-testdriver-api</artifactId>
         <version>${project.version}</version>
       </dependency>
+
+      <!-- zeebe-related -->
       <dependency>
         <groupId>io.camunda</groupId>
         <artifactId>zeebe-client-java</artifactId>
@@ -121,6 +124,19 @@
         <artifactId>zeebe-util</artifactId>
         <version>${zeebe.version}</version>
       </dependency>
+      <dependency>
+        <groupId>io.zeebe</groupId>
+        <artifactId>zeebe-worker-java-testutils</artifactId>
+        <version>${version.zeebeWorkerJavaTestutils}</version>
+      </dependency>
+      <dependency>
+        <groupId>io.camunda</groupId>
+        <artifactId>zeebe-process-test-extension</artifactId>
+        <version>${version.zeebe-process-test}</version>
+        <scope>test</scope>
+      </dependency>
+
+      <!-- Third party dependencies -->
       <dependency>
         <groupId>org.assertj</groupId>
         <artifactId>assertj-core</artifactId>
@@ -208,17 +224,6 @@
         <groupId>org.awaitility</groupId>
         <artifactId>awaitility</artifactId>
         <version>${version.awaitility}</version>
-      </dependency>
-      <dependency>
-        <groupId>io.zeebe</groupId>
-        <artifactId>zeebe-worker-java-testutils</artifactId>
-        <version>${version.zeebeWorkerJavaTestutils}</version>
-      </dependency>
-      <dependency>
-        <groupId>io.camunda</groupId>
-        <artifactId>zeebe-process-test-extension</artifactId>
-        <version>${version.zeebe-process-test}</version>
-        <scope>test</scope>
       </dependency>
       <dependency>
         <groupId>com.github.tomakehurst</groupId>
