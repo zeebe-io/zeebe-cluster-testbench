@@ -10,9 +10,10 @@
     <version>3.0.2-SNAPSHOT</version>
     <relativePath>../../pom.xml</relativePath>
   </parent>
-  <artifactId>zeebe-cluster-testbench-testdriver-api</artifactId>
 
+  <artifactId>zeebe-cluster-testbench-testdriver-api</artifactId>
   <packaging>jar</packaging>
+
   <name>Zeebe Cluster Testbench - API for Testdrivers</name>
 
   <dependencies>

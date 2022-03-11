@@ -10,9 +10,10 @@
     <version>3.0.2-SNAPSHOT</version>
     <relativePath>../../pom.xml</relativePath>
   </parent>
-  <artifactId>zeebe-cluster-testbench-testdriver-sequential</artifactId>
 
+  <artifactId>zeebe-cluster-testbench-testdriver-sequential</artifactId>
   <packaging>jar</packaging>
+
   <name>Zeebe Cluster Testbench - Sequential Testdriver</name>
 
   <properties>

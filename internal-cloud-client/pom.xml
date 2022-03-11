@@ -9,13 +9,13 @@
     <version>3.0.2-SNAPSHOT</version>
     <relativePath>../pom.xml</relativePath>
   </parent>
+
   <artifactId>zeebe-cluster-testbench-internal-cloud-client</artifactId>
+  <packaging>jar</packaging>
+
   <!-- Note that this project implements a client for internal Camunda Cloud
     services. These internal services are not officially supported and subject
     to change without notice. It is strongly discouraged to depend on this project. -->
-
-  <packaging>jar</packaging>
-
   <name>Zeebe Cluster Testbench - Internal Camunda Cloud Client</name>
 
   <dependencies>
