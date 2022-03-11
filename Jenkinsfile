@@ -155,7 +155,6 @@ pipeline {
                                       [envVar: 'CONTACT_POINT', vaultKey: 'contactPoint'],
                                       [envVar: 'INTERNAL_CLOUD_CLIENT_SECRET', vaultKey: 'internalCloudClientSecret'],
                                       [envVar: 'INTERNAL_CLOUD_PASSWORD', vaultKey: 'internalCloudPassword'],
-                                      [envVar: 'SHEETS_API_KEYFILE_CONTENT', vaultKey: 'sheetsApiKeyfileContent'],
                                       [envVar: 'SLACK_WEBHOOK_URL', vaultKey: 'slackWebhookUrl'],
                                   ]
                                  ],

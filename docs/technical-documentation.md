@@ -8,7 +8,6 @@ The _Zeebe Cluster Testbench_ is a tool to run end to end tests against Zeebe cl
 - It must be possible to run tests ad hoc
 - It must be possible to run tests against a Zeebe cluster deployed in Camunda Cloud
 - Clusters under test shall be created on demand and destroyed when it is no longer needed
-- Test results must be published and archived for later data mining
 - Engineers shall be notified when a test failure occurred
 - The cluster in which a failure occurred must be kept alive until an engineer was able to analyse the failure
 
@@ -40,7 +39,7 @@ The _Zeebe cluster testbench_ is basically a bunch of workers that request jobs 
 
 The test orchestration cluster contains different processes that define the steps for a test. See [README.md](../README.md) for a documentation of the different processes.
 
-Once a test is started, this will e.g. trigger the worker to create a cluster. Afterwards, another worker is triggered to run the test. Finally, other workers are triggered to publish the test results, notify engineers (if needed) and destroy the cluster again.
+Once a test is started, this will e.g. trigger the worker to create a cluster. Afterwards, another worker is triggered to run the test. Finally, other workers are triggered notify engineers (if needed) and destroy the cluster again.
 
 The workers are stateless. The only state is kept by Zeebe in the _testbench_ test orchestration cluster. Workers exchange information by reading from and writing to variables in the process.
 

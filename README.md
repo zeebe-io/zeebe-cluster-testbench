@@ -30,7 +30,7 @@ This document (and this project) define processes at different levels of detail:
   - Spawning different variations for a test, if needed (e.g. run a test in different cluster plans; run the same test with different parameters)
   - Preparing the test environment for the test
   - Calling the test process
-  - Recording test results, sending out notifications in case of test failures
+  - Sending out notifications in case of test failures
   - Cleaning up the test environment after the test
 - Test Protocol - this is the outermost layer. This is comparable to a test suite.
 
@@ -195,7 +195,7 @@ This way, the test process can terminate and report the test result, while the a
 | `testParams`                     | Settings to parameterize the sequential test                                           | `SequentialTestParameters` |
 | `testProcessId`                  | The id of the test process which should be run. Is used in the `Run Test` CallActivity | `String`                   |
 
-The cluster parameters shall be given as name and UUID. The UUIDs are used to create the cluster. The names are used for the recording of test results
+The cluster parameters shall be given as name and UUID. The UUIDs are used to create the cluster.
 
 |    Runtime Variables    |                   Description                   |                Type                |
 |-------------------------|-------------------------------------------------|------------------------------------|
