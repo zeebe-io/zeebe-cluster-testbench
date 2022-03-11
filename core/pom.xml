@@ -14,11 +14,6 @@
 
   <name>Zeebe Cluster Testbench - Core</name>
 
-  <properties>
-    <plugin.version.assembly>3.3.0</plugin.version.assembly>
-    <version.slack-api>1.27.2</version.slack-api>
-  </properties>
-
   <dependencies>
     <dependency>
       <groupId>io.zeebe</groupId>
@@ -49,7 +44,6 @@
     <dependency>
       <groupId>com.slack.api</groupId>
       <artifactId>slack-api-client</artifactId>
-      <version>${version.slack-api}</version>
     </dependency>
     <dependency>
       <groupId>com.fasterxml.jackson.core</groupId>

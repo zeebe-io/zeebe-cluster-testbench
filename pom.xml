@@ -40,7 +40,9 @@
   <properties>
     <nexus.release.repository>https://artifacts.camunda.com/artifactory/zeebe-io/</nexus.release.repository>
     <nexus.snapshot.repository>https://artifacts.camunda.com/artifactory/zeebe-io-snapshots/</nexus.snapshot.repository>
+    <plugin.version.assembly>3.3.0</plugin.version.assembly>
     <plugin.version.dependency>3.4.0</plugin.version.dependency>
+    <plugin.version.failsafe>3.0.0-M5</plugin.version.failsafe>
     <plugin.version.flakytestextractor>2.1.1</plugin.version.flakytestextractor>
     <plugin.version.flatten>1.3.0</plugin.version.flatten>
     <plugin.version.fmt>2.13</plugin.version.fmt>
@@ -57,6 +59,7 @@
     <version.awaitility>4.2.0</version.awaitility>
     <version.commons-io>2.11.0</version.commons-io>
     <version.commons-text>1.10.0</version.commons-text>
+    <version.grpc-api>1.51.1</version.grpc-api>
     <version.jackson>2.14.1</version.jackson>
     <version.java>17</version.java>
     <version.junit>5.9.1</version.junit>
@@ -64,6 +67,7 @@
     <version.log4j-maven-shade-plugin-extensions>2.19.0</version.log4j-maven-shade-plugin-extensions>
     <version.mockito>4.10.0</version.mockito>
     <version.resteasy>6.2.2.Final</version.resteasy>
+    <version.slack-api>1.20.1</version.slack-api>
     <version.slf4j>2.0.6</version.slf4j>
     <version.vavr>0.10.4</version.vavr>
     <version.wiremock>2.35.0</version.wiremock>
@@ -176,6 +180,11 @@
         <version>${version.jackson}</version>
       </dependency>
       <dependency>
+        <groupId>io.grpc</groupId>
+        <artifactId>grpc-api</artifactId>
+        <version>${version.grpc-api}</version>
+      </dependency>
+      <dependency>
         <groupId>org.jboss.resteasy</groupId>
         <artifactId>resteasy-client</artifactId>
         <version>${version.resteasy}</version>
@@ -184,6 +193,11 @@
         <groupId>org.jboss.resteasy</groupId>
         <artifactId>resteasy-jackson2-provider</artifactId>
         <version>${version.resteasy}</version>
+      </dependency>
+      <dependency>
+        <groupId>com.slack.api</groupId>
+        <artifactId>slack-api-client</artifactId>
+        <version>${version.slack-api}</version>
       </dependency>
       <dependency>
         <groupId>io.vavr</groupId>
@@ -298,6 +312,11 @@
               <phase>process-sources</phase>
             </execution>
           </executions>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-failsafe-plugin</artifactId>
+          <version>${plugin.version.failsafe}</version>
         </plugin>
 
         <plugin>

@@ -15,10 +15,6 @@
 
   <name>Zeebe Cluster Testbench - Integration Tests</name>
 
-  <properties>
-    <plugin.version.failsafe>3.0.0-M7</plugin.version.failsafe>
-  </properties>
-
   <dependencies>
     <dependency>
       <groupId>io.zeebe</groupId>
@@ -51,8 +47,8 @@
   <build>
     <plugins>
       <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-failsafe-plugin</artifactId>
-        <version>${plugin.version.failsafe}</version>
         <executions>
           <execution>
             <goals>
