@@ -6,6 +6,7 @@ import io.camunda.zeebe.client.api.worker.JobHandler;
 import io.zeebe.clustertestbench.cloud.CloudAPIClient;
 import io.zeebe.clustertestbench.cloud.CloudAPIClient.ClusterInfo;
 import io.zeebe.clustertestbench.cloud.CloudAPIClient.ClusterStatus;
+import io.zeebe.clustertestbench.util.LogDetails;
 import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -23,6 +24,7 @@ public class QueryClusterStateInCamundaCloudHandler implements JobHandler {
 
   @Override
   public void handle(final JobClient client, final ActivatedJob job) throws Exception {
+    LogDetails.setMDCForJob(job);
     final Input input = job.getVariablesAsType(Input.class);
 
     final String clusterStatus =

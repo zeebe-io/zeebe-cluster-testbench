@@ -11,6 +11,7 @@ import io.camunda.zeebe.client.impl.oauth.OAuthCredentialsProvider;
 import io.camunda.zeebe.client.impl.oauth.OAuthCredentialsProviderBuilder;
 import io.zeebe.clustertestbench.testdriver.api.CamundaCloudAuthenticationDetails;
 import io.zeebe.clustertestbench.testdriver.impl.CamundaCLoudAuthenticationDetailsImpl;
+import io.zeebe.clustertestbench.util.LogDetails;
 import java.time.Duration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -25,6 +26,7 @@ public class WarmUpClusterHandler implements JobHandler {
 
   @Override
   public void handle(final JobClient client, final ActivatedJob job) throws Exception {
+    LogDetails.setMDCForJob(job);
     final Input input = job.getVariablesAsType(Input.class);
 
     final CamundaCloudAuthenticationDetails authenticationDetails =
@@ -89,6 +91,7 @@ public class WarmUpClusterHandler implements JobHandler {
   private static class MoveAlongJobHandler implements JobHandler {
     @Override
     public void handle(final JobClient client, final ActivatedJob job) {
+      LogDetails.setMDCForJob(job);
       LOGGER.info(job.toString());
       client.newCompleteCommand(job.getKey()).send().join();
     }

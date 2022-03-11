@@ -6,6 +6,7 @@ import io.camunda.zeebe.client.api.worker.JobHandler;
 import io.zeebe.clustertestbench.cloud.CloudAPIClient;
 import io.zeebe.clustertestbench.cloud.CloudAPIClient.CreateClusterRequest;
 import io.zeebe.clustertestbench.cloud.CloudAPIClient.CreateClusterResponse;
+import io.zeebe.clustertestbench.util.LogDetails;
 import io.zeebe.clustertestbench.util.RandomNameGenerator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -24,6 +25,7 @@ public class CreateClusterInCamundaCloudHandler implements JobHandler {
 
   @Override
   public void handle(final JobClient client, final ActivatedJob job) throws Exception {
+    LogDetails.setMDCForJob(job);
     final var input = job.getVariablesAsType(Input.class);
 
     final String name = NAME_GENRATOR.next();

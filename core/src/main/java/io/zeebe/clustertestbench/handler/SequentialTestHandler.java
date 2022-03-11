@@ -10,11 +10,13 @@ import io.zeebe.clustertestbench.testdriver.api.TestReport;
 import io.zeebe.clustertestbench.testdriver.impl.CamundaCLoudAuthenticationDetailsImpl;
 import io.zeebe.clustertestbench.testdriver.sequential.SequentialTestDriver;
 import io.zeebe.clustertestbench.testdriver.sequential.SequentialTestParameters;
+import io.zeebe.clustertestbench.util.LogDetails;
 
 public class SequentialTestHandler implements JobHandler {
 
   @Override
   public void handle(final JobClient client, final ActivatedJob job) throws Exception {
+    LogDetails.setMDCForJob(job);
     final Input input = job.getVariablesAsType(Input.class);
 
     final Thread testDiverThread =

@@ -4,6 +4,7 @@ import io.camunda.zeebe.client.api.response.ActivatedJob;
 import io.camunda.zeebe.client.api.worker.JobClient;
 import io.camunda.zeebe.client.api.worker.JobHandler;
 import io.zeebe.clustertestbench.notification.NotificationService;
+import io.zeebe.clustertestbench.util.LogDetails;
 import org.apache.commons.lang3.StringUtils;
 
 public class NotifyEngineersPrepareFailedHandler implements JobHandler {
@@ -16,6 +17,7 @@ public class NotifyEngineersPrepareFailedHandler implements JobHandler {
 
   @Override
   public void handle(final JobClient client, final ActivatedJob job) throws Exception {
+    LogDetails.setMDCForJob(job);
     final Input input = job.getVariablesAsType(Input.class);
     final var message = composeMessage(input);
 
@@ -68,7 +70,7 @@ public class NotifyEngineersPrepareFailedHandler implements JobHandler {
       return clusterId;
     }
 
-    public void setClusterId(String clusterId) {
+    public void setClusterId(final String clusterId) {
       this.clusterId = clusterId;
     }
 
@@ -100,7 +102,7 @@ public class NotifyEngineersPrepareFailedHandler implements JobHandler {
       return businessKey;
     }
 
-    public void setBusinessKey(String businessKey) {
+    public void setBusinessKey(final String businessKey) {
       this.businessKey = businessKey;
     }
 

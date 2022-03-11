@@ -9,6 +9,7 @@ import io.zeebe.clustertestbench.internal.cloud.InternalCloudAPIClient.ChannelIn
 import io.zeebe.clustertestbench.internal.cloud.InternalCloudAPIClient.CreateGenerationRequest;
 import io.zeebe.clustertestbench.internal.cloud.InternalCloudAPIClient.GenerationInfo;
 import io.zeebe.clustertestbench.internal.cloud.InternalCloudAPIClient.UpdateChannelRequest;
+import io.zeebe.clustertestbench.util.LogDetails;
 import io.zeebe.clustertestbench.util.StringLookup;
 import java.util.Collections;
 import java.util.HashMap;
@@ -26,6 +27,7 @@ public class CreateGenerationInCamundaCloudHandler implements JobHandler {
 
   @Override
   public void handle(final JobClient client, final ActivatedJob job) throws Exception {
+    LogDetails.setMDCForJob(job);
     final var input = job.getVariablesAsType(Input.class);
 
     final var zeebeImage = input.getZeebeImage();

@@ -10,6 +10,7 @@ import io.zeebe.clustertestbench.cloud.CloudAPIClient.CreateZeebeClientResponse;
 import io.zeebe.clustertestbench.cloud.CloudAPIClient.ZeebeClientConnectionInfo;
 import io.zeebe.clustertestbench.testdriver.api.CamundaCloudAuthenticationDetails;
 import io.zeebe.clustertestbench.testdriver.impl.CamundaCLoudAuthenticationDetailsImpl;
+import io.zeebe.clustertestbench.util.LogDetails;
 import java.time.Duration;
 import java.util.regex.Pattern;
 import org.jetbrains.annotations.Nullable;
@@ -32,6 +33,7 @@ public class CreateApiClientInCamundaCloudHandler implements JobHandler {
 
   @Override
   public void handle(final JobClient client, final ActivatedJob job) throws Exception {
+    LogDetails.setMDCForJob(job);
     final var input = job.getVariablesAsType(Input.class);
     final String clusterId = input.getClusterId();
     final String clusterName = input.getClusterName();

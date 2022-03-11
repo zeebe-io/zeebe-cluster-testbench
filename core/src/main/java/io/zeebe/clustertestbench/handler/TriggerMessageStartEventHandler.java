@@ -6,6 +6,7 @@ import io.camunda.zeebe.client.ZeebeClient;
 import io.camunda.zeebe.client.api.response.ActivatedJob;
 import io.camunda.zeebe.client.api.worker.JobClient;
 import io.camunda.zeebe.client.api.worker.JobHandler;
+import io.zeebe.clustertestbench.util.LogDetails;
 import org.apache.commons.lang3.StringUtils;
 
 /**
@@ -29,6 +30,7 @@ public class TriggerMessageStartEventHandler implements JobHandler {
 
   @Override
   public void handle(final JobClient client, final ActivatedJob job) throws Exception {
+    LogDetails.setMDCForJob(job);
 
     final var headers = job.getCustomHeaders();
 
