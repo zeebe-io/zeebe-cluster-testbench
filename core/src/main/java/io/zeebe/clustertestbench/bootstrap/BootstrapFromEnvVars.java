@@ -73,11 +73,6 @@ public class BootstrapFromEnvVars {
               internalCloudApiUsername,
               internalCloudApiPassword);
 
-      // test report sheets
-      final String sheetsApiKeyfileContent =
-          getEnvironmentvariable("SHEETS_API_KEYFILE_CONTENT", false);
-      final String reportSheetID = getEnvironmentvariable("REPORT_SHEET_ID", false);
-
       final String slackWebhookUrl = getEnvironmentvariable("SLACK_WEBHOOK_URL", false);
 
       new Launcher(
@@ -87,8 +82,6 @@ public class BootstrapFromEnvVars {
               cloudApiAuthenticationDetails,
               inernalCloudApiUrl,
               internalCloudApiAuthenticationDetails,
-              sheetsApiKeyfileContent,
-              reportSheetID,
               slackWebhookUrl)
           .launch();
     } catch (final Exception e) {

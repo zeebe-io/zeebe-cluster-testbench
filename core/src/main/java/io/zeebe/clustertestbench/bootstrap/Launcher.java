@@ -1,12 +1,7 @@
 package io.zeebe.clustertestbench.bootstrap;
 
-import static com.google.api.client.googleapis.javanet.GoogleNetHttpTransport.newTrustedTransport;
-import static com.google.api.client.json.jackson2.JacksonFactory.getDefaultInstance;
 import static java.lang.Runtime.getRuntime;
 
-import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
-import com.google.api.services.sheets.v4.Sheets;
-import com.google.api.services.sheets.v4.SheetsScopes;
 import com.slack.api.Slack;
 import com.slack.api.webhook.Payload;
 import com.slack.api.webhook.WebhookResponse;
@@ -29,7 +24,6 @@ import io.zeebe.clustertestbench.handler.MapNamesToUUIDsHandler;
 import io.zeebe.clustertestbench.handler.NotifyEngineersHandler;
 import io.zeebe.clustertestbench.handler.NotifyEngineersPrepareFailedHandler;
 import io.zeebe.clustertestbench.handler.QueryClusterStateInCamundaCloudHandler;
-import io.zeebe.clustertestbench.handler.RecordTestResultHandler;
 import io.zeebe.clustertestbench.handler.SequentialTestHandler;
 import io.zeebe.clustertestbench.handler.TriggerMessageStartEventHandler;
 import io.zeebe.clustertestbench.handler.WarmUpClusterHandler;
@@ -37,10 +31,7 @@ import io.zeebe.clustertestbench.internal.cloud.InternalCloudAPIClient;
 import io.zeebe.clustertestbench.internal.cloud.InternalCloudAPIClientFactory;
 import io.zeebe.clustertestbench.notification.SlackNotificationService;
 import java.io.IOException;
-import java.io.StringBufferInputStream;
-import java.security.GeneralSecurityException;
 import java.time.Duration;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.CountDownLatch;
@@ -56,9 +47,6 @@ public class Launcher {
   private final String testOrchestrationContactPoint;
   private final OAuthServiceAccountAuthenticationDetails testOrchestrationAuthenticatonDetails;
 
-  private final String sheetsApiKeyFileContent;
-  private final String reportSheetID;
-
   private final String slackWebhookUrl;
 
   private final CloudAPIClient cloudApiClient;
@@ -71,13 +59,9 @@ public class Launcher {
       final OAuthServiceAccountAuthenticationDetails cloudApiAuthenticationDetails,
       final String internalCloudApiUrl,
       final OAuthUserAccountAuthenticationDetails internalCloudApiAuthenticationDetails,
-      final String sheetsApiKeyfileContent,
-      final String reportSheetID,
       final String slackWebhookUrl) {
     this.testOrchestrationContactPoint = testOrchestrationContactPoint;
     this.testOrchestrationAuthenticatonDetails = testOrchestrationAuthenticatonDetails;
-    this.sheetsApiKeyFileContent = sheetsApiKeyfileContent;
-    this.reportSheetID = reportSheetID;
     this.slackWebhookUrl = slackWebhookUrl;
 
     cloudApiClient = createCloudApiClient(cloudApiUrl, cloudApiAuthenticationDetails);
@@ -85,7 +69,7 @@ public class Launcher {
         createInternalCloudApiClient(internalCloudApiUrl, internalCloudApiAuthenticationDetails);
   }
 
-  public void launch() throws IOException {
+  public void launch() {
     performSelfTest();
 
     final OAuthCredentialsProvider cred = buildCredentialsProvider();
@@ -95,7 +79,7 @@ public class Launcher {
             .numJobWorkerExecutionThreads(50)
             .gatewayAddress(testOrchestrationContactPoint)
             .credentialsProvider(cred)
-            .build(); ) {
+            .build()) {
 
       try {
         final boolean success =
@@ -132,7 +116,6 @@ public class Launcher {
     testConnectionToCloudApi();
     testConnectionToInternalCloudApi();
     testConnectionToSlack();
-    testConnectionToGoogleSheets();
   }
 
   private void testConnectionToOrchestrationCluster() {
@@ -143,7 +126,7 @@ public class Launcher {
             .numJobWorkerExecutionThreads(50)
             .gatewayAddress(testOrchestrationContactPoint)
             .credentialsProvider(cred)
-            .build(); ) {
+            .build()) {
       client.newTopologyRequest().send().join();
 
       LOGGER.info("Selftest - Successfully established connection to test orchestration cluster");
@@ -222,27 +205,6 @@ public class Launcher {
     }
   }
 
-  private void testConnectionToGoogleSheets() {
-    try (final var inputStream = new StringBufferInputStream(sheetsApiKeyFileContent)) {
-      final GoogleCredential credential =
-          GoogleCredential.fromStream(inputStream)
-              .createScoped(Collections.singleton(SheetsScopes.SPREADSHEETS));
-
-      final Sheets service =
-          new Sheets.Builder(newTrustedTransport(), getDefaultInstance(), credential)
-              .setApplicationName("Zeebe Cluster Testbench - Publish Test Results Worker")
-              .build();
-
-      final Sheets.Spreadsheets.Values.Get request =
-          service.spreadsheets().values().get(reportSheetID, "Sheet1!A1:B1");
-
-      request.execute();
-      LOGGER.info("Selftest - Successfully established connection to Google Sheets");
-    } catch (final Exception e) {
-      LOGGER.error("Selftest - Unable to establish connection to Google Sheets", e);
-    }
-  }
-
   private void registerWorkers(final ZeebeClient client) {
     registerWorker(
         client,
@@ -274,17 +236,6 @@ public class Launcher {
 
     registerWorker(
         client, "run-sequential-test-job", new SequentialTestHandler(), Duration.ofMinutes(30));
-
-    try {
-      registerWorker(
-          client,
-          "record-test-result-job",
-          new RecordTestResultHandler(sheetsApiKeyFileContent, reportSheetID),
-          Duration.ofSeconds(10));
-    } catch (final IOException | GeneralSecurityException e) {
-      LOGGER.error(
-          "Exception while creating and registering worker for 'record-test-result-job'", e);
-    }
 
     final var slackNotificationService = new SlackNotificationService(slackWebhookUrl);
     registerWorker(

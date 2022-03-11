@@ -20,8 +20,6 @@ You need:
 - Zeebe cluster for test orchestration
 - Camunda Cloud Organization account
 - Camunda Cloud API credentials to create test clusters on demand
-- Google Sheet file to receive the test results
-- Google Sheet service account, token and permissions to write to that file
 - Kubernetes service account, token and permissions to interact with running clusters on Kubernetes
   level
 - Slack channel to receive notifications
@@ -68,21 +66,6 @@ Setup and deployment:
 | testbench.yaml | ZCTB_CLOUD_CLIENT_ID                 | Cloud API -> Client -> Client Id                                                                |
 | ENV_VARS       | CLOUD_CLIENT_SECRET                  | Cloud API -> Client -> Client Secret                                                            |
 
-#### Google Sheet and Service Account
-
-1. Enable Google Sheets API https://console.developers.google.com/
-2. Create a new service account with no particular
-   roles https://cloud.google.com/iam/docs/creating-managing-service-accounts
-3. Download JSON key file for this service account
-4. Create a new sheet
-5. Share sheet with service account (via the service account's email); give it edit permissions
-6. Fill deployment descriptors as follows:
-
-|      File      |           Field            |                                         Content                                          |
-|----------------|----------------------------|------------------------------------------------------------------------------------------|
-| testbench.yaml | ZCTB_REPORT_SHEET_ID       | ID of the sheet you created (Press share, copy link; take the bit that looks like an ID) |
-| ENV_VARS       | SHEETS_API_KEYFILE_CONTENT | Complete content of downloaded key file                                                  |
-
 #### Slack App and Webhook
 
 1. Create a Slack application (https://api.slack.com/start/overview)
@@ -128,7 +111,6 @@ done [here](https://github.com/zeebe-io/zeebe/issues/4361#issuecomment-681869448
 14:11:39.764 [main] INFO  io.zeebe.clustertestbench.bootstrap.Launcher - Selftest - Successfully established connection to test orchestration cluster
 14:11:41.049 [main] INFO  io.zeebe.clustertestbench.bootstrap.Launcher - Selftest - Successfully established connection to cloud API
 14:11:41.519 [main] INFO  io.zeebe.clustertestbench.bootstrap.Launcher - Selftest - Successfully established connection to Slack
-14:11:42.415 [main] INFO  io.zeebe.clustertestbench.bootstrap.Launcher - Selftest - Successfully established connection to Google Sheets
 14:11:42.422 [main] INFO  io.zeebe.clustertestbench.bootstrap.ProcessDeployer - Found processes to deploy:[processes\run-all-tests-in-camunda-cloud-per-cluster-plan.bpmn, processes\run-all-tests-in-camunda-cloud-per-region.bpmn, processes\run-all-tests-in-camunda-cloud.bpmn, processes\run-sequential-test-in-camunda-cloud.bpmn]
 14:11:42.422 [main] INFO  io.zeebe.clustertestbench.bootstrap.ProcessDeployer - Deploying run-all-tests-in-camunda-cloud-per-cluster-plan.bpmn
 14:11:42.622 [main] INFO  io.zeebe.clustertestbench.bootstrap.ProcessDeployer - Deploying run-all-tests-in-camunda-cloud-per-region.bpmn

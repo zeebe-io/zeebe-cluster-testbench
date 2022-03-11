@@ -47,7 +47,6 @@ kubectl create secret generic testbench-secrets --namespace="${namespace}" \
   --from-literal=internalCloudClientSecret="${INTERNAL_CLOUD_CLIENT_SECRET}" \
   --from-literal=internalCloudPassword="${INTERNAL_CLOUD_PASSWORD}" \
   --from-literal=slackWebhookUrl="${SLACK_WEBHOOK_URL}" \
-  --from-literal=sheetsApiKeyfileContent="${SHEETS_API_KEYFILE_CONTENT}" \
   --save-config -o yaml --dry-run=client | kubectl apply -f -
 
 # apply changes to testbench.yaml, if any
