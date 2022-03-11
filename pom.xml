@@ -117,7 +117,6 @@
         <groupId>io.camunda</groupId>
         <artifactId>zeebe-test-util</artifactId>
         <version>${zeebe.version}</version>
-        <scope>test</scope>
       </dependency>
       <dependency>
         <groupId>io.camunda</groupId>
@@ -133,7 +132,6 @@
         <groupId>io.camunda</groupId>
         <artifactId>zeebe-process-test-extension</artifactId>
         <version>${version.zeebe-process-test}</version>
-        <scope>test</scope>
       </dependency>
 
       <!-- Third party dependencies -->
@@ -192,7 +190,6 @@
         <artifactId>vavr</artifactId>
         <version>${version.vavr}</version>
       </dependency>
-      <!-- https://mvnrepository.com/artifact/org.apache.commons/commons-text -->
       <dependency>
         <groupId>org.apache.commons</groupId>
         <artifactId>commons-text</artifactId>

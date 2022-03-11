@@ -46,6 +46,7 @@
     <dependency>
       <groupId>io.camunda</groupId>
       <artifactId>zeebe-process-test-extension</artifactId>
+      <scope>test</scope>
     </dependency>
   </dependencies>
 
