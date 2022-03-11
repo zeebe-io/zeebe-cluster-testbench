@@ -71,6 +71,12 @@ spec:
                 secretKeyRef:
                   name: testbench-secrets
                   key: slackWebhookUrl
+            - name: ZCTB_LOG_APPENDER
+              value: "Stackdriver"
+            - name: ZCTB_LOG_STACKDRIVER_SERVICEVERSION
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.namespace
           resources:
             limits:
               cpu: 4

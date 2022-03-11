@@ -49,6 +49,10 @@
       <artifactId>zeebe-client-java</artifactId>
     </dependency>
     <dependency>
+      <groupId>io.camunda</groupId>
+      <artifactId>zeebe-util</artifactId>
+    </dependency>
+    <dependency>
       <groupId>com.slack.api</groupId>
       <artifactId>slack-api-client</artifactId>
       <version>${version.slack-api}</version>

@@ -114,6 +114,11 @@
         <scope>test</scope>
       </dependency>
       <dependency>
+        <groupId>io.camunda</groupId>
+        <artifactId>zeebe-util</artifactId>
+        <version>${zeebe.version}</version>
+      </dependency>
+      <dependency>
         <groupId>org.assertj</groupId>
         <artifactId>assertj-core</artifactId>
         <version>${version.assertj}</version>
