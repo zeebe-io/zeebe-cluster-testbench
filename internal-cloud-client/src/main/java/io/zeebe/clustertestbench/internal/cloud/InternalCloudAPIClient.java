@@ -1,8 +1,8 @@
 package io.zeebe.clustertestbench.internal.cloud;
 
+import com.fasterxml.jackson.annotation.JsonAlias;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import io.zeebe.clustertestbench.internal.cloud.response.ChannelInfo;
-import io.zeebe.clustertestbench.internal.cloud.response.ChannelInfo.GenerationInfo;
 import jakarta.ws.rs.Consumes;
 import jakarta.ws.rs.DELETE;
 import jakarta.ws.rs.GET;
@@ -54,4 +54,15 @@ public interface InternalCloudAPIClient {
       @JsonProperty("isDefault") boolean isDefault,
       String defaultGenerationId,
       List<String> allowedGenerationIds) {}
+
+  @JsonIgnoreProperties(ignoreUnknown = true)
+  record ChannelInfo(
+      String uuid,
+      String name,
+      List<GenerationInfo> allowedGenerations,
+      GenerationInfo defaultGeneration,
+      @JsonAlias("isDefault") boolean isDefault) {}
+
+  @JsonIgnoreProperties(ignoreUnknown = true)
+  record GenerationInfo(String uuid, String name, Map<String, String> versions) {}
 }

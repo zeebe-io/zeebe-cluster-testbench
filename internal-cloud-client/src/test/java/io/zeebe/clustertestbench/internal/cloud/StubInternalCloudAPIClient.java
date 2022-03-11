@@ -1,7 +1,5 @@
 package io.zeebe.clustertestbench.internal.cloud;
 
-import io.zeebe.clustertestbench.internal.cloud.response.ChannelInfo;
-import io.zeebe.clustertestbench.internal.cloud.response.ChannelInfo.GenerationInfo;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -36,10 +34,6 @@ public class StubInternalCloudAPIClient implements InternalCloudAPIClient {
   public StubInternalCloudAPIClient(final boolean broken) {
     this.broken = broken;
 
-    final GenerationInfo generationInfo = new GenerationInfo();
-    generationInfo.setName(DEFAULT_GENERATION_NAME);
-    generationInfo.setUuid(DEFAULT_GENERATION_UUID);
-
     final Map<String, String> versions = new HashMap<>();
 
     versions.put(KEY_ZEEBE_IMAGE, DEFAULT_ZEEBE_IMAGE);
@@ -47,15 +41,18 @@ public class StubInternalCloudAPIClient implements InternalCloudAPIClient {
     versions.put(KEY_ELASTIC_CURATOR_IMAGEE, DEFAULT_ELASTIC_CURATOR_IMAGE);
     versions.put(KEY_ELASTIC_OSS_IMAGE, DEFAULT_ELASTIC_OSS_IMAGE);
 
-    generationInfo.setVersions(versions);
+    final GenerationInfo generationInfo =
+        new GenerationInfo(DEFAULT_GENERATION_UUID, DEFAULT_GENERATION_NAME, versions);
 
     generationInfos.add(generationInfo);
 
-    final ChannelInfo channelInfo = new ChannelInfo();
-    channelInfo.setName(DEFAULT_CHANNEL_NAME);
-    channelInfo.setUuid(DEFAULT_CHANNEL_UUID);
-    channelInfo.setDefaultGeneration(generationInfo);
-    channelInfo.getAllowedGenerations().add(generationInfo);
+    final ChannelInfo channelInfo =
+        new ChannelInfo(
+            DEFAULT_CHANNEL_UUID,
+            DEFAULT_CHANNEL_NAME,
+            Collections.singletonList(generationInfo),
+            generationInfo,
+            true);
 
     channelInfos.add(channelInfo);
   }
@@ -68,10 +65,8 @@ public class StubInternalCloudAPIClient implements InternalCloudAPIClient {
   @Override
   public void createGeneration(final CreateGenerationRequest request) {
     if (!broken) {
-      final GenerationInfo generationInfo = new GenerationInfo();
-      generationInfo.setName(request.name());
-      generationInfo.setVersions(request.versions());
-      generationInfo.setUuid(UUID.randomUUID().toString());
+      final GenerationInfo generationInfo =
+          new GenerationInfo(UUID.randomUUID().toString(), request.name(), request.versions());
 
       generationInfos.add(generationInfo);
     }
@@ -80,7 +75,7 @@ public class StubInternalCloudAPIClient implements InternalCloudAPIClient {
   @Override
   public void deleteGeneration(final String generationUUID) {
     if (!broken) {
-      generationInfos.removeIf(gi -> generationUUID.equals(gi.getUuid()));
+      generationInfos.removeIf(gi -> generationUUID.equals(gi.uuid()));
     }
   }
 

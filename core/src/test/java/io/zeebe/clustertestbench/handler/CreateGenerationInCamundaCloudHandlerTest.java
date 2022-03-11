@@ -20,9 +20,9 @@ import static org.mockito.Mockito.verify;
 
 import io.zeebe.clustertestbench.internal.cloud.InternalCloudAPIClient;
 import io.zeebe.clustertestbench.internal.cloud.InternalCloudAPIClient.CreateGenerationRequest;
+import io.zeebe.clustertestbench.internal.cloud.InternalCloudAPIClient.GenerationInfo;
 import io.zeebe.clustertestbench.internal.cloud.InternalCloudAPIClient.UpdateChannelRequest;
 import io.zeebe.clustertestbench.internal.cloud.StubInternalCloudAPIClient;
-import io.zeebe.clustertestbench.internal.cloud.response.ChannelInfo.GenerationInfo;
 import java.util.ArrayList;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -152,7 +152,7 @@ class CreateGenerationInCamundaCloudHandlerTest {
 
       final var generationUUIDs =
           stubInternalApiClient.listGenerationInfos().stream()
-              .map(GenerationInfo::getUuid)
+              .map(GenerationInfo::uuid)
               .collect(Collectors.toList());
 
       assertThat(request.name()).isEqualTo(StubInternalCloudAPIClient.DEFAULT_CHANNEL_NAME);
@@ -181,8 +181,8 @@ class CreateGenerationInCamundaCloudHandlerTest {
           .completed()
           .extractingOutput()
           .containsOnly(
-              entry("generation", createdGeneration.getName()),
-              entry("generationUUID", createdGeneration.getUuid()));
+              entry("generation", createdGeneration.name()),
+              entry("generationUUID", createdGeneration.uuid()));
     }
 
     @Test
