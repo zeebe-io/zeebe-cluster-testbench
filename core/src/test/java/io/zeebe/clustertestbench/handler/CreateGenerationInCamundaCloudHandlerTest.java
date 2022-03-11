@@ -19,10 +19,10 @@ import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
 
 import io.zeebe.clustertestbench.internal.cloud.InternalCloudAPIClient;
+import io.zeebe.clustertestbench.internal.cloud.InternalCloudAPIClient.CreateGenerationRequest;
+import io.zeebe.clustertestbench.internal.cloud.InternalCloudAPIClient.GenerationInfo;
+import io.zeebe.clustertestbench.internal.cloud.InternalCloudAPIClient.UpdateChannelRequest;
 import io.zeebe.clustertestbench.internal.cloud.StubInternalCloudAPIClient;
-import io.zeebe.clustertestbench.internal.cloud.request.CreateGenerationRequest;
-import io.zeebe.clustertestbench.internal.cloud.request.UpdateChannelRequest;
-import io.zeebe.clustertestbench.internal.cloud.response.ChannelInfo.GenerationInfo;
 import java.util.ArrayList;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -117,7 +117,7 @@ class CreateGenerationInCamundaCloudHandlerTest {
       verify(spyInternalApiClient).createGeneration(argumentCapture.capture());
       final var request = argumentCapture.getValue();
 
-      assertThat(request.getVersions())
+      assertThat(request.versions())
           .containsOnly(
               entry(KEY_ZEEBE_IMAGE, ZEEBE_IMAGE),
               entry(KEY_OPERATE_IMAGE, DEFAULT_OPERATE_IMAGE),
@@ -152,11 +152,11 @@ class CreateGenerationInCamundaCloudHandlerTest {
 
       final var generationUUIDs =
           stubInternalApiClient.listGenerationInfos().stream()
-              .map(GenerationInfo::getUuid)
+              .map(GenerationInfo::uuid)
               .collect(Collectors.toList());
 
-      assertThat(request.getName()).isEqualTo(StubInternalCloudAPIClient.DEFAULT_CHANNEL_NAME);
-      assertThat(request.getAllowedGenerationIds()).containsExactlyElementsOf(generationUUIDs);
+      assertThat(request.name()).isEqualTo(StubInternalCloudAPIClient.DEFAULT_CHANNEL_NAME);
+      assertThat(request.allowedGenerationIds()).containsExactlyElementsOf(generationUUIDs);
     }
 
     @Test
@@ -181,8 +181,8 @@ class CreateGenerationInCamundaCloudHandlerTest {
           .completed()
           .extractingOutput()
           .containsOnly(
-              entry("generation", createdGeneration.getName()),
-              entry("generationUUID", createdGeneration.getUuid()));
+              entry("generation", createdGeneration.name()),
+              entry("generationUUID", createdGeneration.uuid()));
     }
 
     @Test

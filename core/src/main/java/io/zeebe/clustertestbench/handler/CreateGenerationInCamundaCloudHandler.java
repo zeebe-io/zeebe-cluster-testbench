@@ -5,10 +5,10 @@ import io.camunda.zeebe.client.api.worker.JobClient;
 import io.camunda.zeebe.client.api.worker.JobHandler;
 import io.vavr.control.Either;
 import io.zeebe.clustertestbench.internal.cloud.InternalCloudAPIClient;
-import io.zeebe.clustertestbench.internal.cloud.request.CreateGenerationRequest;
-import io.zeebe.clustertestbench.internal.cloud.request.UpdateChannelRequest;
-import io.zeebe.clustertestbench.internal.cloud.response.ChannelInfo;
-import io.zeebe.clustertestbench.internal.cloud.response.ChannelInfo.GenerationInfo;
+import io.zeebe.clustertestbench.internal.cloud.InternalCloudAPIClient.ChannelInfo;
+import io.zeebe.clustertestbench.internal.cloud.InternalCloudAPIClient.CreateGenerationRequest;
+import io.zeebe.clustertestbench.internal.cloud.InternalCloudAPIClient.GenerationInfo;
+import io.zeebe.clustertestbench.internal.cloud.InternalCloudAPIClient.UpdateChannelRequest;
 import io.zeebe.clustertestbench.util.StringLookup;
 import java.util.Collections;
 import java.util.HashMap;
@@ -50,7 +50,7 @@ public class CreateGenerationInCamundaCloudHandler implements JobHandler {
 
   private String createGeneration(
       final String generation, final String zeebeImage, final GenerationInfo template) {
-    final var versions = new HashMap<>(template.getVersions());
+    final var versions = new HashMap<>(template.versions());
 
     versions.put("zeebe", zeebeImage);
 
@@ -62,24 +62,24 @@ public class CreateGenerationInCamundaCloudHandler implements JobHandler {
     return findGenerationInfoByName(generation)
         .getOrElseThrow(
             msg -> new RuntimeException("Creation of generation unsuccessful: " + generation))
-        .getUuid();
+        .uuid();
   }
 
   private void addGenerationToChannel(final ChannelInfo channelInfo, final String generationUUID) {
     final List<String> allowedGenerationIds =
-        channelInfo.getAllowedGenerations().stream()
-            .map(GenerationInfo::getUuid)
+        channelInfo.allowedGenerations().stream()
+            .map(GenerationInfo::uuid)
             .collect(Collectors.toList());
     allowedGenerationIds.add(generationUUID);
 
     final var updateChannelRequest =
         new UpdateChannelRequest(
-            channelInfo.getName(),
+            channelInfo.name(),
             channelInfo.isDefault(),
-            channelInfo.getDefaultGeneration().getUuid(),
+            channelInfo.defaultGeneration().uuid(),
             allowedGenerationIds);
 
-    internalApiClient.updateChannel(channelInfo.getUuid(), updateChannelRequest);
+    internalApiClient.updateChannel(channelInfo.uuid(), updateChannelRequest);
   }
 
   protected static String createGenerationName() {
@@ -96,17 +96,16 @@ public class CreateGenerationInCamundaCloudHandler implements JobHandler {
     final var generationInfos = internalApiClient.listGenerationInfos();
 
     final var generationLookup =
-        new StringLookup<GenerationInfo>(
-            "generation", name, generationInfos, GenerationInfo::getName, true);
+        new StringLookup<>("generation", name, generationInfos, GenerationInfo::name, true);
 
     return generationLookup.lookup();
   }
 
-  private ChannelInfo lookupChannel(final String channel) throws Exception {
+  private ChannelInfo lookupChannel(final String channel) {
     final var channelInfos = internalApiClient.listChannelInfos();
 
     final var channelLookup =
-        new StringLookup<ChannelInfo>("channel", channel, channelInfos, ChannelInfo::getName, true);
+        new StringLookup<>("channel", channel, channelInfos, ChannelInfo::name, true);
 
     return channelLookup.lookup().getOrElseThrow(msg -> new IllegalArgumentException(msg));
   }
