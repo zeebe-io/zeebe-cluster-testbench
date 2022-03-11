@@ -38,10 +38,6 @@
     </dependency>
 
     <dependency>
-      <groupId>io.camunda</groupId>
-      <artifactId>zeebe-util</artifactId>
-    </dependency>
-    <dependency>
       <groupId>com.slack.api</groupId>
       <artifactId>slack-api-client</artifactId>
     </dependency>

@@ -112,18 +112,10 @@
       <!-- zeebe-related -->
       <dependency>
         <groupId>io.camunda</groupId>
-        <artifactId>zeebe-client-java</artifactId>
+        <artifactId>zeebe-bom</artifactId>
         <version>${zeebe.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>io.camunda</groupId>
-        <artifactId>zeebe-test-util</artifactId>
-        <version>${zeebe.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>io.camunda</groupId>
-        <artifactId>zeebe-util</artifactId>
-        <version>${zeebe.version}</version>
+        <type>pom</type>
+        <scope>import</scope>
       </dependency>
       <dependency>
         <groupId>io.zeebe</groupId>
@@ -205,11 +197,6 @@
         <version>${version.commons-io}</version>
       </dependency>
       <dependency>
-        <groupId>commons-io</groupId>
-        <artifactId>commons-io</artifactId>
-        <version>${version.commons-io}</version>
-      </dependency>
-      <dependency>
         <groupId>org.junit</groupId>
         <artifactId>junit-bom</artifactId>
         <version>${version.junit}</version>
@@ -230,11 +217,6 @@
         <groupId>org.awaitility</groupId>
         <artifactId>awaitility</artifactId>
         <version>${version.awaitility}</version>
-      </dependency>
-      <dependency>
-        <groupId>com.github.tomakehurst</groupId>
-        <artifactId>wiremock-jre8</artifactId>
-        <version>${version.wiremock}</version>
       </dependency>
       <dependency>
         <groupId>com.github.tomakehurst</groupId>
