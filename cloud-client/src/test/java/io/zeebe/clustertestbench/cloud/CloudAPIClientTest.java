@@ -1,14 +1,13 @@
 package io.zeebe.clustertestbench.cloud;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import io.camunda.zeebe.test.util.JsonUtil;
 import io.zeebe.clustertestbench.cloud.CloudAPIClient.CreateClusterRequest;
 import io.zeebe.clustertestbench.cloud.CloudAPIClient.CreateZeebeClientRequest;
 import org.junit.jupiter.api.Test;
 
-public class CloudAPIClientRecordsTest {
+class CloudAPIClientTest {
 
   @Test
   void testSerializationForCreateClientRequest() throws JsonProcessingException {
@@ -23,9 +22,17 @@ public class CloudAPIClientRecordsTest {
     final var jsonRepresentation = objectMapper.writeValueAsString(request);
 
     // then
-    assertThat(jsonRepresentation)
-        .isEqualTo(
-            "{\"name\":\"nameValue\",\"planTypeId\":\"planTypeIdValue\",\"channelId\":\"channelIdValue\",\"generationId\":\"generationIdValue\",\"regionId\":\"regionIdValue\"}");
+    JsonUtil.assertEquality(
+        jsonRepresentation,
+        """
+             {
+                "name": "nameValue",
+                "planTypeId":"planTypeIdValue",
+                "channelId":"channelIdValue",
+                "generationId":"generationIdValue",
+                "regionId":"regionIdValue"
+             }
+            """);
   }
 
   @Test
@@ -39,7 +46,13 @@ public class CloudAPIClientRecordsTest {
     final var jsonRepresentation = objectMapper.writeValueAsString(request);
 
     // then
-    assertThat(jsonRepresentation)
-        .isEqualTo("{\"clientName\":\"clientNameValue\",\"permissions\":[\"zeebe\"]}");
+    JsonUtil.assertEquality(
+        jsonRepresentation,
+        """
+                {
+                   "clientName":"clientNameValue",
+                   "permissions":["zeebe"]
+                }
+              """);
   }
 }

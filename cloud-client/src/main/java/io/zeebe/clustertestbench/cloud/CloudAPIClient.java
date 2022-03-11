@@ -117,6 +117,7 @@ public interface CloudAPIClient {
   @JsonIgnoreProperties(ignoreUnknown = true)
   record CreateZeebeClientResponse(String clientId, String clientSecret) {}
 
+  @JsonIgnoreProperties(ignoreUnknown = true)
   record ParametersResponse(
       List<ParametersChannelInfo> channels,
       List<ParametersClusterPlanTypeInfo> clusterPlanTypes,

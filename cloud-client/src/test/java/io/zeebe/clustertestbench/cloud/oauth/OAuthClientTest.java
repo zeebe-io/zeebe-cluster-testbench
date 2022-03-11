@@ -1,14 +1,13 @@
 package io.zeebe.clustertestbench.cloud.oauth;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import io.camunda.zeebe.test.util.JsonUtil;
 import io.zeebe.clustertestbench.cloud.oauth.OAuthClient.ServiceAccountTokenRequest;
 import io.zeebe.clustertestbench.cloud.oauth.OAuthClient.UserAccountTokenRequest;
 import org.junit.jupiter.api.Test;
 
-class OAuthClientRequestRecordsTest {
+class OAuthClientTest {
 
   @Test
   void testSerializationForServiceAccountTokenRequest() throws JsonProcessingException {
@@ -22,9 +21,16 @@ class OAuthClientRequestRecordsTest {
     final var jsonRepresentation = objectMapper.writeValueAsString(request);
 
     // then
-    assertThat(jsonRepresentation)
-        .isEqualTo(
-            "{\"client_id\":\"clientId\",\"client_secret\":\"clientSecret\",\"grant_type\":\"grantType\",\"audience\":\"audience\"}");
+    JsonUtil.assertEquality(
+        jsonRepresentation,
+        """
+        {
+          "client_id": "clientId",
+          "client_secret": "clientSecret",
+          "grant_type": "grantType",
+          "audience":"audience"
+        }
+        """);
   }
 
   @Test
@@ -40,8 +46,17 @@ class OAuthClientRequestRecordsTest {
     final var jsonRepresentation = objectMapper.writeValueAsString(request);
 
     // then
-    assertThat(jsonRepresentation)
-        .isEqualTo(
-            "{\"client_id\":\"clientId\",\"client_secret\":\"clientSecret\",\"grant_type\":\"grantType\",\"audience\":\"audience\",\"username\":\"username\",\"password\":\"password\"}");
+    JsonUtil.assertEquality(
+        jsonRepresentation,
+        """
+             {
+                "client_id":"clientId",
+                "client_secret":"clientSecret",
+                "grant_type":"grantType",
+                "audience":"audience",
+                "username":"username",
+                "password":"password"
+             }
+             """);
   }
 }

@@ -28,13 +28,10 @@ class CheckGenerationUsageHandlerTest {
   private static final String UUID_B = "UUID B";
   private static final String UUID_A = "UUID A";
   private static final GenerationInfo GENERATION_A = new GenerationInfo(UUID_A, "Generation A");
-  private static final ClusterInfo CLUSTER_X =
-      new ClusterInfo(null, null, null, null, null, GENERATION_A, null, null, null);
+  private static final ClusterInfo CLUSTER_X = createClusterInfoForGeneration(GENERATION_A);
   private static final GenerationInfo GENERATION_B = new GenerationInfo(UUID_B, "Generation B");
-  private static final ClusterInfo CLUSTER_Z =
-      new ClusterInfo(null, null, null, null, null, GENERATION_B, null, null, null);
-  private static final ClusterInfo CLUSTER_Y =
-      new ClusterInfo(null, null, null, null, null, GENERATION_B, null, null, null);
+  private static final ClusterInfo CLUSTER_Z = createClusterInfoForGeneration(GENERATION_B);
+  private static final ClusterInfo CLUSTER_Y = createClusterInfoForGeneration(GENERATION_B);
   private static final List<ClusterInfo> CLUSTERS = List.of(CLUSTER_Z, CLUSTER_Y, CLUSTER_X);
 
   @Mock CloudAPIClient mockCloudAPIClient;
@@ -108,5 +105,9 @@ class CheckGenerationUsageHandlerTest {
         .isExactlyInstanceOf(IllegalArgumentException.class);
 
     assertThat(activatedJobStub).isStillActivated();
+  }
+
+  private static ClusterInfo createClusterInfoForGeneration(final GenerationInfo generation) {
+    return new ClusterInfo(null, null, null, null, null, generation, null, null, null);
   }
 }
