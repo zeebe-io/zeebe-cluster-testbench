@@ -4,7 +4,6 @@ import io.camunda.zeebe.client.api.response.ActivatedJob;
 import io.camunda.zeebe.client.api.worker.JobClient;
 import io.camunda.zeebe.client.api.worker.JobHandler;
 import io.zeebe.clustertestbench.cloud.CloudAPIClient;
-import io.zeebe.clustertestbench.util.LogDetails;
 import org.apache.commons.lang3.StringUtils;
 
 /** Checks whether a certain generation is used by any cluster. */
@@ -18,7 +17,6 @@ public class CheckGenerationUsageHandler implements JobHandler {
 
   @Override
   public void handle(final JobClient client, final ActivatedJob job) throws Exception {
-    LogDetails.setMDCForJob(job);
     final var input = job.getVariablesAsType(Input.class);
 
     final var generationUUID = input.getGenerationUUID();

@@ -9,7 +9,6 @@ import io.zeebe.clustertestbench.cloud.CloudAPIClient.ParametersClusterPlanTypeI
 import io.zeebe.clustertestbench.cloud.CloudAPIClient.ParametersGenerationInfo;
 import io.zeebe.clustertestbench.cloud.CloudAPIClient.ParametersRegionInfo;
 import io.zeebe.clustertestbench.cloud.CloudAPIClient.ParametersResponse;
-import io.zeebe.clustertestbench.util.LogDetails;
 import io.zeebe.clustertestbench.util.StringLookup;
 import java.util.stream.Collectors;
 import org.slf4j.Logger;
@@ -27,7 +26,6 @@ public class MapNamesToUUIDsHandler implements JobHandler {
 
   @Override
   public void handle(final JobClient client, final ActivatedJob job) throws Exception {
-    LogDetails.setMDCForJob(job);
     LOGGER.info("Mapping names to UUIDs and vice versa");
     final InputOutput inputOutput = job.getVariablesAsType(InputOutput.class);
 

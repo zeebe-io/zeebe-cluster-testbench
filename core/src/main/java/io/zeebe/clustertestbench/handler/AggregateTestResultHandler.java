@@ -6,7 +6,6 @@ import io.camunda.zeebe.client.api.response.ActivatedJob;
 import io.camunda.zeebe.client.api.worker.JobClient;
 import io.camunda.zeebe.client.api.worker.JobHandler;
 import io.zeebe.clustertestbench.testdriver.api.TestReport.TestResult;
-import io.zeebe.clustertestbench.util.LogDetails;
 import io.zeebe.clustertestbench.util.StringLookup;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -37,7 +36,6 @@ public class AggregateTestResultHandler implements JobHandler {
 
   @Override
   public void handle(final JobClient client, final ActivatedJob job) throws Exception {
-    LogDetails.setMDCForJob(job);
     final var headers = job.getCustomHeaders();
 
     if (!headers.containsKey(KEY_VARAIBLENAMES)) {

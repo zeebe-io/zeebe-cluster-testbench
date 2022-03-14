@@ -4,7 +4,6 @@ import io.camunda.zeebe.client.api.response.ActivatedJob;
 import io.camunda.zeebe.client.api.worker.JobClient;
 import io.camunda.zeebe.client.api.worker.JobHandler;
 import io.zeebe.clustertestbench.cloud.CloudAPIClient;
-import io.zeebe.clustertestbench.util.LogDetails;
 
 public class DeleteClusterInCamundaCloudHandler implements JobHandler {
 
@@ -16,7 +15,6 @@ public class DeleteClusterInCamundaCloudHandler implements JobHandler {
 
   @Override
   public void handle(final JobClient client, final ActivatedJob job) throws Exception {
-    LogDetails.setMDCForJob(job);
     final Input input = job.getVariablesAsType(Input.class);
 
     final var clusterId = input.getClusterId();

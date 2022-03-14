@@ -7,7 +7,6 @@ import io.camunda.zeebe.client.api.worker.JobHandler;
 import io.zeebe.clustertestbench.notification.NotificationService;
 import io.zeebe.clustertestbench.testdriver.api.TestDriver;
 import io.zeebe.clustertestbench.testdriver.impl.TestReportDTO;
-import io.zeebe.clustertestbench.util.LogDetails;
 import org.apache.commons.lang3.StringUtils;
 
 public class NotifyEngineersHandler implements JobHandler {
@@ -22,7 +21,6 @@ public class NotifyEngineersHandler implements JobHandler {
 
   @Override
   public void handle(final JobClient client, final ActivatedJob job) throws Exception {
-    LogDetails.setMDCForJob(job);
     final Input input = job.getVariablesAsType(Input.class);
     final var message = composeMessage(input);
 
