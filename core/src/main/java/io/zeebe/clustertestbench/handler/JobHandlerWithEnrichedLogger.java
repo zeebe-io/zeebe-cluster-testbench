@@ -49,7 +49,7 @@ public final class JobHandlerWithEnrichedLogger implements JobHandler {
             "regionUUID",
             "zeebeImage");
 
-    private LoggingEnricher(final ActivatedJob job) {
+    LoggingEnricher(final ActivatedJob job) {
       putJobValuesInMDC(job);
     }
 
