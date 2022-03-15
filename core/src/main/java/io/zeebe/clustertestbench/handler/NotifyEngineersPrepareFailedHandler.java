@@ -68,7 +68,7 @@ public class NotifyEngineersPrepareFailedHandler implements JobHandler {
       return clusterId;
     }
 
-    public void setClusterId(String clusterId) {
+    public void setClusterId(final String clusterId) {
       this.clusterId = clusterId;
     }
 
@@ -100,7 +100,7 @@ public class NotifyEngineersPrepareFailedHandler implements JobHandler {
       return businessKey;
     }
 
-    public void setBusinessKey(String businessKey) {
+    public void setBusinessKey(final String businessKey) {
       this.businessKey = businessKey;
     }
 

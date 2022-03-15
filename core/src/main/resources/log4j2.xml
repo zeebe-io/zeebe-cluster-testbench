@@ -1,17 +1,29 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Configuration status="WARN">
+<Configuration status="WARN" shutdownHook="disable">
+  <Properties>
+    <Property name="log.stackdriver.serviceName">testbench</Property>
+    <Property name="log.stackdriver.serviceVersion">${env:ZCTB_LOG_STACKDRIVER_SERVICEVERSION:-}</Property>
+  </Properties>
+
   <Appenders>
     <Console name="Console" target="SYSTEM_OUT">
-      <PatternLayout
-        pattern="%d{HH:mm:ss.SSS} [%t] %-5level %logger{36} - %msg%n"/>
+      <PatternLayout pattern="%d{HH:mm:ss.SSS} [%t] %-5level %logger{36} - %msg%n"/>
+    </Console>
+
+    <Console name="Stackdriver" target="SYSTEM_OUT">
+      <StackdriverLayout serviceName="${log.stackdriver.serviceName}"
+        serviceVersion="${log.stackdriver.serviceVersion}"/>
     </Console>
   </Appenders>
+
   <Loggers>
+    <Logger name="io.zeebe.clustertestbench.cloud.filter" level="info" additivity="false"/>
+    <Logger name="io.zeebe.clustertestbench" level="info"/>
+    <Logger name="io.zeebe" level="info"/>
+
     <Root level="info">
-      <AppenderRef ref="Console"/>
+      <AppenderRef ref="${env:ZCTB_LOG_APPENDER:-Console}"/>
     </Root>
-    <Logger name="io.zeebe.clustertestbench.cloud.filter" level="debug" additivity="false">
-      <AppenderRef ref="Console"/>
-    </Logger>
   </Loggers>
+
 </Configuration>

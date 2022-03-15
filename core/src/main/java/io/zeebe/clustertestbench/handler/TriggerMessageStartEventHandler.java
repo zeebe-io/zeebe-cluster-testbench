@@ -29,7 +29,6 @@ public class TriggerMessageStartEventHandler implements JobHandler {
 
   @Override
   public void handle(final JobClient client, final ActivatedJob job) throws Exception {
-
     final var headers = job.getCustomHeaders();
 
     if (!headers.containsKey(KEY_MESSAGE_NAME)) {

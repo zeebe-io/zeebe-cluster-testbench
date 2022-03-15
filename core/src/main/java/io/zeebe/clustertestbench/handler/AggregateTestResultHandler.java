@@ -35,7 +35,7 @@ public class AggregateTestResultHandler implements JobHandler {
   protected static final String KEY_AGGREGATED_RESULT = "aggregatedTestResult";
 
   @Override
-  public void handle(JobClient client, ActivatedJob job) throws Exception {
+  public void handle(final JobClient client, final ActivatedJob job) throws Exception {
     final var headers = job.getCustomHeaders();
 
     if (!headers.containsKey(KEY_VARAIBLENAMES)) {

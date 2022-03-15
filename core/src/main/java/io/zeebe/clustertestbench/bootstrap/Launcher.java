@@ -20,6 +20,7 @@ import io.zeebe.clustertestbench.handler.CreateGenerationInCamundaCloudHandler;
 import io.zeebe.clustertestbench.handler.DeleteClusterInCamundaCloudHandler;
 import io.zeebe.clustertestbench.handler.DeleteGenerationInCamundaCloudHandler;
 import io.zeebe.clustertestbench.handler.GatherInformationAboutClusterInCamundaCloudHandler;
+import io.zeebe.clustertestbench.handler.JobHandlerWithEnrichedLogger;
 import io.zeebe.clustertestbench.handler.MapNamesToUUIDsHandler;
 import io.zeebe.clustertestbench.handler.NotifyEngineersHandler;
 import io.zeebe.clustertestbench.handler.NotifyEngineersPrepareFailedHandler;
@@ -290,7 +291,12 @@ public class Launcher {
         "Registering job worker " + jobHandler.getClass().getSimpleName() + " for: " + jobType);
 
     final JobWorker workerRegistration =
-        client.newWorker().jobType(jobType).handler(jobHandler).timeout(timeout).open();
+        client
+            .newWorker()
+            .jobType(jobType)
+            .handler(new JobHandlerWithEnrichedLogger(jobHandler))
+            .timeout(timeout)
+            .open();
 
     registeredJobWorkers.put(jobType, workerRegistration);
 
