@@ -124,6 +124,9 @@
                 <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
                   <mainClass>io.zeebe.clustertestbench.bootstrap.BootstrapFromEnvVars</mainClass>
                 </transformer>
+                <transformer implementation="org.apache.maven.plugins.shade.resource.AppendingTransformer">
+                  <resource>META-INF/services/jakarta.ws.rs.ext.Providers</resource>
+                </transformer>
               </transformers>
               <finalName>zeebe-cluster-testbench-uber-jar-with-dependencies</finalName>
             </configuration>
