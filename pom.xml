@@ -66,6 +66,7 @@
     <version.resteasy>6.0.0.Final</version.resteasy>
     <version.slf4j>1.7.36</version.slf4j>
     <version.vavr>0.10.4</version.vavr>
+    <version.wiremock>2.32.0</version.wiremock>
     <version.zeebe-process-test>1.4.0-alpha3-SNAPSHOT</version.zeebe-process-test>
     <version.zeebeWorkerJavaTestutils>1.3.5</version.zeebeWorkerJavaTestutils>
     <zeebe.version>1.3.5</zeebe.version>
@@ -213,6 +214,11 @@
         <artifactId>zeebe-process-test-extension</artifactId>
         <version>${version.zeebe-process-test}</version>
         <scope>test</scope>
+      </dependency>
+      <dependency>
+        <groupId>com.github.tomakehurst</groupId>
+        <artifactId>wiremock-jre8</artifactId>
+        <version>${version.wiremock}</version>
       </dependency>
     </dependencies>
   </dependencyManagement>

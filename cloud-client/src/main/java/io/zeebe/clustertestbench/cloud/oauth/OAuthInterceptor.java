@@ -1,5 +1,6 @@
 package io.zeebe.clustertestbench.cloud.oauth;
 
+import io.zeebe.clustertestbench.cloud.oauth.OAuthClient.OAuthCredentials;
 import io.zeebe.clustertestbench.cloud.oauth.OAuthClient.ServiceAccountTokenRequest;
 import io.zeebe.clustertestbench.cloud.oauth.OAuthClient.UserAccountTokenRequest;
 import jakarta.ws.rs.client.ClientRequestContext;
@@ -32,7 +33,7 @@ public final class OAuthInterceptor implements ClientRequestFilter, ClientRespon
       }
     }
 
-    String type = credentials.getTokenType();
+    String type = credentials.tokenType();
     if (type == null || type.isEmpty()) {
       throw new IOException(
           String.format("Expected valid token type but was absent or invalid '%s'", type));
@@ -44,7 +45,7 @@ public final class OAuthInterceptor implements ClientRequestFilter, ClientRespon
 
     headers.put(
         HEADER_AUTH_KEY,
-        Collections.singletonList(String.format("%s %s", type, credentials.getAccessToken())));
+        Collections.singletonList(String.format("%s %s", type, credentials.accessToken())));
   }
 
   @Override
