@@ -82,6 +82,7 @@ public interface CloudAPIClient {
     }
   }
 
+  @JsonIgnoreProperties(ignoreUnknown = true)
   record ClusterInfo(
       String uuid,
       String name,
