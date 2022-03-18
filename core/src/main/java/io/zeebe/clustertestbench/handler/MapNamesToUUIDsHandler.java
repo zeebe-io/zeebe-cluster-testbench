@@ -75,7 +75,7 @@ public class MapNamesToUUIDsHandler implements JobHandler {
     channelInfo = channelLookup.lookup().getOrElseThrow(msg -> new IllegalArgumentException(msg));
 
     inputOutput.setChannel(channelInfo.name());
-    inputOutput.setChannelUUID(channelInfo.name());
+    inputOutput.setChannelUUID(channelInfo.uuid());
 
     return channelInfo;
   }
