@@ -1,6 +1,7 @@
 package io.zeebe.clustertestbench.cloud.oauth;
 
 import com.fasterxml.jackson.annotation.JsonAlias;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.ws.rs.Consumes;
 import jakarta.ws.rs.POST;
@@ -32,6 +33,7 @@ public interface OAuthClient {
       String username,
       String password) {}
 
+  @JsonIgnoreProperties(ignoreUnknown = true)
   record OAuthCredentials(
       @JsonAlias({"accesstoken", "access_token"}) String accessToken,
       @JsonAlias({"tokentype", "token_type"}) String tokenType) {}
