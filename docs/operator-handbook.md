@@ -111,9 +111,8 @@ done [here](https://github.com/zeebe-io/zeebe/issues/4361#issuecomment-681869448
 14:11:39.764 [main] INFO  io.zeebe.clustertestbench.bootstrap.Launcher - Selftest - Successfully established connection to test orchestration cluster
 14:11:41.049 [main] INFO  io.zeebe.clustertestbench.bootstrap.Launcher - Selftest - Successfully established connection to cloud API
 14:11:41.519 [main] INFO  io.zeebe.clustertestbench.bootstrap.Launcher - Selftest - Successfully established connection to Slack
-14:11:42.422 [main] INFO  io.zeebe.clustertestbench.bootstrap.ProcessDeployer - Found processes to deploy:[processes\run-all-tests-in-camunda-cloud-per-cluster-plan.bpmn, processes\run-all-tests-in-camunda-cloud-per-region.bpmn, processes\run-all-tests-in-camunda-cloud.bpmn, processes\run-sequential-test-in-camunda-cloud.bpmn]
+14:11:42.422 [main] INFO  io.zeebe.clustertestbench.bootstrap.ProcessDeployer - Found processes to deploy:[processes\run-all-tests-in-camunda-cloud-per-cluster-plan.bpmn, processes\run-all-tests-in-camunda-cloud.bpmn, processes\run-sequential-test-in-camunda-cloud.bpmn]
 14:11:42.422 [main] INFO  io.zeebe.clustertestbench.bootstrap.ProcessDeployer - Deploying run-all-tests-in-camunda-cloud-per-cluster-plan.bpmn
-14:11:42.622 [main] INFO  io.zeebe.clustertestbench.bootstrap.ProcessDeployer - Deploying run-all-tests-in-camunda-cloud-per-region.bpmn
 14:11:42.718 [main] INFO  io.zeebe.clustertestbench.bootstrap.ProcessDeployer - Deploying run-all-tests-in-camunda-cloud.bpmn
 14:11:42.824 [main] INFO  io.zeebe.clustertestbench.bootstrap.ProcessDeployer - Deploying run-sequential-test-in-camunda-cloud.bpmn
 14:11:42.923 [main] INFO  io.zeebe.clustertestbench.bootstrap.Launcher - Registering job worker MapNamesToUUIDsWorker for: map-names-to-uuids-job
