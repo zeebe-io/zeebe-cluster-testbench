@@ -1,7 +1,9 @@
 package io.zeebe.clustertestbench.testdriver.api;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import java.util.List;
 
+@JsonIgnoreProperties(ignoreUnknown = true)
 public interface TestReport {
 
   TestResult testResult();
