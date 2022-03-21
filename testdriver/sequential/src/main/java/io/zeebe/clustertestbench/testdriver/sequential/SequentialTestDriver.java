@@ -16,7 +16,6 @@ import io.zeebe.clustertestbench.testdriver.api.CamundaCloudAuthenticationDetail
 import io.zeebe.clustertestbench.testdriver.api.TestDriver;
 import io.zeebe.clustertestbench.testdriver.api.TestReport;
 import io.zeebe.clustertestbench.testdriver.impl.CamundaCLoudAuthenticationDetailsImpl;
-import io.zeebe.clustertestbench.testdriver.impl.TestReportImpl;
 import io.zeebe.clustertestbench.testdriver.impl.TestTimingContext;
 import java.time.Duration;
 import java.time.Instant;

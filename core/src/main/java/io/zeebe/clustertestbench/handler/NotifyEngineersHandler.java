@@ -6,7 +6,7 @@ import io.camunda.zeebe.client.api.worker.JobClient;
 import io.camunda.zeebe.client.api.worker.JobHandler;
 import io.zeebe.clustertestbench.notification.NotificationService;
 import io.zeebe.clustertestbench.testdriver.api.TestDriver;
-import io.zeebe.clustertestbench.testdriver.impl.TestReportDTO;
+import io.zeebe.clustertestbench.testdriver.api.TestReport.TestReportDTO;
 import org.apache.commons.lang3.StringUtils;
 
 public class NotifyEngineersHandler implements JobHandler {
@@ -70,14 +70,14 @@ public class NotifyEngineersHandler implements JobHandler {
     // number of test failures
     resultBuilder
         .append("There were ") //
-        .append(input.getTestReport().getFailureCount()) //
+        .append(input.getTestReport().failureCount()) //
         .append(" failures.");
 
-    input.getTestReport().getFailureMessages().stream() //
+    input.getTestReport().failureMessages().stream() //
         .limit(TEST_FAILURE_SUMMARY_ITEMS) //
         .forEachOrdered(msg -> resultBuilder.append("\n").append(msg));
 
-    if (input.getTestReport().getFailureCount() > TEST_FAILURE_SUMMARY_ITEMS) {
+    if (input.getTestReport().failureCount() > TEST_FAILURE_SUMMARY_ITEMS) {
       resultBuilder.append("\n...\n");
     }
 

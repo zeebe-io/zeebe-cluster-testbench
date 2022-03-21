@@ -4,9 +4,14 @@ import java.util.List;
 
 public interface TestReport {
 
-  TestResult getTestResult();
+  TestResult testResult();
 
-  List<String> getFailureMessages();
+  List<String> failureMessages();
+
+  int failureCount();
+
+  record TestReportDTO(TestResult testResult, int failureCount, List<String> failureMessages)
+      implements TestReport {}
 
   enum TestResult {
     PASSED,

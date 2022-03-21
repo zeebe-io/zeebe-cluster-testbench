@@ -1,4 +1,4 @@
-package io.zeebe.clustertestbench.testdriver.impl;
+package io.zeebe.clustertestbench.testdriver.sequential;
 
 import io.camunda.zeebe.client.impl.ZeebeObjectMapper;
 import io.zeebe.clustertestbench.testdriver.api.TestReport;
@@ -42,16 +42,17 @@ public class TestReportImpl implements TestReport, AutoCloseable {
   }
 
   @Override
-  public TestResult getTestResult() {
+  public TestResult testResult() {
     return testResult;
   }
 
   @Override
-  public List<String> getFailureMessages() {
+  public List<String> failureMessages() {
     return Collections.unmodifiableList(failureMessages);
   }
 
-  public int getFailureCount() {
+  @Override
+  public int failureCount() {
     return failureCount;
   }
 
