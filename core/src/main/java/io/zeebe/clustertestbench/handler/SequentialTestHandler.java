@@ -4,9 +4,9 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import io.camunda.zeebe.client.api.response.ActivatedJob;
 import io.camunda.zeebe.client.api.worker.JobClient;
 import io.camunda.zeebe.client.api.worker.JobHandler;
-import io.zeebe.clustertestbench.testdriver.api.CamundaCloudAuthenticationDetails;
 import io.zeebe.clustertestbench.testdriver.api.TestDriver;
-import io.zeebe.clustertestbench.testdriver.api.TestReport;
+import io.zeebe.clustertestbench.testdriver.api.TestDriver.CamundaCloudAuthenticationDetails;
+import io.zeebe.clustertestbench.testdriver.api.TestDriver.TestReport;
 import io.zeebe.clustertestbench.testdriver.sequential.SequentialTestDriver;
 import io.zeebe.clustertestbench.testdriver.sequential.SequentialTestParameters;
 
@@ -19,13 +19,20 @@ public class SequentialTestHandler implements JobHandler {
     final Thread testDiverThread =
         new Thread(
             () -> {
-              final SequentialTestDriver sequentialTestDriver =
-                  new SequentialTestDriver(
-                      input.getAuthenticationDetails(), input.getTestParameters());
+              try {
+                final SequentialTestDriver sequentialTestDriver =
+                    new SequentialTestDriver(
+                        input.getAuthenticationDetails(), input.getTestParameters());
 
-              final TestReport testReport = sequentialTestDriver.runTest();
+                final TestReport testReport = sequentialTestDriver.runTest();
 
-              client.newCompleteCommand(job.getKey()).variables(new Output(testReport)).send();
+                client.newCompleteCommand(job.getKey()).variables(new Output(testReport)).send();
+              } catch (final Exception e) {
+                client
+                    .newFailCommand(job.getKey())
+                    .retries(job.getRetries() - 1)
+                    .errorMessage(e.toString());
+              }
             });
 
     testDiverThread.start();
@@ -35,12 +42,12 @@ public class SequentialTestHandler implements JobHandler {
     private CamundaCloudAuthenticationDetails authenticationDetails;
     private SequentialTestParameters testParameters;
 
-    @JsonProperty(CamundaCloudAuthenticationDetails.VARIABLE_KEY)
+    @JsonProperty(TestDriver.VARIABLE_KEY_AUTHENTICATION_DETAILS)
     public CamundaCloudAuthenticationDetails getAuthenticationDetails() {
       return authenticationDetails;
     }
 
-    @JsonProperty(CamundaCloudAuthenticationDetails.VARIABLE_KEY)
+    @JsonProperty(TestDriver.VARIABLE_KEY_AUTHENTICATION_DETAILS)
     public void setAuthenticationDetails(
         final CamundaCloudAuthenticationDetails authenticationDetails) {
       this.authenticationDetails = authenticationDetails;

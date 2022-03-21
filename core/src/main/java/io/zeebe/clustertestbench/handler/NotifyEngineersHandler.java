@@ -6,7 +6,7 @@ import io.camunda.zeebe.client.api.worker.JobClient;
 import io.camunda.zeebe.client.api.worker.JobHandler;
 import io.zeebe.clustertestbench.notification.NotificationService;
 import io.zeebe.clustertestbench.testdriver.api.TestDriver;
-import io.zeebe.clustertestbench.testdriver.api.TestReport.TestReportDTO;
+import io.zeebe.clustertestbench.testdriver.api.TestDriver.TestReportDTO;
 import org.apache.commons.lang3.StringUtils;
 
 public class NotifyEngineersHandler implements JobHandler {

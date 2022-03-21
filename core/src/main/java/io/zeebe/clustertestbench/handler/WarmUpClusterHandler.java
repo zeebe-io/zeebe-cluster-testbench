@@ -8,7 +8,8 @@ import io.camunda.zeebe.client.api.response.ActivatedJob;
 import io.camunda.zeebe.client.api.worker.JobClient;
 import io.camunda.zeebe.client.api.worker.JobHandler;
 import io.camunda.zeebe.client.impl.oauth.OAuthCredentialsProvider;
-import io.zeebe.clustertestbench.testdriver.api.CamundaCloudAuthenticationDetails;
+import io.zeebe.clustertestbench.testdriver.api.TestDriver;
+import io.zeebe.clustertestbench.testdriver.api.TestDriver.CamundaCloudAuthenticationDetails;
 import java.time.Duration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -77,12 +78,12 @@ public class WarmUpClusterHandler implements JobHandler {
   private static final class Input {
     private CamundaCloudAuthenticationDetails authenticationDetails;
 
-    @JsonProperty(CamundaCloudAuthenticationDetails.VARIABLE_KEY)
+    @JsonProperty(TestDriver.VARIABLE_KEY_AUTHENTICATION_DETAILS)
     public CamundaCloudAuthenticationDetails getAuthenticationDetails() {
       return authenticationDetails;
     }
 
-    @JsonProperty(CamundaCloudAuthenticationDetails.VARIABLE_KEY)
+    @JsonProperty(TestDriver.VARIABLE_KEY_AUTHENTICATION_DETAILS)
     public void setAuthenticationDetails(
         final CamundaCloudAuthenticationDetails authenticationDetails) {
       this.authenticationDetails = authenticationDetails;

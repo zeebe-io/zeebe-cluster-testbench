@@ -11,9 +11,8 @@ import io.camunda.zeebe.client.api.worker.JobWorker;
 import io.camunda.zeebe.client.impl.oauth.OAuthCredentialsProvider;
 import io.camunda.zeebe.model.bpmn.Bpmn;
 import io.camunda.zeebe.model.bpmn.builder.AbstractFlowNodeBuilder;
-import io.zeebe.clustertestbench.testdriver.api.CamundaCloudAuthenticationDetails;
-import io.zeebe.clustertestbench.testdriver.api.TestDriver;
-import io.zeebe.clustertestbench.testdriver.api.TestReport;
+import io.zeebe.clustertestbench.testdriver.api.TestDriver.CamundaCloudAuthenticationDetails;
+import io.zeebe.clustertestbench.testdriver.api.TestDriver.TestReport;
 import java.time.Duration;
 import java.time.Instant;
 import java.time.ZoneId;
@@ -25,7 +24,7 @@ import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class SequentialTestDriver implements TestDriver {
+public class SequentialTestDriver {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(SequentialTestDriver.class);
 
@@ -77,7 +76,6 @@ public class SequentialTestDriver implements TestDriver {
     client.newDeployCommand().addProcessModel(process, PROCESS_ID + ".bpmn").send().join();
   }
 
-  @Override
   public TestReport runTest() {
     LOGGER.info("Starting Sequential Test ");
 
