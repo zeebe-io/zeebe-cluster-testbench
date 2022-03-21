@@ -8,9 +8,7 @@ import io.camunda.zeebe.client.api.response.ActivatedJob;
 import io.camunda.zeebe.client.api.worker.JobClient;
 import io.camunda.zeebe.client.api.worker.JobHandler;
 import io.camunda.zeebe.client.impl.oauth.OAuthCredentialsProvider;
-import io.camunda.zeebe.client.impl.oauth.OAuthCredentialsProviderBuilder;
 import io.zeebe.clustertestbench.testdriver.api.CamundaCloudAuthenticationDetails;
-import io.zeebe.clustertestbench.testdriver.impl.CamundaCLoudAuthenticationDetailsImpl;
 import java.time.Duration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -30,11 +28,11 @@ public class WarmUpClusterHandler implements JobHandler {
     final CamundaCloudAuthenticationDetails authenticationDetails =
         input.getAuthenticationDetails();
     final OAuthCredentialsProvider cred =
-        buildCredentialsProvider(requireNonNull(authenticationDetails));
+        requireNonNull(authenticationDetails).buildCredentialsProvider();
 
     try (final ZeebeClient zeebeClient =
         ZeebeClient.newClientBuilder()
-            .gatewayAddress(authenticationDetails.getContactPoint())
+            .gatewayAddress(authenticationDetails.contactPoint())
             .credentialsProvider(cred)
             .build()) {
 
@@ -68,24 +66,6 @@ public class WarmUpClusterHandler implements JobHandler {
     }
   }
 
-  private OAuthCredentialsProvider buildCredentialsProvider(
-      final CamundaCloudAuthenticationDetails authenticationDetails) {
-    if (authenticationDetails.getAuthorizationURL() == null) {
-      return new OAuthCredentialsProviderBuilder()
-          .audience(authenticationDetails.getAudience())
-          .clientId(authenticationDetails.getClientId())
-          .clientSecret(authenticationDetails.getClientSecret())
-          .build();
-    } else {
-      return new OAuthCredentialsProviderBuilder()
-          .authorizationServerUrl(authenticationDetails.getAuthorizationURL())
-          .audience(authenticationDetails.getAudience())
-          .clientId(authenticationDetails.getClientId())
-          .clientSecret(authenticationDetails.getClientSecret())
-          .build();
-    }
-  }
-
   private static class MoveAlongJobHandler implements JobHandler {
     @Override
     public void handle(final JobClient client, final ActivatedJob job) {
@@ -95,16 +75,16 @@ public class WarmUpClusterHandler implements JobHandler {
   }
 
   private static final class Input {
-    private CamundaCLoudAuthenticationDetailsImpl authenticationDetails;
+    private CamundaCloudAuthenticationDetails authenticationDetails;
 
     @JsonProperty(CamundaCloudAuthenticationDetails.VARIABLE_KEY)
-    public CamundaCLoudAuthenticationDetailsImpl getAuthenticationDetails() {
+    public CamundaCloudAuthenticationDetails getAuthenticationDetails() {
       return authenticationDetails;
     }
 
     @JsonProperty(CamundaCloudAuthenticationDetails.VARIABLE_KEY)
     public void setAuthenticationDetails(
-        final CamundaCLoudAuthenticationDetailsImpl authenticationDetails) {
+        final CamundaCloudAuthenticationDetails authenticationDetails) {
       this.authenticationDetails = authenticationDetails;
     }
   }

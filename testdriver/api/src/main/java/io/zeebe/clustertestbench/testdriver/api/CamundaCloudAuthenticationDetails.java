@@ -1,16 +1,31 @@
 package io.zeebe.clustertestbench.testdriver.api;
 
-public interface CamundaCloudAuthenticationDetails {
+import io.camunda.zeebe.client.impl.oauth.OAuthCredentialsProvider;
+import io.camunda.zeebe.client.impl.oauth.OAuthCredentialsProviderBuilder;
 
-  String VARIABLE_KEY = "authenticationDetails";
+public record CamundaCloudAuthenticationDetails(
+    String audience,
+    String authorizationURL,
+    String clientId,
+    String clientSecret,
+    String contactPoint) {
 
-  String getAudience();
+  public static final String VARIABLE_KEY = "authenticationDetails";
 
-  String getAuthorizationURL();
-
-  String getClientId();
-
-  String getClientSecret();
-
-  String getContactPoint();
+  public OAuthCredentialsProvider buildCredentialsProvider() {
+    if (authorizationURL == null) {
+      return new OAuthCredentialsProviderBuilder()
+          .audience(audience)
+          .clientId(clientId)
+          .clientSecret(clientSecret)
+          .build();
+    } else {
+      return new OAuthCredentialsProviderBuilder()
+          .authorizationServerUrl(authorizationURL)
+          .audience(audience)
+          .clientId(clientId)
+          .clientSecret(clientSecret)
+          .build();
+    }
+  }
 }

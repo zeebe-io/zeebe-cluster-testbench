@@ -9,7 +9,6 @@ import io.zeebe.clustertestbench.cloud.CloudAPIClient.CreateZeebeClientRequest;
 import io.zeebe.clustertestbench.cloud.CloudAPIClient.CreateZeebeClientResponse;
 import io.zeebe.clustertestbench.cloud.CloudAPIClient.ZeebeClientConnectionInfo;
 import io.zeebe.clustertestbench.testdriver.api.CamundaCloudAuthenticationDetails;
-import io.zeebe.clustertestbench.testdriver.impl.CamundaCLoudAuthenticationDetailsImpl;
 import java.time.Duration;
 import java.util.regex.Pattern;
 import org.jetbrains.annotations.Nullable;
@@ -148,13 +147,13 @@ public class CreateApiClientInCamundaCloudHandler implements JobHandler {
 
   private static final class Output {
 
-    private CamundaCLoudAuthenticationDetailsImpl authenticationDetails;
+    private CamundaCloudAuthenticationDetails authenticationDetails;
 
     public Output(
         final CreateZeebeClientResponse createZeebeClientResponse,
         final ZeebeClientConnectionInfo connectionInfo) {
       authenticationDetails =
-          new CamundaCLoudAuthenticationDetailsImpl(
+          new CamundaCloudAuthenticationDetails(
               connectionInfo.zeebeAuthorizationServerUrl(),
               connectionInfo.getZeebeAudience(),
               connectionInfo.zeebeAddress(),
@@ -163,13 +162,13 @@ public class CreateApiClientInCamundaCloudHandler implements JobHandler {
     }
 
     @JsonProperty(CamundaCloudAuthenticationDetails.VARIABLE_KEY)
-    public CamundaCLoudAuthenticationDetailsImpl getAuthenticationDetails() {
+    public CamundaCloudAuthenticationDetails getAuthenticationDetails() {
       return authenticationDetails;
     }
 
     @JsonProperty(CamundaCloudAuthenticationDetails.VARIABLE_KEY)
     public void setAuthenticationDetails(
-        final CamundaCLoudAuthenticationDetailsImpl authenticationDetails) {
+        final CamundaCloudAuthenticationDetails authenticationDetails) {
       this.authenticationDetails = authenticationDetails;
     }
   }

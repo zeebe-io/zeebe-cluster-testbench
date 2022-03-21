@@ -9,13 +9,11 @@ import io.camunda.zeebe.client.api.worker.JobClient;
 import io.camunda.zeebe.client.api.worker.JobHandler;
 import io.camunda.zeebe.client.api.worker.JobWorker;
 import io.camunda.zeebe.client.impl.oauth.OAuthCredentialsProvider;
-import io.camunda.zeebe.client.impl.oauth.OAuthCredentialsProviderBuilder;
 import io.camunda.zeebe.model.bpmn.Bpmn;
 import io.camunda.zeebe.model.bpmn.builder.AbstractFlowNodeBuilder;
 import io.zeebe.clustertestbench.testdriver.api.CamundaCloudAuthenticationDetails;
 import io.zeebe.clustertestbench.testdriver.api.TestDriver;
 import io.zeebe.clustertestbench.testdriver.api.TestReport;
-import io.zeebe.clustertestbench.testdriver.impl.CamundaCLoudAuthenticationDetailsImpl;
 import java.time.Duration;
 import java.time.Instant;
 import java.time.ZoneId;
@@ -47,15 +45,15 @@ public class SequentialTestDriver implements TestDriver {
   private final SequentialTestParameters testParameters;
 
   public SequentialTestDriver(
-      final CamundaCLoudAuthenticationDetailsImpl authenticationDetails,
+      final CamundaCloudAuthenticationDetails authenticationDetails,
       final SequentialTestParameters testParameters) {
     LOGGER.info("Creating Sequential Test Driver");
     final OAuthCredentialsProvider cred =
-        buildCredentialsProvider(requireNonNull(authenticationDetails));
+        requireNonNull(authenticationDetails).buildCredentialsProvider();
 
     client =
         ZeebeClient.newClientBuilder()
-            .gatewayAddress(authenticationDetails.getContactPoint())
+            .gatewayAddress(authenticationDetails.contactPoint())
             .credentialsProvider(cred)
             .build();
 
@@ -154,24 +152,6 @@ public class SequentialTestDriver implements TestDriver {
       return testReport;
     } finally {
       client.close();
-    }
-  }
-
-  private OAuthCredentialsProvider buildCredentialsProvider(
-      final CamundaCloudAuthenticationDetails authenticationDetails) {
-    if (authenticationDetails.getAuthorizationURL() == null) {
-      return new OAuthCredentialsProviderBuilder()
-          .audience(authenticationDetails.getAudience())
-          .clientId(authenticationDetails.getClientId())
-          .clientSecret(authenticationDetails.getClientSecret())
-          .build();
-    } else {
-      return new OAuthCredentialsProviderBuilder()
-          .authorizationServerUrl(authenticationDetails.getAuthorizationURL())
-          .audience(authenticationDetails.getAudience())
-          .clientId(authenticationDetails.getClientId())
-          .clientSecret(authenticationDetails.getClientSecret())
-          .build();
     }
   }
 
