@@ -51,27 +51,22 @@ public class TestReportImpl implements TestReport, AutoCloseable {
     return Collections.unmodifiableList(failureMessages);
   }
 
-  @Override
   public int getFailureCount() {
     return failureCount;
   }
 
-  @Override
   public Map<String, Object> getMetaData() {
     return Collections.unmodifiableMap(metaData);
   }
 
-  @Override
   public long getStartTime() {
     return startTime;
   }
 
-  @Override
   public long getEndTime() {
     return endTime;
   }
 
-  @Override
   public long getTimeOfFirstFailure() {
     return timeOfFirstFailure;
   }

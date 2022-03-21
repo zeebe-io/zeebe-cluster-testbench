@@ -24,56 +24,51 @@ public class TestReportDTO implements TestReport {
     return failureMessages;
   }
 
-  @Override
-  public int getFailureCount() {
-    return failureCount;
-  }
-
-  @Override
-  public Map<String, Object> getMetaData() {
-    return metaData;
-  }
-
-  @Override
-  public long getStartTime() {
-    return startTime;
-  }
-
-  @Override
-  public long getEndTime() {
-    return endTime;
-  }
-
-  @Override
-  public long getTimeOfFirstFailure() {
-    return timeOfFirstFailure;
-  }
-
-  public void setTimeOfFirstFailure(final long timeOfFirstFailure) {
-    this.timeOfFirstFailure = timeOfFirstFailure;
-  }
-
-  public void setEndTime(final long endTime) {
-    this.endTime = endTime;
-  }
-
-  public void setStartTime(final long startTime) {
-    this.startTime = startTime;
-  }
-
-  public void setMetaData(final Map<String, Object> metaData) {
-    this.metaData = metaData;
-  }
-
-  public void setFailureCount(final int failureCount) {
-    this.failureCount = failureCount;
-  }
-
   public void setFailureMessages(final List<String> failureMessages) {
     this.failureMessages = failureMessages;
   }
 
   public void setTestResult(final TestResult testResult) {
     this.testResult = testResult;
+  }
+
+  public int getFailureCount() {
+    return failureCount;
+  }
+
+  public void setFailureCount(final int failureCount) {
+    this.failureCount = failureCount;
+  }
+
+  public Map<String, Object> getMetaData() {
+    return metaData;
+  }
+
+  public void setMetaData(final Map<String, Object> metaData) {
+    this.metaData = metaData;
+  }
+
+  public long getStartTime() {
+    return startTime;
+  }
+
+  public void setStartTime(final long startTime) {
+    this.startTime = startTime;
+  }
+
+  public long getEndTime() {
+    return endTime;
+  }
+
+  public void setEndTime(final long endTime) {
+    this.endTime = endTime;
+  }
+
+  public long getTimeOfFirstFailure() {
+    return timeOfFirstFailure;
+  }
+
+  public void setTimeOfFirstFailure(final long timeOfFirstFailure) {
+    this.timeOfFirstFailure = timeOfFirstFailure;
   }
 }
