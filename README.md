@@ -129,26 +129,6 @@ This process runs all tests in a fresh cluster in Camunda Cloud in different clu
 |------------------------|--------------------------------------------------|--------------|
 | `aggregatedTestResult` | Aggregated test result for all tests/experiments | `TestResult` |
 
-#### Run All Tests in Camunda Cloud per Region
-
-This process runs all tests in a fresh cluster in Camunda Cloud in different regions:
-
-![run-all-tests-in-camunda-cloud-per-region process](docs/assets/run-all-tests-in-camunda-cloud-per-region.png "Run all Tests in Camunda Cloud per Region process")
-
-**Process ID:** `run-all-tests-in-camunda-cloud-per-region`
-
-|         Inputs         |                 Description                  |            Type            |
-|------------------------|----------------------------------------------|----------------------------|
-| `generation`           | name of the generation for the cluster       | `String`                   |
-| `clusterPlan`          | name of the cluster plan for the cluster     | `String`                   |
-| `channel`              | name of the channel for the cluster          | `String`                   |
-| `regions`              | names of the regions for the clusters        | `List<String>`             |
-| `sequentialTestParams` | Settings to parameterize the sequential test | `SequentialTestParameters` |
-
-|        Outputs         |                   Description                    |     Type     |
-|------------------------|--------------------------------------------------|--------------|
-| `aggregatedTestResult` | Aggregated test result for all tests/experiments | `TestResult` |
-
 #### Run All Tests in Camunda Cloud
 
 This process runs all tests in a fresh cluster in Camunda Cloud:
