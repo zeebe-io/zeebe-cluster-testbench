@@ -1,4 +1,4 @@
-package io.zeebe.clustertestbench.testdriver.impl;
+package io.zeebe.clustertestbench.testdriver.sequential;
 
 import java.time.Duration;
 import java.util.HashMap;
@@ -34,7 +34,7 @@ public class TestTimingContext implements AutoCloseable {
       final Consumer<String> errorCollector) {
     super();
     this.timeSupplier = timeSupplier;
-    this.startTime = timeSupplier.get();
+    startTime = timeSupplier.get();
     this.maxDuration = maxDuration.toMillis();
     this.errorMessage = errorMessage;
     this.errorCollector = errorCollector;
