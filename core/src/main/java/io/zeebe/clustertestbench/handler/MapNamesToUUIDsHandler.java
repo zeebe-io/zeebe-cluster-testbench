@@ -50,7 +50,7 @@ public class MapNamesToUUIDsHandler implements JobHandler {
     final ParametersChannelInfo channelInfo;
 
     if ((inputOutput.getChannelUUID() == null) && (inputOutput.getChannel() == null)) {
-      throw new IllegalArgumentException("Neither 'generation' nor 'generationUUID' are provided");
+      throw new IllegalArgumentException("Neither 'channel' nor 'channelUUID' are provided");
     }
 
     final StringLookup<ParametersChannelInfo> channelLookup;
