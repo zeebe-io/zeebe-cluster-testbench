@@ -191,7 +191,9 @@ pipeline {
                         sh 'git config --global user.name "${GITHUB_TOKEN_USR}"'
                         sh '''
                             mvn -B -s $MAVEN_SETTINGS_XML -DskipTests source:jar \
-                              javadoc:jar release:prepare release:perform -Prelease -DcheckModificationExcludeList=core/chaos-workers/deployment/chaosWorker-dev.yaml,core/chaos-workers/deployment/chaosWorker-prod.yaml
+                              javadoc:jar release:prepare release:perform -Prelease \
+                              -DcheckModificationExcludeList=core/chaos-workers/deployment/chaosWorker-dev.yaml,core/chaos-workers/deployment/chaosWorker-prod.yaml
+                              -DignoreSnapshots=true
                         '''
                         sh '.ci/scripts/github-release.sh'
                     }
