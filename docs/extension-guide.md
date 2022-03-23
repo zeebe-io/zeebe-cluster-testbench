@@ -9,7 +9,7 @@ Additional tests can be added very easily by:
 * Deploying additional (test) processes
 * Deploying additional workers used in these processes
 
-The sources for both may be added to the test bench repository, or they could live in a repository of their own.
+The sources for both may be added to the test bench repository, or (preferably) they live in a repository of their own.
 
 The interface between test bench and the test would then be the [Run Test in Camunda Cloud](../README.md#run-test-in-camunda-cloud) process
 
@@ -17,10 +17,19 @@ The interface between test bench and the test would then be the [Run Test in Cam
 
 This process takes as parameters, among others, the _testProcessId_. This is the ID of the process you want to have called.
 
-The called process will find in the variables, among others, _authenticationDetails_ which
+The called process will find the variables that are defined in `TestInputDTO`. This includes _authenticationDetails_ which
 can be used to authenticate against the Zeebe cluster.
 
-The called process is expected to return a _testReport_ (see class `TestReport` for the expected structure)
+The called process is expected to return an output - see class `TestOutput` for the expected structure.
+
+The called process can have sub processes and complex structures. In its simples form, the called process can have a single service task
+that delegates to a test driver. A test driver is responsible for running a test within a cluster provided by Testbench.
+
+Please have a look at [TestDriver](/testdriver/api/src/main/java/io/zeebe/clustertestbench/testdriver/api/TestDriver.java) which defines the interface of a test driver.
+
+If you implement a test driver in Java/Kotlin/Scala, you can use these interfaces. In particular, you should be able to
+unmarshall a `TestInputDTO` from the variables of the process instance, and you should be able to marshall a `TestOutputDTO`
+to the response variables of a job.
 
 ## Testing Something Other than Zeebe
 

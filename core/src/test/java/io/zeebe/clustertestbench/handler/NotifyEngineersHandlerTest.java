@@ -14,7 +14,8 @@ import static org.mockito.Mockito.when;
 import io.camunda.zeebe.client.api.command.CompleteJobCommandStep1;
 import io.camunda.zeebe.client.api.worker.JobClient;
 import io.zeebe.clustertestbench.notification.NotificationService;
-import io.zeebe.clustertestbench.testdriver.impl.TestReportDTO;
+import io.zeebe.clustertestbench.testdriver.api.TestDriver;
+import io.zeebe.clustertestbench.testdriver.api.TestDriver.TestReportDTO;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -103,8 +104,7 @@ public class NotifyEngineersHandlerTest {
     input.put("testProcessId", PROCESS_ID);
     input.put("businessKey", BUSINESS_KEY);
 
-    final var testReport = new TestReportDTO();
-    testReport.setFailureMessages(List.of("ERROR"));
+    final var testReport = new TestReportDTO(TestDriver.TestResult.FAILED, 1, List.of("ERROR"));
     input.put("testReport", testReport);
 
     activatedJobStub.setInputVariables(input);

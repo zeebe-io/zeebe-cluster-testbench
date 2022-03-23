@@ -5,7 +5,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import io.camunda.zeebe.client.api.response.ActivatedJob;
 import io.camunda.zeebe.client.api.worker.JobClient;
 import io.camunda.zeebe.client.api.worker.JobHandler;
-import io.zeebe.clustertestbench.testdriver.api.TestReport.TestResult;
+import io.zeebe.clustertestbench.testdriver.api.TestDriver;
+import io.zeebe.clustertestbench.testdriver.api.TestDriver.TestResult;
 import io.zeebe.clustertestbench.util.StringLookup;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -59,7 +60,7 @@ public class AggregateTestResultHandler implements JobHandler {
 
     final var variables = new ArrayList<>(job.getVariablesAsMap().entrySet());
 
-    var aggregatedTestResult = TestResult.SKIPPED;
+    var aggregatedTestResult = TestDriver.TestResult.SKIPPED;
 
     while (variableNameIterator.hasNext()) {
       final var variableName = variableNameIterator.next();
@@ -84,9 +85,9 @@ public class AggregateTestResultHandler implements JobHandler {
   protected TestResult addToAggregate(final TestResult currentAggregate, final Object valueToAdd)
       throws JsonProcessingException {
     if (valueToAdd instanceof String) {
-      final var testResult = TestResult.valueOf((String) valueToAdd);
+      final var testResult = TestDriver.TestResult.valueOf((String) valueToAdd);
 
-      return TestResult.aggregate(currentAggregate, testResult);
+      return TestDriver.TestResult.aggregate(currentAggregate, testResult);
     } else if (valueToAdd instanceof Iterable) {
       final var iterator = ((Iterable) valueToAdd).iterator();
 

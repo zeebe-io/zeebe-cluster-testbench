@@ -7,7 +7,8 @@ import static org.camunda.community.zeebe.testutils.ZeebeWorkerAssertions.assert
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import io.vavr.collection.Stream;
-import io.zeebe.clustertestbench.testdriver.api.TestReport.TestResult;
+import io.zeebe.clustertestbench.testdriver.api.TestDriver;
+import io.zeebe.clustertestbench.testdriver.api.TestDriver.TestResult;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -24,32 +25,53 @@ public class AggregateTestResultHandlerTest {
 
   static Stream<Arguments> provideValidValues() {
     return Stream.of(
-        Arguments.of(TestResult.PASSED, "PASSED", TestResult.PASSED),
-        Arguments.of(TestResult.PASSED, "SKIPPED", TestResult.PASSED),
-        Arguments.of(TestResult.PASSED, "FAILED", TestResult.FAILED),
-        Arguments.of(TestResult.SKIPPED, "PASSED", TestResult.PASSED),
-        Arguments.of(TestResult.SKIPPED, "SKIPPED", TestResult.SKIPPED),
-        Arguments.of(TestResult.SKIPPED, "FAILED", TestResult.FAILED),
-        Arguments.of(TestResult.FAILED, "PASSED", TestResult.FAILED),
-        Arguments.of(TestResult.FAILED, "SKIPPED", TestResult.FAILED),
-        Arguments.of(TestResult.FAILED, "FAILED", TestResult.FAILED),
-        Arguments.of(TestResult.SKIPPED, List.of("SKIPPED", "SKIPPED"), TestResult.SKIPPED),
-        Arguments.of(TestResult.SKIPPED, List.of("SKIPPED", "PASSED"), TestResult.PASSED),
-        Arguments.of(TestResult.SKIPPED, List.of("SKIPPED", "FAILED"), TestResult.FAILED),
-        Arguments.of(TestResult.SKIPPED, List.of("PASSED", "PASSED"), TestResult.PASSED),
-        Arguments.of(TestResult.SKIPPED, List.of("PASSED", "FAILED"), TestResult.FAILED),
-        Arguments.of(TestResult.SKIPPED, List.of("FAILED", "FAILED"), TestResult.FAILED),
+        Arguments.of(TestDriver.TestResult.PASSED, "PASSED", TestDriver.TestResult.PASSED),
+        Arguments.of(TestDriver.TestResult.PASSED, "SKIPPED", TestDriver.TestResult.PASSED),
+        Arguments.of(TestDriver.TestResult.PASSED, "FAILED", TestDriver.TestResult.FAILED),
+        Arguments.of(TestDriver.TestResult.SKIPPED, "PASSED", TestDriver.TestResult.PASSED),
+        Arguments.of(TestDriver.TestResult.SKIPPED, "SKIPPED", TestDriver.TestResult.SKIPPED),
+        Arguments.of(TestDriver.TestResult.SKIPPED, "FAILED", TestDriver.TestResult.FAILED),
+        Arguments.of(TestDriver.TestResult.FAILED, "PASSED", TestDriver.TestResult.FAILED),
+        Arguments.of(TestDriver.TestResult.FAILED, "SKIPPED", TestDriver.TestResult.FAILED),
+        Arguments.of(TestDriver.TestResult.FAILED, "FAILED", TestDriver.TestResult.FAILED),
         Arguments.of(
-            TestResult.SKIPPED,
+            TestDriver.TestResult.SKIPPED,
+            List.of("SKIPPED", "SKIPPED"),
+            TestDriver.TestResult.SKIPPED),
+        Arguments.of(
+            TestDriver.TestResult.SKIPPED,
+            List.of("SKIPPED", "PASSED"),
+            TestDriver.TestResult.PASSED),
+        Arguments.of(
+            TestDriver.TestResult.SKIPPED,
+            List.of("SKIPPED", "FAILED"),
+            TestDriver.TestResult.FAILED),
+        Arguments.of(
+            TestDriver.TestResult.SKIPPED,
+            List.of("PASSED", "PASSED"),
+            TestDriver.TestResult.PASSED),
+        Arguments.of(
+            TestDriver.TestResult.SKIPPED,
+            List.of("PASSED", "FAILED"),
+            TestDriver.TestResult.FAILED),
+        Arguments.of(
+            TestDriver.TestResult.SKIPPED,
+            List.of("FAILED", "FAILED"),
+            TestDriver.TestResult.FAILED),
+        Arguments.of(
+            TestDriver.TestResult.SKIPPED,
             List.of("PASSED", "SKIPPED", "PASSED", "FAILED", "PASSED", "PASSED"),
-            TestResult.FAILED),
+            TestDriver.TestResult.FAILED),
         Arguments.of(
-            TestResult.SKIPPED,
+            TestDriver.TestResult.SKIPPED,
             List.of("PASSED", "SKIPPED", "PASSED", "SKIPPED", "PASSED", "PASSED"),
-            TestResult.PASSED),
-        Arguments.of(TestResult.SKIPPED, Collections.EMPTY_LIST, TestResult.SKIPPED),
-        Arguments.of(TestResult.PASSED, Collections.EMPTY_LIST, TestResult.PASSED),
-        Arguments.of(TestResult.FAILED, Collections.EMPTY_LIST, TestResult.FAILED));
+            TestDriver.TestResult.PASSED),
+        Arguments.of(
+            TestDriver.TestResult.SKIPPED, Collections.EMPTY_LIST, TestDriver.TestResult.SKIPPED),
+        Arguments.of(
+            TestDriver.TestResult.PASSED, Collections.EMPTY_LIST, TestDriver.TestResult.PASSED),
+        Arguments.of(
+            TestDriver.TestResult.FAILED, Collections.EMPTY_LIST, TestDriver.TestResult.FAILED));
   }
 
   static Stream<Arguments> provideInvalidValues() {
@@ -153,14 +175,14 @@ public class AggregateTestResultHandlerTest {
     void shouldRejectInvalidValues(final Object valueToAdd) throws JsonProcessingException {
 
       // when + then
-      assertThatThrownBy(() -> sutHandler.addToAggregate(TestResult.SKIPPED, valueToAdd))
+      assertThatThrownBy(() -> sutHandler.addToAggregate(TestDriver.TestResult.SKIPPED, valueToAdd))
           .isInstanceOf(Exception.class);
     }
 
     @Test
     void shouldRejectNull() throws JsonProcessingException {
       // when + then
-      assertThatThrownBy(() -> sutHandler.addToAggregate(TestResult.SKIPPED, null))
+      assertThatThrownBy(() -> sutHandler.addToAggregate(TestDriver.TestResult.SKIPPED, null))
           .isInstanceOf(Exception.class);
     }
   }

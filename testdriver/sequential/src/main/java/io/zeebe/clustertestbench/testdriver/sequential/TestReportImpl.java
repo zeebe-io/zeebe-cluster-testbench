@@ -1,7 +1,9 @@
-package io.zeebe.clustertestbench.testdriver.impl;
+package io.zeebe.clustertestbench.testdriver.sequential;
 
 import io.camunda.zeebe.client.impl.ZeebeObjectMapper;
-import io.zeebe.clustertestbench.testdriver.api.TestReport;
+import io.zeebe.clustertestbench.testdriver.api.TestDriver;
+import io.zeebe.clustertestbench.testdriver.api.TestDriver.TestReport;
+import io.zeebe.clustertestbench.testdriver.api.TestDriver.TestResult;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -10,7 +12,7 @@ import java.util.Map;
 
 public class TestReportImpl implements TestReport, AutoCloseable {
 
-  private TestResult testResult = TestResult.PASSED;
+  private TestResult testResult = TestDriver.TestResult.PASSED;
 
   private final long startTime;
   private long endTime;
@@ -33,7 +35,7 @@ public class TestReportImpl implements TestReport, AutoCloseable {
   }
 
   public synchronized void addFailure(final String failureMessage) {
-    testResult = TestResult.FAILED;
+    testResult = TestDriver.TestResult.FAILED;
     if (failureCount == 0) {
       timeOfFirstFailure = System.currentTimeMillis();
     }
@@ -42,36 +44,32 @@ public class TestReportImpl implements TestReport, AutoCloseable {
   }
 
   @Override
-  public TestResult getTestResult() {
+  public TestResult testResult() {
     return testResult;
   }
 
   @Override
-  public List<String> getFailureMessages() {
+  public List<String> failureMessages() {
     return Collections.unmodifiableList(failureMessages);
   }
 
   @Override
-  public int getFailureCount() {
+  public int failureCount() {
     return failureCount;
   }
 
-  @Override
   public Map<String, Object> getMetaData() {
     return Collections.unmodifiableMap(metaData);
   }
 
-  @Override
   public long getStartTime() {
     return startTime;
   }
 
-  @Override
   public long getEndTime() {
     return endTime;
   }
 
-  @Override
   public long getTimeOfFirstFailure() {
     return timeOfFirstFailure;
   }

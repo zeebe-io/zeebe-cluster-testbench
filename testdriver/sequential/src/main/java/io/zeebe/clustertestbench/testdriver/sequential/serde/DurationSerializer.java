@@ -1,4 +1,4 @@
-package io.zeebe.clustertestbench.testdriver.api.serde;
+package io.zeebe.clustertestbench.testdriver.sequential.serde;
 
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.SerializerProvider;

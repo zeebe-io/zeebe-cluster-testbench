@@ -155,7 +155,7 @@ The cluster parameters can either be specified using human-friendly names or mac
 
 #### Run Test in Camunda Cloud
 
-This process runs a test based on the given `testId` in a fresh cluster in Camunda Cloud:
+This process runs a test based on the given `testProcessId` in a fresh cluster in Camunda Cloud:
 
 ![run-test-in-camunda-cloud process](docs/assets/run-test-in-camunda-cloud.png "Run Test in Camunda Cloud process")
 

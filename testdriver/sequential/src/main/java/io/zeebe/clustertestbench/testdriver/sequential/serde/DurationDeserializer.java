@@ -1,4 +1,4 @@
-package io.zeebe.clustertestbench.testdriver.api.serde;
+package io.zeebe.clustertestbench.testdriver.sequential.serde;
 
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonProcessingException;

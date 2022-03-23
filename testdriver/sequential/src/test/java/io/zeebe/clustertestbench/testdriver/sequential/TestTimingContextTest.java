@@ -1,11 +1,6 @@
-package io.zeebe.clustertestbench.testdriver.impl;
+package io.zeebe.clustertestbench.testdriver.sequential;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.reset;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.verifyNoMoreInteractions;
-import static org.mockito.Mockito.when;
 
 import java.time.Duration;
 import java.util.function.Consumer;
@@ -13,6 +8,7 @@ import java.util.function.Supplier;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 @ExtendWith(MockitoExtension.class)
@@ -24,15 +20,15 @@ class TestTimingContextTest {
   void testConstructorTakesStartTime() {
 
     // given
-    final Supplier<Long> mockClock = mock(Supplier.class);
-    when(mockClock.get()).thenReturn(1L);
+    final Supplier<Long> mockClock = Mockito.mock(Supplier.class);
+    Mockito.when(mockClock.get()).thenReturn(1L);
 
     // when
     new TestTimingContext(mockClock, Duration.ofSeconds(1), "Test error message", null);
 
     // then
-    verify(mockClock).get();
-    verifyNoMoreInteractions(mockClock);
+    Mockito.verify(mockClock).get();
+    Mockito.verifyNoMoreInteractions(mockClock);
   }
 
   @SuppressWarnings("unchecked")
@@ -41,21 +37,21 @@ class TestTimingContextTest {
   void testCloseTakesEndTime() {
 
     // given
-    final Supplier<Long> mockClock = mock(Supplier.class);
-    when(mockClock.get()).thenReturn(1L);
+    final Supplier<Long> mockClock = Mockito.mock(Supplier.class);
+    Mockito.when(mockClock.get()).thenReturn(1L);
 
     final var sutTimingContext =
         new TestTimingContext(mockClock, Duration.ofSeconds(1), "Test error message", null);
-    reset(mockClock);
+    Mockito.reset(mockClock);
 
-    when(mockClock.get()).thenReturn(42L);
+    Mockito.when(mockClock.get()).thenReturn(42L);
 
     // when
     sutTimingContext.close();
 
     // then
-    verify(mockClock).get();
-    verifyNoMoreInteractions(mockClock);
+    Mockito.verify(mockClock).get();
+    Mockito.verifyNoMoreInteractions(mockClock);
   }
 
   @SuppressWarnings("resource")
@@ -125,10 +121,10 @@ class TestTimingContextTest {
       "composeErrorMessage() should contain the error message, the elapsed time and the metadata")
   void testComposeErrorMessageAllParts() {
     // given
-    final Consumer<String> mockErrorCollector = mock(Consumer.class);
+    final Consumer<String> mockErrorCollector = Mockito.mock(Consumer.class);
 
-    final Supplier<Long> mockClock = mock(Supplier.class);
-    when(mockClock.get()).thenReturn(1000L);
+    final Supplier<Long> mockClock = Mockito.mock(Supplier.class);
+    Mockito.when(mockClock.get()).thenReturn(1000L);
 
     final TestTimingContext sutTimingContext =
         new TestTimingContext(
@@ -136,7 +132,7 @@ class TestTimingContextTest {
     sutTimingContext.putMetaData("key", "value");
 
     // when
-    when(mockClock.get()).thenReturn(3000L);
+    Mockito.when(mockClock.get()).thenReturn(3000L);
     sutTimingContext.close();
 
     final String actual = sutTimingContext.composeErrorMessage();
