@@ -175,7 +175,7 @@ pipeline {
                 GPG_PASS = credentials('password_maven_central_gpg_signing_key')
                 GPG_PUB_KEY = credentials('maven_central_gpg_signing_key_pub')
                 GPG_SEC_KEY = credentials('maven_central_gpg_signing_key_sec')
-                GITHUB_TOKEN = credentials("${zeebeUtils.zeebeCredentialsId}")
+                GITHUB_TOKEN = credentials("${zeebeUtils.zeebeCredentialsId()}")
                 RELEASE_VERSION = "${params.RELEASE_VERSION}"
                 DEVELOPMENT_VERSION = "${params.DEVELOPMENT_VERSION}"
             }
