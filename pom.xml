@@ -60,8 +60,8 @@
     <version.java>17</version.java>
     <version.junit>5.8.2</version.junit>
     <version.log4j>2.17.2</version.log4j>
+    <version.log4j-maven-shade-plugin-extensions>2.17.1</version.log4j-maven-shade-plugin-extensions>
     <version.log4j2-cachefile>2.14.1</version.log4j2-cachefile>
-    <version.log4j2-cachefile-transformer>2.15</version.log4j2-cachefile-transformer>
     <version.mockito>4.4.0</version.mockito>
     <version.resteasy>6.0.0.Final</version.resteasy>
     <version.slf4j>1.7.36</version.slf4j>
@@ -317,9 +317,9 @@
           <version>${plugin.version.maven-shade}</version>
           <dependencies>
             <dependency>
-              <groupId>com.github.edwgiz</groupId>
-              <artifactId>maven-shade-plugin.log4j2-cachefile-transformer</artifactId>
-              <version>${version.log4j2-cachefile-transformer}</version>
+              <groupId>io.github.edwgiz</groupId>
+              <artifactId>log4j-maven-shade-plugin-extensions</artifactId>
+              <version>${version.log4j-maven-shade-plugin-extensions}</version>
             </dependency>
           </dependencies>
         </plugin>
