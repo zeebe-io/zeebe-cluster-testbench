@@ -25,3 +25,5 @@ config.properties
 /secrets-dev.yaml
 **/.checkstyle
 **/.factorypath
+
+.flattened-pom.xml
