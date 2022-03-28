@@ -6,7 +6,7 @@
     <groupId>io.zeebe</groupId>
     <artifactId>zeebe-cluster-testbench</artifactId>
     <!-- do not remove empty tag - http://jira.codehaus.org/browse/MNG-4687 -->
-    <version>1.3.1-SNAPSHOT</version>
+    <version>3.0.1</version>
     <relativePath>../pom.xml</relativePath>
   </parent>
   <artifactId>zeebe-cluster-testbench-integration-tests</artifactId>
