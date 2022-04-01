@@ -121,14 +121,14 @@ class TriggerMessageStartEventHandlerTest {
     sutHandler.handle(jobClientStub, activatedJobStub);
 
     // then
-    verify(mockPublishMessageCommandStep2).correlationKey(null);
+    verify(mockPublishMessageCommandStep2).correlationKey("");
   }
 
   private void setupMocksForPublishMessageCommand() {
     when(mockZeebeClient.newPublishMessageCommand()).thenReturn(mockPublishMessageCommandStep1);
     when(mockPublishMessageCommandStep1.messageName(Mockito.anyString()))
         .thenReturn(mockPublishMessageCommandStep2);
-    when(mockPublishMessageCommandStep2.correlationKey(Mockito.isNull()))
+    when(mockPublishMessageCommandStep2.correlationKey(Mockito.anyString()))
         .thenReturn(mockPublishMessageCommandStep3);
     when(mockPublishMessageCommandStep3.variables(Mockito.anyString()))
         .thenReturn(mockPublishMessageCommandStep3);
