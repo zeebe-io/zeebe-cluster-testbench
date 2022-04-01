@@ -92,14 +92,7 @@ class TriggerMessageStartEventHandlerTest {
     variables.put("anotherKey", "anotherValue");
     activatedJobStub.setInputVariables(variables);
 
-    when(mockZeebeClient.newPublishMessageCommand()).thenReturn(mockPublishMessageCommandStep1);
-    when(mockPublishMessageCommandStep1.messageName(Mockito.anyString()))
-        .thenReturn(mockPublishMessageCommandStep2);
-    when(mockPublishMessageCommandStep2.correlationKey(Mockito.anyString()))
-        .thenReturn(mockPublishMessageCommandStep3);
-    when(mockPublishMessageCommandStep3.variables(Mockito.anyString()))
-        .thenReturn(mockPublishMessageCommandStep3);
-    when(mockPublishMessageCommandStep3.send()).thenReturn(mockZeebeFuturePublishMessageCommand);
+    setupMocksForPublishMessageCommand();
 
     // when
     sutHandler.handle(jobClientStub, activatedJobStub);
@@ -115,5 +108,30 @@ class TriggerMessageStartEventHandlerTest {
 
     // should complete job
     assertThat(activatedJobStub).completed();
+  }
+
+  @Test // regression test for #630
+  void shouldSendPublishMessageCommandWithEmptyCorrelationKey() throws Exception {
+    // given
+    final var messageName = "testMessageName";
+    activatedJobStub.setCustomHeaders(singletonMap(KEY_MESSAGE_NAME, messageName));
+    setupMocksForPublishMessageCommand();
+
+    // when
+    sutHandler.handle(jobClientStub, activatedJobStub);
+
+    // then
+    verify(mockPublishMessageCommandStep2).correlationKey(null);
+  }
+
+  private void setupMocksForPublishMessageCommand() {
+    when(mockZeebeClient.newPublishMessageCommand()).thenReturn(mockPublishMessageCommandStep1);
+    when(mockPublishMessageCommandStep1.messageName(Mockito.anyString()))
+        .thenReturn(mockPublishMessageCommandStep2);
+    when(mockPublishMessageCommandStep2.correlationKey(Mockito.isNull()))
+        .thenReturn(mockPublishMessageCommandStep3);
+    when(mockPublishMessageCommandStep3.variables(Mockito.anyString()))
+        .thenReturn(mockPublishMessageCommandStep3);
+    when(mockPublishMessageCommandStep3.send()).thenReturn(mockZeebeFuturePublishMessageCommand);
   }
 }
