@@ -46,7 +46,7 @@ public class TriggerMessageStartEventHandler implements JobHandler {
     zeebeClient
         .newPublishMessageCommand()
         .messageName(messageName)
-        .correlationKey("correlationKey")
+        .correlationKey("")
         .variables(variables)
         .send()
         .join();
