@@ -29,7 +29,11 @@ public class ProcessDeployer {
         final String processName = process.getName();
 
         LOGGER.info("Deploying {}", processName);
-        zeebeClient.newDeployCommand().addResourceFile(process.getAbsolutePath()).send().join();
+        zeebeClient
+            .newDeployResourceCommand()
+            .addResourceFile(process.getAbsolutePath())
+            .send()
+            .join();
       } catch (final Exception e) {
         LOGGER.error(e.getMessage(), e);
         success = false;
