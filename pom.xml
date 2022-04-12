@@ -70,7 +70,7 @@
     <version.vavr>0.10.4</version.vavr>
     <version.wiremock>2.33.1</version.wiremock>
     <version.zeebe-process-test>8.0.0</version.zeebe-process-test>
-    <version.zeebeWorkerJavaTestutils>1.3.5</version.zeebeWorkerJavaTestutils>
+    <version.zeebeWorkerJavaTestutils>8.0.0</version.zeebeWorkerJavaTestutils>
     <zeebe.version>1.3.6</zeebe.version>
   </properties>
 
