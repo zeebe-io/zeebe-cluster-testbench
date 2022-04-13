@@ -1,0 +1,330 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:zeebe="http://camunda.org/schema/zeebe/1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:modeler="http://camunda.org/schema/modeler/1.0" id="Definitions_1jtpws2" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="5.0.0" modeler:executionPlatform="Camunda Cloud" modeler:executionPlatformVersion="8.0.0">
+  <bpmn:process id="run-test-suite-in-camuna-cloud" name="Run Test Suite in Camunda Cloud" isExecutable="true">
+    <bpmn:startEvent id="StartEvent_1">
+      <bpmn:outgoing>Flow_0zvdln9</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:subProcess id="for-each-test-type" name="for each test type">
+      <bpmn:extensionElements>
+        <zeebe:ioMapping>
+          <zeebe:input source="= test.clusterPlanNames" target="clusterPlans" />
+          <zeebe:input source="= test.testProcessId" target="testProcessId" />
+          <zeebe:input source="= test.testParams" target="testParams" />
+          <zeebe:input source="= test.generation" target="generation" />
+          <zeebe:input source="= test.channel" target="channel" />
+          <zeebe:input source="= test.region" target="region" />
+        </zeebe:ioMapping>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_0zvdln9</bpmn:incoming>
+      <bpmn:outgoing>Flow_1r4bes9</bpmn:outgoing>
+      <bpmn:multiInstanceLoopCharacteristics>
+        <bpmn:extensionElements>
+          <zeebe:loopCharacteristics inputCollection="=testsuite" inputElement="test" outputCollection="testResults" outputElement="=aggregatedTestResult" />
+        </bpmn:extensionElements>
+      </bpmn:multiInstanceLoopCharacteristics>
+      <bpmn:startEvent id="Event_1f3gicf">
+        <bpmn:outgoing>Flow_03cg9zs</bpmn:outgoing>
+      </bpmn:startEvent>
+      <bpmn:subProcess id="for-each-cluster-plan" name="for each cluster plan">
+        <bpmn:extensionElements>
+          <zeebe:ioMapping>
+            <zeebe:output source="= testReport.testResult" target="testResult" />
+          </zeebe:ioMapping>
+        </bpmn:extensionElements>
+        <bpmn:incoming>Flow_03cg9zs</bpmn:incoming>
+        <bpmn:outgoing>Flow_0d0ym9i</bpmn:outgoing>
+        <bpmn:multiInstanceLoopCharacteristics>
+          <bpmn:extensionElements>
+            <zeebe:loopCharacteristics inputCollection="=clusterPlans" inputElement="clusterPlan" outputCollection="testResultsPerClusterPlan" outputElement="=testReport.testResult" />
+          </bpmn:extensionElements>
+        </bpmn:multiInstanceLoopCharacteristics>
+        <bpmn:startEvent id="start" name="Start">
+          <bpmn:outgoing>Flow_0xldrw7</bpmn:outgoing>
+        </bpmn:startEvent>
+        <bpmn:exclusiveGateway id="check_test_result" name="test result?">
+          <bpmn:incoming>Flow_0yb3pap</bpmn:incoming>
+          <bpmn:outgoing>test_failed</bpmn:outgoing>
+          <bpmn:outgoing>test_passed</bpmn:outgoing>
+          <bpmn:outgoing>test_skipped</bpmn:outgoing>
+        </bpmn:exclusiveGateway>
+        <bpmn:serviceTask id="trigger-analyse-cluster-process" name="Trigger Analyse Cluster Process">
+          <bpmn:extensionElements>
+            <zeebe:taskDefinition type="trigger-message-start-event-job" />
+            <zeebe:taskHeaders>
+              <zeebe:header key="messageName" value="Analyse Cluster" />
+            </zeebe:taskHeaders>
+          </bpmn:extensionElements>
+          <bpmn:incoming>test_failed</bpmn:incoming>
+          <bpmn:outgoing>Flow_0wlh9er</bpmn:outgoing>
+        </bpmn:serviceTask>
+        <bpmn:exclusiveGateway id="Gateway_0n2c5zt">
+          <bpmn:incoming>test_passed</bpmn:incoming>
+          <bpmn:incoming>test_skipped</bpmn:incoming>
+          <bpmn:outgoing>Flow_1e7iazb</bpmn:outgoing>
+        </bpmn:exclusiveGateway>
+        <bpmn:serviceTask id="destroy-zeebe-cluster-in-camunda-cloud" name="Destroy Zeebe Cluster in Camunda Cloud">
+          <bpmn:extensionElements>
+            <zeebe:taskDefinition type="destroy-zeebe-cluster-in-camunda-cloud-job" />
+          </bpmn:extensionElements>
+          <bpmn:incoming>Flow_1e7iazb</bpmn:incoming>
+          <bpmn:outgoing>Flow_1cth1vv</bpmn:outgoing>
+        </bpmn:serviceTask>
+        <bpmn:endEvent id="Event_1i1rnvk">
+          <bpmn:incoming>Flow_1lecns9</bpmn:incoming>
+        </bpmn:endEvent>
+        <bpmn:exclusiveGateway id="Gateway_0zjsm6e">
+          <bpmn:incoming>Flow_0wlh9er</bpmn:incoming>
+          <bpmn:incoming>Flow_1cth1vv</bpmn:incoming>
+          <bpmn:incoming>Flow_0axbbiz</bpmn:incoming>
+          <bpmn:outgoing>Flow_1lecns9</bpmn:outgoing>
+        </bpmn:exclusiveGateway>
+        <bpmn:callActivity id="prepare-zeebe-cluster-in-camunda-cloud" name="Prepare Zeebe Cluster in Camunda Cloud">
+          <bpmn:extensionElements>
+            <zeebe:calledElement processId="prepare-zeebe-cluster-in-camunda-cloud" propagateAllChildVariables="false" />
+          </bpmn:extensionElements>
+          <bpmn:incoming>Flow_1wjtcva</bpmn:incoming>
+          <bpmn:outgoing>Flow_15k26ho</bpmn:outgoing>
+        </bpmn:callActivity>
+        <bpmn:callActivity id="run-actual-test" name="Run Test">
+          <bpmn:extensionElements>
+            <zeebe:calledElement processId="=testProcessId" propagateAllChildVariables="false" />
+            <zeebe:ioMapping>
+              <zeebe:output source="= testReport" target="testReport" />
+            </zeebe:ioMapping>
+          </bpmn:extensionElements>
+          <bpmn:incoming>Flow_15k26ho</bpmn:incoming>
+          <bpmn:outgoing>Flow_0yb3pap</bpmn:outgoing>
+        </bpmn:callActivity>
+        <bpmn:boundaryEvent id="Event_13guy6a" attachedToRef="prepare-zeebe-cluster-in-camunda-cloud">
+          <bpmn:extensionElements>
+            <zeebe:ioMapping>
+              <zeebe:output source="=&#34;FAILED&#34;" target="testReport.testResult" />
+            </zeebe:ioMapping>
+          </bpmn:extensionElements>
+          <bpmn:outgoing>Flow_0axbbiz</bpmn:outgoing>
+          <bpmn:errorEventDefinition id="ErrorEventDefinition_1cid309" errorRef="Error_0thelar" />
+        </bpmn:boundaryEvent>
+        <bpmn:sequenceFlow id="Flow_0xldrw7" sourceRef="start" targetRef="map-names-to-uuids" />
+        <bpmn:sequenceFlow id="Flow_0yb3pap" sourceRef="run-actual-test" targetRef="check_test_result" />
+        <bpmn:sequenceFlow id="test_failed" name="FAILED" sourceRef="check_test_result" targetRef="trigger-analyse-cluster-process">
+          <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">=testReport.testResult = "FAILED"</bpmn:conditionExpression>
+        </bpmn:sequenceFlow>
+        <bpmn:sequenceFlow id="test_passed" name="PASSED" sourceRef="check_test_result" targetRef="Gateway_0n2c5zt">
+          <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">=testReport.testResult = "PASSED"</bpmn:conditionExpression>
+        </bpmn:sequenceFlow>
+        <bpmn:sequenceFlow id="test_skipped" name="SKIPPED" sourceRef="check_test_result" targetRef="Gateway_0n2c5zt">
+          <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">=testReport.testResult = "SKIPPED"</bpmn:conditionExpression>
+        </bpmn:sequenceFlow>
+        <bpmn:sequenceFlow id="Flow_0wlh9er" sourceRef="trigger-analyse-cluster-process" targetRef="Gateway_0zjsm6e" />
+        <bpmn:sequenceFlow id="Flow_1e7iazb" sourceRef="Gateway_0n2c5zt" targetRef="destroy-zeebe-cluster-in-camunda-cloud" />
+        <bpmn:sequenceFlow id="Flow_1cth1vv" sourceRef="destroy-zeebe-cluster-in-camunda-cloud" targetRef="Gateway_0zjsm6e" />
+        <bpmn:sequenceFlow id="Flow_1lecns9" sourceRef="Gateway_0zjsm6e" targetRef="Event_1i1rnvk" />
+        <bpmn:sequenceFlow id="Flow_0axbbiz" sourceRef="Event_13guy6a" targetRef="Gateway_0zjsm6e" />
+        <bpmn:sequenceFlow id="Flow_15k26ho" sourceRef="prepare-zeebe-cluster-in-camunda-cloud" targetRef="run-actual-test" />
+        <bpmn:serviceTask id="map-names-to-uuids" name="Map names to UUIDs">
+          <bpmn:extensionElements>
+            <zeebe:taskDefinition type="map-names-to-uuids-job" />
+          </bpmn:extensionElements>
+          <bpmn:incoming>Flow_0xldrw7</bpmn:incoming>
+          <bpmn:outgoing>Flow_1wjtcva</bpmn:outgoing>
+        </bpmn:serviceTask>
+        <bpmn:sequenceFlow id="Flow_1wjtcva" sourceRef="map-names-to-uuids" targetRef="prepare-zeebe-cluster-in-camunda-cloud" />
+      </bpmn:subProcess>
+      <bpmn:sequenceFlow id="Flow_03cg9zs" sourceRef="Event_1f3gicf" targetRef="for-each-cluster-plan" />
+      <bpmn:serviceTask id="aggregate-test-results-of-cluster-plans" name="Aggregate Test Results">
+        <bpmn:extensionElements>
+          <zeebe:taskDefinition type="aggregate-test-results-job" retries="3" />
+          <zeebe:taskHeaders>
+            <zeebe:header key="variableNames" value="testResultsPerClusterPlan" />
+          </zeebe:taskHeaders>
+        </bpmn:extensionElements>
+        <bpmn:incoming>Flow_0d0ym9i</bpmn:incoming>
+        <bpmn:outgoing>Flow_0p1ytkw</bpmn:outgoing>
+      </bpmn:serviceTask>
+      <bpmn:sequenceFlow id="Flow_0d0ym9i" sourceRef="for-each-cluster-plan" targetRef="aggregate-test-results-of-cluster-plans" />
+      <bpmn:endEvent id="Event_1qe0d65">
+        <bpmn:extensionElements />
+        <bpmn:incoming>Flow_0p1ytkw</bpmn:incoming>
+      </bpmn:endEvent>
+      <bpmn:sequenceFlow id="Flow_0p1ytkw" sourceRef="aggregate-test-results-of-cluster-plans" targetRef="Event_1qe0d65" />
+    </bpmn:subProcess>
+    <bpmn:sequenceFlow id="Flow_0zvdln9" sourceRef="StartEvent_1" targetRef="for-each-test-type" />
+    <bpmn:serviceTask id="aggregate-test-results-of-tests" name="Aggregate Test Results">
+      <bpmn:extensionElements>
+        <zeebe:taskDefinition type="aggregate-test-results-job" retries="3" />
+        <zeebe:taskHeaders>
+          <zeebe:header key="variableNames" value="testResults" />
+        </zeebe:taskHeaders>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_1r4bes9</bpmn:incoming>
+      <bpmn:outgoing>Flow_0c1ekbg</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:endEvent id="Event_1y0upgg">
+      <bpmn:extensionElements>
+        <zeebe:ioMapping>
+          <zeebe:output source="= aggregatedTestResult" target="aggregatedTestResult" />
+        </zeebe:ioMapping>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_0c1ekbg</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="Flow_0c1ekbg" sourceRef="aggregate-test-results-of-tests" targetRef="Event_1y0upgg" />
+    <bpmn:sequenceFlow id="Flow_1r4bes9" sourceRef="for-each-test-type" targetRef="aggregate-test-results-of-tests" />
+  </bpmn:process>
+  <bpmn:error id="Error_0thelar" name="Prepare Zeebe Cluster Failed" errorCode="prepare-zeebe-cluster-failed" />
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="run-test-suite-in-camuna-cloud">
+      <bpmndi:BPMNEdge id="Flow_1r4bes9_di" bpmnElement="Flow_1r4bes9">
+        <di:waypoint x="1810" y="290" />
+        <di:waypoint x="1850" y="290" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0c1ekbg_di" bpmnElement="Flow_0c1ekbg">
+        <di:waypoint x="1950" y="290" />
+        <di:waypoint x="2002" y="290" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0zvdln9_di" bpmnElement="Flow_0zvdln9">
+        <di:waypoint x="188" y="290" />
+        <di:waypoint x="250" y="290" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="_BPMNShape_StartEvent_2" bpmnElement="StartEvent_1">
+        <dc:Bounds x="152" y="272" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1adp27g_di" bpmnElement="for-each-test-type" isExpanded="true">
+        <dc:Bounds x="250" y="90" width="1560" height="500" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Flow_0p1ytkw_di" bpmnElement="Flow_0p1ytkw">
+        <di:waypoint x="1680" y="290" />
+        <di:waypoint x="1752" y="290" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0d0ym9i_di" bpmnElement="Flow_0d0ym9i">
+        <di:waypoint x="1510" y="290" />
+        <di:waypoint x="1580" y="290" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_03cg9zs_di" bpmnElement="Flow_03cg9zs">
+        <di:waypoint x="308" y="290" />
+        <di:waypoint x="350" y="290" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="Event_1f3gicf_di" bpmnElement="Event_1f3gicf">
+        <dc:Bounds x="272" y="272" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0hg1dcb_di" bpmnElement="for-each-cluster-plan" isExpanded="true">
+        <dc:Bounds x="350" y="140" width="1160" height="420" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Flow_1wjtcva_di" bpmnElement="Flow_1wjtcva">
+        <di:waypoint x="570" y="290" />
+        <di:waypoint x="608" y="290" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_15k26ho_di" bpmnElement="Flow_15k26ho">
+        <di:waypoint x="708" y="290" />
+        <di:waypoint x="748" y="290" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0axbbiz_di" bpmnElement="Flow_0axbbiz">
+        <di:waypoint x="688" y="348" />
+        <di:waypoint x="688" y="490" />
+        <di:waypoint x="1378" y="490" />
+        <di:waypoint x="1378" y="315" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1lecns9_di" bpmnElement="Flow_1lecns9">
+        <di:waypoint x="1403" y="290" />
+        <di:waypoint x="1450" y="290" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1cth1vv_di" bpmnElement="Flow_1cth1vv">
+        <di:waypoint x="1308" y="290" />
+        <di:waypoint x="1353" y="290" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1e7iazb_di" bpmnElement="Flow_1e7iazb">
+        <di:waypoint x="1153" y="290" />
+        <di:waypoint x="1208" y="290" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0wlh9er_di" bpmnElement="Flow_0wlh9er">
+        <di:waypoint x="1178" y="420" />
+        <di:waypoint x="1378" y="420" />
+        <di:waypoint x="1378" y="315" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1mgszoj_di" bpmnElement="test_skipped">
+        <di:waypoint x="968" y="265" />
+        <di:waypoint x="968" y="200" />
+        <di:waypoint x="1128" y="200" />
+        <di:waypoint x="1128" y="265" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="991" y="203" width="48" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1j2fhvr_di" bpmnElement="test_passed">
+        <di:waypoint x="993" y="290" />
+        <di:waypoint x="1103" y="290" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1006" y="293" width="44" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1g2ygbd_di" bpmnElement="test_failed">
+        <di:waypoint x="968" y="315" />
+        <di:waypoint x="968" y="420" />
+        <di:waypoint x="1078" y="420" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="996" y="403" width="38" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0yb3pap_di" bpmnElement="Flow_0yb3pap">
+        <di:waypoint x="848" y="290" />
+        <di:waypoint x="943" y="290" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0xldrw7_di" bpmnElement="Flow_0xldrw7">
+        <di:waypoint x="426" y="290" />
+        <di:waypoint x="470" y="290" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="BPMNShape_1vlub5f" bpmnElement="start">
+        <dc:Bounds x="390" y="272" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="398" y="315" width="24" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_0eoa092_di" bpmnElement="check_test_result" isMarkerVisible="true">
+        <dc:Bounds x="943" y="265" width="50" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="891" y="253" width="54" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1w6lwgr_di" bpmnElement="trigger-analyse-cluster-process">
+        <dc:Bounds x="1078" y="380" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_0n2c5zt_di" bpmnElement="Gateway_0n2c5zt" isMarkerVisible="true">
+        <dc:Bounds x="1103" y="265" width="50" height="50" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_09c5z6r_di" bpmnElement="destroy-zeebe-cluster-in-camunda-cloud">
+        <dc:Bounds x="1208" y="250" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_1i1rnvk_di" bpmnElement="Event_1i1rnvk">
+        <dc:Bounds x="1450" y="272" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_0zjsm6e_di" bpmnElement="Gateway_0zjsm6e" isMarkerVisible="true">
+        <dc:Bounds x="1353" y="265" width="50" height="50" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1hh2a2j_di" bpmnElement="prepare-zeebe-cluster-in-camunda-cloud">
+        <dc:Bounds x="608" y="250" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1a336zp_di" bpmnElement="run-actual-test">
+        <dc:Bounds x="748" y="250" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0uqunzc_di" bpmnElement="map-names-to-uuids">
+        <dc:Bounds x="470" y="250" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_0eahoff_di" bpmnElement="Event_13guy6a">
+        <dc:Bounds x="670" y="312" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1jdypiw_di" bpmnElement="aggregate-test-results-of-cluster-plans">
+        <dc:Bounds x="1580" y="250" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_1qe0d65_di" bpmnElement="Event_1qe0d65">
+        <dc:Bounds x="1752" y="272" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_1efjf06" bpmnElement="aggregate-test-results-of-tests">
+        <dc:Bounds x="1850" y="250" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_1y0upgg_di" bpmnElement="Event_1y0upgg">
+        <dc:Bounds x="2002" y="272" width="36" height="36" />
+      </bpmndi:BPMNShape>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>

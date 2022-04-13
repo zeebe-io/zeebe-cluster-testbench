@@ -32,8 +32,8 @@ import org.apache.commons.lang3.StringUtils;
  */
 public class AggregateTestResultHandler implements JobHandler {
 
+  public static final String KEY_AGGREGATED_RESULT = "aggregatedTestResult";
   protected static final String KEY_VARAIBLENAMES = "variableNames";
-  protected static final String KEY_AGGREGATED_RESULT = "aggregatedTestResult";
 
   @Override
   public void handle(final JobClient client, final ActivatedJob job) throws Exception {

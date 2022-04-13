@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:zeebe="http://camunda.org/schema/zeebe/1.0" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:modeler="http://camunda.org/schema/modeler/1.0" id="Definitions_0rjkem9" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="5.0.0" modeler:executionPlatform="Camunda Cloud" modeler:executionPlatformVersion="8.0.0">
+  <bpmn:process id="mock-test-runner" isExecutable="true">
+    <bpmn:startEvent id="StartEvent_1">
+      <bpmn:outgoing>Flow_0i9ndqy</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:endEvent id="Event_170qu5p">
+      <bpmn:incoming>Flow_08ij5sz</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="Flow_0i9ndqy" sourceRef="StartEvent_1" targetRef="mock-test-runner-service-task" />
+    <bpmn:sequenceFlow id="Flow_08ij5sz" sourceRef="mock-test-runner-service-task" targetRef="Event_170qu5p" />
+    <bpmn:serviceTask id="mock-test-runner-service-task" name="Mock Test Runner">
+      <bpmn:extensionElements>
+        <zeebe:taskDefinition type="mock-test-runner-job" />
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_0i9ndqy</bpmn:incoming>
+      <bpmn:outgoing>Flow_08ij5sz</bpmn:outgoing>
+    </bpmn:serviceTask>
+  </bpmn:process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="mock-test-runner">
+      <bpmndi:BPMNEdge id="Flow_0i9ndqy_di" bpmnElement="Flow_0i9ndqy">
+        <di:waypoint x="188" y="117" />
+        <di:waypoint x="220" y="117" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_08ij5sz_di" bpmnElement="Flow_08ij5sz">
+        <di:waypoint x="320" y="117" />
+        <di:waypoint x="352" y="117" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="Activity_1tipy6r_di" bpmnElement="mock-test-runner-service-task">
+        <dc:Bounds x="220" y="77" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_170qu5p_di" bpmnElement="Event_170qu5p">
+        <dc:Bounds x="352" y="99" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="_BPMNShape_StartEvent_2" bpmnElement="StartEvent_1">
+        <dc:Bounds x="152" y="99" width="36" height="36" />
+      </bpmndi:BPMNShape>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>

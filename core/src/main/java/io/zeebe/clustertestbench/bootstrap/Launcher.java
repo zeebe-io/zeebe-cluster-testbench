@@ -41,8 +41,11 @@ import org.slf4j.LoggerFactory;
 
 public class Launcher {
 
+  public static final String MAP_NAMES_TO_UUIDS_JOB = "map-names-to-uuids-job";
+  public static final String DESTROY_ZEEBE_CLUSTER_IN_CAMUNDA_CLOUD_JOB =
+      "destroy-zeebe-cluster-in-camunda-cloud-job";
+  public static final String AGGREGATE_TEST_RESULTS_JOB = "aggregate-test-results-job";
   private static final Logger LOGGER = LoggerFactory.getLogger(Launcher.class);
-
   private final Map<String, JobWorker> registeredJobWorkers = new HashMap<>();
 
   private final String testOrchestrationContactPoint;
@@ -209,7 +212,7 @@ public class Launcher {
   private void registerWorkers(final ZeebeClient client) {
     registerWorker(
         client,
-        "map-names-to-uuids-job",
+        MAP_NAMES_TO_UUIDS_JOB,
         new MapNamesToUUIDsHandler(cloudApiClient),
         Duration.ofSeconds(10));
     registerWorker(
@@ -251,7 +254,7 @@ public class Launcher {
         Duration.ofSeconds(10));
     registerWorker(
         client,
-        "destroy-zeebe-cluster-in-camunda-cloud-job",
+        DESTROY_ZEEBE_CLUSTER_IN_CAMUNDA_CLOUD_JOB,
         new DeleteClusterInCamundaCloudHandler(cloudApiClient),
         Duration.ofSeconds(10));
 
@@ -267,7 +270,7 @@ public class Launcher {
         Duration.ofSeconds(10));
     registerWorker(
         client,
-        "aggregate-test-results-job",
+        AGGREGATE_TEST_RESULTS_JOB,
         new AggregateTestResultHandler(),
         Duration.ofSeconds(10));
     registerWorker(

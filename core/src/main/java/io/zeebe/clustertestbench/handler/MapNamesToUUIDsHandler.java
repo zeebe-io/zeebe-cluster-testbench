@@ -191,7 +191,7 @@ public class MapNamesToUUIDsHandler implements JobHandler {
     return regionInfo;
   }
 
-  private static final class InputOutput {
+  public static final class InputOutput {
     private String generation;
     private String generationUUID;
 
