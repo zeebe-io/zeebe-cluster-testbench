@@ -30,6 +30,8 @@ public class NotifyEngineersHandlerTest {
   public static final String CLUSTER_NAME = "CLUSTER_A";
   public static final String CLUSTER_PLAN = "CLUSTER_PLAN_B";
   public static final String GENERATION = "GENERATION_C";
+  public static final String IMAGE = "ZEEBE:VERSION";
+  public static final String BRANCH = "BRANCH";
   public static final String OPERATE_URL = "https://localhost.test";
   public static final String PROCESS_ID = "processID";
   public static final String BUSINESS_KEY = "http://jenkins/branch/build";
@@ -61,6 +63,8 @@ public class NotifyEngineersHandlerTest {
         .contains(CLUSTER_ID)
         .contains(CLUSTER_PLAN)
         .contains(GENERATION)
+        .contains(IMAGE)
+        .contains(BRANCH)
         .contains(OPERATE_URL)
         .contains(PROCESS_ID)
         .contains("ERROR")
@@ -100,6 +104,8 @@ public class NotifyEngineersHandlerTest {
     input.put("clusterId", CLUSTER_ID);
     input.put("clusterPlan", CLUSTER_PLAN);
     input.put("generation", GENERATION);
+    input.put("zeebeImage", IMAGE);
+    input.put("branch", BRANCH);
     input.put("operateURL", OPERATE_URL);
     input.put("testProcessId", PROCESS_ID);
     input.put("businessKey", BUSINESS_KEY);

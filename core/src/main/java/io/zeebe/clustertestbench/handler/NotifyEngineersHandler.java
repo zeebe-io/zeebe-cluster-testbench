@@ -37,17 +37,18 @@ public class NotifyEngineersHandler implements JobHandler {
     resultBuilder.append("\n");
 
     // message
-    resultBuilder
-        .append("_")
-        .append(input.getTestProcessId())
-        .append("_") //
-        .append(" on ")
-        .append("_" + input.getClusterPlan() + "_") //
-        .append(" failed for generation ")
-        .append("`" + input.getGeneration() + "`") //
-        .append(" on cluster ")
-        .append("_" + input.getClusterName() + "_")
-        .append(" `" + input.getClusterId() + "`");
+    final var errorMessage =
+        String.format(
+            "_%s_ on _%s_ failed for branch `%s`. %n Zeebe image: _%s_ %n Generation: _%s_ %n Cluster : _%s_ `%s`",
+            input.getTestProcessId(),
+            input.getClusterPlan(),
+            input.getBranch(),
+            input.getZeebeImage(),
+            input.getGeneration(),
+            input.getClusterName(),
+            input.getClusterId());
+
+    resultBuilder.append(errorMessage);
 
     resultBuilder.append("\n");
 
@@ -94,6 +95,8 @@ public class NotifyEngineersHandler implements JobHandler {
     private String businessKey;
 
     private TestReportDTO testReport;
+    private String zeebeImage;
+    private String branch;
 
     public String getGeneration() {
       return generation;
@@ -159,6 +162,22 @@ public class NotifyEngineersHandler implements JobHandler {
 
     public void setBusinessKey(final String businessKey) {
       this.businessKey = businessKey;
+    }
+
+    public String getZeebeImage() {
+      return zeebeImage;
+    }
+
+    public void setZeebeImage(final String zeebeImage) {
+      this.zeebeImage = zeebeImage;
+    }
+
+    public String getBranch() {
+      return branch;
+    }
+
+    public void setBranch(final String branch) {
+      this.branch = branch;
     }
   }
 }
