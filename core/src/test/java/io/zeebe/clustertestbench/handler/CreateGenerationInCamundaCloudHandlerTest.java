@@ -6,9 +6,14 @@ import static io.zeebe.clustertestbench.internal.cloud.StubInternalCloudAPIClien
 import static io.zeebe.clustertestbench.internal.cloud.StubInternalCloudAPIClient.DEFAULT_ELASTIC_OSS_IMAGE;
 import static io.zeebe.clustertestbench.internal.cloud.StubInternalCloudAPIClient.DEFAULT_GENERATION_NAME;
 import static io.zeebe.clustertestbench.internal.cloud.StubInternalCloudAPIClient.DEFAULT_OPERATE_IMAGE;
+import static io.zeebe.clustertestbench.internal.cloud.StubInternalCloudAPIClient.DEFAULT_OPTIMIZE_IMAGE;
+import static io.zeebe.clustertestbench.internal.cloud.StubInternalCloudAPIClient.DEFAULT_TASKLIST_IMAGE;
+import static io.zeebe.clustertestbench.internal.cloud.StubInternalCloudAPIClient.DEFAULT_ZEEBE_IMAGE;
 import static io.zeebe.clustertestbench.internal.cloud.StubInternalCloudAPIClient.KEY_ELASTIC_CURATOR_IMAGEE;
 import static io.zeebe.clustertestbench.internal.cloud.StubInternalCloudAPIClient.KEY_ELASTIC_OSS_IMAGE;
 import static io.zeebe.clustertestbench.internal.cloud.StubInternalCloudAPIClient.KEY_OPERATE_IMAGE;
+import static io.zeebe.clustertestbench.internal.cloud.StubInternalCloudAPIClient.KEY_OPTIMIZE_IMAGE;
+import static io.zeebe.clustertestbench.internal.cloud.StubInternalCloudAPIClient.KEY_TASKLIST_IMAGE;
 import static io.zeebe.clustertestbench.internal.cloud.StubInternalCloudAPIClient.KEY_ZEEBE_IMAGE;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -39,13 +44,20 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 @ExtendWith(MockitoExtension.class)
 class CreateGenerationInCamundaCloudHandlerTest {
-  private static final String ZEEBE_IMAGE = "testImage";
+  private static final String ZEEBE_IMAGE = "zeebeTestImage";
+  private static final String OPERATE_IMAGE = "operateTestImage";
+  private static final String OPTIMIZE_IMAGE = "optimizeTestImage";
+  private static final String TASKLIST_IMAGE = "tasklistTestImage";
 
   @Nested
   @DisplayName("Handle Job")
   class HandleJobTest {
 
     public static final String FIELD_ZEEBE_IMAGE = "zeebeImage";
+    public static final String FIELD_OPERATE_IMAGE = "operateImage";
+    public static final String FIELD_OPTIMIZE_IMAGE = "optimizeImage";
+    public static final String FIELD_TASKLIST_IMAGE = "tasklistImage";
+
     public static final String FIELD_GENERATION_TEMPLATE = "generationTemplate";
     public static final String FIELD_CHANNEL = "channel";
     final InternalCloudAPIClient stubInternalApiClient = new StubInternalCloudAPIClient(false);
@@ -108,7 +120,35 @@ class CreateGenerationInCamundaCloudHandlerTest {
     }
 
     @Test
-    public void shouldCreateGeneration() throws Exception {
+    public void shouldCreateGenerationWithDefaultVersions() throws Exception {
+      // given
+      activatedJobStub.setInputVariables(
+          Map.of(
+              FIELD_GENERATION_TEMPLATE,
+              DEFAULT_GENERATION_NAME,
+              FIELD_CHANNEL,
+              DEFAULT_CHANNEL_NAME));
+
+      // when
+      sutCreateGenerationHandler.handle(jobClientStub, activatedJobStub);
+
+      // then
+      final var argumentCapture = ArgumentCaptor.forClass(CreateGenerationRequest.class);
+      verify(spyInternalApiClient).createGeneration(argumentCapture.capture());
+      final var request = argumentCapture.getValue();
+
+      assertThat(request.versions())
+          .containsOnly(
+              entry(KEY_ZEEBE_IMAGE, DEFAULT_ZEEBE_IMAGE),
+              entry(KEY_OPERATE_IMAGE, DEFAULT_OPERATE_IMAGE),
+              entry(KEY_OPTIMIZE_IMAGE, DEFAULT_OPTIMIZE_IMAGE),
+              entry(KEY_TASKLIST_IMAGE, DEFAULT_TASKLIST_IMAGE),
+              entry(KEY_ELASTIC_CURATOR_IMAGEE, DEFAULT_ELASTIC_CURATOR_IMAGE),
+              entry(KEY_ELASTIC_OSS_IMAGE, DEFAULT_ELASTIC_OSS_IMAGE));
+    }
+
+    @Test
+    public void shouldCreateGenerationWithSpecificZeebeVersion() throws Exception {
       // when
       sutCreateGenerationHandler.handle(jobClientStub, activatedJobStub);
 
@@ -121,6 +161,42 @@ class CreateGenerationInCamundaCloudHandlerTest {
           .containsOnly(
               entry(KEY_ZEEBE_IMAGE, ZEEBE_IMAGE),
               entry(KEY_OPERATE_IMAGE, DEFAULT_OPERATE_IMAGE),
+              entry(KEY_OPTIMIZE_IMAGE, DEFAULT_OPTIMIZE_IMAGE),
+              entry(KEY_TASKLIST_IMAGE, DEFAULT_TASKLIST_IMAGE),
+              entry(KEY_ELASTIC_CURATOR_IMAGEE, DEFAULT_ELASTIC_CURATOR_IMAGE),
+              entry(KEY_ELASTIC_OSS_IMAGE, DEFAULT_ELASTIC_OSS_IMAGE));
+    }
+
+    @Test
+    public void shouldCreateGenerationWithSpecificAppVersions() throws Exception {
+      // given
+      activatedJobStub.setInputVariables(
+          Map.of(
+              FIELD_OPERATE_IMAGE,
+              OPERATE_IMAGE,
+              FIELD_OPTIMIZE_IMAGE,
+              OPTIMIZE_IMAGE,
+              FIELD_TASKLIST_IMAGE,
+              TASKLIST_IMAGE,
+              FIELD_GENERATION_TEMPLATE,
+              DEFAULT_GENERATION_NAME,
+              FIELD_CHANNEL,
+              DEFAULT_CHANNEL_NAME));
+
+      // when
+      sutCreateGenerationHandler.handle(jobClientStub, activatedJobStub);
+
+      // then
+      final var argumentCapture = ArgumentCaptor.forClass(CreateGenerationRequest.class);
+      verify(spyInternalApiClient).createGeneration(argumentCapture.capture());
+      final var request = argumentCapture.getValue();
+
+      assertThat(request.versions())
+          .containsOnly(
+              entry(KEY_ZEEBE_IMAGE, DEFAULT_ZEEBE_IMAGE),
+              entry(KEY_OPERATE_IMAGE, OPERATE_IMAGE),
+              entry(KEY_OPTIMIZE_IMAGE, OPTIMIZE_IMAGE),
+              entry(KEY_TASKLIST_IMAGE, TASKLIST_IMAGE),
               entry(KEY_ELASTIC_CURATOR_IMAGEE, DEFAULT_ELASTIC_CURATOR_IMAGE),
               entry(KEY_ELASTIC_OSS_IMAGE, DEFAULT_ELASTIC_OSS_IMAGE));
     }

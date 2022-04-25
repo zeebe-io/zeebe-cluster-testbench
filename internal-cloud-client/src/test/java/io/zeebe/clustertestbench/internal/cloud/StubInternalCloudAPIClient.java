@@ -13,6 +13,8 @@ public class StubInternalCloudAPIClient implements InternalCloudAPIClient {
   public static final String DEFAULT_GENERATION_UUID = "1a2b3c4f56789-1234-abcd-1a2b3c4f5678";
   public static final String DEFAULT_ZEEBE_IMAGE = "camunda/zeebe:0.23.7";
   public static final String DEFAULT_OPERATE_IMAGE = "camunda/operate:0.23.2";
+  public static final String DEFAULT_OPTIMIZE_IMAGE = "camunda/optimize:0.23.2";
+  public static final String DEFAULT_TASKLIST_IMAGE = "camunda/tasklist:0.23.2";
   public static final String DEFAULT_ELASTIC_CURATOR_IMAGE =
       "quay.io/pires/docker-elasticsearch-curator:5.5.1";
   public static final String DEFAULT_ELASTIC_OSS_IMAGE =
@@ -23,6 +25,8 @@ public class StubInternalCloudAPIClient implements InternalCloudAPIClient {
 
   public static final String KEY_ZEEBE_IMAGE = "zeebe";
   public static final String KEY_OPERATE_IMAGE = "operate";
+  public static final String KEY_OPTIMIZE_IMAGE = "optimize";
+  public static final String KEY_TASKLIST_IMAGE = "tasklist";
   public static final String KEY_ELASTIC_CURATOR_IMAGEE = "elasticSearchCurator";
   public static final String KEY_ELASTIC_OSS_IMAGE = "elasticSearchOss";
 
@@ -38,6 +42,8 @@ public class StubInternalCloudAPIClient implements InternalCloudAPIClient {
 
     versions.put(KEY_ZEEBE_IMAGE, DEFAULT_ZEEBE_IMAGE);
     versions.put(KEY_OPERATE_IMAGE, DEFAULT_OPERATE_IMAGE);
+    versions.put(KEY_OPTIMIZE_IMAGE, DEFAULT_OPTIMIZE_IMAGE);
+    versions.put(KEY_TASKLIST_IMAGE, DEFAULT_TASKLIST_IMAGE);
     versions.put(KEY_ELASTIC_CURATOR_IMAGEE, DEFAULT_ELASTIC_CURATOR_IMAGE);
     versions.put(KEY_ELASTIC_OSS_IMAGE, DEFAULT_ELASTIC_OSS_IMAGE);
 
