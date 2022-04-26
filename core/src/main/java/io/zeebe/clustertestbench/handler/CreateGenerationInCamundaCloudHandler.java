@@ -24,6 +24,7 @@ public class CreateGenerationInCamundaCloudHandler implements JobHandler {
   private static final String KEY_OPERATE_IMAGE = "operate";
   private static final String KEY_OPTIMIZE_IMAGE = "optimize";
   private static final String KEY_TASKLIST_IMAGE = "tasklist";
+  private static final String KEY_ELASTIC_IMAGE = "elasticSearchOss";
 
   private final InternalCloudAPIClient internalApiClient;
 
@@ -68,6 +69,9 @@ public class CreateGenerationInCamundaCloudHandler implements JobHandler {
 
     final var tasklistImage = input.getTasklistImage();
     Optional.ofNullable(tasklistImage).ifPresent(v -> versions.put(KEY_TASKLIST_IMAGE, v));
+
+    final var elasticImage = input.getElasticImage();
+    Optional.ofNullable(elasticImage).ifPresent(v -> versions.put(KEY_ELASTIC_IMAGE, v));
 
     return versions;
   }
@@ -142,6 +146,7 @@ public class CreateGenerationInCamundaCloudHandler implements JobHandler {
     private String operateImage;
     private String optimizeImage;
     private String tasklistImage;
+    private String elasticImage;
     private String channel;
 
     public String getGenerationTemplate() {
@@ -184,6 +189,14 @@ public class CreateGenerationInCamundaCloudHandler implements JobHandler {
       this.tasklistImage = tasklistImage;
     }
 
+    public String getElasticImage() {
+      return elasticImage;
+    }
+
+    public void setElasticImage(String elasticImage) {
+      this.elasticImage = elasticImage;
+    }
+
     public String getChannel() {
       return channel;
     }
@@ -204,6 +217,8 @@ public class CreateGenerationInCamundaCloudHandler implements JobHandler {
           + optimizeImage
           + ", tasklistImage="
           + tasklistImage
+          + ", elasticImage="
+          + elasticImage
           + ", channel="
           + channel
           + "]";

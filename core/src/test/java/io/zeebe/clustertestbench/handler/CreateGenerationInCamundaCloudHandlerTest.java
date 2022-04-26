@@ -48,6 +48,7 @@ class CreateGenerationInCamundaCloudHandlerTest {
   private static final String OPERATE_IMAGE = "operateTestImage";
   private static final String OPTIMIZE_IMAGE = "optimizeTestImage";
   private static final String TASKLIST_IMAGE = "tasklistTestImage";
+  private static final String ELASTIC_IMAGE = "elasticTestImage";
 
   @Nested
   @DisplayName("Handle Job")
@@ -57,6 +58,7 @@ class CreateGenerationInCamundaCloudHandlerTest {
     public static final String FIELD_OPERATE_IMAGE = "operateImage";
     public static final String FIELD_OPTIMIZE_IMAGE = "optimizeImage";
     public static final String FIELD_TASKLIST_IMAGE = "tasklistImage";
+    public static final String FIELD_ELASTIC_IMAGE = "elasticImage";
 
     public static final String FIELD_GENERATION_TEMPLATE = "generationTemplate";
     public static final String FIELD_CHANNEL = "channel";
@@ -199,6 +201,36 @@ class CreateGenerationInCamundaCloudHandlerTest {
               entry(KEY_TASKLIST_IMAGE, TASKLIST_IMAGE),
               entry(KEY_ELASTIC_CURATOR_IMAGEE, DEFAULT_ELASTIC_CURATOR_IMAGE),
               entry(KEY_ELASTIC_OSS_IMAGE, DEFAULT_ELASTIC_OSS_IMAGE));
+    }
+
+    @Test
+    public void shouldCreateGenerationWithSpecificElasticVersion() throws Exception {
+      // given
+      activatedJobStub.setInputVariables(
+          Map.of(
+              FIELD_ELASTIC_IMAGE,
+              ELASTIC_IMAGE,
+              FIELD_GENERATION_TEMPLATE,
+              DEFAULT_GENERATION_NAME,
+              FIELD_CHANNEL,
+              DEFAULT_CHANNEL_NAME));
+
+      // when
+      sutCreateGenerationHandler.handle(jobClientStub, activatedJobStub);
+
+      // then
+      final var argumentCapture = ArgumentCaptor.forClass(CreateGenerationRequest.class);
+      verify(spyInternalApiClient).createGeneration(argumentCapture.capture());
+      final var request = argumentCapture.getValue();
+
+      assertThat(request.versions())
+          .containsOnly(
+              entry(KEY_ZEEBE_IMAGE, DEFAULT_ZEEBE_IMAGE),
+              entry(KEY_OPERATE_IMAGE, DEFAULT_OPERATE_IMAGE),
+              entry(KEY_OPTIMIZE_IMAGE, DEFAULT_OPTIMIZE_IMAGE),
+              entry(KEY_TASKLIST_IMAGE, DEFAULT_TASKLIST_IMAGE),
+              entry(KEY_ELASTIC_CURATOR_IMAGEE, DEFAULT_ELASTIC_CURATOR_IMAGE),
+              entry(KEY_ELASTIC_OSS_IMAGE, ELASTIC_IMAGE));
     }
 
     @Test
