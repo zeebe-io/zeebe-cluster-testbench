@@ -13,10 +13,18 @@ import io.zeebe.clustertestbench.util.StringLookup;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import org.apache.commons.lang3.RandomStringUtils;
 
 public class CreateGenerationInCamundaCloudHandler implements JobHandler {
+
+  private static final String KEY_ZEEBE_IMAGE = "zeebe";
+  private static final String KEY_OPERATE_IMAGE = "operate";
+  private static final String KEY_OPTIMIZE_IMAGE = "optimize";
+  private static final String KEY_TASKLIST_IMAGE = "tasklist";
+  private static final String KEY_ELASTIC_IMAGE = "elasticSearchOss";
 
   private final InternalCloudAPIClient internalApiClient;
 
@@ -28,13 +36,12 @@ public class CreateGenerationInCamundaCloudHandler implements JobHandler {
   public void handle(final JobClient client, final ActivatedJob job) throws Exception {
     final var input = job.getVariablesAsType(Input.class);
 
-    final var zeebeImage = input.getZeebeImage();
-
     final var generation = createGenerationName();
     final var templateGeneration = lookupTemplate(input.getGenerationTemplate());
     final var channelInfo = lookupChannel(input.getChannel());
 
-    final var generationUUID = createGeneration(generation, zeebeImage, templateGeneration);
+    final var versionsUnderTest = determineVersionsUnderTest(input);
+    final var generationUUID = createGeneration(generation, templateGeneration, versionsUnderTest);
 
     try {
       addGenerationToChannel(channelInfo, generationUUID);
@@ -48,11 +55,33 @@ public class CreateGenerationInCamundaCloudHandler implements JobHandler {
     }
   }
 
-  private String createGeneration(
-      final String generation, final String zeebeImage, final GenerationInfo template) {
-    final var versions = new HashMap<>(template.versions());
+  private Map<String, String> determineVersionsUnderTest(final Input input) {
+    final var versions = new HashMap<String, String>();
 
-    versions.put("zeebe", zeebeImage);
+    final var zeebeImage = input.getZeebeImage();
+    Optional.ofNullable(zeebeImage).ifPresent(v -> versions.put(KEY_ZEEBE_IMAGE, v));
+
+    final var operateImage = input.getOperateImage();
+    Optional.ofNullable(operateImage).ifPresent(v -> versions.put(KEY_OPERATE_IMAGE, v));
+
+    final var optimizeImage = input.getOptimizeImage();
+    Optional.ofNullable(optimizeImage).ifPresent(v -> versions.put(KEY_OPTIMIZE_IMAGE, v));
+
+    final var tasklistImage = input.getTasklistImage();
+    Optional.ofNullable(tasklistImage).ifPresent(v -> versions.put(KEY_TASKLIST_IMAGE, v));
+
+    final var elasticImage = input.getElasticImage();
+    Optional.ofNullable(elasticImage).ifPresent(v -> versions.put(KEY_ELASTIC_IMAGE, v));
+
+    return versions;
+  }
+
+  private String createGeneration(
+      final String generation,
+      final GenerationInfo template,
+      final Map<String, String> versionsUnderTest) {
+    final var versions = new HashMap<>(template.versions());
+    versions.putAll(versionsUnderTest);
 
     final var createGenerationRequest =
         new CreateGenerationRequest(generation, versions, Collections.emptyList());
@@ -114,6 +143,10 @@ public class CreateGenerationInCamundaCloudHandler implements JobHandler {
 
     private String generationTemplate;
     private String zeebeImage;
+    private String operateImage;
+    private String optimizeImage;
+    private String tasklistImage;
+    private String elasticImage;
     private String channel;
 
     public String getGenerationTemplate() {
@@ -132,6 +165,38 @@ public class CreateGenerationInCamundaCloudHandler implements JobHandler {
       this.zeebeImage = zeebeImage;
     }
 
+    public String getOperateImage() {
+      return operateImage;
+    }
+
+    public void setOperateImage(String operateImage) {
+      this.operateImage = operateImage;
+    }
+
+    public String getOptimizeImage() {
+      return optimizeImage;
+    }
+
+    public void setOptimizeImage(String optimizeImage) {
+      this.optimizeImage = optimizeImage;
+    }
+
+    public String getTasklistImage() {
+      return tasklistImage;
+    }
+
+    public void setTasklistImage(String tasklistImage) {
+      this.tasklistImage = tasklistImage;
+    }
+
+    public String getElasticImage() {
+      return elasticImage;
+    }
+
+    public void setElasticImage(String elasticImage) {
+      this.elasticImage = elasticImage;
+    }
+
     public String getChannel() {
       return channel;
     }
@@ -146,6 +211,14 @@ public class CreateGenerationInCamundaCloudHandler implements JobHandler {
           + generationTemplate
           + ", zeebeImage="
           + zeebeImage
+          + ", operateImage="
+          + operateImage
+          + ", optimizeImage="
+          + optimizeImage
+          + ", tasklistImage="
+          + tasklistImage
+          + ", elasticImage="
+          + elasticImage
           + ", channel="
           + channel
           + "]";
