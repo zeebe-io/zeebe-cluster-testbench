@@ -62,7 +62,7 @@
     <version.java>17</version.java>
     <version.junit>5.8.2</version.junit>
     <version.log4j>2.17.2</version.log4j>
-    <version.log4j-maven-shade-plugin-extensions>2.17.1</version.log4j-maven-shade-plugin-extensions>
+    <version.log4j-maven-shade-plugin-extensions>2.17.2</version.log4j-maven-shade-plugin-extensions>
     <version.log4j2-cachefile>2.14.1</version.log4j2-cachefile>
     <version.mockito>4.4.0</version.mockito>
     <version.resteasy>6.0.0.Final</version.resteasy>
