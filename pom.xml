@@ -64,7 +64,7 @@
     <version.log4j>2.17.2</version.log4j>
     <version.log4j-maven-shade-plugin-extensions>2.17.2</version.log4j-maven-shade-plugin-extensions>
     <version.log4j2-cachefile>2.14.1</version.log4j2-cachefile>
-    <version.mockito>4.5.1</version.mockito>
+    <version.mockito>4.6.0</version.mockito>
     <version.resteasy>6.0.1.Final</version.resteasy>
     <version.slf4j>1.7.36</version.slf4j>
     <version.vavr>0.10.4</version.vavr>
