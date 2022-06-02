@@ -221,7 +221,7 @@ pipeline {
                 }
                 if (hasBuildResultChanged()) {
                     slackSend(
-                        channel: '#zeebe-testbench-ci',
+                        channel: '#zeebe-ci',
                         message: "Zeebe Cluster Testbench on _${env.BRANCH_NAME}_ changed status to _${currentBuild.currentResult}_ for build ${currentBuild.absoluteUrl}"
                     )
                 }
