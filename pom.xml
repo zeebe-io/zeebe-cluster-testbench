@@ -55,7 +55,7 @@
     <plugin.version.spotless>2.22.5</plugin.version.spotless>
     <plugin.version.surefire>3.0.0-M6</plugin.version.surefire>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <version.assertj>3.22.0</version.assertj>
+    <version.assertj>3.23.1</version.assertj>
     <version.awaitility>4.2.0</version.awaitility>
     <version.commons-text>1.9</version.commons-text>
     <version.jackson>2.13.3</version.jackson>
