@@ -235,5 +235,5 @@ def getTag() {
 }
 
 def getSecretStore() {
-    return params.DEPLOY_TO_DEV ? 'secret/common/ci-zeebe/testbench-secrets-1.x-dev' : 'secret/common/ci-zeebe/testbench-secrets-1.x-prod'
+    return params.DEPLOY_TO_DEV ? 'secret/products/zeebe/ci/testbench-secrets-1.x-dev' : 'secret/products/zeebe/ci/testbench-secrets-1.x-prod'
 }
