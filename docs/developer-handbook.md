@@ -48,13 +48,13 @@ All stages are clusters running on the Camunda Cloud int environment (ultrawomba
 
 - Image tag `*-dev`
 - K8S namespace = `gke_zeebe-io_europe-west1-b_zeebe-cluster/testbench-1-x-dev`
-- Secrets `secret/common/ci-zeebe/testbench-secrets-1.x-dev`
+- Secrets `secret/products/zeebe/ci/testbench-secrets-1.x-dev`
 
 ### Prod Stage
 
 - Image tag `*-prod`
 - K8S namespace = `gke_zeebe-io_europe-west1-b_zeebe-cluster/testbench-1-x-prod`
-- Secrets `secret/common/ci-zeebe/testbench-secrets-1.x-prod`
+- Secrets `secret/products/zeebe/ci/testbench-secrets-1.x-prod`
 
 ## Permutation Testing
 
