@@ -83,6 +83,11 @@ public class CreateGenerationInCamundaCloudHandler implements JobHandler {
     final var versions = new HashMap<>(template.versions());
     versions.putAll(versionsUnderTest);
 
+    // old generations may contain a "worker" property
+    // which is not accepted anymore with newer versions
+    // of console
+    versions.remove("worker");
+
     final var createGenerationRequest =
         new CreateGenerationRequest(generation, versions, Collections.emptyList());
 
