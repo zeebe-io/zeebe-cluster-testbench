@@ -22,26 +22,4 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - name: Create backport PRs
-        uses: zeebe-io/backport-action@v1.0.0
-        with:
-          # Required
-          # Token to authenticate requests to GitHub
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-
-          # Required
-          # Working directory for the backport action
-          github_workspace: ${{ github.workspace }}
-
-          # Optional
-          # Regex pattern to match github labels
-          # Must contain a capture group for the target branch
-          # label_pattern: ^backport ([^ ]+)$
-
-          # Optional
-          # Template used as description in the pull requests created by this action.
-          # Placeholders can be used to define variable values.
-          # These are indicated by a dollar sign and curly braces (`${placeholder}`).
-          # Please refer to this action's README for all available placeholders.
-          # pull_description: |-
-          #   # Description
-          #   Backport of #${pull_number} to `${target_branch}`.
+        uses: korthout/backport-action@v1
