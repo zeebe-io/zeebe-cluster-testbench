@@ -52,15 +52,8 @@ kubectl create secret generic testbench-secrets --namespace="${namespace}" \
 # apply changes to testbench.yaml, if any
 kubectl apply --namespace="${namespace}" -f "testbench${suffix}.yaml"
 
-# apply changes to chaosWorker.yaml, if any
-sed -i "s/WORKER_VERSION/$workerVersion/g" core/chaos-workers/deployment/*.yaml
-kubectl apply --namespace="${namespace}" -f "core/chaos-workers/deployment/chaosWorker${suffix}.yaml"
-kubectl apply --namespace="${namespace}" -f "core/chaos-workers/deployment/chaos-data-claim.yaml"
-
 # trigger restart to load newest version of the image
 kubectl rollout restart deployment testbench --namespace="${namespace}"
-kubectl rollout restart deployment chaos-worker --namespace="${namespace}"
 
 # wait for rollouts to complete
 kubectl rollout status deployment testbench --timeout=180s --namespace="${namespace}"
-kubectl rollout status deployment chaos-worker --timeout=180s --namespace="${namespace}"
