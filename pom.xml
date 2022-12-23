@@ -67,7 +67,7 @@
     <version.log4j2-cachefile>2.14.1</version.log4j2-cachefile>
     <version.mockito>4.10.0</version.mockito>
     <version.resteasy>6.2.2.Final</version.resteasy>
-    <version.slf4j>1.7.36</version.slf4j>
+    <version.slf4j>2.0.6</version.slf4j>
     <version.vavr>0.10.4</version.vavr>
     <version.wiremock>2.35.0</version.wiremock>
     <version.zeebe-process-test>8.1.5</version.zeebe-process-test>
