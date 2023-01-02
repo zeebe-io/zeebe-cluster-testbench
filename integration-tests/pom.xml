@@ -9,16 +9,11 @@
     <version>3.0.2-SNAPSHOT</version>
     <relativePath>../pom.xml</relativePath>
   </parent>
-  <artifactId>zeebe-cluster-testbench-integration-tests</artifactId>
 
+  <artifactId>zeebe-cluster-testbench-integration-tests</artifactId>
   <packaging>jar</packaging>
 
   <name>Zeebe Cluster Testbench - Integration Tests</name>
-
-  <properties>
-    <bpmn-spec.version>2.0.1</bpmn-spec.version>
-    <plugin.version.failsafe>3.0.0-M7</plugin.version.failsafe>
-  </properties>
 
   <dependencies>
     <dependency>
@@ -27,34 +22,33 @@
     </dependency>
 
     <dependency>
+      <groupId>io.camunda</groupId>
+      <artifactId>zeebe-process-test-extension</artifactId>
+      <scope>test</scope>
+    </dependency>
+
+    <dependency>
       <groupId>org.assertj</groupId>
       <artifactId>assertj-core</artifactId>
       <scope>test</scope>
     </dependency>
-
     <dependency>
       <groupId>org.mockito</groupId>
       <artifactId>mockito-junit-jupiter</artifactId>
       <scope>test</scope>
     </dependency>
-
     <dependency>
       <groupId>org.awaitility</groupId>
       <artifactId>awaitility</artifactId>
       <scope>test</scope>
-    </dependency>
-
-    <dependency>
-      <groupId>io.camunda</groupId>
-      <artifactId>zeebe-process-test-extension</artifactId>
     </dependency>
   </dependencies>
 
   <build>
     <plugins>
       <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-failsafe-plugin</artifactId>
-        <version>${plugin.version.failsafe}</version>
         <executions>
           <execution>
             <goals>

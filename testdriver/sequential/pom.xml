@@ -10,27 +10,21 @@
     <version>3.0.2-SNAPSHOT</version>
     <relativePath>../../pom.xml</relativePath>
   </parent>
+
   <artifactId>zeebe-cluster-testbench-testdriver-sequential</artifactId>
-
   <packaging>jar</packaging>
-  <name>Zeebe Cluster Testbench - Sequential Testdriver</name>
 
-  <properties>
-    <version.grpc-api>1.51.1</version.grpc-api>
-  </properties>
+  <name>Zeebe Cluster Testbench - Sequential Testdriver</name>
 
   <dependencies>
     <dependency>
       <groupId>io.zeebe</groupId>
       <artifactId>zeebe-cluster-testbench-testdriver-api</artifactId>
     </dependency>
+
     <dependency>
       <groupId>io.camunda</groupId>
       <artifactId>zeebe-client-java</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>com.fasterxml.jackson.core</groupId>
-      <artifactId>jackson-databind</artifactId>
     </dependency>
     <dependency>
       <groupId>io.camunda</groupId>
@@ -39,9 +33,12 @@
     </dependency>
 
     <dependency>
+      <groupId>com.fasterxml.jackson.core</groupId>
+      <artifactId>jackson-databind</artifactId>
+    </dependency>
+    <dependency>
       <groupId>io.grpc</groupId>
       <artifactId>grpc-api</artifactId>
-      <version>${version.grpc-api}</version>
     </dependency>
 
     <dependency>
@@ -59,7 +56,6 @@
       <artifactId>mockito-junit-jupiter</artifactId>
       <scope>test</scope>
     </dependency>
-
     <dependency>
       <groupId>org.junit.jupiter</groupId>
       <artifactId>junit-jupiter-params</artifactId>

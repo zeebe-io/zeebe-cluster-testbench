@@ -7,13 +7,13 @@ import static com.github.tomakehurst.wiremock.client.WireMock.postRequestedFor;
 import static com.github.tomakehurst.wiremock.client.WireMock.stubFor;
 import static com.github.tomakehurst.wiremock.client.WireMock.urlEqualTo;
 import static com.github.tomakehurst.wiremock.client.WireMock.verify;
+import static io.zeebe.clustertestbench.cloud.JsonAssertions.assertJsonEquality;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.tomakehurst.wiremock.junit5.WireMockRuntimeInfo;
 import com.github.tomakehurst.wiremock.junit5.WireMockTest;
-import io.camunda.zeebe.test.util.JsonUtil;
 import io.zeebe.clustertestbench.cloud.oauth.OAuthClient.OAuthCredentials;
 import io.zeebe.clustertestbench.cloud.oauth.OAuthClient.ServiceAccountTokenRequest;
 import io.zeebe.clustertestbench.cloud.oauth.OAuthClient.UserAccountTokenRequest;
@@ -38,7 +38,7 @@ class OAuthClientTest {
     final var jsonRepresentation = objectMapper.writeValueAsString(request);
 
     // then
-    JsonUtil.assertEquality(
+    assertJsonEquality(
         jsonRepresentation,
         """
         {
@@ -63,7 +63,7 @@ class OAuthClientTest {
     final var jsonRepresentation = objectMapper.writeValueAsString(request);
 
     // then
-    JsonUtil.assertEquality(
+    assertJsonEquality(
         jsonRepresentation,
         """
              {

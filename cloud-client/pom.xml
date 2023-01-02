@@ -10,23 +10,17 @@
     <version>3.0.2-SNAPSHOT</version>
     <relativePath>../pom.xml</relativePath>
   </parent>
-  <artifactId>zeebe-cluster-testbench-cloud-client</artifactId>
 
+  <artifactId>zeebe-cluster-testbench-cloud-client</artifactId>
   <packaging>jar</packaging>
+
   <name>Zeebe Cluster Testbench - Camunda Cloud Client</name>
 
   <dependencies>
-
     <dependency>
       <groupId>org.jboss.resteasy</groupId>
       <artifactId>resteasy-client</artifactId>
     </dependency>
-
-    <dependency>
-      <groupId>io.camunda</groupId>
-      <artifactId>zeebe-test-util</artifactId>
-    </dependency>
-
     <dependency>
       <groupId>org.jboss.resteasy</groupId>
       <artifactId>resteasy-jackson2-provider</artifactId>

@@ -1,8 +1,9 @@
 package io.zeebe.clustertestbench.cloud;
 
+import static io.zeebe.clustertestbench.cloud.JsonAssertions.assertJsonEquality;
+
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import io.camunda.zeebe.test.util.JsonUtil;
 import io.zeebe.clustertestbench.cloud.CloudAPIClient.CreateClusterRequest;
 import io.zeebe.clustertestbench.cloud.CloudAPIClient.CreateZeebeClientRequest;
 import org.junit.jupiter.api.Test;
@@ -22,17 +23,17 @@ class CloudAPIClientTest {
     final var jsonRepresentation = objectMapper.writeValueAsString(request);
 
     // then
-    JsonUtil.assertEquality(
+    assertJsonEquality(
         jsonRepresentation,
         """
-             {
-                "name": "nameValue",
-                "planTypeId":"planTypeIdValue",
-                "channelId":"channelIdValue",
-                "generationId":"generationIdValue",
-                "regionId":"regionIdValue"
-             }
-            """);
+         {
+            "name": "nameValue",
+            "planTypeId":"planTypeIdValue",
+            "channelId":"channelIdValue",
+            "generationId":"generationIdValue",
+            "regionId":"regionIdValue"
+         }
+        """);
   }
 
   @Test
@@ -46,13 +47,13 @@ class CloudAPIClientTest {
     final var jsonRepresentation = objectMapper.writeValueAsString(request);
 
     // then
-    JsonUtil.assertEquality(
+    assertJsonEquality(
         jsonRepresentation,
         """
-                {
-                   "clientName":"clientNameValue",
-                   "permissions":["zeebe"]
-                }
-              """);
+          {
+             "clientName":"clientNameValue",
+             "permissions":["zeebe"]
+          }
+        """);
   }
 }

@@ -1,11 +1,11 @@
 package io.zeebe.clustertestbench.testdriver.api;
 
+import static io.zeebe.clustertestbench.testdriver.api.JsonAssertions.assertJsonEquality;
 import static java.util.List.of;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import io.camunda.zeebe.test.util.JsonUtil;
 import io.zeebe.clustertestbench.testdriver.api.TestDriver.TestReportDTO;
 import io.zeebe.clustertestbench.testdriver.api.TestDriver.TestResult;
 import org.assertj.core.api.Assertions;
@@ -49,7 +49,7 @@ public class TestReportTest {
     final var jsonRepresentation = OBJECT_MAPPER.writeValueAsString(testReport);
 
     // then
-    JsonUtil.assertEquality(
+    assertJsonEquality(
         jsonRepresentation,
         """
                 {
