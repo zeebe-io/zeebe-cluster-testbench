@@ -63,7 +63,7 @@
     <version.junit>5.9.2</version.junit>
     <version.log4j>2.19.0</version.log4j>
     <version.log4j-maven-shade-plugin-extensions>2.19.0</version.log4j-maven-shade-plugin-extensions>
-    <version.mockito>4.11.0</version.mockito>
+    <version.mockito>5.0.0</version.mockito>
     <version.resteasy>6.2.2.Final</version.resteasy>
     <version.slack-api>1.27.3</version.slack-api>
     <version.slf4j>2.0.6</version.slf4j>
