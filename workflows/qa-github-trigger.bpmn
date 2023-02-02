@@ -61,7 +61,7 @@
     <bpmn:boundaryEvent id="Event_1p9ayal" attachedToRef="Activity_0gxslr9">
       <bpmn:outgoing>Flow_032f7m5</bpmn:outgoing>
       <bpmn:timerEventDefinition id="TimerEventDefinition_0bb19ml">
-        <bpmn:timeDuration xsi:type="bpmn:tFormalExpression">=PT6H</bpmn:timeDuration>
+        <bpmn:timeDuration xsi:type="bpmn:tFormalExpression">PT6H</bpmn:timeDuration>
       </bpmn:timerEventDefinition>
     </bpmn:boundaryEvent>
     <bpmn:sequenceFlow id="Flow_032f7m5" sourceRef="Event_1p9ayal" targetRef="Activity_0pskk8p" />
