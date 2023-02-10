@@ -57,7 +57,7 @@
     <version.awaitility>4.2.0</version.awaitility>
     <version.commons-io>2.11.0</version.commons-io>
     <version.commons-text>1.10.0</version.commons-text>
-    <version.grpc-api>1.52.1</version.grpc-api>
+    <version.grpc-api>1.53.0</version.grpc-api>
     <version.jackson>2.14.2</version.jackson>
     <version.java>17</version.java>
     <version.junit>5.9.2</version.junit>
