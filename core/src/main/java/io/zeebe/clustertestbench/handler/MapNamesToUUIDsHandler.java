@@ -10,7 +10,6 @@ import io.zeebe.clustertestbench.cloud.CloudAPIClient.ParametersGenerationInfo;
 import io.zeebe.clustertestbench.cloud.CloudAPIClient.ParametersRegionInfo;
 import io.zeebe.clustertestbench.cloud.CloudAPIClient.ParametersResponse;
 import io.zeebe.clustertestbench.util.StringLookup;
-import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -35,11 +34,11 @@ public class MapNamesToUUIDsHandler implements JobHandler {
 
     final ParametersChannelInfo channelInfo = mapChannel(inputOutput, parameters);
 
-    final ParametersRegionInfo regionInfo = mapRegion(inputOutput, parameters);
+    mapRegion(inputOutput, parameters);
 
     mapGeneration(inputOutput, channelInfo);
 
-    mapClusterPlan(inputOutput, parameters, regionInfo);
+    mapClusterPlan(inputOutput, parameters);
 
     LOGGER.info("Output: " + inputOutput);
     client.newCompleteCommand(job.getKey()).variables(inputOutput).send();
@@ -114,10 +113,7 @@ public class MapNamesToUUIDsHandler implements JobHandler {
     inputOutput.setGenerationUUID(generationInfo.uuid());
   }
 
-  private void mapClusterPlan(
-      final InputOutput inputOutput,
-      final ParametersResponse parameters,
-      final ParametersRegionInfo regionInfo) {
+  private void mapClusterPlan(final InputOutput inputOutput, final ParametersResponse parameters) {
     final ParametersClusterPlanTypeInfo clusterPlanInfo;
 
     if ((inputOutput.getClusterPlanUUID() == null) && (inputOutput.getClusterPlan() == null)) {
@@ -127,17 +123,11 @@ public class MapNamesToUUIDsHandler implements JobHandler {
 
     final StringLookup<ParametersClusterPlanTypeInfo> clusterPlanLookup;
     if (inputOutput.getClusterPlanUUID() == null) {
-
-      final var clusterPlansInTheRegion =
-          parameters.clusterPlanTypes().stream()
-              .filter(plan -> regionInfo.uuid().equals(plan.k8sContext().uuid()))
-              .collect(Collectors.toList());
-
       clusterPlanLookup =
           new StringLookup<>(
               "clusterPlan",
               inputOutput.getClusterPlan(),
-              clusterPlansInTheRegion,
+              parameters.clusterPlanTypes(),
               ParametersClusterPlanTypeInfo::name,
               true);
     } else {
