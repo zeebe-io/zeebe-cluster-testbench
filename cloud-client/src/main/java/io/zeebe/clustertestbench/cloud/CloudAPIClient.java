@@ -137,7 +137,7 @@ public interface CloudAPIClient {
 
   @JsonIgnoreProperties(ignoreUnknown = true)
   record ParametersClusterPlanTypeInfo(
-      String description, boolean internal, String name, String uuid, K8sContextInfo k8sContext) {}
+      String description, boolean internal, String name, String uuid) {}
 
   @JsonIgnoreProperties(ignoreUnknown = true)
   record ParametersRegionInfo(String name, String region, String uuid, String zone) {}
