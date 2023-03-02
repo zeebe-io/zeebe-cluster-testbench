@@ -189,6 +189,7 @@ pipeline {
                         sh 'gpg -q --allow-secret-key-import --import --no-tty --batch --yes ${GPG_SEC_KEY}'
                         sh 'git config --global user.email "ci@camunda.com"'
                         sh 'git config --global user.name "${GITHUB_TOKEN_USR}"'
+                        sh 'git config --global --add safe.directory "\$PWD"'
                         sh '''
                             mvn -B -s $MAVEN_SETTINGS_XML -DskipTests source:jar \
                               javadoc:jar release:prepare release:perform -Prelease \
