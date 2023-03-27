@@ -2,6 +2,7 @@ package io.zeebe.clustertestbench.testdriver.sequential;
 
 import static java.util.function.Predicate.not;
 
+import io.camunda.zeebe.client.api.command.ClientStatusException;
 import io.grpc.Status;
 import io.grpc.Status.Code;
 import io.grpc.StatusRuntimeException;
@@ -53,16 +54,13 @@ public class ExceptionFilterBuilder {
     private final String processID;
 
     protected ProcessNotFoundPredicate(final String processId) {
-      this.processID = processId;
+      processID = processId;
     }
 
     @Override
     public boolean test(final Exception t) {
-      if (t.getCause() instanceof StatusRuntimeException) {
-        final StatusRuntimeException sre = (StatusRuntimeException) t.getCause();
-
-        final Status status = sre.getStatus();
-
+      if (t instanceof ClientStatusException cse) {
+        final Status status = cse.getStatus();
         return status.getCode() == Code.NOT_FOUND && status.getDescription().contains(processID);
       } else {
         return false;
