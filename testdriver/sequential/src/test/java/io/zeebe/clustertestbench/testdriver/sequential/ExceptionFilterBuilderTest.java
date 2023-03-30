@@ -3,6 +3,7 @@ package io.zeebe.clustertestbench.testdriver.sequential;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.params.provider.EnumSource.Mode.EXCLUDE;
 
+import io.camunda.zeebe.client.api.command.ClientStatusException;
 import io.grpc.Status;
 import io.grpc.Status.Code;
 import io.grpc.StatusRuntimeException;
@@ -29,6 +30,13 @@ class ExceptionFilterBuilderTest {
 
     final Exception t = new Exception(ressourceExhaustedException);
     return t;
+  }
+
+  private static ClientStatusException getProcessNotFoundException() {
+    return new ClientStatusException(
+        Status.NOT_FOUND.withDescription(
+            "Command rejected with code 'CREATE_WITH_AWAITING_RESULT': Expected to find process definition with process ID 'test-process', but none found"),
+        new RuntimeException());
   }
 
   @Nested
@@ -114,11 +122,7 @@ class ExceptionFilterBuilderTest {
       // given
 
       // message as was observed in production
-      final Exception t =
-          createNestedStatusRuntimeException(
-              Code.NOT_FOUND,
-              "Command rejected with code 'CREATE_WITH_AWAITING_RESULT': Expected to find process definition with process ID 'test-process', but none found");
-
+      final Exception t = getProcessNotFoundException();
       // when
       final boolean match = sutPredicate.test(t);
 
@@ -130,9 +134,10 @@ class ExceptionFilterBuilderTest {
     void shouldMatchForArbitrayCommands() {
       // given
       final Exception t =
-          createNestedStatusRuntimeException(
-              Code.NOT_FOUND,
-              "Command rejected with code 'SOME_OTHER_COMMAND': Expected to find process definition with process ID 'test-process', but none found");
+          new ClientStatusException(
+              Status.NOT_FOUND.withDescription(
+                  "Command rejected with code 'SOME_OTHER_COMMAND': Expected to find process definition with process ID 'test-process', but none found"),
+              new RuntimeException());
 
       // when
       final boolean match = sutPredicate.test(t);
@@ -235,10 +240,7 @@ class ExceptionFilterBuilderTest {
     @Test
     void shouldTestNegativeForProcessNotFoundException() {
       // given
-      final Exception t =
-          createNestedStatusRuntimeException(
-              Code.NOT_FOUND,
-              "Command rejected with code 'CREATE_WITH_AWAITING_RESULT': Expected to find process definition with process ID 'test-process', but none found");
+      final Exception t = getProcessNotFoundException();
 
       final Predicate<Exception> sutExceptionFilter =
           new ExceptionFilterBuilder().ignoreProcessNotFoundExceptions(TEST_PROCESS_ID).build();
@@ -278,10 +280,7 @@ class ExceptionFilterBuilderTest {
     @Test
     void shouldTestNegativeForProcessNotFoundException() {
       // given
-      final Exception t =
-          createNestedStatusRuntimeException(
-              Code.NOT_FOUND,
-              "Command rejected with code 'CREATE_WITH_AWAITING_RESULT': Expected to find process definition with process ID 'test-process', but none found");
+      final Exception t = getProcessNotFoundException();
 
       final Predicate<Exception> sutExceptionFilter =
           new ExceptionFilterBuilder()
