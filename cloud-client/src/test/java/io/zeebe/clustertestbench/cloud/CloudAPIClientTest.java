@@ -52,7 +52,7 @@ class CloudAPIClientTest {
         """
           {
              "clientName":"clientNameValue",
-             "permissions":["zeebe"]
+             "permissions":["Zeebe"]
           }
         """);
   }
