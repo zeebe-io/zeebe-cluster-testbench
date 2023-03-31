@@ -75,7 +75,7 @@ public interface CloudAPIClient {
 
   record CreateZeebeClientRequest(String clientName) {
 
-    private static final List<String> PERMISSIONS = Collections.singletonList("zeebe");
+    private static final List<String> PERMISSIONS = Collections.singletonList("Zeebe");
 
     public List<String> getPermissions() {
       return PERMISSIONS;
