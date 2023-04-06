@@ -41,7 +41,7 @@
     <plugin.version.assembly>3.3.0</plugin.version.assembly>
     <plugin.version.dependency>3.5.0</plugin.version.dependency>
     <plugin.version.failsafe>3.0.0</plugin.version.failsafe>
-    <plugin.version.flakytestextractor>2.1.1</plugin.version.flakytestextractor>
+    <plugin.version.flakytestextractor>2.1.3</plugin.version.flakytestextractor>
     <plugin.version.flatten>1.4.1</plugin.version.flatten>
     <plugin.version.fmt>2.13</plugin.version.fmt>
     <plugin.version.googlejavaformat>1.15.0</plugin.version.googlejavaformat>
