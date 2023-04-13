@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:zeebe="http://camunda.org/schema/zeebe/1.0" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" id="Definitions_0y2o5ya" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Zeebe Modeler" exporterVersion="0.11.0">
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:zeebe="http://camunda.org/schema/zeebe/1.0" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" id="Definitions_0y2o5ya" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="5.9.0">
   <bpmn:process id="run-all-tests-in-camunda-cloud" name="Run All Tests in Camunda Cloud" isExecutable="true">
     <bpmn:startEvent id="start" name="Start">
       <bpmn:extensionElements>
@@ -66,7 +66,7 @@
       <bpmn:outgoing>Flow_03g3kjv</bpmn:outgoing>
     </bpmn:exclusiveGateway>
     <bpmn:sequenceFlow id="Flow_0jvx8w4" name="Yes" sourceRef="Gateway_15c2soj" targetRef="run-chaos-experiments-in-camunda-cloud">
-      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">=region = "new chaos"</bpmn:conditionExpression>
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">=region = "Belgium, Europe (europe-west1) aka. new chaos"</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
     <bpmn:exclusiveGateway id="Gateway_0cucuts">
       <bpmn:incoming>Flow_0kpt015</bpmn:incoming>
@@ -88,64 +88,12 @@
       <bpmn:outgoing>Flow_12u47ji</bpmn:outgoing>
     </bpmn:serviceTask>
     <bpmn:textAnnotation id="TextAnnotation_0rk9i9f">
-      <bpmn:text>By design we run chaos experiments only in a dedicated region ("new chaos")</bpmn:text>
+      <bpmn:text>By design we run chaos experiments only in a dedicated region ("Belgium, Europe (europe-west1) aka. new chaos")</bpmn:text>
     </bpmn:textAnnotation>
     <bpmn:association id="Association_12ccmv8" sourceRef="Gateway_15c2soj" targetRef="TextAnnotation_0rk9i9f" />
   </bpmn:process>
   <bpmndi:BPMNDiagram id="BPMNDiagram_1">
     <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="run-all-tests-in-camunda-cloud">
-      <bpmndi:BPMNEdge id="Flow_12u47ji_di" bpmnElement="Flow_12u47ji">
-        <di:waypoint x="900" y="120" />
-        <di:waypoint x="942" y="120" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_03g3kjv_di" bpmnElement="Flow_03g3kjv">
-        <di:waypoint x="450" y="275" />
-        <di:waypoint x="450" y="350" />
-        <di:waypoint x="730" y="350" />
-        <di:waypoint x="730" y="275" />
-        <bpmndi:BPMNLabel>
-          <dc:Bounds x="462" y="333" width="15" height="14" />
-        </bpmndi:BPMNLabel>
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_1k0vnji_di" bpmnElement="Flow_1k0vnji">
-        <di:waypoint x="730" y="225" />
-        <di:waypoint x="730" y="145" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_0jvx8w4_di" bpmnElement="Flow_0jvx8w4">
-        <di:waypoint x="475" y="250" />
-        <di:waypoint x="540" y="250" />
-        <bpmndi:BPMNLabel>
-          <dc:Bounds x="498" y="232" width="19" height="14" />
-        </bpmndi:BPMNLabel>
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_0kpt015_di" bpmnElement="Flow_0kpt015">
-        <di:waypoint x="640" y="250" />
-        <di:waypoint x="705" y="250" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_1gg7n91_di" bpmnElement="Flow_1gg7n91">
-        <di:waypoint x="450" y="145" />
-        <di:waypoint x="450" y="225" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_0u2p594_di" bpmnElement="Flow_0u2p594">
-        <di:waypoint x="755" y="120" />
-        <di:waypoint x="800" y="120" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_1d1vrbq_di" bpmnElement="Flow_1d1vrbq">
-        <di:waypoint x="475" y="120" />
-        <di:waypoint x="540" y="120" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_0qkawlj_di" bpmnElement="Flow_0qkawlj">
-        <di:waypoint x="350" y="120" />
-        <di:waypoint x="425" y="120" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_1ty9adt_di" bpmnElement="Flow_1ty9adt">
-        <di:waypoint x="640" y="120" />
-        <di:waypoint x="705" y="120" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_0hcriyv_di" bpmnElement="Flow_0hcriyv">
-        <di:waypoint x="188" y="120" />
-        <di:waypoint x="250" y="120" />
-      </bpmndi:BPMNEdge>
       <bpmndi:BPMNShape id="_BPMNShape_StartEvent_2" bpmnElement="start">
         <dc:Bounds x="152" y="102" width="36" height="36" />
         <bpmndi:BPMNLabel>
@@ -186,8 +134,61 @@
         <dc:Bounds x="800" y="80" width="100" height="80" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="TextAnnotation_0rk9i9f_di" bpmnElement="TextAnnotation_0rk9i9f">
-        <dc:Bounds x="260" y="300" width="100" height="110" />
+        <dc:Bounds x="152" y="300" width="208" height="80" />
+        <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Flow_0hcriyv_di" bpmnElement="Flow_0hcriyv">
+        <di:waypoint x="188" y="120" />
+        <di:waypoint x="250" y="120" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1ty9adt_di" bpmnElement="Flow_1ty9adt">
+        <di:waypoint x="640" y="120" />
+        <di:waypoint x="705" y="120" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0qkawlj_di" bpmnElement="Flow_0qkawlj">
+        <di:waypoint x="350" y="120" />
+        <di:waypoint x="425" y="120" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1d1vrbq_di" bpmnElement="Flow_1d1vrbq">
+        <di:waypoint x="475" y="120" />
+        <di:waypoint x="540" y="120" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0u2p594_di" bpmnElement="Flow_0u2p594">
+        <di:waypoint x="755" y="120" />
+        <di:waypoint x="800" y="120" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1gg7n91_di" bpmnElement="Flow_1gg7n91">
+        <di:waypoint x="450" y="145" />
+        <di:waypoint x="450" y="225" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0kpt015_di" bpmnElement="Flow_0kpt015">
+        <di:waypoint x="640" y="250" />
+        <di:waypoint x="705" y="250" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0jvx8w4_di" bpmnElement="Flow_0jvx8w4">
+        <di:waypoint x="475" y="250" />
+        <di:waypoint x="540" y="250" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="499" y="232" width="18" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1k0vnji_di" bpmnElement="Flow_1k0vnji">
+        <di:waypoint x="730" y="225" />
+        <di:waypoint x="730" y="145" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_03g3kjv_di" bpmnElement="Flow_03g3kjv">
+        <di:waypoint x="450" y="275" />
+        <di:waypoint x="450" y="350" />
+        <di:waypoint x="730" y="350" />
+        <di:waypoint x="730" y="275" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="462" y="333" width="15" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_12u47ji_di" bpmnElement="Flow_12u47ji">
+        <di:waypoint x="900" y="120" />
+        <di:waypoint x="942" y="120" />
+      </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Association_12ccmv8_di" bpmnElement="Association_12ccmv8">
         <di:waypoint x="433" y="258" />
         <di:waypoint x="342" y="300" />
