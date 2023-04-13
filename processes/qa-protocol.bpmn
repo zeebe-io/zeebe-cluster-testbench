@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:zeebe="http://camunda.org/schema/zeebe/1.0" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" id="Definitions_06r49fl" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="4.8.1">
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:zeebe="http://camunda.org/schema/zeebe/1.0" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" id="Definitions_06r49fl" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="5.9.0">
   <bpmn:process id="qa-protocol" name="QA Protocol" isExecutable="true">
     <bpmn:startEvent id="StartEvent_1">
       <bpmn:outgoing>Flow_0s03s3e</bpmn:outgoing>
@@ -11,7 +11,7 @@
       <bpmn:extensionElements>
         <zeebe:calledElement processId="run-all-tests-in-camunda-cloud-per-cluster-plan" />
         <zeebe:ioMapping>
-          <zeebe:input source="=&#34;new chaos&#34;" target="region" />
+          <zeebe:input source="=&#34;Belgium, Europe (europe-west1) aka. new chaos&#34;" target="region" />
           <zeebe:input source="=[&#34;Production - S&#34;]" target="clusterPlans" />
           <zeebe:input source="={&#34;steps&#34;:3,&#34;iterations&#34;:10,&#34;maxTimeForIteration&#34;:&#34;PT20S&#34;,&#34;maxTimeForCompleteTest&#34;:&#34;PT4M&#34;}" target="sequentialTestParams" />
           <zeebe:input source="={}" target="chaosTestParams" />
@@ -44,7 +44,7 @@
     </bpmn:serviceTask>
     <bpmn:textAnnotation id="TextAnnotation_1vy46wr">
       <bpmn:text>Defaults:
-region = "new chaos"
+region = "Belgium, Europe (europe-west1) aka. new chaos"
 clusterPlans = ["Development", "Production - S", "Production - M", "Production - L"]
 sequentialTestParams = {"steps":3,"iterations":10,"maxTimeForIteration":"PT20S","maxTimeForCompleteTest":"PT4M"}</bpmn:text>
     </bpmn:textAnnotation>
@@ -62,22 +62,6 @@ channel: channel in which the QA tests shall be run</bpmn:text>
   </bpmn:process>
   <bpmndi:BPMNDiagram id="BPMNDiagram_1">
     <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="qa-protocol">
-      <bpmndi:BPMNEdge id="Flow_1qkrt5u_di" bpmnElement="Flow_1qkrt5u">
-        <di:waypoint x="690" y="177" />
-        <di:waypoint x="752" y="177" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_1hq3wl3_di" bpmnElement="Flow_1hq3wl3">
-        <di:waypoint x="530" y="177" />
-        <di:waypoint x="590" y="177" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_0cosuvw_di" bpmnElement="Flow_0cosuvw">
-        <di:waypoint x="370" y="177" />
-        <di:waypoint x="430" y="177" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_0s03s3e_di" bpmnElement="Flow_0s03s3e">
-        <di:waypoint x="215" y="177" />
-        <di:waypoint x="270" y="177" />
-      </bpmndi:BPMNEdge>
       <bpmndi:BPMNShape id="_BPMNShape_StartEvent_2" bpmnElement="StartEvent_1">
         <dc:Bounds x="179" y="159" width="36" height="36" />
       </bpmndi:BPMNShape>
@@ -95,6 +79,7 @@ channel: channel in which the QA tests shall be run</bpmn:text>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="TextAnnotation_1vy46wr_di" bpmnElement="TextAnnotation_1vy46wr">
         <dc:Bounds x="160" y="280" width="750" height="70" />
+        <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="TextAnnotation_0lbo537_di" bpmnElement="TextAnnotation_0lbo537">
         <dc:Bounds x="147" y="40" width="608" height="48" />
@@ -102,9 +87,25 @@ channel: channel in which the QA tests shall be run</bpmn:text>
       <bpmndi:BPMNShape id="TextAnnotation_0yzgtu4_di" bpmnElement="TextAnnotation_0yzgtu4">
         <dc:Bounds x="590" y="240" width="310" height="53" />
       </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Flow_0s03s3e_di" bpmnElement="Flow_0s03s3e">
+        <di:waypoint x="215" y="177" />
+        <di:waypoint x="270" y="177" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0cosuvw_di" bpmnElement="Flow_0cosuvw">
+        <di:waypoint x="370" y="177" />
+        <di:waypoint x="430" y="177" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1hq3wl3_di" bpmnElement="Flow_1hq3wl3">
+        <di:waypoint x="530" y="177" />
+        <di:waypoint x="590" y="177" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1qkrt5u_di" bpmnElement="Flow_1qkrt5u">
+        <di:waypoint x="690" y="177" />
+        <di:waypoint x="752" y="177" />
+      </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Association_0din8b3_di" bpmnElement="Association_0din8b3">
-        <di:waypoint x="430" y="199" />
-        <di:waypoint x="244" y="280" />
+        <di:waypoint x="530" y="155" />
+        <di:waypoint x="535" y="153" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Association_0x03pf4_di" bpmnElement="Association_0x03pf4">
         <di:waypoint x="197" y="159" />
