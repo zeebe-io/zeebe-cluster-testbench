@@ -196,7 +196,6 @@ pipeline {
                               -DcheckModificationExcludeList=core/chaos-workers/deployment/chaosWorker-dev.yaml,core/chaos-workers/deployment/chaosWorker-prod.yaml \
                               -DignoreSnapshots=true
                         '''
-                        sh '.ci/scripts/github-release.sh'
                     }
                 }
             }
