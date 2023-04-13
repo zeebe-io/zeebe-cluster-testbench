@@ -1,0 +1,10 @@
+---
+# See https://pre-commit.com for more information
+# See https://pre-commit.com/hooks.html for more hooks
+repos:
+
+- repo: https://github.com/detailyang/pre-commit-shell
+  rev: v1.0.6
+  hooks:
+  - id: shell-lint
+    args: [--external-sources]
