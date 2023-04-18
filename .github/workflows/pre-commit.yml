@@ -1,0 +1,30 @@
+---
+name: pre-commit
+
+on:
+  push:
+    branches:
+    - main
+    - stable/*
+    - release-*
+    - trying
+    - staging
+  pull_request: {}
+
+defaults:
+  run:
+    # use bash shell by default to ensure pipefail behavior is the default
+    # see https://docs.github.com/en/actions/using-workflows/workflow-syntax-for-github-actions#exit-codes-and-error-action-preference
+    shell: bash
+
+jobs:
+  pre-commit:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+
+    - uses: actions/setup-python@v4
+
+    - uses: pre-commit/action@v3.0.0
+      with:
+        extra_args: --all-files --verbose
