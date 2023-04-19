@@ -26,14 +26,20 @@ defaults:
 
 # variables for later use
 env:
-  vault_secret_path: ${{ (inputs.deployToDev == 'true') && 'secret/data/products/zeebe/ci/testbench-secrets-1.x-dev' || 'secret/data/products/zeebe/ci/testbench-secrets-1.x-prod' }}
-  docker_tag: ${{ (inputs.deployToDev == 'true') && '1.x-dev' || '1.x-prod' }}
+  vault_secret_path: ${{ inputs.deployToDev && 'secret/data/products/zeebe/ci/testbench-secrets-1.x-dev' || 'secret/data/products/zeebe/ci/testbench-secrets-1.x-prod' }}
+  docker_tag: ${{ inputs.deployToDev && '1.x-dev' || '1.x-prod' }}
   should_deploy_infra: ${{ (github.repository == 'zeebe-io/zeebe-cluster-testbench' && (github.ref == 'refs/heads/main' || contains(github.ref, 'ref/heads/stable/') || inputs.deployToDev)) && 'true' || 'false' }}
 
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
+    - name: Echo inputs
+      run: |
+        echo "Inputs"
+        echo "-----"
+        echo "Deploy to dev?: ${{ inputs.deployToDev }}"
+
     - uses: actions/checkout@v3
 
     - name: Import Secrets
