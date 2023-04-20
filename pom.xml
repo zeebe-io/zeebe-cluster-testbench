@@ -13,7 +13,7 @@
 
   <groupId>io.zeebe</groupId>
   <artifactId>zeebe-cluster-testbench</artifactId>
-  <version>3.0.4-SNAPSHOT</version>
+  <version>3.0.4</version>
   <packaging>pom</packaging>
 
   <name>Zeebe Cluster Testbench</name>
@@ -31,7 +31,7 @@
   <scm>
     <connection>scm:git:https://${GITHUB_ACTOR}:${GITHUB_TOKEN}@github.com/zeebe-io/zeebe-cluster-testbench.git</connection>
     <developerConnection>scm:git:https://${GITHUB_ACTOR}:${GITHUB_TOKEN}@github.com/zeebe-io/zeebe-cluster-testbench.git</developerConnection>
-    <tag>HEAD</tag>
+    <tag>3.0.4</tag>
     <url>https://github.com/zeebe-io/zeebe-cluster-testbench</url>
   </scm>
 
