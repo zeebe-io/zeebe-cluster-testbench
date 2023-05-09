@@ -1,5 +1,5 @@
 status = [
-  "continuous-integration/jenkins/branch"
+  "Test summary"
 ]
 
 required_approvals = 0
