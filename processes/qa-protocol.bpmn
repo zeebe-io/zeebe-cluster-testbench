@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:zeebe="http://camunda.org/schema/zeebe/1.0" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" id="Definitions_06r49fl" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="5.9.0">
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:zeebe="http://camunda.org/schema/zeebe/1.0" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" id="Definitions_06r49fl" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="5.10.0">
   <bpmn:process id="qa-protocol" name="QA Protocol" isExecutable="true">
     <bpmn:startEvent id="StartEvent_1">
       <bpmn:outgoing>Flow_0s03s3e</bpmn:outgoing>
@@ -11,7 +11,7 @@
       <bpmn:extensionElements>
         <zeebe:calledElement processId="run-all-tests-in-camunda-cloud-per-cluster-plan" />
         <zeebe:ioMapping>
-          <zeebe:input source="=&#34;Belgium, Europe (europe-west1) aka. new chaos&#34;" target="region" />
+          <zeebe:input source="=&#34;Belgium, Europe (europe-west1)&#34;" target="region" />
           <zeebe:input source="=[&#34;Production - S&#34;]" target="clusterPlans" />
           <zeebe:input source="={&#34;steps&#34;:3,&#34;iterations&#34;:10,&#34;maxTimeForIteration&#34;:&#34;PT20S&#34;,&#34;maxTimeForCompleteTest&#34;:&#34;PT4M&#34;}" target="sequentialTestParams" />
           <zeebe:input source="={}" target="chaosTestParams" />
