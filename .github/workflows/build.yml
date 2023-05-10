@@ -138,6 +138,7 @@ jobs:
         CONTACT_POINT: ${{ steps.secrets.outputs.contactPoint }}
         INTERNAL_CLOUD_CLIENT_SECRET: ${{ steps.secrets.outputs.internalCloudClientSecret }}
         INTERNAL_CLOUD_PASSWORD: ${{ steps.secrets.outputs.internalCloudPassword }}
+        SLACK_WEBHOOK_URL: ${{ steps.secrets.outputs.slackWebhookUrl }}
         # DRY_RUN: 'true'
 
     - name: Send Slack notification
