@@ -66,7 +66,7 @@
       <bpmn:outgoing>Flow_03g3kjv</bpmn:outgoing>
     </bpmn:exclusiveGateway>
     <bpmn:sequenceFlow id="Flow_0jvx8w4" name="Yes" sourceRef="Gateway_15c2soj" targetRef="run-chaos-experiments-in-camunda-cloud">
-      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">=region = "Chaos, Belgium, Europe (europe-west1)"</bpmn:conditionExpression>
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">=region = "New Chaos - Belgium, Europe (europe-west1-d)"</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
     <bpmn:exclusiveGateway id="Gateway_0cucuts">
       <bpmn:incoming>Flow_0kpt015</bpmn:incoming>
@@ -88,7 +88,7 @@
       <bpmn:outgoing>Flow_12u47ji</bpmn:outgoing>
     </bpmn:serviceTask>
     <bpmn:textAnnotation id="TextAnnotation_0rk9i9f">
-      <bpmn:text>By design we run chaos experiments only in a dedicated region ("Chaos, Belgium, Europe (europe-west1)")</bpmn:text>
+      <bpmn:text>By design we run chaos experiments only in a dedicated region ("New Chaos - Belgium, Europe (europe-west1-d)")</bpmn:text>
     </bpmn:textAnnotation>
     <bpmn:association id="Association_12ccmv8" sourceRef="Gateway_15c2soj" targetRef="TextAnnotation_0rk9i9f" />
   </bpmn:process>
