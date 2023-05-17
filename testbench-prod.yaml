@@ -20,7 +20,8 @@ spec:
           imagePullPolicy: Always
           env:
             - name: ZCTB_AUTHENTICATION_SERVER_URL
-              value: "https://login.cloud.ultrawombat.com/oauth/token"
+              value: 'https://login.cloud.camunda.io/oauth/token' # we connect to prod
+              # "https://login.cloud.ultrawombat.com/oauth/token" INT
             - name: ZCTB_CLIENT_ID
               value: "Jg9caDRuAWHchvM7JiaVlndL-qVFfp~0"
             - name: ZCTB_CLIENT_SECRET
