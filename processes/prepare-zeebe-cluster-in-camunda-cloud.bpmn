@@ -62,11 +62,11 @@
         <bpmn:incoming>Flow_0xvisg0</bpmn:incoming>
         <bpmn:outgoing>Flow_1ggxjdm</bpmn:outgoing>
       </bpmn:serviceTask>
-      <bpmn:intermediateCatchEvent id="timer-ten-seconds" name="10s">
+      <bpmn:intermediateCatchEvent id="timer-ten-seconds" name="60s">
         <bpmn:incoming>Flow_1nplddv</bpmn:incoming>
         <bpmn:outgoing>Flow_0xvisg0</bpmn:outgoing>
         <bpmn:timerEventDefinition id="TimerEventDefinition_0lqf24y">
-          <bpmn:timeDuration xsi:type="bpmn:tFormalExpression">PT10S</bpmn:timeDuration>
+          <bpmn:timeDuration xsi:type="bpmn:tFormalExpression">PT60S</bpmn:timeDuration>
         </bpmn:timerEventDefinition>
       </bpmn:intermediateCatchEvent>
       <bpmn:sequenceFlow id="Flow_1t5mjg2" sourceRef="Gateway_0rsc9zf" targetRef="Gateway_0h5nxf3" />
