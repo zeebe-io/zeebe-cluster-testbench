@@ -57,7 +57,7 @@
     <version.awaitility>4.2.0</version.awaitility>
     <version.commons-io>2.13.0</version.commons-io>
     <version.commons-text>1.10.0</version.commons-text>
-    <version.grpc-api>1.56.1</version.grpc-api>
+    <version.grpc-api>1.57.0</version.grpc-api>
     <version.jackson>2.15.2</version.jackson>
     <version.java>17</version.java>
     <version.junit>5.10.0</version.junit>
@@ -69,9 +69,9 @@
     <version.slf4j>2.0.7</version.slf4j>
     <version.vavr>0.10.4</version.vavr>
     <version.wiremock>2.35.0</version.wiremock>
-    <version.zeebe-process-test>8.2.8</version.zeebe-process-test>
+    <version.zeebe-process-test>8.2.10</version.zeebe-process-test>
     <version.zeebeWorkerJavaTestutils>8.1.8</version.zeebeWorkerJavaTestutils>
-    <zeebe.version>8.2.9</zeebe.version>
+    <zeebe.version>8.2.10</zeebe.version>
   </properties>
 
   <dependencyManagement>
