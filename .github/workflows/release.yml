@@ -65,7 +65,7 @@ jobs:
           | gpg -q --import --no-tty --batch --yes
 
     - name: Setup Maven
-      uses: s4u/setup-maven-action@v1.8.0
+      uses: s4u/setup-maven-action@v1.9.0
       with:
         java-version: '17'
         distribution: 'temurin'
