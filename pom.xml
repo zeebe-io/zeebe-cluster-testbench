@@ -65,11 +65,11 @@
     <version.log4j-maven-shade-plugin-extensions>2.20.0</version.log4j-maven-shade-plugin-extensions>
     <version.mockito>5.5.0</version.mockito>
     <version.resteasy>6.2.5.Final</version.resteasy>
-    <version.slack-api>1.30.0</version.slack-api>
+    <version.slack-api>1.31.0</version.slack-api>
     <version.slf4j>2.0.9</version.slf4j>
     <version.vavr>0.10.4</version.vavr>
     <version.wiremock>3.0.1</version.wiremock>
-    <version.zeebe-process-test>8.2.11</version.zeebe-process-test>
+    <version.zeebe-process-test>8.2.12</version.zeebe-process-test>
     <version.zeebeWorkerJavaTestutils>8.1.8</version.zeebeWorkerJavaTestutils>
     <zeebe.version>8.2.12</zeebe.version>
   </properties>
