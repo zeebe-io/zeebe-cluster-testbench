@@ -40,7 +40,7 @@ jobs:
         echo "-----"
         echo "Deploy to dev?: ${{ inputs.deployToDev }}"
 
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
 
     - name: Import Secrets
       id: secrets # important to refer to it in later steps
