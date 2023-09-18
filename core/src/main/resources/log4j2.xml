@@ -18,6 +18,7 @@
 
   <Loggers>
     <Logger name="io.zeebe" level="debug"/>
+    <Logger name="io.camunda.zeebe" level="debug"/>
 
     <Root level="info">
       <AppenderRef ref="${env:ZCTB_LOG_APPENDER:-Console}"/>
