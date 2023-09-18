@@ -52,7 +52,7 @@ class FailedServiceShouldFailResponseTest {
   }
 
   @Test
-  public void shouldFailedToCreateGenerationWithDefaultVersions() {
+  public void shouldFailHandlingOnFailingService() {
     // given
     // when - then throw
     assertThatThrownBy(() -> sutCreateGenerationHandler.handle(jobClientStub, activatedJobStub))
