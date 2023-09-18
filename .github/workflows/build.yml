@@ -115,7 +115,7 @@ jobs:
         password: ${{ steps.secrets.outputs.ZEEBE_GCR_SERVICEACCOUNT_JSON }}
 
     - name: Build (and optionally Push) to Docker Registry
-      uses: docker/build-push-action@v4
+      uses: docker/build-push-action@v5
       with:
         push: '${{ env.should_deploy_infra }}'
         context: .
