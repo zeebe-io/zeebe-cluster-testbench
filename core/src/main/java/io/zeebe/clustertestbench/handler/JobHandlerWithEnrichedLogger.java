@@ -5,6 +5,8 @@ import io.camunda.zeebe.client.api.worker.JobClient;
 import io.camunda.zeebe.client.api.worker.JobHandler;
 import java.util.List;
 import java.util.Map;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.slf4j.MDC;
 
 /**
@@ -12,7 +14,7 @@ import org.slf4j.MDC;
  * activated job.
  */
 public final class JobHandlerWithEnrichedLogger implements JobHandler {
-
+  private static final Logger LOG = LoggerFactory.getLogger(JobHandlerWithEnrichedLogger.class);
   private final JobHandler delegate;
 
   public JobHandlerWithEnrichedLogger(final JobHandler delegate) {
@@ -22,8 +24,14 @@ public final class JobHandlerWithEnrichedLogger implements JobHandler {
   @Override
   @SuppressWarnings("unused")
   public void handle(final JobClient client, final ActivatedJob job) throws Exception {
+    LOG.debug("Start handling of job {}", job.getKey());
     try (final var loggingEnricher = new LoggingEnricher(job)) {
       delegate.handle(client, job);
+    } catch (final Exception ex) {
+      LOG.error("Handling of job {} failed, with {} ", job.getKey(), ex.getMessage(), ex);
+      throw ex;
+    } finally {
+      LOG.debug("Completed handling of job {}", job.getKey());
     }
   }
 
@@ -78,7 +86,7 @@ public final class JobHandlerWithEnrichedLogger implements JobHandler {
       final String value;
       if (variable == null) {
         value = null;
-      } else if (variable instanceof String variableString) {
+      } else if (variable instanceof final String variableString) {
         value = variableString;
       } else {
         value = String.valueOf(variable);
