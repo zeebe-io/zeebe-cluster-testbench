@@ -14,14 +14,15 @@ public class BadRequestResponseFilter implements ClientResponseFilter {
   public void filter(
       final ClientRequestContext requestContext, final ClientResponseContext responseContext)
       throws IOException {
+    if (responseContext.getStatus() > 399) {
 
-    if (responseContext.getStatus() == 400) {
       final String requestBody = new ObjectMapper().writeValueAsString(requestContext.getEntity());
       final String responseBody =
           IOUtils.toString(responseContext.getEntityStream(), StandardCharsets.UTF_8);
 
       throw new IOException(
-          "BAD REQUEST returned from URI: "
+          responseContext.getStatusInfo().toEnum()
+              + " returned from URI: "
               + requestContext.getUri()
               + ", requestBody:"
               + requestBody
