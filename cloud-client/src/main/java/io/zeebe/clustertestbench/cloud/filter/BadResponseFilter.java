@@ -7,8 +7,12 @@ import jakarta.ws.rs.client.ClientResponseFilter;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import org.apache.commons.io.IOUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-public class BadRequestResponseFilter implements ClientResponseFilter {
+public class BadResponseFilter implements ClientResponseFilter {
+
+  private static final Logger LOG = LoggerFactory.getLogger(BadResponseFilter.class);
 
   @Override
   public void filter(
@@ -20,14 +24,17 @@ public class BadRequestResponseFilter implements ClientResponseFilter {
       final String responseBody =
           IOUtils.toString(responseContext.getEntityStream(), StandardCharsets.UTF_8);
 
-      throw new IOException(
+      final String errorMessage =
           responseContext.getStatusInfo().toEnum()
               + " returned from URI: "
               + requestContext.getUri()
               + ", requestBody:"
               + requestBody
               + ", responseBody: "
-              + responseBody);
+              + responseBody;
+
+      LOG.error(errorMessage);
+      throw new IOException(errorMessage);
     }
   }
 }
