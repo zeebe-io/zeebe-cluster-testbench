@@ -13,6 +13,7 @@ import org.slf4j.LoggerFactory;
 public class FailedResponseFilter implements ClientResponseFilter {
 
   private static final Logger LOG = LoggerFactory.getLogger(FailedResponseFilter.class);
+  public static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
 
   @Override
   public void filter(
@@ -20,7 +21,7 @@ public class FailedResponseFilter implements ClientResponseFilter {
       throws IOException {
     if (responseContext.getStatus() > 399) {
 
-      final String requestBody = new ObjectMapper().writeValueAsString(requestContext.getEntity());
+      final String requestBody = OBJECT_MAPPER.writeValueAsString(requestContext.getEntity());
       final String responseBody =
           IOUtils.toString(responseContext.getEntityStream(), StandardCharsets.UTF_8);
 
