@@ -4,7 +4,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.Mockito.spy;
 
 import com.sun.net.httpserver.HttpServer;
-import io.zeebe.clustertestbench.cloud.filter.BadResponseFilter;
+import io.zeebe.clustertestbench.cloud.filter.FailedResponseFilter;
 import io.zeebe.clustertestbench.internal.cloud.InternalCloudAPIClient;
 import jakarta.ws.rs.client.Client;
 import jakarta.ws.rs.client.ClientBuilder;
@@ -34,7 +34,7 @@ class FailedServiceShouldFailResponseTest {
 
   @BeforeEach
   public void setUp() throws IOException {
-    client = ClientBuilder.newBuilder().register(BadResponseFilter.class).build();
+    client = ClientBuilder.newBuilder().register(FailedResponseFilter.class).build();
     final var target = (ResteasyWebTarget) client.target("http://localhost:8081");
     final var cloudAPIClient = target.proxy(InternalCloudAPIClient.class);
 

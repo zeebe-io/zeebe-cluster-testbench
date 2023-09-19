@@ -10,9 +10,9 @@ import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class BadResponseFilter implements ClientResponseFilter {
+public class FailedResponseFilter implements ClientResponseFilter {
 
-  private static final Logger LOG = LoggerFactory.getLogger(BadResponseFilter.class);
+  private static final Logger LOG = LoggerFactory.getLogger(FailedResponseFilter.class);
 
   @Override
   public void filter(
