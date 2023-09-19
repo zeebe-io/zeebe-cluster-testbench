@@ -1,6 +1,6 @@
 package io.zeebe.clustertestbench.internal.cloud;
 
-import io.zeebe.clustertestbench.cloud.filter.BadRequestResponseFilter;
+import io.zeebe.clustertestbench.cloud.filter.FailedResponseFilter;
 import io.zeebe.clustertestbench.cloud.oauth.OAuthInterceptor;
 import jakarta.ws.rs.client.Client;
 import jakarta.ws.rs.client.ClientBuilder;
@@ -25,7 +25,7 @@ public class InternalCloudAPIClientFactory {
     final Client client =
         ClientBuilder.newBuilder()
             .register(oauthInterceptor)
-            .register(BadRequestResponseFilter.class)
+            .register(FailedResponseFilter.class)
             .build();
     final WebTarget target = client.target(cloudApiUrl);
     final ResteasyWebTarget rtarget = (ResteasyWebTarget) target;
