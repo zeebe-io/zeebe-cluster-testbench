@@ -108,7 +108,7 @@ jobs:
 
     - name: Login to Docker Registry
       if: env.should_deploy_infra == 'true'
-      uses: docker/login-action@v2
+      uses: docker/login-action@v3
       with:
         registry: gcr.io
         username: _json_key
