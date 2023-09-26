@@ -21,7 +21,7 @@
     </dependency>
     <dependency>
       <groupId>io.zeebe</groupId>
-      <artifactId>zeebe-cluster-testbench-internal-cloud-client</artifactId>
+      <artifactId>zeebe-cluster-testbench-external-console-api-client</artifactId>
     </dependency>
     <dependency>
       <groupId>io.zeebe</groupId>
@@ -56,7 +56,7 @@
 
     <dependency>
       <groupId>io.zeebe</groupId>
-      <artifactId>zeebe-cluster-testbench-internal-cloud-client</artifactId>
+      <artifactId>zeebe-cluster-testbench-external-console-api-client</artifactId>
       <type>test-jar</type>
       <scope>test</scope>
     </dependency>

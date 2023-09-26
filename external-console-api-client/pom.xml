@@ -10,13 +10,10 @@
     <relativePath>../pom.xml</relativePath>
   </parent>
 
-  <artifactId>zeebe-cluster-testbench-internal-cloud-client</artifactId>
+  <artifactId>zeebe-cluster-testbench-external-console-api-client</artifactId>
   <packaging>jar</packaging>
 
-  <!-- Note that this project implements a client for internal Camunda Cloud
-    services. These internal services are not officially supported and subject
-    to change without notice. It is strongly discouraged to depend on this project. -->
-  <name>Zeebe Cluster Testbench - Internal Camunda Cloud Client</name>
+  <name>Zeebe Cluster Testbench - External Console API Client</name>
 
   <dependencies>
     <dependency>
