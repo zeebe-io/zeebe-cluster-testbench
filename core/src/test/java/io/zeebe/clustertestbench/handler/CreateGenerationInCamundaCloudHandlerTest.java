@@ -111,7 +111,7 @@ class CreateGenerationInCamundaCloudHandlerTest {
     }
 
     @Test
-    public void shouldCreateGenerationWithSpecificAppVersions() throws Exception {
+    public void shouldCreateGenerationWithSpecificOperateVersion() throws Exception {
       // given
       activatedJobStub.setInputVariables(
           Map.of(
