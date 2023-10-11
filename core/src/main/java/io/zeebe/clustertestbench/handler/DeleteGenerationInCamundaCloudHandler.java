@@ -3,21 +3,22 @@ package io.zeebe.clustertestbench.handler;
 import io.camunda.zeebe.client.api.response.ActivatedJob;
 import io.camunda.zeebe.client.api.worker.JobClient;
 import io.camunda.zeebe.client.api.worker.JobHandler;
-import io.zeebe.clustertestbench.internal.cloud.InternalCloudAPIClient;
+import io.zeebe.clustertestbench.internal.cloud.ExternalConsoleAPIClient;
 
 public final class DeleteGenerationInCamundaCloudHandler implements JobHandler {
 
-  private final InternalCloudAPIClient internalApiClient;
+  private final ExternalConsoleAPIClient externalConsoleAPIClient;
 
-  public DeleteGenerationInCamundaCloudHandler(final InternalCloudAPIClient internalApiClient) {
-    this.internalApiClient = internalApiClient;
+  public DeleteGenerationInCamundaCloudHandler(
+      final ExternalConsoleAPIClient externalConsoleAPIClient) {
+    this.externalConsoleAPIClient = externalConsoleAPIClient;
   }
 
   @Override
   public void handle(final JobClient client, final ActivatedJob job) throws Exception {
     final Input input = job.getVariablesAsType(Input.class);
 
-    internalApiClient.deleteGeneration(input.getGenerationUUID());
+    externalConsoleAPIClient.deleteGeneration(input.getGenerationUUID());
 
     client.newCompleteCommand(job.getKey()).send().join();
   }

@@ -22,7 +22,7 @@
   <modules>
     <module>core</module>
     <module>cloud-client</module>
-    <module>internal-cloud-client</module>
+    <module>external-console-api-client</module>
     <module>testdriver/api</module>
     <module>testdriver/sequential</module>
     <module>integration-tests</module>
@@ -89,12 +89,12 @@
       </dependency>
       <dependency>
         <groupId>io.zeebe</groupId>
-        <artifactId>zeebe-cluster-testbench-internal-cloud-client</artifactId>
+        <artifactId>zeebe-cluster-testbench-external-console-api-client</artifactId>
         <version>${project.version}</version>
       </dependency>
       <dependency>
         <groupId>io.zeebe</groupId>
-        <artifactId>zeebe-cluster-testbench-internal-cloud-client</artifactId>
+        <artifactId>zeebe-cluster-testbench-external-console-api-client</artifactId>
         <version>${project.version}</version>
         <type>test-jar</type>
       </dependency>

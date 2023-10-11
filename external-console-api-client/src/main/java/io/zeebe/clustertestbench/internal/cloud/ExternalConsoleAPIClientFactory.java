@@ -7,9 +7,9 @@ import jakarta.ws.rs.client.ClientBuilder;
 import jakarta.ws.rs.client.WebTarget;
 import org.jboss.resteasy.client.jaxrs.ResteasyWebTarget;
 
-public class InternalCloudAPIClientFactory {
+public class ExternalConsoleAPIClientFactory {
 
-  public InternalCloudAPIClient createCloudAPIClient(
+  public ExternalConsoleAPIClient createConsoleAPIClient(
       final String cloudApiUrl,
       final String authenticationServerURL,
       final String audience,
@@ -29,6 +29,6 @@ public class InternalCloudAPIClientFactory {
             .build();
     final WebTarget target = client.target(cloudApiUrl);
     final ResteasyWebTarget rtarget = (ResteasyWebTarget) target;
-    return rtarget.proxy(InternalCloudAPIClient.class);
+    return rtarget.proxy(ExternalConsoleAPIClient.class);
   }
 }

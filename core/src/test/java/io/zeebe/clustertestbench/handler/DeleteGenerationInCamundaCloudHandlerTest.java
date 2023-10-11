@@ -6,7 +6,7 @@ import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 
-import io.zeebe.clustertestbench.internal.cloud.InternalCloudAPIClient;
+import io.zeebe.clustertestbench.internal.cloud.ExternalConsoleAPIClient;
 import java.util.Map;
 import org.camunda.community.zeebe.testutils.stubs.ActivatedJobStub;
 import org.camunda.community.zeebe.testutils.stubs.JobClientStub;
@@ -22,7 +22,7 @@ class DeleteGenerationInCamundaCloudHandlerTest {
 
   private static final String TEST_GENERATION_UUID = "test-generation-uuid";
 
-  @Mock InternalCloudAPIClient mockInternalApiClient;
+  @Mock ExternalConsoleAPIClient mockInternalApiClient;
 
   JobClientStub jobClientStub = new JobClientStub();
 

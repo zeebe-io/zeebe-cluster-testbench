@@ -28,8 +28,8 @@ import io.zeebe.clustertestbench.handler.QueryClusterStateInCamundaCloudHandler;
 import io.zeebe.clustertestbench.handler.SequentialTestHandler;
 import io.zeebe.clustertestbench.handler.TriggerMessageStartEventHandler;
 import io.zeebe.clustertestbench.handler.WarmUpClusterHandler;
-import io.zeebe.clustertestbench.internal.cloud.InternalCloudAPIClient;
-import io.zeebe.clustertestbench.internal.cloud.InternalCloudAPIClientFactory;
+import io.zeebe.clustertestbench.internal.cloud.ExternalConsoleAPIClient;
+import io.zeebe.clustertestbench.internal.cloud.ExternalConsoleAPIClientFactory;
 import io.zeebe.clustertestbench.notification.SlackNotificationService;
 import java.io.IOException;
 import java.time.Duration;
@@ -51,7 +51,7 @@ public class Launcher {
   private final String slackWebhookUrl;
 
   private final CloudAPIClient cloudApiClient;
-  private final InternalCloudAPIClient internalCloudApiClient;
+  private final ExternalConsoleAPIClient externalConsoleApiClient;
 
   public Launcher(
       final String testOrchestrationContactPoint,
@@ -66,7 +66,7 @@ public class Launcher {
     this.slackWebhookUrl = slackWebhookUrl;
 
     cloudApiClient = createCloudApiClient(cloudApiUrl, cloudApiAuthenticationDetails);
-    internalCloudApiClient =
+    externalConsoleApiClient =
         createInternalCloudApiClient(internalCloudApiUrl, internalCloudApiAuthenticationDetails);
   }
 
@@ -148,7 +148,7 @@ public class Launcher {
 
   private void testConnectionToInternalCloudApi() {
     try {
-      internalCloudApiClient.listGenerationInfos();
+      externalConsoleApiClient.listGenerationInfos();
 
       LOGGER.info("Selftest - Successfully established connection to internal cloud API");
     } catch (final Exception e) {
@@ -169,7 +169,7 @@ public class Launcher {
             cloudApiUrl, authenticationServerUrl, audience, clientId, clientSecret);
   }
 
-  private InternalCloudAPIClient createInternalCloudApiClient(
+  private ExternalConsoleAPIClient createInternalCloudApiClient(
       final String internalCloudApiUrl,
       final OAuthUserAccountAuthenticationDetails authenticationDetails) {
     final String authenticationServerUrl = authenticationDetails.getServerURL();
@@ -179,8 +179,8 @@ public class Launcher {
     final String username = authenticationDetails.getUsername();
     final String password = authenticationDetails.getPassword();
 
-    return new InternalCloudAPIClientFactory()
-        .createCloudAPIClient(
+    return new ExternalConsoleAPIClientFactory()
+        .createConsoleAPIClient(
             internalCloudApiUrl,
             authenticationServerUrl,
             audience,
@@ -258,12 +258,12 @@ public class Launcher {
     registerWorker(
         client,
         "create-generation-in-camunda-cloud-job",
-        new CreateGenerationInCamundaCloudHandler(internalCloudApiClient),
+        new CreateGenerationInCamundaCloudHandler(externalConsoleApiClient),
         Duration.ofSeconds(10));
     registerWorker(
         client,
         "delete-generation-in-camunda-cloud-job",
-        new DeleteGenerationInCamundaCloudHandler(internalCloudApiClient),
+        new DeleteGenerationInCamundaCloudHandler(externalConsoleApiClient),
         Duration.ofSeconds(10));
     registerWorker(
         client,
