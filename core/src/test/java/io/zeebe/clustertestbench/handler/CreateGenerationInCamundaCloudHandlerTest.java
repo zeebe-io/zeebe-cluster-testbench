@@ -39,7 +39,7 @@ class CreateGenerationInCamundaCloudHandlerTest {
     final ExternalConsoleAPIClient stubExternalConsoleAPIClient =
         new StubExternalConsoleAPIClient(false);
 
-    ExternalConsoleAPIClient spyInternalApiClient;
+    ExternalConsoleAPIClient spyExternalApiClient;
 
     CreateGenerationInCamundaCloudHandler sutCreateGenerationHandler;
 
@@ -49,8 +49,8 @@ class CreateGenerationInCamundaCloudHandlerTest {
 
     @BeforeEach
     public void setUp() {
-      spyInternalApiClient = spy(stubExternalConsoleAPIClient);
-      sutCreateGenerationHandler = new CreateGenerationInCamundaCloudHandler(spyInternalApiClient);
+      spyExternalApiClient = spy(stubExternalConsoleAPIClient);
+      sutCreateGenerationHandler = new CreateGenerationInCamundaCloudHandler(spyExternalApiClient);
 
       activatedJobStub = jobClientStub.createActivatedJob();
 
@@ -86,7 +86,7 @@ class CreateGenerationInCamundaCloudHandlerTest {
       // then
       final var argumentCapture = ArgumentCaptor.forClass(CloneGenerationRequest.class);
       final var stringCapture = ArgumentCaptor.forClass(String.class);
-      verify(spyInternalApiClient)
+      verify(spyExternalApiClient)
           .cloneGeneration(stringCapture.capture(), argumentCapture.capture());
       final var request = argumentCapture.getValue();
 
@@ -102,7 +102,7 @@ class CreateGenerationInCamundaCloudHandlerTest {
       // then
       final var argumentCapture = ArgumentCaptor.forClass(CloneGenerationRequest.class);
       final var stringCapture = ArgumentCaptor.forClass(String.class);
-      verify(spyInternalApiClient)
+      verify(spyExternalApiClient)
           .cloneGeneration(stringCapture.capture(), argumentCapture.capture());
       final var request = argumentCapture.getValue();
 
@@ -126,7 +126,7 @@ class CreateGenerationInCamundaCloudHandlerTest {
       // then
       final var argumentCapture = ArgumentCaptor.forClass(CloneGenerationRequest.class);
       final var stringCapture = ArgumentCaptor.forClass(String.class);
-      verify(spyInternalApiClient)
+      verify(spyExternalApiClient)
           .cloneGeneration(stringCapture.capture(), argumentCapture.capture());
       final var request = argumentCapture.getValue();
 
