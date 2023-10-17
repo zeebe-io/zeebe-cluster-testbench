@@ -1,5 +1,6 @@
 package io.zeebe.clustertestbench.internal.cloud;
 
+import io.zeebe.clustertestbench.cloud.filter.EntityLoggingFilter;
 import io.zeebe.clustertestbench.cloud.filter.FailedResponseFilter;
 import io.zeebe.clustertestbench.cloud.oauth.OAuthInterceptor;
 import jakarta.ws.rs.client.Client;
@@ -25,6 +26,7 @@ public class ExternalConsoleAPIClientFactory {
     final Client client =
         ClientBuilder.newBuilder()
             .register(oauthInterceptor)
+            .register(EntityLoggingFilter.class)
             .register(FailedResponseFilter.class)
             .build();
     final WebTarget target = client.target(cloudApiUrl);

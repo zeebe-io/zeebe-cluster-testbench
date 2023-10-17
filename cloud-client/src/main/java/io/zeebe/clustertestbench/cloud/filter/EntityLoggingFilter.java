@@ -35,6 +35,7 @@ public final class EntityLoggingFilter
 
   @Override
   public void filter(final ClientRequestContext requestContext) {
+    LOGGER.debug("{} to {}", requestContext.getMethod(), requestContext.getUri());
     if (requestContext.hasEntity()) {
       final var stream = new LoggingStream(requestContext.getEntityStream());
       requestContext.setEntityStream(stream);
