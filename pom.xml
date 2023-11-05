@@ -60,7 +60,7 @@
     <version.grpc-api>1.59.0</version.grpc-api>
     <version.jackson>2.15.3</version.jackson>
     <version.java>17</version.java>
-    <version.junit>5.10.0</version.junit>
+    <version.junit>5.10.1</version.junit>
     <version.log4j>2.21.1</version.log4j>
     <version.log4j-maven-shade-plugin-extensions>2.20.0</version.log4j-maven-shade-plugin-extensions>
     <version.mockito>5.7.0</version.mockito>
