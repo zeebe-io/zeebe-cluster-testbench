@@ -35,5 +35,9 @@ public interface ExternalConsoleAPIClient {
   record CloneGenerationRequest(String name, String zeebeVersion, String operateVersion) {}
 
   @JsonIgnoreProperties(ignoreUnknown = true)
-  record GenerationInfo(String uuid, String name, Map<String, String> versions) {}
+  record GenerationInfo(
+      String uuid,
+      String name,
+      Map<String, String> versions,
+      List<Map<String, String>> upgradeableFrom) {}
 }
