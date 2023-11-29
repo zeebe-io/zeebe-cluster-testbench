@@ -1,6 +1,7 @@
 package io.zeebe.clustertestbench.handler;
 
 import static io.zeebe.clustertestbench.internal.cloud.StubExternalConsoleAPIClient.DEFAULT_GENERATION_NAME;
+import static io.zeebe.clustertestbench.internal.cloud.StubExternalConsoleAPIClient.GENERATION_NAME_WITHOUT_UPGRADE_FROM;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.assertj.core.api.Assertions.entry;
@@ -92,6 +93,22 @@ class CreateGenerationInCamundaCloudHandlerTest {
 
       assertThat(request.operateVersion()).isNull();
       assertThat(request.zeebeVersion()).isNull();
+    }
+
+    @Test
+    public void shouldNotCreateGenerationWhenReferencingInvalidGeneration() throws Exception {
+      // given
+      activatedJobStub.setInputVariables(
+          Map.of(FIELD_GENERATION_TEMPLATE, GENERATION_NAME_WITHOUT_UPGRADE_FROM));
+
+      // when
+      sutCreateGenerationHandler.handle(jobClientStub, activatedJobStub);
+
+      // then
+      assertThat(activatedJobStub.hasThrownError()).isTrue();
+      assertThat(activatedJobStub.getErrorMessage())
+          .contains("Expected to clone a generation with upgradeableFrom reference")
+          .contains(GENERATION_NAME_WITHOUT_UPGRADE_FROM);
     }
 
     @Test

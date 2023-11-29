@@ -12,6 +12,10 @@ public class StubExternalConsoleAPIClient implements ExternalConsoleAPIClient {
 
   public static final String DEFAULT_GENERATION_NAME = "default-generation";
   public static final String DEFAULT_GENERATION_UUID = "1a2b3c4f56789-1234-abcd-1a2b3c4f5678";
+
+  public static final String GENERATION_NAME_WITHOUT_UPGRADE_FROM = "generationWithoutUpgradeFrom";
+  public static final String GENERATION_UUID_WITHOUT_UPGRADE_FROM =
+      "4f4b3c4f56789-1234-abcd-1a2b3c4f5678";
   public static final String DEFAULT_ZEEBE_IMAGE = "camunda/zeebe:0.23.7";
   public static final String DEFAULT_OPERATE_IMAGE = "camunda/operate:0.23.2";
 
@@ -31,9 +35,20 @@ public class StubExternalConsoleAPIClient implements ExternalConsoleAPIClient {
     versions.put(KEY_OPERATE_IMAGE, DEFAULT_OPERATE_IMAGE);
 
     final GenerationInfo generationInfo =
-        new GenerationInfo(DEFAULT_GENERATION_UUID, DEFAULT_GENERATION_NAME, versions);
-
+        new GenerationInfo(
+            DEFAULT_GENERATION_UUID,
+            DEFAULT_GENERATION_NAME,
+            versions,
+            List.of(Map.of("uuid", "fake")));
     generationInfos.add(generationInfo);
+
+    final GenerationInfo generationInfoWithoutUpgradeFrom =
+        new GenerationInfo(
+            GENERATION_UUID_WITHOUT_UPGRADE_FROM,
+            GENERATION_NAME_WITHOUT_UPGRADE_FROM,
+            versions,
+            List.of());
+    generationInfos.add(generationInfoWithoutUpgradeFrom);
   }
 
   @Override
@@ -52,7 +67,8 @@ public class StubExternalConsoleAPIClient implements ExternalConsoleAPIClient {
           new ExternalConsoleAPIClient.GenerationInfo(
               UUID.randomUUID().toString(),
               request.name(),
-              Map.of("zeebe", zeebeVersion, "operate", operateVersion));
+              Map.of("zeebe", zeebeVersion, "operate", operateVersion),
+              List.of(Map.of("uuid", "fake")));
 
       generationInfos.add(generationInfo);
       return generationInfo;
