@@ -52,10 +52,8 @@ jobs:
         secretId: ${{ secrets.VAULT_SECRET_ID }}
         exportEnv: false # we rely on step outputs, no need for environment variables
         secrets: |
-          secret/data/products/zeebe/ci/jenkins ZEEBE_JENKINS_DEPLOY_SERVICEACCOUNT_JSON;
           secret/data/products/zeebe/ci/zeebe ARTIFACTS_USR;
           secret/data/products/zeebe/ci/zeebe ARTIFACTS_PSW;
-          secret/data/products/zeebe/ci/zeebe ZEEBE_GCR_SERVICEACCOUNT_JSON;
           ${{ env.vault_secret_path }} clientSecret;
           ${{ env.vault_secret_path }} cloudClientSecret;
           ${{ env.vault_secret_path }} contactPoint;
@@ -105,15 +103,21 @@ jobs:
       env:
         MAVEN_USERNAME: ${{ steps.secrets.outputs.ARTIFACTS_USR }}
         MAVEN_PASSWORD: ${{ steps.secrets.outputs.ARTIFACTS_PSW }}
-
-    - name: Login to Docker Registry
+    - uses: google-github-actions/auth@v2
+      if: env.should_deploy_infra == 'true'
+      name: GCP Login
+      id: auth
+      with:
+        token_format: 'access_token'
+        workload_identity_provider: 'projects/628707732411/locations/global/workloadIdentityPools/testbench-identity-pool/providers/testbench-identity-provider'
+        service_account: 'testbench-service-account@zeebe-io.iam.gserviceaccount.com'
+    - name: Login to GCR
       if: env.should_deploy_infra == 'true'
       uses: docker/login-action@v3
       with:
         registry: gcr.io
-        username: _json_key
-        password: ${{ steps.secrets.outputs.ZEEBE_GCR_SERVICEACCOUNT_JSON }}
-
+        username: oauth2accesstoken
+        password: ${{ steps.auth.outputs.access_token }}
     - name: Build (and optionally Push) to Docker Registry
       uses: docker/build-push-action@v5
       with:
@@ -121,18 +125,17 @@ jobs:
         context: .
         tags: 'gcr.io/zeebe-io/zeebe-cluster-testbench:${{ env.docker_tag }}'
 
-    - name: Setup Cloud SDK
+    - uses: google-github-actions/get-gke-credentials@v2.0.0
       if: env.should_deploy_infra == 'true'
-      uses: google-github-actions/setup-gcloud@v2
       with:
-        install_components: gke-gcloud-auth-plugin
+        cluster_name: 'zeebe-cluster'
+        location: 'europe-west1-b'
 
     - name: Deploy Infrastructure
       if: env.should_deploy_infra == 'true'
       run: |
         .ci/scripts/deploy.sh "${{ env.docker_tag }}"
       env:
-        SA_CREDENTIALS: ${{ steps.secrets.outputs.ZEEBE_JENKINS_DEPLOY_SERVICEACCOUNT_JSON }}
         CLIENT_SECRET: ${{ steps.secrets.outputs.clientSecret }}
         CLOUD_CLIENT_SECRET: ${{ steps.secrets.outputs.cloudClientSecret }}
         CONTACT_POINT: ${{ steps.secrets.outputs.contactPoint }}
