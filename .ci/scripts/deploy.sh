@@ -28,19 +28,6 @@ echo "suffix: ${suffix}"
 namespace="testbench-${tag//\./-}"
 echo "target namespace: ${namespace}"
 
-gcloud config set core/project zeebe-io
-
-set +x; echo "${SA_CREDENTIALS}" > sa-credentials.json; set -x
-
-gcloud auth activate-service-account jenkins-ci-cd@zeebe-io.iam.gserviceaccount.com --key-file=sa-credentials.json
-
-gcloud config set compute/region europe-west1
-gcloud config set compute/zone europe-west1-b
-
-rm sa-credentials.json
-
-gcloud container clusters get-credentials zeebe-cluster
-
 if [ "${DRY_RUN:-false}" == "true" ]; then
   exit 0
 fi
