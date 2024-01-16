@@ -42,7 +42,7 @@
     <plugin.version.dependency>3.6.1</plugin.version.dependency>
     <plugin.version.failsafe>3.2.5</plugin.version.failsafe>
     <plugin.version.flakytestextractor>2.1.1</plugin.version.flakytestextractor>
-    <plugin.version.flatten>1.5.0</plugin.version.flatten>
+    <plugin.version.flatten>1.6.0</plugin.version.flatten>
     <plugin.version.fmt>2.13</plugin.version.fmt>
     <plugin.version.googlejavaformat>1.19.1</plugin.version.googlejavaformat>
     <plugin.version.jacoco>0.8.11</plugin.version.jacoco>
