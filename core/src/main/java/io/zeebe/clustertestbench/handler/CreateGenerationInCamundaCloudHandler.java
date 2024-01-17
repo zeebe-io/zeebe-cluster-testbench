@@ -28,24 +28,6 @@ public class CreateGenerationInCamundaCloudHandler implements JobHandler {
     final var generationName = createGenerationName();
     final var templateGeneration = lookupTemplate(input.getGenerationTemplate());
 
-    if (templateGeneration.upgradeableFrom().isEmpty()) {
-      // This a shortcut until
-      // https://github.com/camunda-cloud/camunda-cloud-management-apps/issues/1731 is fixed
-      // Normally we would expect that we can clone all kind of generations but currently this is
-      // not possible.
-      // If we reference a generation without the upgradeableFrom reference (so no reference)
-      // we retrieve weird errors which are hard to debug.
-      // https://github.com/zeebe-io/zeebe-cluster-testbench/issues/945
-      client
-          .newThrowErrorCommand(job)
-          .errorCode(ERROR_CODE_ILLEGAL_GENERATION)
-          .errorMessage(
-              String.format(ERROR_MSG_EXPECTED_TO_CLONE_A_GENERATION, input.generationTemplate))
-          .send();
-
-      return;
-    }
-
     final var zeebeImage = input.getZeebeImage();
     final var operateImage = input.getOperateImage();
 
