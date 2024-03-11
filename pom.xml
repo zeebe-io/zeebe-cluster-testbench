@@ -58,7 +58,7 @@
     <version.commons-io>2.15.1</version.commons-io>
     <version.commons-text>1.11.0</version.commons-text>
     <version.grpc-api>1.62.2</version.grpc-api>
-    <version.jackson>2.16.1</version.jackson>
+    <version.jackson>2.16.2</version.jackson>
     <version.java>21</version.java>
     <version.junit>5.10.2</version.junit>
     <version.log4j>2.23.1</version.log4j>
