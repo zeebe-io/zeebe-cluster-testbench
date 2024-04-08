@@ -282,6 +282,25 @@ public class Launcher {
         Duration.ofSeconds(10));
   }
 
+  protected static String convertZeebeUrlToOperateUrl(final String endpoint) {
+    // Zeebe GRPC endpoint looks normally like this:
+    // <clusterId>.bru-2.zeebe.camunda.io/
+    //
+    // Operate looks like this:
+    // bru-2.operate.camunda.io/<clusterId>
+    //
+
+    // removing potential protocol from endpoint
+    var strippedEndpoint = endpoint.replace("http://", "");
+    strippedEndpoint = strippedEndpoint.replace("https://", "");
+
+    // finding index when clusterId stops
+    final int firstDotIndex = strippedEndpoint.indexOf('.');
+    final String baseEndpoint = strippedEndpoint.substring(firstDotIndex + 1);
+    final String operateBase = baseEndpoint.replace("zeebe", "operate");
+    return String.format("https://%s%s", operateBase, strippedEndpoint.substring(0, firstDotIndex));
+  }
+
   private void registerWorker(
       final ZeebeClient client,
       final String jobType,
