@@ -239,10 +239,15 @@ public class Launcher {
         client, "run-sequential-test-job", new SequentialTestHandler(), Duration.ofMinutes(30));
 
     final var slackNotificationService = new SlackNotificationService(slackWebhookUrl);
+
+    // Testbench cluster Operate url
+    final String operateUrl =
+        convertZeebeUrlToOperateUrl(testOrchestrationAuthenticatonDetails.getAudience());
+
     registerWorker(
         client,
         "notify-engineers-job",
-        new NotifyEngineersHandler(slackNotificationService),
+        new NotifyEngineersHandler(slackNotificationService, operateUrl),
         Duration.ofSeconds(10));
     registerWorker(
         client,
@@ -280,6 +285,25 @@ public class Launcher {
         "check-generation-usage-job",
         new CheckGenerationUsageHandler(cloudApiClient),
         Duration.ofSeconds(10));
+  }
+
+  protected static String convertZeebeUrlToOperateUrl(final String endpoint) {
+    // Zeebe GRPC endpoint looks normally like this:
+    // <clusterId>.bru-2.zeebe.camunda.io/
+    //
+    // Operate looks like this:
+    // bru-2.operate.camunda.io/<clusterId>
+    //
+
+    // removing potential protocol from endpoint
+    var strippedEndpoint = endpoint.replace("http://", "");
+    strippedEndpoint = strippedEndpoint.replace("https://", "");
+
+    // finding index when clusterId stops
+    final int firstDotIndex = strippedEndpoint.indexOf('.');
+    final String baseEndpoint = strippedEndpoint.substring(firstDotIndex + 1);
+    final String operateBase = baseEndpoint.replace("zeebe", "operate");
+    return String.format("https://%s%s", operateBase, strippedEndpoint.substring(0, firstDotIndex));
   }
 
   private void registerWorker(
