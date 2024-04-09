@@ -67,7 +67,7 @@ Failure count: %d
             input.getBusinessKey(),
             input.getTestReport().failureCount());
 
-    resultBuilder.append(errorMessage).append('\n');
+    resultBuilder.append(errorMessage);
 
     input.getTestReport().failureMessages().stream() //
         .limit(TEST_FAILURE_SUMMARY_ITEMS) //
