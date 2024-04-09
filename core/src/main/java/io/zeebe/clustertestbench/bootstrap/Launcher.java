@@ -298,12 +298,14 @@ public class Launcher {
     // removing potential protocol from endpoint
     var strippedEndpoint = endpoint.replace("http://", "");
     strippedEndpoint = strippedEndpoint.replace("https://", "");
+    strippedEndpoint = strippedEndpoint.replace("/", "");
 
     // finding index when clusterId stops
     final int firstDotIndex = strippedEndpoint.indexOf('.');
     final String baseEndpoint = strippedEndpoint.substring(firstDotIndex + 1);
-    final String operateBase = baseEndpoint.replace("zeebe", "operate");
-    return String.format("https://%s%s", operateBase, strippedEndpoint.substring(0, firstDotIndex));
+    final var operateBase = baseEndpoint.replace("zeebe", "operate");
+    final String clusterId = strippedEndpoint.substring(0, firstDotIndex);
+    return String.format("https://%s/%s", operateBase, clusterId);
   }
 
   private void registerWorker(
