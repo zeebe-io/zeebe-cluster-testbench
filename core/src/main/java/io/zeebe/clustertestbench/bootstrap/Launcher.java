@@ -242,7 +242,7 @@ public class Launcher {
 
     // Testbench cluster Operate url
     final String operateUrl =
-        convertZeebeUrlToOperateUrl(testOrchestrationAuthenticatonDetails.getServerURL());
+        convertZeebeUrlToOperateUrl(testOrchestrationAuthenticatonDetails.getAudience());
 
     registerWorker(
         client,
