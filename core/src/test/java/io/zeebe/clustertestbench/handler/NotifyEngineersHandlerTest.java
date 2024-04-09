@@ -33,6 +33,9 @@ public class NotifyEngineersHandlerTest {
   public static final String IMAGE = "ZEEBE:VERSION";
   public static final String BRANCH = "BRANCH";
   public static final String OPERATE_URL = "https://localhost.test";
+
+  public static final String ZBCHAOS_URL =
+      "https://console.cloud.google.com/logs/query;query=labels.clusterId%3D%22a1b2c3d4e-f5e6-d7c8-b9a8-b7c6d5e4f3e2%22;duration=PT6H?project=zeebe-io";
   public static final String PROCESS_ID = "processID";
   public static final String BUSINESS_KEY = "http://jenkins/branch/build";
   JobClientStub jobClientStub = new JobClientStub();
@@ -68,6 +71,7 @@ public class NotifyEngineersHandlerTest {
         .contains(BRANCH)
         .contains(OPERATE_URL)
         .contains(PROCESS_ID)
+        .contains(ZBCHAOS_URL)
         .contains("ERROR")
         .contains(BUSINESS_KEY);
 

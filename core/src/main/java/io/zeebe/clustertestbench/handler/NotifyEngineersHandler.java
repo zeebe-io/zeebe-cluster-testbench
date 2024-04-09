@@ -11,6 +11,8 @@ import io.zeebe.clustertestbench.testdriver.api.TestDriver.TestReportDTO;
 public class NotifyEngineersHandler implements JobHandler {
 
   private static final int TEST_FAILURE_SUMMARY_ITEMS = 10;
+  private static final String ZBCHAOS_LOG_URL =
+      "https://console.cloud.google.com/logs/query;query=labels.clusterId%3D%22-CLUSTER_ID-%22;duration=PT6H?project=zeebe-io";
 
   private static final String FAILURE_MESSAGE_FORMAT =
       """
@@ -20,11 +22,12 @@ Check out here: %s
 
 *Details:*
 
-* Zeebe image: _%s_
-* Generation: _%s_
-* Target cluster : _%s_ `%s`
-* Target cluster Operate: %s
-* Business key: %s
+ * Zeebe image: _%s_
+ * Generation: _%s_
+ * Target cluster : _%s_ `%s`
+ * Target cluster Operate: %s
+ * Business key: %s
+ * Zbchaos log: <%s|console log>
 
 *Failures:*
 
@@ -65,6 +68,7 @@ Failure count: %d
             input.getClusterId(),
             input.getOperateURL(),
             input.getBusinessKey(),
+            ZBCHAOS_LOG_URL.replace("-CLUSTER_ID-", input.clusterId),
             input.getTestReport().failureCount());
 
     resultBuilder.append(errorMessage);
