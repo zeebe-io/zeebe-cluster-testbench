@@ -47,7 +47,8 @@ public class NotifyEngineersHandlerTest {
   public void setUp() {
     simpleNotificationService = new SimpleNotificationService();
 
-    sutNotifyEngineersHandler = new NotifyEngineersHandler(simpleNotificationService);
+    sutNotifyEngineersHandler =
+        new NotifyEngineersHandler(simpleNotificationService, "http://url/clusterId");
 
     activatedJobStub = createActivatedJobStub();
   }
@@ -84,7 +85,8 @@ public class NotifyEngineersHandlerTest {
     final var mock = mock(CompleteJobCommandStep1.class);
     when(jobClientMock.newCompleteCommand(anyLong())).thenReturn(mock);
     final var jobMock = createActivatedJobStub();
-    final var notifyEngineersWorker = new NotifyEngineersHandler(notificationService);
+    final var notifyEngineersWorker =
+        new NotifyEngineersHandler(notificationService, "http://url/clusterid");
 
     // when
     assertThatThrownBy(() -> notifyEngineersWorker.handle(jobClientMock, jobMock))

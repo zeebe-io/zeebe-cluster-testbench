@@ -239,10 +239,15 @@ public class Launcher {
         client, "run-sequential-test-job", new SequentialTestHandler(), Duration.ofMinutes(30));
 
     final var slackNotificationService = new SlackNotificationService(slackWebhookUrl);
+
+    // Testbench cluster Operate url
+    final String operateUrl =
+        convertZeebeUrlToOperateUrl(testOrchestrationAuthenticatonDetails.getServerURL());
+
     registerWorker(
         client,
         "notify-engineers-job",
-        new NotifyEngineersHandler(slackNotificationService),
+        new NotifyEngineersHandler(slackNotificationService, operateUrl),
         Duration.ofSeconds(10));
     registerWorker(
         client,

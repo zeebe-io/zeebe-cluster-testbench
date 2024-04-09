@@ -7,16 +7,37 @@ import io.camunda.zeebe.client.api.worker.JobHandler;
 import io.zeebe.clustertestbench.notification.NotificationService;
 import io.zeebe.clustertestbench.testdriver.api.TestDriver;
 import io.zeebe.clustertestbench.testdriver.api.TestDriver.TestReportDTO;
-import org.apache.commons.lang3.StringUtils;
 
 public class NotifyEngineersHandler implements JobHandler {
 
   private static final int TEST_FAILURE_SUMMARY_ITEMS = 10;
 
-  private final NotificationService notificationService;
+  private static final String FAILURE_MESSAGE_FORMAT =
+      """
+:bpmn-error-throw-event:
+_%s_ on _%s_ failed for branch `%s`.
+Check out here: %s
 
-  public NotifyEngineersHandler(final NotificationService notificationService) {
+*Details:*
+
+* Zeebe image: _%s_
+* Generation: _%s_
+* Target cluster : _%s_ `%s`
+* Target cluster Operate: %s
+* Business key: %s
+
+*Failures:*
+
+Failure count: %d
+""";
+
+  private final NotificationService notificationService;
+  private final String operateUrl;
+
+  public NotifyEngineersHandler(
+      final NotificationService notificationService, final String operateUrl) {
     this.notificationService = notificationService;
+    this.operateUrl = operateUrl;
   }
 
   @Override
@@ -31,48 +52,22 @@ public class NotifyEngineersHandler implements JobHandler {
   protected String composeMessage(final Input input) {
     final StringBuilder resultBuilder = new StringBuilder();
 
-    // icon
-    resultBuilder.append(":bpmn-error-throw-event:");
-
-    resultBuilder.append("\n");
-
-    // message
     final var errorMessage =
         String.format(
-            "_%s_ on _%s_ failed for branch `%s`. %n Zeebe image: _%s_ %n Generation: _%s_ %n Cluster : _%s_ `%s`",
+            FAILURE_MESSAGE_FORMAT,
             input.getTestProcessId(),
             input.getClusterPlan(),
             input.getBranch(),
+            operateUrl,
             input.getZeebeImage(),
             input.getGeneration(),
             input.getClusterName(),
-            input.getClusterId());
+            input.getClusterId(),
+            input.getOperateURL(),
+            input.getBusinessKey(),
+            input.getTestReport().failureCount());
 
-    resultBuilder.append(errorMessage);
-
-    resultBuilder.append("\n");
-
-    // operate link
-    resultBuilder
-        .append("<") //
-        .append(input.getOperateURL()) //
-        .append("|") //
-        .append("Operate") //
-        .append(">");
-
-    if (StringUtils.isNotEmpty(input.getBusinessKey())) {
-      resultBuilder.append("\n");
-
-      resultBuilder.append("Business Key:").append(input.getBusinessKey());
-    }
-
-    resultBuilder.append("\n");
-
-    // number of test failures
-    resultBuilder
-        .append("There were ") //
-        .append(input.getTestReport().failureCount()) //
-        .append(" failures.");
+    resultBuilder.append(errorMessage).append('\n');
 
     input.getTestReport().failureMessages().stream() //
         .limit(TEST_FAILURE_SUMMARY_ITEMS) //
