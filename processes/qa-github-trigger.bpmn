@@ -186,7 +186,7 @@
         <bpmn:sequenceFlow id="Flow_0hn5u24" name="No" sourceRef="Gateway_1fg9na6" targetRef="Gateway_00dnbxt" />
         <bpmn:callActivity id="Activity_02j7vxu" name="Prepare Zeebe Cluster in Camunda Cloud">
           <bpmn:extensionElements>
-            <zeebe:calledElement processId="prepare-zeebe-cluster-in-camunda-cloud" propagateAllChildVariables="false" />
+            <zeebe:calledElement processId="prepare-zeebe-cluster-in-camunda-cloud" propagateAllChildVariables="true" />
           </bpmn:extensionElements>
           <bpmn:incoming>Flow_0hapjd9</bpmn:incoming>
           <bpmn:outgoing>Flow_06gymln</bpmn:outgoing>
