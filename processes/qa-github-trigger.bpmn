@@ -76,16 +76,15 @@
       <bpmn:outgoing>Flow_1o4exgt</bpmn:outgoing>
     </bpmn:serviceTask>
     <bpmn:subProcess id="Activity_19achfg" name="QA Protocol">
-      
-        <bpmn:extensionElements>
-          <zeebe:ioMapping>
-            <zeebe:input source="=&#34;Chaos, Belgium, Europe (europe-west1)&#34;" target="region" />
-            <zeebe:input source="=[&#34;Production - S&#34;]" target="clusterPlans" />
-            <zeebe:input source="={&#34;steps&#34;:3,&#34;iterations&#34;:10,&#34;maxTimeForIteration&#34;:&#34;PT20S&#34;,&#34;maxTimeForCompleteTest&#34;:&#34;PT4M&#34;}" target="sequentialTestParams" />
-            <zeebe:input source="={}" target="chaosTestParams" />
-            <zeebe:input source="=&#34;QA Protocol&#34;" target="rootProcess" />
-          </zeebe:ioMapping>
-        </bpmn:extensionElements>
+      <bpmn:extensionElements>
+        <zeebe:ioMapping>
+          <zeebe:input source="=&#34;Chaos, Belgium, Europe (europe-west1)&#34;" target="region" />
+          <zeebe:input source="=[&#34;Production - S&#34;]" target="clusterPlans" />
+          <zeebe:input source="={&#34;steps&#34;:3,&#34;iterations&#34;:10,&#34;maxTimeForIteration&#34;:&#34;PT20S&#34;,&#34;maxTimeForCompleteTest&#34;:&#34;PT4M&#34;}" target="sequentialTestParams" />
+          <zeebe:input source="={}" target="chaosTestParams" />
+          <zeebe:input source="=&#34;QA Protocol&#34;" target="rootProcess" />
+        </zeebe:ioMapping>
+      </bpmn:extensionElements>
       <bpmn:incoming>Flow_15uwe9t</bpmn:incoming>
       <bpmn:outgoing>Flow_06nk95c</bpmn:outgoing>
       <bpmn:startEvent id="Event_0sc5dtl">
@@ -131,11 +130,10 @@
         </bpmn:startEvent>
         <bpmn:callActivity id="Activity_1audm0k" name="Run sequential tests in Camunda Cloud">
           <bpmn:extensionElements>
-            <zeebe:calledElement processId="sequential-test" propagateAllChildVariables="false" />
+            <zeebe:calledElement processId="sequential-test" propagateAllChildVariables="true" />
             <zeebe:ioMapping>
               <zeebe:input source="=sequentialTestParams" target="testParams" />
               <zeebe:input source="=&#34;sequential-test&#34;" target="testProcessId" />
-              <zeebe:output source="=testReport.testResult" target="sequentialTestResult" />
             </zeebe:ioMapping>
           </bpmn:extensionElements>
           <bpmn:incoming>Flow_06gymln</bpmn:incoming>
@@ -153,11 +151,10 @@
         </bpmn:serviceTask>
         <bpmn:callActivity id="Activity_0im7jbn" name="Run chaos experiments in Camunda Cloud">
           <bpmn:extensionElements>
-            <zeebe:calledElement processId="chaosToolkit" propagateAllChildVariables="false" />
+            <zeebe:calledElement processId="chaosToolkit" propagateAllChildVariables="true" />
             <zeebe:ioMapping>
               <zeebe:input source="=chaosTestParams" target="testParams" />
               <zeebe:input source="=&#34;chaosToolkit&#34;" target="testProcessId" />
-              <zeebe:output source="=testReport.testResult" target="chaosExperimentResult" />
             </zeebe:ioMapping>
           </bpmn:extensionElements>
           <bpmn:incoming>Flow_09bh7y2</bpmn:incoming>
