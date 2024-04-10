@@ -1,0 +1,112 @@
+package io.zeebe.clustertestbench;
+
+import io.camunda.zeebe.client.ZeebeClient;
+import io.camunda.zeebe.client.api.worker.JobHandler;
+import io.camunda.zeebe.client.api.worker.JobWorker;
+import io.camunda.zeebe.model.bpmn.Bpmn;
+import io.camunda.zeebe.model.bpmn.BpmnModelInstance;
+import io.camunda.zeebe.process.test.assertions.BpmnAssert;
+import io.camunda.zeebe.process.test.assertions.ProcessInstanceAssert;
+import io.camunda.zeebe.process.test.extension.ZeebeProcessTest;
+import io.camunda.zeebe.process.test.filters.RecordStream;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import org.awaitility.Awaitility;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
+@ZeebeProcessTest
+public class QaGithubTriggerTest {
+
+  public static final List<String> JOB_TYPES =
+      List.of(
+          "create-generation-in-camunda-cloud-job",
+          "trigger-message-start-event-job",
+          "map-names-to-uuids-job",
+          "aggregate-test-results-job",
+          "destroy-zeebe-cluster-in-camunda-cloud-job",
+          "io.camunda:slack:1");
+  private static final JobHandler AUTO_COMPLETE_HANDLER =
+      (c, j) ->
+          c.newCompleteCommand(j)
+              .variables("{\"testReport\": { \"testResult\": \"PASSED\" } }")
+              .send();
+
+  private RecordStream streamSource;
+  private ZeebeClient client;
+
+  private Map<String, JobWorker> jobWorkers;
+
+  private static BpmnModelInstance noopModelWithId(final String processId) {
+    return Bpmn.createExecutableProcess(processId).startEvent().endEvent().done();
+  }
+
+  @BeforeEach
+  public void setUp() {
+    client
+        .newDeployResourceCommand()
+        .addResourceFromClasspath("processes/qa-github-trigger.bpmn")
+        .addProcessModel(noopModelWithId("sequential-test"), "sequential-test.bpmn")
+        .addProcessModel(noopModelWithId("chaosToolkit"), "chaosToolkit.bpmn")
+        .addProcessModel(
+            noopModelWithId("prepare-zeebe-cluster-in-camunda-cloud"),
+            "prepare-zeebe-cluster-in-camunda-cloud.bpmn")
+        .send()
+        .join();
+
+    jobWorkers = new HashMap<>();
+    for (final var jobType : JOB_TYPES) {
+      final JobWorker worker =
+          client.newWorker().jobType(jobType).handler(AUTO_COMPLETE_HANDLER).open();
+      jobWorkers.put(jobType, worker);
+    }
+
+    BpmnAssert.initRecordStream(streamSource);
+  }
+
+  @AfterEach
+  public void tearDown() {
+    jobWorkers.forEach((t, w) -> w.close());
+  }
+
+  @Test
+  public void shouldRunQaGithubTriggerToTheEnd() {
+    // given
+
+    // when
+    final var instanceEvent =
+        client
+            .newCreateInstanceCommand()
+            .bpmnProcessId("qa-github-trigger")
+            .latestVersion()
+            .variables(
+                Map.of(
+                    "zeebeImage",
+                    "image",
+                    "generationTemplate",
+                    "Zeebe SNAPSHOT",
+                    "channel",
+                    "Internal Dev",
+                    "branch",
+                    "main",
+                    "build",
+                    "link",
+                    "businessKey",
+                    "123",
+                    "processId",
+                    "qa-protocol"))
+            .send()
+            .join();
+
+    // then
+    Awaitility.await("process should be completed")
+        .untilAsserted(
+            () -> {
+              BpmnAssert.initRecordStream(streamSource);
+              final ProcessInstanceAssert assertions = BpmnAssert.assertThat(instanceEvent);
+              assertions.hasNoIncidents().isCompleted();
+            });
+  }
+}
