@@ -28,11 +28,21 @@ public class QaGithubTriggerTest {
           "aggregate-test-results-job",
           "destroy-zeebe-cluster-in-camunda-cloud-job",
           "io.camunda:slack:1");
-  private static final JobHandler AUTO_COMPLETE_HANDLER =
-      (c, j) ->
-          c.newCompleteCommand(j)
-              .variables("{\"testReport\": { \"testResult\": \"PASSED\" } }")
-              .send();
+  private static final JobHandler AUTO_COMPLETE_HANDLER = (c, j) -> c.newCompleteCommand(j).send();
+
+  private static final JobHandler TEST_COMPLETE_HANDLER =
+      (c, j) -> {
+        final var authenticationDetails = j.getVariable("authenticationDetails");
+
+        if (authenticationDetails == null) {
+          c.newFailCommand(j).retries(0).errorMessage("Authentication Details missing");
+          return;
+        }
+
+        c.newCompleteCommand(j)
+            .variables("{\"testReport\": { \"testResult\": \"PASSED\" } }")
+            .send();
+      };
 
   private RecordStream streamSource;
   private ZeebeClient client;
@@ -43,15 +53,27 @@ public class QaGithubTriggerTest {
     return Bpmn.createExecutableProcess(processId).startEvent().endEvent().done();
   }
 
+  private static BpmnModelInstance oneTaskModelWithIdAndJobType(
+      final String processId, final String jobType) {
+    return Bpmn.createExecutableProcess(processId)
+        .startEvent()
+        .serviceTask(jobType, serviceTaskBuilder -> serviceTaskBuilder.zeebeJobType(jobType))
+        .endEvent()
+        .done();
+  }
+
   @BeforeEach
   public void setUp() {
     client
         .newDeployResourceCommand()
         .addResourceFromClasspath("processes/qa-github-trigger.bpmn")
-        .addProcessModel(noopModelWithId("sequential-test"), "sequential-test.bpmn")
-        .addProcessModel(noopModelWithId("chaosToolkit"), "chaosToolkit.bpmn")
         .addProcessModel(
-            noopModelWithId("prepare-zeebe-cluster-in-camunda-cloud"),
+            oneTaskModelWithIdAndJobType("sequential-test", "run-sequential-test-job"),
+            "sequential-test.bpmn")
+        .addProcessModel(oneTaskModelWithIdAndJobType("chaosToolkit", "chaos"), "chaosToolkit.bpmn")
+        .addProcessModel(
+            oneTaskModelWithIdAndJobType(
+                "prepare-zeebe-cluster-in-camunda-cloud", "cluster-creation"),
             "prepare-zeebe-cluster-in-camunda-cloud.bpmn")
         .send()
         .join();
@@ -62,6 +84,27 @@ public class QaGithubTriggerTest {
           client.newWorker().jobType(jobType).handler(AUTO_COMPLETE_HANDLER).open();
       jobWorkers.put(jobType, worker);
     }
+
+    jobWorkers.put(
+        "chaos", client.newWorker().jobType("chaos").handler(TEST_COMPLETE_HANDLER).open());
+    jobWorkers.put(
+        "run-sequential-test-job",
+        client
+            .newWorker()
+            .jobType("run-sequential-test-job")
+            .handler(TEST_COMPLETE_HANDLER)
+            .open());
+
+    jobWorkers.put(
+        "cluster-creation",
+        client
+            .newWorker()
+            .jobType("cluster-creation")
+            .handler(
+                (c, j) -> {
+                  c.newCompleteCommand(j).variables(Map.of("authenticationDetails", "{}")).send();
+                })
+            .open());
 
     BpmnAssert.initRecordStream(streamSource);
   }
