@@ -164,7 +164,7 @@ public class QaGithubTriggerTest {
                   .hasNoIncidents()
                   .hasPassedElement(JOB_TYPE_SEQUENTIAL)
                   .hasPassedElement(JOB_TYPE_CHAOS)
-                  .hasPassedElement("notify-failure")
+                  .hasPassedElement("notify-success")
                   .isCompleted();
             });
   }
