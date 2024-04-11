@@ -105,32 +105,6 @@ public class QaGithubTriggerTest {
                 })
             .open());
 
-    jobWorkers.put(
-        "aggregate-test-results-job",
-        client
-            .newWorker()
-            .jobType("aggregate-test-results-job")
-            .handler(
-                (c, j) -> {
-                  final var sequentialTestResult = j.getVariable("sequentialTestResult");
-
-                  if (sequentialTestResult == null) {
-                    c.newFailCommand(j).retries(0).errorMessage("Missing sequentialTestResult");
-                    return;
-                  }
-
-                  final var chaosExperimentResult = j.getVariable("chaosExperimentResult");
-                  if (chaosExperimentResult == null) {
-                    c.newFailCommand(j).retries(0).errorMessage("Missing chaosExperimentResult");
-                    return;
-                  }
-
-                  c.newCompleteCommand(j)
-                      .variables("{\"testReport\": { \"testResult\": \"PASSED\" } }")
-                      .send();
-                })
-            .open());
-
     BpmnAssert.initRecordStream(streamSource);
   }
 
