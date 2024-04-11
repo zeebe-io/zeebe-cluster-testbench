@@ -56,7 +56,7 @@ This process runs the sequential test in a given cluster in Camunda Cloud:
 | `testReport` | test report | `TestReport` |
 | `testResult` | test result | `TestResult` |
 
-#### Chaos Test
+#### Chaos Toolkit
 
 This test runs a repertoire of [chaos experiments](https://github.com/zeebe-io/zeebe-chaos) against a given cluster. Different experiments run in sequence.
 
@@ -64,13 +64,13 @@ The set of experiemnts to run depends on the cluster plan.
 
 See [inventoriy](https://github.com/zeebe-io/zeebe-chaos/blob/master/inventory.md) for more information on the available tests.
 
-##### Chaos Test Process
+##### Chaos Experiment Process
 
-This process runs the chaos test in a given cluster in Camunda Cloud:
+This process runs the chaos experiment against a given cluster in Camunda Cloud:
 
-![chaos-test](docs/assets/chaos-test.png "Chaos Test process")
+![chaos-test](docs/assets/chaosExperiment.png "Chaos experiment process")
 
-**Process ID:** `chaos-test`
+**Process ID:** `chaosExperiment`
 
 |         Inputs          |                                      Description                                      |                Type                |
 |-------------------------|---------------------------------------------------------------------------------------|------------------------------------|
@@ -86,106 +86,30 @@ This process runs the chaos test in a given cluster in Camunda Cloud:
 ### Test Processes
 
 The testbench deploys several processes to orchestrate the test execution. The work flows reference each other - a higher level process will call a lower level process.
-However, lower level processes can also be called directly if only a certain test execution is wanted.
 
-#### Run All Tests in Camunda Cloud per Cluster Plan
+#### QA Github Trigger
 
 This process runs all tests in a fresh cluster in Camunda Cloud in different cluster plans:
 
-![run-all-tests-in-camunda-cloud-per-clusterplan process](docs/assets/run-all-tests-in-camunda-cloud-per-clusterplan.png "Run all Tests in Camunda Cloud process")
+![qa-github-trigger](docs/assets/qa-github-trigger.png "QA Github Trigger")
 
-**Process ID:** `run-all-tests-in-camunda-cloud-per-cluster-plan`
+**Process ID:** `qa-github-trigger`
 
-|         Inputs         |                 Description                  |            Type            |
-|------------------------|----------------------------------------------|----------------------------|
-| `generation`           | name of the generation for the cluster       | `String`                   |
-| `clusterPlans`         | names of the cluster plans for the clusters  | `List<String>`             |
-| `channel`              | name of the channel for the cluster          | `String`                   |
-| `region`               | name of the region for the cluster           | `String`                   |
-| `sequentialTestParams` | Settings to parameterize the sequential test | `SequentialTestParameters` |
+The QA github trigger runs all tests against a fresh created cluster (based on a temporary generation).
 
-|        Outputs         |                   Description                    |     Type     |
-|------------------------|--------------------------------------------------|--------------|
-| `aggregatedTestResult` | Aggregated test result for all tests/experiments | `TestResult` |
-
-#### Run All Tests in Camunda Cloud
-
-This process runs all tests in a fresh cluster in Camunda Cloud:
-
-![run-all-tests-in-camunda-cloud process](docs/assets/run-all-tests-in-camunda-cloud.png "Run all Tests in Camunda Cloud process")
+This process is triggered on demand (e.g. for a PR merge or to test a release candidate). It will create a temporary generation for the tests to run. This generation will be removed after all tests and all analysis tasks have completed.
 
 Depending of the region of the new created cluster chaos experiments are executed plus the normal sequential tests.
 
-**Process ID:** `run-all-tests-in-camunda-cloud`
-
-|             Inputs              |                  Description                  |            Type            |
-|---------------------------------|-----------------------------------------------|----------------------------|
-| `generation`/`generationUUID`   | name/UUID of the generation for the cluster   | `String`                   |
-| `clusterPlan`/`clusterPlanUUID` | name/UUID of the cluster plan for the cluster | `String`                   |
-| `channel`/`channelUUID`         | name/UUID of the channel for the cluster      | `String`                   |
-| `region`/`regionUUID`           | name/UUID of the region for the cluster       | `String`                   |
-| `sequentialTestParams`          | Settings to parameterize the sequential test  | `SequentialTestParameters` |
-
-The cluster parameters can either be specified using human-friendly names or machine-friendly UUIDs. Both are possible and the counterpart will be found as part of the process. The generation can be omitted. In that case the channel's default generation will be used.
-
-|        Outputs         |                   Description                    |     Type     |
-|------------------------|--------------------------------------------------|--------------|
-| `aggregatedTestResult` | Aggregated test result for all tests/experiments | `TestResult` |
-
-#### Run Test in Camunda Cloud
-
-This process runs a test based on the given `testProcessId` in a fresh cluster in Camunda Cloud:
-
-![run-test-in-camunda-cloud process](docs/assets/run-test-in-camunda-cloud.png "Run Test in Camunda Cloud process")
-
-**Notes**
-
-The step _Trigger Analyse Cluster Process_ starts a second process which keeps the cluster alive for further analysis. The cluster will be deleted after analysis.
-This way, the test process can terminate and report the test result, while the analysis is happening asynchronously.
-
-**Process ID:** `run-test-in-camunda-cloud`
-
-|              Inputs              |                                      Description                                       |            Type            |
-|----------------------------------|----------------------------------------------------------------------------------------|----------------------------|
-| `generation` + `generationUUID`  | name + UUID of the generation for the cluster                                          | `String`                   |
-| `clusterPlan` +`clusterPlanUUID` | name + UUID of the cluster plan for the cluster                                        | `String`                   |
-| `channel` + `channelUUID`        | name + UUID of the channel for the cluster                                             | `String`                   |
-| `region` + `regionUUID`          | name + UUID of the region for the cluster                                              | `String`                   |
-| `testParams`                     | Settings to parameterize the sequential test                                           | `SequentialTestParameters` |
-| `testProcessId`                  | The id of the test process which should be run. Is used in the `Run Test` CallActivity | `String`                   |
-
-The cluster parameters shall be given as name and UUID. The UUIDs are used to create the cluster.
-
-|    Runtime Variables    |                   Description                   |                Type                |
-|-------------------------|-------------------------------------------------|------------------------------------|
-| `clusterId`             | ID of the cluster in which Zeebe is tested      | `String`                           |
-| `clusterName`           | Name of the cluster in which Zeebe is tested    | `String`                           |
-| `authenticationDetails` | Credentials to authenticate against the cluster | `CamundaCloudAutenticationDetails` |
-| `operateURL`            | URL to Operate web interface                    | `String`                           |
-
-|   Outputs    | Description |     Type     |
-|--------------|-------------|--------------|
-| `testReport` | test report | `TestReport` |
-
-### Test Protocols
-
-#### QA Protocol
-
-![qa-protocol](docs/assets/qa-protocol.png "QA protocol")
-
-**Process ID:** `qa-protocol`
-
-The QA protocol runs all tests. Tests are run on demand (e.g. for a PR merge or to test a release candidate). It will create a temporary generation for the tests to run. This generation will be removed after all tests and all analysis tasks have completed.
+> [!Note]
+>
+> The step _Trigger Analyse Cluster Process_ starts a second process which keeps the cluster alive for further analysis. The cluster will be deleted after analysis. This way, the test process can terminate and report the test result, while the analysis is happening asynchronously.
 
 |        Inputs        |                                                                                                     Description                                                                                                      |   Type   |
 |----------------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|----------|
 | `zeebeImage`         | The Zeebe image that shall be tested (fully qualified name, including registry and label). _Note_ the label/tag must start with a semantic version, otherwise it will be rejected by the backend                     | `String` |
 | `generationTemplate` | Name of an existing generation that will be used as a template for the generation to be created. The template will serve to identify the versions of Operate and Elasticsearch that Zeebe image shall be paired with | `String` |
 | `channel`            | name of the channel for the tests                                                                                                                                                                                    | `String` |
-
-|        Outputs         |                   Description                    |     Type     |
-|------------------------|--------------------------------------------------|--------------|
-| `aggregatedTestResult` | Aggregated test result for all tests/experiments | `TestResult` |
 
 ### Utility Processes
 
