@@ -25,7 +25,6 @@ public class QaGithubTriggerTest {
           "create-generation-in-camunda-cloud-job",
           "trigger-message-start-event-job",
           "map-names-to-uuids-job",
-          "aggregate-test-results-job",
           "destroy-zeebe-cluster-in-camunda-cloud-job",
           "io.camunda:slack:1");
   private static final JobHandler AUTO_COMPLETE_HANDLER = (c, j) -> c.newCompleteCommand(j).send();
@@ -103,6 +102,32 @@ public class QaGithubTriggerTest {
             .handler(
                 (c, j) -> {
                   c.newCompleteCommand(j).variables(Map.of("authenticationDetails", "{}")).send();
+                })
+            .open());
+
+    jobWorkers.put(
+        "aggregate-test-results-job",
+        client
+            .newWorker()
+            .jobType("aggregate-test-results-job")
+            .handler(
+                (c, j) -> {
+                  final var sequentialTestResult = j.getVariable("sequentialTestResult");
+
+                  if (sequentialTestResult == null) {
+                    c.newFailCommand(j).retries(0).errorMessage("Missing sequentialTestResult");
+                    return;
+                  }
+
+                  final var chaosExperimentResult = j.getVariable("chaosExperimentResult");
+                  if (chaosExperimentResult == null) {
+                    c.newFailCommand(j).retries(0).errorMessage("Missing chaosExperimentResult");
+                    return;
+                  }
+
+                  c.newCompleteCommand(j)
+                      .variables("{\"testReport\": { \"testResult\": \"PASSED\" } }")
+                      .send();
                 })
             .open());
 
