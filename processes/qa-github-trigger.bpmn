@@ -128,7 +128,7 @@
           </bpmn:extensionElements>
           <bpmn:outgoing>Flow_1ux2dvf</bpmn:outgoing>
         </bpmn:startEvent>
-        <bpmn:callActivity id="Activity_1audm0k" name="Run sequential tests in Camunda Cloud">
+        <bpmn:callActivity id="call-sequential" name="Run sequential tests in Camunda Cloud">
           <bpmn:extensionElements>
             <zeebe:calledElement processId="sequential-test" propagateAllChildVariables="true" />
             <zeebe:ioMapping>
@@ -150,7 +150,7 @@
           <bpmn:incoming>Flow_1ux2dvf</bpmn:incoming>
           <bpmn:outgoing>Flow_0hapjd9</bpmn:outgoing>
         </bpmn:serviceTask>
-        <bpmn:callActivity id="Activity_0im7jbn" name="Run chaos experiments in Camunda Cloud">
+        <bpmn:callActivity id="call-chaos" name="Run chaos experiments in Camunda Cloud">
           <bpmn:extensionElements>
             <zeebe:calledElement processId="chaosToolkit" propagateAllChildVariables="true" />
             <zeebe:ioMapping>
@@ -168,10 +168,10 @@
         </bpmn:exclusiveGateway>
         <bpmn:sequenceFlow id="Flow_1ux2dvf" sourceRef="Event_0hylhut" targetRef="Activity_1plx17g" />
         <bpmn:sequenceFlow id="Flow_0hapjd9" sourceRef="Activity_1plx17g" targetRef="Activity_02j7vxu" />
-        <bpmn:sequenceFlow id="Flow_09bh7y2" name="Yes" sourceRef="Gateway_1fg9na6" targetRef="Activity_0im7jbn">
+        <bpmn:sequenceFlow id="Flow_09bh7y2" name="Yes" sourceRef="Gateway_1fg9na6" targetRef="call-chaos">
           <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">=region = "Chaos, Belgium, Europe (europe-west1)"</bpmn:conditionExpression>
         </bpmn:sequenceFlow>
-        <bpmn:sequenceFlow id="Flow_09ppuyl" sourceRef="Activity_0im7jbn" targetRef="Gateway_1we7jo9" />
+        <bpmn:sequenceFlow id="Flow_09ppuyl" sourceRef="call-chaos" targetRef="Gateway_1we7jo9" />
         <bpmn:sequenceFlow id="Flow_0hn5u24" name="No" sourceRef="Gateway_1fg9na6" targetRef="Gateway_00dnbxt" />
         <bpmn:callActivity id="Activity_02j7vxu" name="Prepare Zeebe Cluster in Camunda Cloud">
           <bpmn:extensionElements>
@@ -189,7 +189,7 @@
           <bpmn:outgoing>Flow_1k714v6</bpmn:outgoing>
           <bpmn:errorEventDefinition id="ErrorEventDefinition_0h462pt" errorRef="Error_18gl439" />
         </bpmn:boundaryEvent>
-        <bpmn:sequenceFlow id="Flow_06gymln" sourceRef="Activity_02j7vxu" targetRef="Activity_1audm0k" />
+        <bpmn:sequenceFlow id="Flow_06gymln" sourceRef="Activity_02j7vxu" targetRef="call-sequential" />
         <bpmn:exclusiveGateway id="Gateway_1we7jo9" name="test result?">
           <bpmn:incoming>Flow_09ppuyl</bpmn:incoming>
           <bpmn:outgoing>Flow_0juhhfh</bpmn:outgoing>
@@ -248,7 +248,7 @@
         <bpmn:sequenceFlow id="Flow_0ovyxag" name="SKIPPED" sourceRef="Gateway_0gveope" targetRef="Gateway_114ailq">
           <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">=testReport.testResult = "SKIPPED"</bpmn:conditionExpression>
         </bpmn:sequenceFlow>
-        <bpmn:sequenceFlow id="Flow_0bt5j3f" sourceRef="Activity_1audm0k" targetRef="Gateway_0gveope" />
+        <bpmn:sequenceFlow id="Flow_0bt5j3f" sourceRef="call-sequential" targetRef="Gateway_0gveope" />
         <bpmn:sequenceFlow id="Flow_10alfie" sourceRef="Gateway_114ailq" targetRef="Gateway_1fg9na6" />
         <bpmn:exclusiveGateway id="Gateway_0ofzvd1">
           <bpmn:incoming>Flow_0kfg511</bpmn:incoming>
@@ -269,7 +269,7 @@
         <bpmn:textAnnotation id="TextAnnotation_0wdc7kl">
           <bpmn:text>By design we run chaos experiments only in a dedicated region ("Chaos, Belgium, Europe (europe-west1)")</bpmn:text>
         </bpmn:textAnnotation>
-        <bpmn:association id="Association_1q6rj6r" sourceRef="Activity_0im7jbn" targetRef="TextAnnotation_0wdc7kl" />
+        <bpmn:association id="Association_1q6rj6r" sourceRef="call-chaos" targetRef="TextAnnotation_0wdc7kl" />
       </bpmn:subProcess>
       <bpmn:sequenceFlow id="Flow_18lr5bn" sourceRef="Activity_10fu1ay" targetRef="Activity_0lx0qei" />
       <bpmn:sequenceFlow id="Flow_1qpk3b2" sourceRef="Activity_1grheqa" targetRef="Activity_10fu1ay" />
@@ -355,7 +355,7 @@ branch - used in slack notification</bpmn:text>
           <dc:Bounds x="871" y="525" width="24" height="14" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="BPMNShape_06t91as" bpmnElement="Activity_1audm0k">
+      <bpmndi:BPMNShape id="BPMNShape_06t91as" bpmnElement="call-sequential">
         <dc:Bounds x="1210" y="460" width="100" height="80" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="BPMNShape_01zuyfy" bpmnElement="Event_18t3lrm">
@@ -367,7 +367,7 @@ branch - used in slack notification</bpmn:text>
       <bpmndi:BPMNShape id="BPMNShape_0b2qo9h" bpmnElement="Activity_1plx17g">
         <dc:Bounds x="940" y="460" width="100" height="80" />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="BPMNShape_1eu1zce" bpmnElement="Activity_0im7jbn">
+      <bpmndi:BPMNShape id="BPMNShape_1eu1zce" bpmnElement="call-chaos">
         <dc:Bounds x="1780" y="460" width="100" height="80" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="BPMNShape_1y43tf2" bpmnElement="Gateway_1fg9na6" isMarkerVisible="true">

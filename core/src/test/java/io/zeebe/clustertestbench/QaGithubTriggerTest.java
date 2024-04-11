@@ -162,8 +162,8 @@ public class QaGithubTriggerTest {
               final ProcessInstanceAssert assertions = BpmnAssert.assertThat(instanceEvent);
               assertions
                   .hasNoIncidents()
-                  .hasPassedElement(JOB_TYPE_SEQUENTIAL)
-                  .hasPassedElement(JOB_TYPE_CHAOS)
+                  .hasPassedElement("call-sequential")
+                  .hasPassedElement("call-chaos")
                   .hasPassedElement("notify-success")
                   .isCompleted();
             });
