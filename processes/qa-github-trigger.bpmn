@@ -8,8 +8,8 @@
     <bpmn:endEvent id="Event_1m39n9l">
       <bpmn:incoming>Flow_16e5cin</bpmn:incoming>
     </bpmn:endEvent>
-    <bpmn:sequenceFlow id="Flow_16e5cin" sourceRef="fetch-result-job" targetRef="Event_1m39n9l" />
-    <bpmn:serviceTask id="fetch-result-job" name="Notify Failure" zeebe:modelerTemplate="io.camunda.connectors.Slack.v1" zeebe:modelerTemplateIcon="data:image/svg+xml;utf8,%3Csvg%20width%3D%2218%22%20height%3D%2218%22%20%20viewBox%3D%220%200%20127%20127%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%0A%20%20%3Cpath%20d%3D%22M27.2%2080c0%207.3-5.9%2013.2-13.2%2013.2C6.7%2093.2.8%2087.3.8%2080c0-7.3%205.9-13.2%2013.2-13.2h13.2V80zm6.6%200c0-7.3%205.9-13.2%2013.2-13.2%207.3%200%2013.2%205.9%2013.2%2013.2v33c0%207.3-5.9%2013.2-13.2%2013.2-7.3%200-13.2-5.9-13.2-13.2V80z%22%20fill%3D%22%23E01E5A%22%2F%3E%0A%20%20%3Cpath%20d%3D%22M47%2027c-7.3%200-13.2-5.9-13.2-13.2C33.8%206.5%2039.7.6%2047%20.6c7.3%200%2013.2%205.9%2013.2%2013.2V27H47zm0%206.7c7.3%200%2013.2%205.9%2013.2%2013.2%200%207.3-5.9%2013.2-13.2%2013.2H13.9C6.6%2060.1.7%2054.2.7%2046.9c0-7.3%205.9-13.2%2013.2-13.2H47z%22%20fill%3D%22%2336C5F0%22%2F%3E%0A%20%20%3Cpath%20d%3D%22M99.9%2046.9c0-7.3%205.9-13.2%2013.2-13.2%207.3%200%2013.2%205.9%2013.2%2013.2%200%207.3-5.9%2013.2-13.2%2013.2H99.9V46.9zm-6.6%200c0%207.3-5.9%2013.2-13.2%2013.2-7.3%200-13.2-5.9-13.2-13.2V13.8C66.9%206.5%2072.8.6%2080.1.6c7.3%200%2013.2%205.9%2013.2%2013.2v33.1z%22%20fill%3D%22%232EB67D%22%2F%3E%0A%20%20%3Cpath%20d%3D%22M80.1%2099.8c7.3%200%2013.2%205.9%2013.2%2013.2%200%207.3-5.9%2013.2-13.2%2013.2-7.3%200-13.2-5.9-13.2-13.2V99.8h13.2zm0-6.6c-7.3%200-13.2-5.9-13.2-13.2%200-7.3%205.9-13.2%2013.2-13.2h33.1c7.3%200%2013.2%205.9%2013.2%2013.2%200%207.3-5.9%2013.2-13.2%2013.2H80.1z%22%20fill%3D%22%23ECB22E%22%2F%3E%0A%3C%2Fsvg%3E%0A">
+    <bpmn:sequenceFlow id="Flow_16e5cin" sourceRef="notify-failure" targetRef="Event_1m39n9l" />
+    <bpmn:serviceTask id="notify-failure" name="Notify Failure" zeebe:modelerTemplate="io.camunda.connectors.Slack.v1" zeebe:modelerTemplateIcon="data:image/svg+xml;utf8,%3Csvg%20width%3D%2218%22%20height%3D%2218%22%20%20viewBox%3D%220%200%20127%20127%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%0A%20%20%3Cpath%20d%3D%22M27.2%2080c0%207.3-5.9%2013.2-13.2%2013.2C6.7%2093.2.8%2087.3.8%2080c0-7.3%205.9-13.2%2013.2-13.2h13.2V80zm6.6%200c0-7.3%205.9-13.2%2013.2-13.2%207.3%200%2013.2%205.9%2013.2%2013.2v33c0%207.3-5.9%2013.2-13.2%2013.2-7.3%200-13.2-5.9-13.2-13.2V80z%22%20fill%3D%22%23E01E5A%22%2F%3E%0A%20%20%3Cpath%20d%3D%22M47%2027c-7.3%200-13.2-5.9-13.2-13.2C33.8%206.5%2039.7.6%2047%20.6c7.3%200%2013.2%205.9%2013.2%2013.2V27H47zm0%206.7c7.3%200%2013.2%205.9%2013.2%2013.2%200%207.3-5.9%2013.2-13.2%2013.2H13.9C6.6%2060.1.7%2054.2.7%2046.9c0-7.3%205.9-13.2%2013.2-13.2H47z%22%20fill%3D%22%2336C5F0%22%2F%3E%0A%20%20%3Cpath%20d%3D%22M99.9%2046.9c0-7.3%205.9-13.2%2013.2-13.2%207.3%200%2013.2%205.9%2013.2%2013.2%200%207.3-5.9%2013.2-13.2%2013.2H99.9V46.9zm-6.6%200c0%207.3-5.9%2013.2-13.2%2013.2-7.3%200-13.2-5.9-13.2-13.2V13.8C66.9%206.5%2072.8.6%2080.1.6c7.3%200%2013.2%205.9%2013.2%2013.2v33.1z%22%20fill%3D%22%232EB67D%22%2F%3E%0A%20%20%3Cpath%20d%3D%22M80.1%2099.8c7.3%200%2013.2%205.9%2013.2%2013.2%200%207.3-5.9%2013.2-13.2%2013.2-7.3%200-13.2-5.9-13.2-13.2V99.8h13.2zm0-6.6c-7.3%200-13.2-5.9-13.2-13.2%200-7.3%205.9-13.2%2013.2-13.2h33.1c7.3%200%2013.2%205.9%2013.2%2013.2%200%207.3-5.9%2013.2-13.2%2013.2H80.1z%22%20fill%3D%22%23ECB22E%22%2F%3E%0A%3C%2Fsvg%3E%0A">
       <bpmn:extensionElements>
         <zeebe:taskDefinition type="io.camunda:slack:1" />
         <zeebe:ioMapping>
@@ -28,11 +28,11 @@
       <bpmn:outgoing>Flow_1v4lwsp</bpmn:outgoing>
       <bpmn:outgoing>Flow_093ioqi</bpmn:outgoing>
     </bpmn:exclusiveGateway>
-    <bpmn:sequenceFlow id="Flow_1v4lwsp" name="Failed" sourceRef="Gateway_02ekcf8" targetRef="fetch-result-job">
-      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">=aggregatedTestResult="FAILED"</bpmn:conditionExpression>
+    <bpmn:sequenceFlow id="Flow_1v4lwsp" name="Failed" sourceRef="Gateway_02ekcf8" targetRef="notify-failure">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">=testResults[item.testResult = "FAILED"] != null</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
-    <bpmn:sequenceFlow id="Flow_093ioqi" sourceRef="Gateway_02ekcf8" targetRef="Activity_0d6h12d" />
-    <bpmn:serviceTask id="Activity_0d6h12d" name="Notify Success" zeebe:modelerTemplate="io.camunda.connectors.Slack.v1" zeebe:modelerTemplateIcon="data:image/svg+xml;utf8,%3Csvg%20width%3D%2218%22%20height%3D%2218%22%20%20viewBox%3D%220%200%20127%20127%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%0A%20%20%3Cpath%20d%3D%22M27.2%2080c0%207.3-5.9%2013.2-13.2%2013.2C6.7%2093.2.8%2087.3.8%2080c0-7.3%205.9-13.2%2013.2-13.2h13.2V80zm6.6%200c0-7.3%205.9-13.2%2013.2-13.2%207.3%200%2013.2%205.9%2013.2%2013.2v33c0%207.3-5.9%2013.2-13.2%2013.2-7.3%200-13.2-5.9-13.2-13.2V80z%22%20fill%3D%22%23E01E5A%22%2F%3E%0A%20%20%3Cpath%20d%3D%22M47%2027c-7.3%200-13.2-5.9-13.2-13.2C33.8%206.5%2039.7.6%2047%20.6c7.3%200%2013.2%205.9%2013.2%2013.2V27H47zm0%206.7c7.3%200%2013.2%205.9%2013.2%2013.2%200%207.3-5.9%2013.2-13.2%2013.2H13.9C6.6%2060.1.7%2054.2.7%2046.9c0-7.3%205.9-13.2%2013.2-13.2H47z%22%20fill%3D%22%2336C5F0%22%2F%3E%0A%20%20%3Cpath%20d%3D%22M99.9%2046.9c0-7.3%205.9-13.2%2013.2-13.2%207.3%200%2013.2%205.9%2013.2%2013.2%200%207.3-5.9%2013.2-13.2%2013.2H99.9V46.9zm-6.6%200c0%207.3-5.9%2013.2-13.2%2013.2-7.3%200-13.2-5.9-13.2-13.2V13.8C66.9%206.5%2072.8.6%2080.1.6c7.3%200%2013.2%205.9%2013.2%2013.2v33.1z%22%20fill%3D%22%232EB67D%22%2F%3E%0A%20%20%3Cpath%20d%3D%22M80.1%2099.8c7.3%200%2013.2%205.9%2013.2%2013.2%200%207.3-5.9%2013.2-13.2%2013.2-7.3%200-13.2-5.9-13.2-13.2V99.8h13.2zm0-6.6c-7.3%200-13.2-5.9-13.2-13.2%200-7.3%205.9-13.2%2013.2-13.2h33.1c7.3%200%2013.2%205.9%2013.2%2013.2%200%207.3-5.9%2013.2-13.2%2013.2H80.1z%22%20fill%3D%22%23ECB22E%22%2F%3E%0A%3C%2Fsvg%3E%0A">
+    <bpmn:sequenceFlow id="Flow_093ioqi" sourceRef="Gateway_02ekcf8" targetRef="notify-success" />
+    <bpmn:serviceTask id="notify-success" name="Notify Success" zeebe:modelerTemplate="io.camunda.connectors.Slack.v1" zeebe:modelerTemplateIcon="data:image/svg+xml;utf8,%3Csvg%20width%3D%2218%22%20height%3D%2218%22%20%20viewBox%3D%220%200%20127%20127%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%0A%20%20%3Cpath%20d%3D%22M27.2%2080c0%207.3-5.9%2013.2-13.2%2013.2C6.7%2093.2.8%2087.3.8%2080c0-7.3%205.9-13.2%2013.2-13.2h13.2V80zm6.6%200c0-7.3%205.9-13.2%2013.2-13.2%207.3%200%2013.2%205.9%2013.2%2013.2v33c0%207.3-5.9%2013.2-13.2%2013.2-7.3%200-13.2-5.9-13.2-13.2V80z%22%20fill%3D%22%23E01E5A%22%2F%3E%0A%20%20%3Cpath%20d%3D%22M47%2027c-7.3%200-13.2-5.9-13.2-13.2C33.8%206.5%2039.7.6%2047%20.6c7.3%200%2013.2%205.9%2013.2%2013.2V27H47zm0%206.7c7.3%200%2013.2%205.9%2013.2%2013.2%200%207.3-5.9%2013.2-13.2%2013.2H13.9C6.6%2060.1.7%2054.2.7%2046.9c0-7.3%205.9-13.2%2013.2-13.2H47z%22%20fill%3D%22%2336C5F0%22%2F%3E%0A%20%20%3Cpath%20d%3D%22M99.9%2046.9c0-7.3%205.9-13.2%2013.2-13.2%207.3%200%2013.2%205.9%2013.2%2013.2%200%207.3-5.9%2013.2-13.2%2013.2H99.9V46.9zm-6.6%200c0%207.3-5.9%2013.2-13.2%2013.2-7.3%200-13.2-5.9-13.2-13.2V13.8C66.9%206.5%2072.8.6%2080.1.6c7.3%200%2013.2%205.9%2013.2%2013.2v33.1z%22%20fill%3D%22%232EB67D%22%2F%3E%0A%20%20%3Cpath%20d%3D%22M80.1%2099.8c7.3%200%2013.2%205.9%2013.2%2013.2%200%207.3-5.9%2013.2-13.2%2013.2-7.3%200-13.2-5.9-13.2-13.2V99.8h13.2zm0-6.6c-7.3%200-13.2-5.9-13.2-13.2%200-7.3%205.9-13.2%2013.2-13.2h33.1c7.3%200%2013.2%205.9%2013.2%2013.2%200%207.3-5.9%2013.2-13.2%2013.2H80.1z%22%20fill%3D%22%23ECB22E%22%2F%3E%0A%3C%2Fsvg%3E%0A">
       <bpmn:extensionElements>
         <zeebe:taskDefinition type="io.camunda:slack:1" />
         <zeebe:ioMapping>
@@ -49,7 +49,7 @@
     <bpmn:endEvent id="Event_0kcubc0">
       <bpmn:incoming>Flow_1vyp0cy</bpmn:incoming>
     </bpmn:endEvent>
-    <bpmn:sequenceFlow id="Flow_1vyp0cy" sourceRef="Activity_0d6h12d" targetRef="Event_0kcubc0" />
+    <bpmn:sequenceFlow id="Flow_1vyp0cy" sourceRef="notify-success" targetRef="Event_0kcubc0" />
     <bpmn:boundaryEvent id="Event_1p9ayal" cancelActivity="false" attachedToRef="Activity_19achfg">
       <bpmn:outgoing>Flow_032f7m5</bpmn:outgoing>
       <bpmn:timerEventDefinition id="TimerEventDefinition_0bb19ml">
@@ -224,7 +224,7 @@
           <bpmn:outgoing>Flow_0mtfisc</bpmn:outgoing>
           <bpmn:outgoing>Flow_0ovyxag</bpmn:outgoing>
         </bpmn:exclusiveGateway>
-        <bpmn:serviceTask id="Activity_1g2y7cs" name="Trigger Analyse Cluster Process">
+        <bpmn:serviceTask id="trigger_analysis" name="Trigger Analyse Cluster Process">
           <bpmn:extensionElements>
             <zeebe:taskDefinition type="trigger-message-start-event-job" />
             <zeebe:taskHeaders>
@@ -255,7 +255,7 @@
           <bpmn:incoming>Flow_0juhhfh</bpmn:incoming>
           <bpmn:outgoing>Flow_0y3o186</bpmn:outgoing>
         </bpmn:exclusiveGateway>
-        <bpmn:sequenceFlow id="Flow_0y3o186" sourceRef="Gateway_0ofzvd1" targetRef="Activity_1g2y7cs" />
+        <bpmn:sequenceFlow id="Flow_0y3o186" sourceRef="Gateway_0ofzvd1" targetRef="trigger_analysis" />
         <bpmn:exclusiveGateway id="Gateway_00dnbxt">
           <bpmn:incoming>Flow_1w6t966</bpmn:incoming>
           <bpmn:incoming>Flow_1yaf71p</bpmn:incoming>
@@ -263,7 +263,7 @@
           <bpmn:outgoing>Flow_1kmva34</bpmn:outgoing>
         </bpmn:exclusiveGateway>
         <bpmn:sequenceFlow id="Flow_1w6t966" sourceRef="Activity_0yf40yp" targetRef="Gateway_00dnbxt" />
-        <bpmn:sequenceFlow id="Flow_1yaf71p" sourceRef="Activity_1g2y7cs" targetRef="Gateway_00dnbxt" />
+        <bpmn:sequenceFlow id="Flow_1yaf71p" sourceRef="trigger_analysis" targetRef="Gateway_00dnbxt" />
         <bpmn:sequenceFlow id="Flow_1k714v6" sourceRef="Event_181hrs2" targetRef="Event_18t3lrm" />
         <bpmn:sequenceFlow id="Flow_1kmva34" sourceRef="Gateway_00dnbxt" targetRef="Event_18t3lrm" />
         <bpmn:textAnnotation id="TextAnnotation_0wdc7kl">
@@ -305,17 +305,17 @@ branch - used in slack notification</bpmn:text>
       <bpmndi:BPMNShape id="_BPMNShape_StartEvent_2" bpmnElement="StartEvent_1">
         <dc:Bounds x="262" y="502" width="36" height="36" />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Gateway_02ekcf8_di" bpmnElement="Gateway_02ekcf8" isMarkerVisible="true">
-        <dc:Bounds x="3055" y="515" width="50" height="50" />
-      </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Event_1m39n9l_di" bpmnElement="Event_1m39n9l">
         <dc:Bounds x="3332" y="409" width="36" height="36" />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_192mgzz_di" bpmnElement="fetch-result-job">
+      <bpmndi:BPMNShape id="Activity_192mgzz_di" bpmnElement="notify-failure">
         <dc:Bounds x="3180" y="387" width="100" height="80" />
         <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_0fxl2du_di" bpmnElement="Activity_0d6h12d">
+      <bpmndi:BPMNShape id="Gateway_02ekcf8_di" bpmnElement="Gateway_02ekcf8" isMarkerVisible="true">
+        <dc:Bounds x="3055" y="515" width="50" height="50" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0fxl2du_di" bpmnElement="notify-success">
         <dc:Bounds x="3180" y="500" width="100" height="80" />
         <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
@@ -333,20 +333,17 @@ branch - used in slack notification</bpmn:text>
         <dc:Bounds x="440" y="80" width="2520" height="760" />
         <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="BPMNShape_0vtao6x" bpmnElement="TextAnnotation_01nrz8c">
-        <dc:Bounds x="2630" y="610" width="310" height="53" />
-      </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="BPMNShape_1e1r845" bpmnElement="Event_0sc5dtl">
         <dc:Bounds x="496" y="492" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_0841hki" bpmnElement="Event_1q5ta1t">
+        <dc:Bounds x="2812" y="492" width="36" height="36" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="BPMNShape_1ne5pyl" bpmnElement="Activity_1grheqa">
         <dc:Bounds x="600" y="470" width="100" height="80" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="BPMNShape_03mfm7z" bpmnElement="Activity_0lx0qei">
         <dc:Bounds x="2650" y="470" width="100" height="80" />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="BPMNShape_0841hki" bpmnElement="Event_1q5ta1t">
-        <dc:Bounds x="2812" y="492" width="36" height="36" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Activity_10fu1ay_di" bpmnElement="Activity_10fu1ay" isExpanded="true">
         <dc:Bounds x="820" y="270" width="1770" height="490" />
@@ -360,6 +357,12 @@ branch - used in slack notification</bpmn:text>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="BPMNShape_06t91as" bpmnElement="Activity_1audm0k">
         <dc:Bounds x="1210" y="460" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_01zuyfy" bpmnElement="Event_18t3lrm">
+        <dc:Bounds x="2522" y="482" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="2530" y="458" width="20" height="14" />
+        </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="BPMNShape_0b2qo9h" bpmnElement="Activity_1plx17g">
         <dc:Bounds x="940" y="460" width="100" height="80" />
@@ -394,7 +397,7 @@ branch - used in slack notification</bpmn:text>
           <dc:Bounds x="1343" y="463" width="54" height="14" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="BPMNShape_15nkbk8" bpmnElement="Activity_1g2y7cs">
+      <bpmndi:BPMNShape id="BPMNShape_15nkbk8" bpmnElement="trigger_analysis">
         <dc:Bounds x="2240" y="610" width="100" height="80" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="BPMNShape_012efjm" bpmnElement="Gateway_114ailq" isMarkerVisible="true">
@@ -409,12 +412,6 @@ branch - used in slack notification</bpmn:text>
       <bpmndi:BPMNShape id="BPMNShape_1u9adz9" bpmnElement="TextAnnotation_0wdc7kl">
         <dc:Bounds x="1700" y="370" width="208" height="70" />
         <bpmndi:BPMNLabel />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="BPMNShape_01zuyfy" bpmnElement="Event_18t3lrm">
-        <dc:Bounds x="2522" y="482" width="36" height="36" />
-        <bpmndi:BPMNLabel>
-          <dc:Bounds x="2530" y="458" width="20" height="14" />
-        </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="BPMNShape_1wxqc5j" bpmnElement="Event_181hrs2">
         <dc:Bounds x="1132" y="522" width="36" height="36" />
@@ -523,10 +520,6 @@ branch - used in slack notification</bpmn:text>
         <di:waypoint x="2420" y="650" />
         <di:waypoint x="2420" y="525" />
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="BPMNEdge_026g0co" bpmnElement="Association_1q6rj6r">
-        <di:waypoint x="1842" y="460" />
-        <di:waypoint x="1853" y="440" />
-      </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_1k714v6_di" bpmnElement="Flow_1k714v6">
         <di:waypoint x="1150" y="558" />
         <di:waypoint x="1150" y="710" />
@@ -537,6 +530,10 @@ branch - used in slack notification</bpmn:text>
         <di:waypoint x="2445" y="500" />
         <di:waypoint x="2522" y="500" />
       </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="BPMNEdge_026g0co" bpmnElement="Association_1q6rj6r">
+        <di:waypoint x="1842" y="460" />
+        <di:waypoint x="1853" y="440" />
+      </bpmndi:BPMNEdge>
       <bpmndi:BPMNShape id="BPMNShape_05skzh4" bpmnElement="TextAnnotation_02vo6ud">
         <dc:Bounds x="960" y="110" width="750" height="70" />
         <bpmndi:BPMNLabel />
@@ -544,10 +541,9 @@ branch - used in slack notification</bpmn:text>
       <bpmndi:BPMNShape id="BPMNShape_0m8yyap" bpmnElement="TextAnnotation_1kzklxc">
         <dc:Bounds x="510" y="200" width="608" height="48" />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNEdge id="BPMNEdge_0gpm4vx" bpmnElement="Association_1y7yx73">
-        <di:waypoint x="2706" y="550" />
-        <di:waypoint x="2688" y="610" />
-      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="BPMNShape_0vtao6x" bpmnElement="TextAnnotation_01nrz8c">
+        <dc:Bounds x="2630" y="610" width="310" height="53" />
+      </bpmndi:BPMNShape>
       <bpmndi:BPMNEdge id="BPMNEdge_1s7k484" bpmnElement="Flow_1qxina4">
         <di:waypoint x="532" y="510" />
         <di:waypoint x="600" y="510" />
@@ -567,6 +563,10 @@ branch - used in slack notification</bpmn:text>
       <bpmndi:BPMNEdge id="BPMNEdge_03zj7ll" bpmnElement="Association_0kxaq8p">
         <di:waypoint x="517" y="492" />
         <di:waypoint x="556" y="248" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="BPMNEdge_0gpm4vx" bpmnElement="Association_1y7yx73">
+        <di:waypoint x="2706" y="550" />
+        <di:waypoint x="2688" y="610" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNShape id="TextAnnotation_0sdpa5l_di" bpmnElement="TextAnnotation_0sdpa5l">
         <dc:Bounds x="160" y="410" width="323" height="70" />

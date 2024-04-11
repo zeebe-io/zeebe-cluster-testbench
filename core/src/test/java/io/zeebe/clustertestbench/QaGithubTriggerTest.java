@@ -27,8 +27,25 @@ public class QaGithubTriggerTest {
           "map-names-to-uuids-job",
           "destroy-zeebe-cluster-in-camunda-cloud-job",
           "io.camunda:slack:1");
+  public static final String JOB_TYPE_CHAOS = "chaos";
+  public static final Map<String, Object> VARIABLES =
+      Map.of(
+          "zeebeImage",
+          "image",
+          "generationTemplate",
+          "Zeebe SNAPSHOT",
+          "channel",
+          "Internal Dev",
+          "branch",
+          "main",
+          "build",
+          "link",
+          "businessKey",
+          "123",
+          "processId",
+          "qa-protocol");
+  public static final String JOB_TYPE_SEQUENTIAL = "run-sequential-test-job";
   private static final JobHandler AUTO_COMPLETE_HANDLER = (c, j) -> c.newCompleteCommand(j).send();
-
   private static final JobHandler TEST_COMPLETE_HANDLER =
       (c, j) -> {
         final var authenticationDetails = j.getVariable("authenticationDetails");
@@ -42,7 +59,19 @@ public class QaGithubTriggerTest {
             .variables("{\"testReport\": { \"testResult\": \"PASSED\" } }")
             .send();
       };
+  private static final JobHandler TEST_FAILED_HANDLER =
+      (c, j) -> {
+        final var authenticationDetails = j.getVariable("authenticationDetails");
 
+        if (authenticationDetails == null) {
+          c.newFailCommand(j).retries(0).errorMessage("Authentication Details missing");
+          return;
+        }
+
+        c.newCompleteCommand(j)
+            .variables("{\"testReport\": { \"testResult\": \"FAILED\" } }")
+            .send();
+      };
   private RecordStream streamSource;
   private ZeebeClient client;
 
@@ -67,9 +96,10 @@ public class QaGithubTriggerTest {
         .newDeployResourceCommand()
         .addResourceFromClasspath("processes/qa-github-trigger.bpmn")
         .addProcessModel(
-            oneTaskModelWithIdAndJobType("sequential-test", "run-sequential-test-job"),
+            oneTaskModelWithIdAndJobType("sequential-test", JOB_TYPE_SEQUENTIAL),
             "sequential-test.bpmn")
-        .addProcessModel(oneTaskModelWithIdAndJobType("chaosToolkit", "chaos"), "chaosToolkit.bpmn")
+        .addProcessModel(
+            oneTaskModelWithIdAndJobType("chaosToolkit", JOB_TYPE_CHAOS), "chaosToolkit.bpmn")
         .addProcessModel(
             oneTaskModelWithIdAndJobType(
                 "prepare-zeebe-cluster-in-camunda-cloud", "cluster-creation"),
@@ -85,14 +115,11 @@ public class QaGithubTriggerTest {
     }
 
     jobWorkers.put(
-        "chaos", client.newWorker().jobType("chaos").handler(TEST_COMPLETE_HANDLER).open());
+        JOB_TYPE_CHAOS,
+        client.newWorker().jobType(JOB_TYPE_CHAOS).handler(TEST_COMPLETE_HANDLER).open());
     jobWorkers.put(
-        "run-sequential-test-job",
-        client
-            .newWorker()
-            .jobType("run-sequential-test-job")
-            .handler(TEST_COMPLETE_HANDLER)
-            .open());
+        JOB_TYPE_SEQUENTIAL,
+        client.newWorker().jobType(JOB_TYPE_SEQUENTIAL).handler(TEST_COMPLETE_HANDLER).open());
 
     jobWorkers.put(
         "cluster-creation",
@@ -123,22 +150,7 @@ public class QaGithubTriggerTest {
             .newCreateInstanceCommand()
             .bpmnProcessId("qa-github-trigger")
             .latestVersion()
-            .variables(
-                Map.of(
-                    "zeebeImage",
-                    "image",
-                    "generationTemplate",
-                    "Zeebe SNAPSHOT",
-                    "channel",
-                    "Internal Dev",
-                    "branch",
-                    "main",
-                    "build",
-                    "link",
-                    "businessKey",
-                    "123",
-                    "processId",
-                    "qa-protocol"))
+            .variables(VARIABLES)
             .send()
             .join();
 
@@ -148,7 +160,77 @@ public class QaGithubTriggerTest {
             () -> {
               BpmnAssert.initRecordStream(streamSource);
               final ProcessInstanceAssert assertions = BpmnAssert.assertThat(instanceEvent);
-              assertions.hasNoIncidents().isCompleted();
+              assertions
+                  .hasNoIncidents()
+                  .hasPassedElement(JOB_TYPE_SEQUENTIAL)
+                  .hasPassedElement(JOB_TYPE_CHAOS)
+                  .hasPassedElement("notify-failure")
+                  .isCompleted();
+            });
+  }
+
+  @Test
+  public void shouldFailAndNotifyOnSequentialTest() {
+    // given
+    jobWorkers.get(JOB_TYPE_SEQUENTIAL).close();
+    jobWorkers.put(
+        JOB_TYPE_SEQUENTIAL,
+        client.newWorker().jobType(JOB_TYPE_SEQUENTIAL).handler(TEST_FAILED_HANDLER).open());
+
+    // when
+    final var instanceEvent =
+        client
+            .newCreateInstanceCommand()
+            .bpmnProcessId("qa-github-trigger")
+            .latestVersion()
+            .variables(VARIABLES)
+            .send()
+            .join();
+
+    // then
+    Awaitility.await("process should be completed")
+        .untilAsserted(
+            () -> {
+              BpmnAssert.initRecordStream(streamSource);
+              final ProcessInstanceAssert assertions = BpmnAssert.assertThat(instanceEvent);
+              assertions
+                  .hasNoIncidents()
+                  .hasNotPassedElement(JOB_TYPE_CHAOS)
+                  .hasPassedElement("trigger_analysis")
+                  .hasPassedElement("notify-failure")
+                  .isCompleted();
+            });
+  }
+
+  @Test
+  public void shouldFailAndNotifyOnChaosTest() {
+    // given
+    jobWorkers.get(JOB_TYPE_CHAOS).close();
+    jobWorkers.put(
+        JOB_TYPE_CHAOS,
+        client.newWorker().jobType(JOB_TYPE_CHAOS).handler(TEST_FAILED_HANDLER).open());
+
+    // when
+    final var instanceEvent =
+        client
+            .newCreateInstanceCommand()
+            .bpmnProcessId("qa-github-trigger")
+            .latestVersion()
+            .variables(VARIABLES)
+            .send()
+            .join();
+
+    // then
+    Awaitility.await("process should be completed")
+        .untilAsserted(
+            () -> {
+              BpmnAssert.initRecordStream(streamSource);
+              final ProcessInstanceAssert assertions = BpmnAssert.assertThat(instanceEvent);
+              assertions
+                  .hasNoIncidents()
+                  .hasPassedElement("trigger_analysis")
+                  .hasPassedElement("notify-failure")
+                  .isCompleted();
             });
   }
 }
