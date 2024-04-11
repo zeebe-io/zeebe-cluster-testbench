@@ -17,27 +17,6 @@ This document describes the different processes that are deployed as part of thi
 
 This document also contains a list of the available workers. Users are encouraged to use these workers and define and deploy additional processes based on these building blocks.
 
-### Onion Principle
-
-This document will be easier to understand by learning first about the "onion principle":
-
-![Onion principle](./docs/assets/onion_principle.png)
-
-This document (and this project) define processes at different levels of detail:
-
-- Test - this is the smallest level of detail. A test process performs a given test routine. It assumes that the test environment is already set up for the test, and will be cleaned up afterwards. Thus, it can focus entirely on executing a particular test
-- Test Process - this is the next level of detail. This layer is responsible for:
-  - Spawning different variations for a test, if needed (e.g. run a test in different cluster plans; run the same test with different parameters)
-  - Preparing the test environment for the test
-  - Calling the test process
-  - Sending out notifications in case of test failures
-  - Cleaning up the test environment after the test
-- Test Protocol - this is the outermost layer. This is comparable to a test suite.
-
-The purpose of the layering is to have reusable building blocks and separation of concerns between layers.
-
-The different layers work well together, but can also be called directly. E.g. instead of having the testbench generate a cluster, a user could create a cluster by hand and then call a given test with the needed authentication details for that cluster.
-
 ### Tests
 
 #### Sequential Test
