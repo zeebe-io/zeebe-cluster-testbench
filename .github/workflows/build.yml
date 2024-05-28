@@ -129,7 +129,7 @@ jobs:
         context: .
         tags: 'gcr.io/zeebe-io/zeebe-cluster-testbench:${{ env.docker_tag }}'
 
-    - uses: google-github-actions/get-gke-credentials@v2.1.0
+    - uses: google-github-actions/get-gke-credentials@v2.2.0
       if: env.should_deploy_infra == 'true'
       with:
         cluster_name: 'zeebe-cluster'
