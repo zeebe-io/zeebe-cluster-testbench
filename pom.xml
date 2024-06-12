@@ -71,7 +71,7 @@
     <version.wiremock>3.0.1</version.wiremock>
     <version.zeebe-process-test>8.5.2</version.zeebe-process-test>
     <version.zeebeWorkerJavaTestutils>8.1.8</version.zeebeWorkerJavaTestutils>
-    <zeebe.version>8.5.2</zeebe.version>
+    <zeebe.version>8.5.3</zeebe.version>
   </properties>
 
   <dependencyManagement>
