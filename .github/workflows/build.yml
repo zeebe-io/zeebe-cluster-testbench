@@ -67,7 +67,7 @@ jobs:
           ${{ env.vault_secret_path }} slackWebhookUrl;
 
     - name: Setup Maven
-      uses: s4u/setup-maven-action@v1.13.0
+      uses: s4u/setup-maven-action@v1.14.0
       with:
         java-version: '21'
         distribution: 'temurin'
