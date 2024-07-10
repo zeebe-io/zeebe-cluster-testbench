@@ -40,7 +40,7 @@
     <nexus.snapshot.repository>https://artifacts.camunda.com/artifactory/zeebe-io-snapshots/</nexus.snapshot.repository>
     <plugin.version.assembly>3.3.0</plugin.version.assembly>
     <plugin.version.dependency>3.7.1</plugin.version.dependency>
-    <plugin.version.failsafe>3.3.0</plugin.version.failsafe>
+    <plugin.version.failsafe>3.3.1</plugin.version.failsafe>
     <plugin.version.flakytestextractor>2.1.1</plugin.version.flakytestextractor>
     <plugin.version.flatten>1.6.0</plugin.version.flatten>
     <plugin.version.fmt>2.13</plugin.version.fmt>
