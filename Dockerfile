@@ -1,4 +1,4 @@
-FROM eclipse-temurin:21.0.3_9-jre as zeebe-cluster-testbench
+FROM eclipse-temurin:21.0.4_7-jre as zeebe-cluster-testbench
 
 COPY core/target/zeebe-cluster-testbench-uber-jar-with-dependencies.jar /testbench.jar
 
