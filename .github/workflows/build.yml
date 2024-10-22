@@ -32,7 +32,7 @@ env:
 
 jobs:
   build:
-    runs-on: ubuntu-latest 
+    runs-on: ubuntu-latest
     permissions:
       checks: write
       pull-requests: write
@@ -146,6 +146,7 @@ jobs:
         INTERNAL_CLOUD_CLIENT_SECRET: ${{ steps.secrets.outputs.internalCloudClientSecret }}
         INTERNAL_CLOUD_PASSWORD: ${{ steps.secrets.outputs.internalCloudPassword }}
         SLACK_WEBHOOK_URL: ${{ steps.secrets.outputs.slackWebhookUrl }}
+        TESTBENCH_REST_ADDRESS: ${{ steps.secrets.outputs.testbenchRestAddress }}
         # DRY_RUN: 'true'
 
     - name: Send Slack notification

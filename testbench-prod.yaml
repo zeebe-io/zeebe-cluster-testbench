@@ -72,6 +72,11 @@ spec:
                 secretKeyRef:
                   name: testbench-secrets
                   key: slackWebhookUrl
+            - name: ZCTB_TESTBENCH_REST_ADDRESS
+              valueFrom:
+                secretKeyRef:
+                  name: testbench-secrets
+                  key: testbenchRestAddress
             - name: ZCTB_LOG_APPENDER
               value: "Stackdriver"
             - name: ZCTB_LOG_STACKDRIVER_SERVICEVERSION
