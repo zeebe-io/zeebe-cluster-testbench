@@ -32,6 +32,7 @@ import io.zeebe.clustertestbench.internal.cloud.ExternalConsoleAPIClient;
 import io.zeebe.clustertestbench.internal.cloud.ExternalConsoleAPIClientFactory;
 import io.zeebe.clustertestbench.notification.SlackNotificationService;
 import java.io.IOException;
+import java.net.URI;
 import java.time.Duration;
 import java.util.HashMap;
 import java.util.Map;
@@ -53,6 +54,8 @@ public class Launcher {
   private final CloudAPIClient cloudApiClient;
   private final ExternalConsoleAPIClient externalConsoleApiClient;
 
+  private final String testbenchRestAddress;
+
   public Launcher(
       final String testOrchestrationContactPoint,
       final OAuthServiceAccountAuthenticationDetails testOrchestrationAuthenticatonDetails,
@@ -60,10 +63,12 @@ public class Launcher {
       final OAuthServiceAccountAuthenticationDetails cloudApiAuthenticationDetails,
       final String internalCloudApiUrl,
       final OAuthUserAccountAuthenticationDetails internalCloudApiAuthenticationDetails,
-      final String slackWebhookUrl) {
+      final String slackWebhookUrl,
+      final String testbenchRestAddress) {
     this.testOrchestrationContactPoint = testOrchestrationContactPoint;
     this.testOrchestrationAuthenticatonDetails = testOrchestrationAuthenticatonDetails;
     this.slackWebhookUrl = slackWebhookUrl;
+    this.testbenchRestAddress = testbenchRestAddress;
 
     cloudApiClient = createCloudApiClient(cloudApiUrl, cloudApiAuthenticationDetails);
     externalConsoleApiClient =
@@ -80,6 +85,8 @@ public class Launcher {
             .numJobWorkerExecutionThreads(50)
             .gatewayAddress(testOrchestrationContactPoint)
             .credentialsProvider(cred)
+            .preferRestOverGrpc(true)
+            .restAddress(URI.create(testbenchRestAddress))
             .build()) {
 
       try {

@@ -75,6 +75,8 @@ public class BootstrapFromEnvVars {
 
       final String slackWebhookUrl = getEnvironmentvariable("SLACK_WEBHOOK_URL", false);
 
+      final String testbenchRestAddress = getEnvironmentvariable("TESTBENCH_REST_ADDRESS", false);
+
       new Launcher(
               contactPoint,
               testOrchestrationAuthenticatonDetails,
@@ -82,7 +84,8 @@ public class BootstrapFromEnvVars {
               cloudApiAuthenticationDetails,
               inernalCloudApiUrl,
               internalCloudApiAuthenticationDetails,
-              slackWebhookUrl)
+              slackWebhookUrl,
+              testbenchRestAddress)
           .launch();
     } catch (final Exception e) {
       LOGGER.error(e.getMessage(), e);
