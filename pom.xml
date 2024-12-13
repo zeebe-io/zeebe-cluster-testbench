@@ -56,7 +56,7 @@
     <version.assertj>3.26.3</version.assertj>
     <version.awaitility>4.2.2</version.awaitility>
     <version.commons-io>2.18.0</version.commons-io>
-    <version.commons-text>1.12.0</version.commons-text>
+    <version.commons-text>1.13.0</version.commons-text>
     <version.grpc-api>1.63.0</version.grpc-api>
     <version.jackson>2.18.2</version.jackson>
     <version.java>21</version.java>
